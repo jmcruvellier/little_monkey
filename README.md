@@ -1,6 +1,6 @@
 # Little Monkey
 
-Cette intégration vous permet de récupérer les information de votre capteur ecojoko.
+Cette intégration vous permet de récupérer les informations collectées par votre capteur ecojoko.
 
 Elle permet d'intègrer dans Home Assistant les capteurs suivants:
 
