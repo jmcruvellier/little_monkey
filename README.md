@@ -43,4 +43,4 @@ Ecojoko ne proposant pas d'intégration officielle pour Home Assistant, je me su
 
 ### Configuration de l'intégration
 
-TODO
+TODO (capture)
