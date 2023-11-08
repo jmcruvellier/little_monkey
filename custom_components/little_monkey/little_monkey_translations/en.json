@@ -1,0 +1,17 @@
+{
+    "realtime_consumption": "Real-Time Consumption",
+    "grid_consumption": "Grid Consumption",
+    "hc_grid_consumption": "HC Grid Consumption",
+    "hp_grid_consumption": "HP Grid Consumption",
+    "blue_hc_grid_consumption": "HC Blue Grid Consumption",
+    "blue_hp_grid_consumption": "HP Blue Grid Consumption",
+    "white_hc_grid_consumption": "HC White Grid Consumption",
+    "white_hp_grid_consumption": "HP White Grid Consumption",
+    "red_hc_grid_consumption": "HC Red Grid Consumption",
+    "red_hp_grid_consumption": "HP Red Grid Consumption",
+    "production_surplus": "Production Surplus",
+    "indoor_temp": "Indoor Temperature",
+    "outdoor_temp": "Outdoor Temperature",
+    "indoor_hum": "Indoor Humidity",
+    "outdoor_hum": "Outdoor Humidity"
+}

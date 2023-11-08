@@ -1,0 +1,47 @@
+{
+    "title": "Little Monkey",
+    "config": {
+        "step": {
+            "user": {
+                "description": "If you need help with the configuration have a look here: https://github.com/jmcruvellier/little_monkey",
+                "data": {
+                    "name": "Name",
+                    "username": "Username",
+                    "password": "Password",
+                    "use_hchp_feature": "HP/HC sensors",
+                    "use_tempo_feature": "Tempo Blue/White/Red sensors",
+                    "use_temphum_feature": "Humidity and temperature sensors",
+                    "use_prod_feature": "Production sensor",
+                    "poll_interval": "Poll interval (in seconds)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Username/Password is wrong.",
+            "connection": "Unable to connect to the server.",
+            "unknown": "Unknown error occurred."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "If you need help with the configuration have a look here: https://github.com/jmcruvellier/little_monkey",
+                "data": {
+                    "name": "Name",
+                    "username": "Username",
+                    "password": "Password",
+                    "use_hchp_feature": "HP/HC sensors",
+                    "use_tempo_feature": "Tempo Blue/White/Red sensors",
+                    "use_temphum_feature": "Humidity and temperature sensors",
+                    "use_prod_feature": "Production sensor",
+                    "poll_interval": "Poll interval (in seconds)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Username/Password is wrong.",
+            "connection": "Unable to connect to the server.",
+            "unknown": "Unknown error occurred."
+        }
+    }
+}

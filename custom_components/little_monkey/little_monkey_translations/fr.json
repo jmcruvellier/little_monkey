@@ -1,0 +1,17 @@
+{
+    "realtime_consumption": "Consommation Temps Réel",
+    "grid_consumption": "Consommation Réseau",
+    "hc_grid_consumption": "Consommation HC Réseau",
+    "hp_grid_consumption": "Consommation HP Réseau",
+    "blue_hc_grid_consumption": "Consommation HC Bleu Réseau",
+    "blue_hp_grid_consumption": "Consommation HP Bleu Réseau",
+    "white_hc_grid_consumption": "Consommation HC Blanc Réseau",
+    "white_hp_grid_consumption": "Consommation HP Blanc Réseau",
+    "red_hc_grid_consumption": "Consommation HC Rouge Réseau",
+    "red_hp_grid_consumption": "Consommation HP Rouge Réseau",
+    "production_surplus": "Surplus de Production",
+    "indoor_temp": "Température Intérieure",
+    "outdoor_temp": "Température Extérieure",
+    "indoor_hum": "Humidité Intérieure",
+    "outdoor_hum": "Humidité Extérieure"
+}

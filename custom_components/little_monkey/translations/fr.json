@@ -1,0 +1,47 @@
+{
+    "title": "Petit Singe",
+    "config": {
+        "step": {
+            "user": {
+                "description": "Si vous avez besoin d'aide pour la configuration, allez voir ici : https://github.com/jmcruvellier/little_monkey",
+                "data": {
+                    "name": "Nom",
+                    "username": "Nom d'utilisateur",
+                    "password": "Mot de passe",
+                    "use_hchp_feature": "Capteurs HP/HC",
+                    "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
+                    "use_temphum_feature": "Capteurs d'humidité et de température",
+                    "use_prod_feature": "Capteur de production",
+                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Nom d'utilisateur/Mot de passe incorrect.",
+            "connection": "Impossible de se connecter au serveur.",
+            "unknown": "Une erreur inconnue est survenue."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Si vous avez besoin d'aide pour la configuration, allez voir ici : https://github.com/jmcruvellier/little_monkey",
+                "data": {
+                    "name": "Nom",
+                    "username": "Nom d'utilisateur",
+                    "password": "Mot de passe",
+                    "use_hchp_feature": "Capteurs HP/HC",
+                    "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
+                    "use_temphum_feature": "Capteurs d'humidité et de température",
+                    "use_prod_feature": "Capteur de production",
+                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Nom d'utilisateur/Mot de passe incorrect.",
+            "connection": "Impossible de se connecter au serveur.",
+            "unknown": "Une erreur inconnue est survenue."
+        }
+    }
+}

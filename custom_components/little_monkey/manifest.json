@@ -1,0 +1,13 @@
+{
+  "domain": "little_monkey",
+  "name": "Little Monkey",
+  "codeowners": [
+    "@jmcruvellier"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/jmcruvellier/little_monkey",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/jmcruvellier/little_monkey/issues",
+  "version": "0.0.1",
+  "integration_type": "device"
+}
