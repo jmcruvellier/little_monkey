@@ -51,7 +51,7 @@ Une fois l'intégration téléchargée, redémarrez votre Home Assistant.
 
 ## Configuration de l'intégration
 
-TODO (capture)
+Suivre les [instructions de configuration](CONFIGURATION.md)
 
 ## Liens utiles
 Pour les possesseurs:
