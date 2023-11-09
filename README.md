@@ -2,23 +2,29 @@
 
 Cette intégration vous permet de récupérer les informations collectées par votre capteur ecojoko.
 
-Elle permet d'intègrer dans Home Assistant les capteurs suivants:
+Elle intègre dans Home Assistant les capteurs suivants:
 
-* Consommation Temps Réel
-* Consommation Réseau
-* Consommation HC Réseau
-* Consommation HP Réseau
-* Consommation HC Bleu Réseau
-* Consommation HP Bleu Réseau
-* Consommation HC Blanc Réseau
-* Consommation HP Blanc Réseau
-* Consommation HC Rouge Réseau
-* Consommation HP Rouge Réseau
-* Surplus de Production
+* Consommation Temps Réel (en W)
+* Consommation Réseau (cumul de la journée en kWh)
+* Si vous avez un contrat d'énergie HC/HP
+  - Consommation HC Réseau
+  - Consommation HP Réseau
+  - Si ce contrat est un Tempo:
+    - Consommation HC Bleu Réseau
+    - Consommation HP Bleu Réseau
+    - Consommation HC Blanc Réseau
+    - Consommation HP Blanc Réseau
+    - Consommation HC Rouge Réseau
+    - Consommation HP Rouge Réseau
+* Surplus de Production (si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération)
 * Température Intérieure
 * Température Extérieure
 * Humidité Intérieure
 * Humidité Extérieure
+
+Si vous êtes un utilisateur régulier de l'application ecojoko, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane (d'où le choix du nom de cette intégration et de son logo 😜). Cette intégration dépend des APIs d'ecojoko et n'est donc pas responsable en cas de non disponibilité de vos donnés.
+
+Bienvenue dans la jungle!
 
 ## Pourquoi avoir voulu développer cette intégration?
 
