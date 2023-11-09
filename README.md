@@ -1,4 +1,4 @@
-# Little Monkey
+# ![Little Monkey](/res/logo.png)
 
 Cette intégration vous permet de récupérer les informations collectées par votre capteur ecojoko.
 
@@ -47,7 +47,7 @@ Une fois l'intégration téléchargée, redémarrez votre Home Assistant.
 
 TODO (capture)
 
-## Liens utiles pour
+## Liens utiles
 Pour les possesseurs:
 * d'un contrant d'énergie Tempo
   - l'intégration d'Edouard Hur @hekmon qui permet d'avoir le calendrier des jours Tempo ainsi que des capteurs très utiles [RTE Tempo](https://github.com/hekmon/rtetempo)
