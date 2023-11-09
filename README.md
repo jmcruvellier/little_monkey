@@ -48,7 +48,7 @@ Ecojoko<sup>©️</sup> ne proposant pas d'intégration officielle pour Home Ass
 
 ### Ajouter le dépôt de l'intégration dans Home Assistant avec HACS
 
-Cliquer sur le lien ci-dessous pour lancer la procédure d'installation:
+Cliquer sur le lien ci-dessous pour ajouter le dépôt de l'intégration:
 
 [![Ouvre votre instance Home Assistant et ajoute un dépôt dans la boutique communautaire Home Assistant.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
 
