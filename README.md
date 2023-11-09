@@ -1,29 +1,30 @@
-# ![Little Monkey](/custom_components/little_monkey/res/icon_small.png) Little Monkey / Petit Singe
+# ![Little Monkey](/custom_components/little_monkey/res/icon_verysmall.png) Little Monkey / Petit Singe
 
 Cette intégration vous permet de récupérer les informations collectées par votre installation ecojoko<sup>©️</sup>.
 
 Elle intègre dans Home Assistant les capteurs suivants:
 
-* Consommation Temps Réel (en W)
-* Consommation Réseau (cumul de la journée en kWh)
+* Consommation Temps Réel (Puissance en W)
+* Consommation Réseau (Energie en kWh)
 * Si vous avez un contrat d'énergie HC/HP
-  - Consommation HC Réseau
-  - Consommation HP Réseau
-  - Si ce contrat est un Tempo:
-    - Consommation HC Bleu Réseau
-    - Consommation HP Bleu Réseau
-    - Consommation HC Blanc Réseau
-    - Consommation HP Blanc Réseau
-    - Consommation HC Rouge Réseau
-    - Consommation HP Rouge Réseau
-* Surplus de Production (si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération)
-* Température Intérieure
-* Température Extérieure
-* Humidité Intérieure
-* Humidité Extérieure
+  - Consommation HC Réseau (Energie en kWh)
+  - Consommation HP Réseau (Energie en kWh)
+  - Si c'est un contrat Tempo:
+    - Consommation HC Bleu Réseau (Energie en kWh)
+    - Consommation HP Bleu Réseau (Energie en kWh)
+    - Consommation HC Blanc Réseau (Energie en kWh)
+    - Consommation HP Blanc Réseau (Energie en kWh)
+    - Consommation HC Rouge Réseau (Energie en kWh)
+    - Consommation HP Rouge Réseau (Energie en kWh)
+* Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération:
+  - Surplus de Production (Energie en kWh)
+* Température Intérieure (en °C)
+* Température Extérieure (en °C)
+* Humidité Intérieure (en %)
+* Humidité Extérieure (en %)
 
 > [!IMPORTANT]
-> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane (d'où le choix du nom de cette intégration et de son logo 😜). **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
+> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
 
 Bienvenue dans la jungle!
 
