@@ -44,15 +44,16 @@ Ecojoko<sup>©️</sup> ne proposant pas d'intégration officielle pour Home Ass
 1. Etre en possession d'un capteur ecojoko<sup>©️</sup>
 1. Connaitre ses identifiants de connexion au site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/)
 
-## Installation de l'intégration dans Home Assistant avec HACS
+## Installation & configuration
 
+### Ajouter le dépôt de l'intégration dans Home Assistant avec HACS
+
+Cliquer sur le lien ci-dessous pour lancer la procédure d'installation
 [![Ouvre votre instance Home Assistant et ajoute un dépôt dans la boutique communautaire Home Assistant.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
 
-Une fois l'intégration téléchargée, redémarrez votre Home Assistant.
+### Installation & Configuration de l'intégration
 
-## Configuration de l'intégration
-
-Suivre les [instructions de configuration](CONFIGURATION.md)
+Suivre les [instructions d'installation et de configuration](CONFIGURATION.md)
 
 ## Liens utiles
 Pour les possesseurs:
