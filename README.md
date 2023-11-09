@@ -23,7 +23,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 * Humidité Extérieure
 
 > [!IMPORTANT]
-> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane (d'où le choix du nom de cette intégration et de son logo 😜). **Cette __intégration non-officielle__ dépend des APIs d'ecojoko et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
+> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane (d'où le choix du nom de cette intégration et de son logo 😜). **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
 
 Bienvenue dans la jungle!
 
