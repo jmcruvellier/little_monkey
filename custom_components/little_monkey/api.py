@@ -278,11 +278,12 @@ class LittleMonkeyApiClient:
                     headers=self._headers,
                     data=data
                 )
-            self._cookies = response.cookies
             if response.status in (401, 403):
+                LOGGER.error("Invalid credentials used: %s", data)
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
+            self._cookies = response.cookies
             response.raise_for_status()
             return await response.json()
 
