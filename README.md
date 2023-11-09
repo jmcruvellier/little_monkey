@@ -1,4 +1,4 @@
-![](/custom_components/little_monkey/res/icon_verysmall.png)
+![](/custom_components/little_monkey/res/logo_verysmall.png)
 # Little Monkey / Petit Singe
 
 Cette intégration vous permet de récupérer les informations collectées par votre installation ecojoko<sup>©️</sup>.
