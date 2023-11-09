@@ -29,22 +29,24 @@ Elle intègre dans Home Assistant les capteurs suivants:
 
 Bienvenue dans la jungle!
 
-## Pourquoi avoir voulu développer cette intégration?
+## Pourquoi avoir développé cette intégration?
 
-Les données de votre compteur sont stockées sur les serveurs d'ecojoko<sup>©️</sup>. C'est de là que l'application mobile ou le site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/) chargent les informations que vous consultez.
-Jusque là tout va bien, on peut suivre sa consommation en temps réel, ce qui est la première étape quand on veut optimiser/réduire de sa consommation énergétique.
-Mais là où sa coince c'est lorsque l'on souhaite aller plus loin, comme par exemple:
+Les données de votre compteur sont stockées sur les serveurs d'ecojoko<sup>©️</sup>. C'est de là que l'application mobile ou le site web d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/) chargent les informations que vous consultez.
+Jusque là tout va bien, on peut suivre sa consommation en temps réel, ce qui est la première étape quand on cherche à optimiser/réduire de sa consommation énergétique.
+Dans le monde de la domotique on souhaite aller plus loin, comme par exemple:
 
 * recevoir des alertes en fonction de seuils de consommation ou de production
 * lancer des automatisations
-* et beaucoup d'autres choses que nous permettent de faire les outils domotiques
+* et beaucoup d'autres choses
 
 Ecojoko<sup>©️</sup> ne proposant pas d'intégration officielle pour Home Assistant, je me suis donc lancé dans le développement de celle-ci.
 
 ## Prérequis
 
-1. Etre en possession d'un capteur ecojoko<sup>©️</sup>
-1. Connaitre ses identifiants de connexion au site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/)
+Avant de vous lancer dans l'installation, il est nécessaire:
+
+1. d'être en possession d'un capteur ecojoko<sup>©️</sup>
+1. de connaitre ses identifiants de connexion au site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/)
 
 ## Installation & configuration
 
@@ -61,7 +63,7 @@ Suivre les [instructions d'installation et de configuration](CONFIGURATION.md)
 ## Liens utiles
 Pour les possesseurs:
 * d'un contrant d'énergie Tempo
-  - l'intégration d'Edouard Hur @hekmon qui permet d'avoir le calendrier des jours Tempo ainsi que des capteurs très utiles [RTE Tempo](https://github.com/hekmon/rtetempo)
-* de panneaux photovoltaiques, Mathieu Carbou @mathieucarbou propose :
+  - l'intégration d'[Edouard Hur](@hekmon) qui permet d'avoir le calendrier des jours Tempo ainsi que des capteurs très utiles [RTE Tempo](https://github.com/hekmon/rtetempo)
+* de panneaux photovoltaiques, [Mathieu Carbou](@mathieucarbou) propose :
   - un boitier [OpenDTU](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1) clé en main déjà prêt pour être connecté aux micro-onduleurs de vos panneaux
   - des [Cartes pour Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant) afin de rendre plus facile le suivi de production de vos panneaux dans les tableaux de bord
