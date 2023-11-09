@@ -1,6 +1,6 @@
 # ![Little Monkey](/custom_components/little_monkey/res/logo.png)
 
-Cette intégration vous permet de récupérer les informations collectées par votre capteur ecojoko.
+Cette intégration vous permet de récupérer les informations collectées par votre installation ecojoko<sup>©️</sup>.
 
 Elle intègre dans Home Assistant les capteurs suivants:
 
@@ -22,13 +22,14 @@ Elle intègre dans Home Assistant les capteurs suivants:
 * Humidité Intérieure
 * Humidité Extérieure
 
-Si vous êtes un utilisateur régulier de l'application ecojoko, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane (d'où le choix du nom de cette intégration et de son logo 😜). Cette intégration dépend des APIs d'ecojoko et n'est donc pas responsable en cas de non disponibilité de vos donnés.
+> [!IMPORTANT]
+> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane (d'où le choix du nom de cette intégration et de son logo 😜). **Cette __intégration non-officielle__ dépend des APIs d'ecojoko et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
 
 Bienvenue dans la jungle!
 
 ## Pourquoi avoir voulu développer cette intégration?
 
-Les données de votre capteur installé sur votre compteur sont stockées sur les serveurs d'ecojoko. C'est de là que l'application mobile ou le site d'[ecojoko](https://service.ecojoko.com/) chargent les informations que vous consultez.
+Les données de votre compteur sont stockées sur les serveurs d'ecojoko<sup>©️</sup>. C'est de là que l'application mobile ou le site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/) chargent les informations que vous consultez.
 Jusque là tout va bien, on peut suivre sa consommation en temps réel, ce qui est la première étape quand on veut optimiser/réduire de sa consommation énergétique.
 Mais là où sa coince c'est lorsque l'on souhaite aller plus loin, comme par exemple:
 
@@ -36,12 +37,12 @@ Mais là où sa coince c'est lorsque l'on souhaite aller plus loin, comme par ex
 * lancer des automatisations
 * et beaucoup d'autres choses que nous permettent de faire les outils domotiques
 
-Ecojoko ne proposant pas d'intégration officielle pour Home Assistant, je me suis donc lancé dans le développement de celle-ci.
+Ecojoko<sup>©️</sup> ne proposant pas d'intégration officielle pour Home Assistant, je me suis donc lancé dans le développement de celle-ci.
 
 ## Prérequis
 
-1. Etre en possession d'un capteur ecojoko
-1. Connaitre ses identifiants de connexion au site d'[ecojoko](https://service.ecojoko.com/)
+1. Etre en possession d'un capteur ecojoko<sup>©️</sup>
+1. Connaitre ses identifiants de connexion au site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/)
 
 ## Installation de l'intégration dans Home Assistant avec HACS
 
