@@ -1,4 +1,4 @@
-# ![Little Monkey](/custom_components/little_monkey/res/icon.png) Little Monkey / Petit Singe
+# <imr src="/custom_components/little_monkey/res/icon.png" width="128" height="128"/> Little Monkey / Petit Singe
 
 Cette intégration vous permet de récupérer les informations collectées par votre installation ecojoko<sup>©️</sup>.
 
