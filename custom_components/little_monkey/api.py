@@ -279,7 +279,9 @@ class LittleMonkeyApiClient:
                     data=data
                 )
             if response.status in (401, 403):
+                LOGGER.error("URL used: %s", ECOJOKO_LOGIN_URL)
                 LOGGER.error("Invalid credentials used: %s", data)
+                LOGGER.error("Response status: %s", response.status)
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
