@@ -37,9 +37,11 @@ Ecojoko ne proposant pas d'intégration officielle pour Home Assistant, je me su
 1. Etre en possession d'un capteur ecojoko
 1. Connaitre ses identifiants de connexion au site d'[ecojoko](https://service.ecojoko.com/)
 
-## Installation de l'intégration dans Home Assistant
+## Installation de l'intégration dans Home Assistant avec HACS
 
 [![Ouvre votre instance Home Assistant et ajoute un dépôt dans la boutique communautaire Home Assistant.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
+
+Une fois l'intégration téléchargée, redémarrez votre Home Assistant.
 
 ## Configuration de l'intégration
 
@@ -48,7 +50,7 @@ TODO (capture)
 ## Liens utiles
 Pour les possesseurs:
 * de contrant Tempo
-** l'intégration [RTE Tempo](https://github.com/hekmon/rtetempo)
+  - l'intégration [RTE Tempo](https://github.com/hekmon/rtetempo)
 * de panneaux photovoltaiques:
-** [OpenDTU de Mathieu Carbou](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1)
-** [Cartes Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant)
+  - [OpenDTU de Mathieu Carbou](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1)
+  - [Cartes Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant)
