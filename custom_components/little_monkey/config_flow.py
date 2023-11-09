@@ -1,183 +1,269 @@
-""" Le Config Flow """
+"""Adds config flow for Ecojoko."""
+from __future__ import annotations
 
-import logging
 from typing import Any
-import copy
-from collections.abc import Mapping
-
-from homeassistant.core import callback
-from homeassistant.config_entries import ConfigFlow, OptionsFlow, ConfigEntry
-from homeassistant.data_entry_flow import FlowResult
-from homeassistant.helpers import selector
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
-
 import voluptuous as vol
+import homeassistant.helpers.config_validation as cv
+from homeassistant import config_entries
+from homeassistant.core import callback
+from homeassistant.data_entry_flow import FlowResult
+from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME, UnitOfTime
+from homeassistant.helpers import selector
+from homeassistant.helpers.selector import NumberSelectorMode
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
-from .const import DOMAIN, NAME
+from .api import (
+    LittleMonkeyApiClient,
+    LittleMonkeyApiClientAuthenticationError,
+    LittleMonkeyApiClientCommunicationError,
+    LittleMonkeyApiClientError,
+)
+from .const import (
+    DOMAIN,
+    POLL_INTERVAL,
+    DEFAULT_POLL_INTERVAL,
+    CONF_USE_HCHP_FEATURE,
+    CONF_USE_TEMPO_FEATURE,
+    CONF_USE_TEMPHUM_FEATURE,
+    CONF_USE_PROD_FEATURE,
+    CONF_LANG,
+    DEFAULT_LANG,
+    LANG_CODES,
+    LOGGER
+)
 
-_LOGGER = logging.getLogger(__name__)
+def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> vol.Schema:
+    """Get a schema with default values."""
+    if config_entry is None:
+        return vol.Schema(
+            {
+                vol.Required(CONF_NAME, default=""): cv.string,
+                vol.Required(CONF_USERNAME, default=""): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.TEXT
+                        ),
+                    ),
+                vol.Required(CONF_PASSWORD, default=""): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.PASSWORD
+                        ),
+                    ),
+                vol.Optional(
+                    CONF_USE_HCHP_FEATURE, default=True,
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_USE_TEMPO_FEATURE, default=True,
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_USE_PROD_FEATURE, default=False,
+                ): cv.boolean,
+                vol.Optional(
+                    CONF_USE_TEMPHUM_FEATURE, default=True,
+                ): cv.boolean,
+                vol.Required(POLL_INTERVAL, default=DEFAULT_POLL_INTERVAL): selector.NumberSelector(
+                        selector.NumberSelectorConfig(
+                            mode=NumberSelectorMode.BOX,
+                            unit_of_measurement=UnitOfTime.SECONDS,
+                            min=3,
+                            max=60
+                        ),
+                    ),
+                vol.Required(
+                    CONF_LANG, default=DEFAULT_LANG
+                    ): selector.LanguageSelector(
+                    selector.LanguageSelectorConfig(
+                        languages=LANG_CODES,
+                        native_name=True,
+                        no_sort=True
+                    ),
+                ),
+            }
+        )
+    # Default values come from config entry
+    return vol.Schema(
+        {
+            vol.Required(CONF_NAME, default=config_entry.data.get(CONF_NAME)): cv.string,
+            vol.Required(
+                CONF_USERNAME, default=config_entry.data.get(CONF_USERNAME)
+                ): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.TEXT
+                        ),
+                    ),
+            vol.Required(
+                CONF_PASSWORD, default=config_entry.data.get(CONF_PASSWORD)
+                ): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.PASSWORD
+                        ),
+                    ),
+            vol.Optional(
+                CONF_USE_HCHP_FEATURE, default=config_entry.data.get(CONF_USE_HCHP_FEATURE),
+            ): cv.boolean,
+            vol.Optional(
+                CONF_USE_TEMPO_FEATURE, default=config_entry.data.get(CONF_USE_TEMPO_FEATURE),
+            ): cv.boolean,
+            vol.Optional(
+                CONF_USE_PROD_FEATURE, default=config_entry.data.get(CONF_USE_PROD_FEATURE),
+            ): cv.boolean,
+            vol.Optional(
+                CONF_USE_TEMPHUM_FEATURE, default=config_entry.data.get(CONF_USE_TEMPHUM_FEATURE),
+            ): cv.boolean,
+            vol.Required(
+                POLL_INTERVAL, default=config_entry.data.get(POLL_INTERVAL)
+                ): selector.NumberSelector(
+                        selector.NumberSelectorConfig(
+                            mode=NumberSelectorMode.BOX,
+                            unit_of_measurement=UnitOfTime.SECONDS,
+                            min=3,
+                            max=60
+                        ),
+                    ),
+            vol.Required(
+                CONF_LANG, default=config_entry.options.get(CONF_LANG, DEFAULT_LANG)
+                ): selector.LanguageSelector(
+                selector.LanguageSelectorConfig(
+                    languages=LANG_CODES,
+                    native_name=True,
+                    no_sort=True
+                ),
+            ),
+        }
+    )
 
+class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """Config flow for Ecojoko."""
 
-def add_suggested_values_to_schema(
-    data_schema: vol.Schema, suggested_values: Mapping[str, Any]
-) -> vol.Schema:
-    """Make a copy of the schema, populated with suggested values.
-
-    For each schema marker matching items in `suggested_values`,
-    the `suggested_value` will be set. The existing `suggested_value` will
-    be left untouched if there is no matching item.
-    """
-    schema = {}
-    for key, val in data_schema.schema.items():
-        new_key = key
-        if key in suggested_values and isinstance(key, vol.Marker):
-            # Copy the marker to not modify the flow schema
-            new_key = copy.copy(key)
-            new_key.description = {"suggested_value": suggested_values[key]}
-        schema[new_key] = val
-    _LOGGER.debug("add_suggested_values_to_schema: schema=%s", schema)
-    return vol.Schema(schema)
-
-
-class TutoHACSConfigFlow(ConfigFlow, domain=DOMAIN):
-    """La classe qui implémente le config flow pour notre DOMAIN.
-    Elle doit dériver de ConfigFlow"""
-
-    # La version de notre configFlow. Va permettre de migrer les entités
-    # vers une version plus récente en cas de changement
     VERSION = 1
-    _user_inputs: dict = {}
+
+    def __init__(self) -> None:
+        """Init EcojokoFlowHandler."""
+        self._errors: dict[str, Any] = {}
+
+    async def async_step_user(
+        self,
+        user_input: dict | None = None,
+    ) -> config_entries.FlowResult:
+        """Handle a flow initialized by the user."""
+        _errors = {}
+        if user_input is not None:
+            try:
+                await self._get_cookies(
+                    username=user_input[CONF_USERNAME],
+                    password=user_input[CONF_PASSWORD],
+                    use_hchp=user_input[CONF_USE_HCHP_FEATURE],
+                    use_tempo=user_input[CONF_USE_TEMPO_FEATURE],
+                    use_temphum=user_input[CONF_USE_TEMPHUM_FEATURE],
+                    use_prod=user_input[CONF_USE_PROD_FEATURE]
+                )
+            except LittleMonkeyApiClientAuthenticationError as exception:
+                LOGGER.warning(exception)
+                _errors["base"] = "auth"
+            except LittleMonkeyApiClientCommunicationError as exception:
+                LOGGER.error(exception)
+                _errors["base"] = "connection"
+            except LittleMonkeyApiClientError as exception:
+                LOGGER.exception(exception)
+                _errors["base"] = "unknown"
+            else:
+                return self.async_create_entry(
+                    title=user_input[CONF_USERNAME],
+                    data=user_input,
+                    options={ CONF_LANG: DEFAULT_LANG }
+                )
+
+        return self.async_show_form(
+            step_id="user",
+            data_schema=_get_data_schema(),
+            errors=_errors,
+        )
+
+    async def _get_cookies(self, username: str, password: str, use_hchp: bool, use_temphum: bool, use_tempo: bool, use_prod: bool) -> None:
+        client = LittleMonkeyApiClient(
+            username=username,
+            password=password,
+            use_hchp=use_hchp,
+            use_tempo=use_tempo,
+            use_temphum=use_temphum,
+            use_prod=use_prod,
+            session=async_create_clientsession(self.hass),
+        )
+        await client.async_get_cookiesdata()
+
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry: ConfigEntry):
-        """Get options flow for this handler"""
-        return TutoHACSOptionsFlow(config_entry)
+    def async_get_options_flow(
+        config_entry: config_entries.ConfigEntry,
+    ) -> config_entries.OptionsFlow:
+        """Get the options flow for Met."""
+        return EcojokoOptionsFlowHandler(config_entry)
 
-    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
-        """Gestion de l'étape 'user'. Point d'entrée de notre
-        configFlow. Cette méthode est appelée 2 fois :
-        1. une première fois sans user_input -> on affiche le formulaire de configuration
-        2. une deuxième fois avec les données saisies par l'utilisateur dans user_input
-           -> on sauvegarde les données saisies
-        """
-        user_form = vol.Schema({vol.Required("name"): str})
+class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
+    """Options flow for Ecojoko component."""
 
-        if user_input is None:
-            _LOGGER.debug(
-                "config_flow step user (1). 1er appel : pas de user_input -> "
-                "on affiche le form user_form"
-            )
-            return self.async_show_form(
-                step_id="user",
-                data_schema=add_suggested_values_to_schema(
-                    data_schema=user_form, suggested_values=self._user_inputs
-                ),
-            )
+    def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
+        """Initialize the Ecojoko OptionsFlow."""
+        self._config_entry = config_entry
+        self._errors: dict[str, Any] = {}
 
-        # 2ème appel : il y a des user_input -> on stocke le résultat
-        _LOGGER.debug(
-            "config_flow step user (2). On a reçu les valeurs: %s", user_input
-        )
-        # On mémorise les user_input
-        self._user_inputs.update(user_input)
+    async def async_step_init(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        """Configure options for Ecojoko."""
 
-        # On appelle le step 2
-        return await self.async_step_2()
-
-    async def async_step_2(self, user_input: dict | None = None) -> FlowResult:
-        """Gestion de l'étape 2. Mêmes principes que l'étape user"""
-        step2_form = vol.Schema(
-            {
-                # On attend un entity id du domaine sensor
-                vol.Optional("sensor_id"): selector.EntitySelector(
-                    selector.EntitySelectorConfig(domain=SENSOR_DOMAIN),
-                )
-            }
-        )
-
-        if user_input is None:
-            _LOGGER.debug(
-                "config_flow step2 (1). 1er appel : pas de user_input -> "
-                "on affiche le form step2_form"
-            )
-            return self.async_show_form(step_id="2", data_schema=step2_form)
-
-        # 2ème appel : il y a des user_input -> on stocke le résultat
-        _LOGGER.debug("config_flow step2 (2). On a reçu les valeurs: %s", user_input)
-
-        # On mémorise les user_input
-        self._user_inputs.update(user_input)
-        _LOGGER.info(
-            "config_flow step2 (2). L'ensemble de la configuration est: %s",
-            self._user_inputs,
-        )
-
-        return self.async_create_entry(
-            title=self._user_inputs[NAME], data=self._user_inputs
-        )
-
-
-class TutoHACSOptionsFlow(OptionsFlow):
-    """La classe qui implémente le option flow pour notre DOMAIN.
-    Elle doit dériver de OptionsFlow"""
-
-    _user_inputs: dict = {}
-    # Pour mémoriser la config en cours
-    config_entry: ConfigEntry = None
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialisation de l'option flow. On a le ConfigEntry existant en entrée"""
-        self.config_entry = config_entry
-        # On initialise les user_inputs avec les données du configEntry
-        self._user_inputs = config_entry.data.copy()
-
-    async def async_step_init(self, user_input: dict | None = None) -> FlowResult:
-        """Gestion de l'étape 'user'. Point d'entrée de notre
-        optionsFlow. Comme pour le ConfigFlow, cette méthode est appelée 2 fois
-        """
-        option_form = vol.Schema(
-            {
-                vol.Required("name"): str,
-                vol.Optional("sensor_id"): selector.EntitySelector(
-                    selector.EntitySelectorConfig(domain=SENSOR_DOMAIN)
-                ),
-            }
-        )
-
-        if user_input is None:
-            _LOGGER.debug(
-                "option_flow step user (1). 1er appel : pas de user_input -> "
-                "on affiche le form user_form"
-            )
-            return self.async_show_form(
-                step_id="init",
-                data_schema=add_suggested_values_to_schema(
-                    data_schema=option_form, suggested_values=self._user_inputs
-                ),
+        if user_input is not None:
+            # Update config entry with data from user input
+            self.hass.config_entries.async_update_entry(
+                self._config_entry,
+                data=user_input,
+                options={ CONF_LANG: DEFAULT_LANG }
             )
 
-        # 2ème appel : il y a des user_input -> on stocke le résultat
-        _LOGGER.debug(
-            "option_flow step user (2). On a reçu les valeurs: %s", user_input
-        )
-        # On mémorise les user_input
-        self._user_inputs.update(user_input)
+            client = await self._get_cookies(
+                username=user_input[CONF_USERNAME],
+                password=user_input[CONF_PASSWORD],
+                use_hchp=user_input[CONF_USE_HCHP_FEATURE],
+                use_tempo=user_input[CONF_USE_TEMPO_FEATURE],
+                use_temphum=user_input[CONF_USE_TEMPHUM_FEATURE],
+                use_prod=user_input[CONF_USE_PROD_FEATURE],
+            )
 
-        # On appelle le step de fin pour enregistrer les modifications
-        return await self.async_end()
+            await self._get_gateway(client)
 
-    async def async_end(self):
-        """Finalization of the ConfigEntry creation"""
-        _LOGGER.info(
-            "Recreation de l'entry %s. La nouvelle config est maintenant : %s",
-            self.config_entry.entry_id,
-            self._user_inputs,
+            # TEST ONLY
+            # await self._get_realtime_conso(client)
+            # await self._get_kwhstat(client)
+
+            return self.async_create_entry(
+                title=self._config_entry.title,
+                data=user_input
+            )
+
+        return self.async_show_form(
+            step_id="init",
+            data_schema=_get_data_schema(config_entry=self._config_entry),
+            errors=self._errors,
         )
-        # Modification des data de la configEntry
-        # (et non pas ajout d'un objet options dans la configEntry)
-        self.hass.config_entries.async_update_entry(
-            self.config_entry, data=self._user_inputs
+
+    async def _get_cookies(self, username: str, password: str, use_hchp: bool, use_tempo: bool, use_temphum: bool, use_prod: bool) -> LittleMonkeyApiClient:
+        client = LittleMonkeyApiClient(
+            username=username,
+            password=password,
+            use_hchp=use_hchp,
+            use_tempo=use_tempo,
+            use_temphum=use_temphum,
+            use_prod=use_prod,
+            session=async_create_clientsession(self.hass),
         )
-        # Suppression de l'objet options dans la configEntry
-        return self.async_create_entry(title=None, data=None)
+        await client.async_get_cookiesdata()
+        return client
+
+    async def _get_gateway(self, client: LittleMonkeyApiClient) -> None:
+        await client.async_get_gatewaydata()
+
+    async def _get_realtime_conso(self, client: LittleMonkeyApiClient) -> None:
+        await client.async_get_realtime_conso()
+
+    async def _get_kwhstat(self, client: LittleMonkeyApiClient) -> None:
+        await client.async_get_kwhstat()
