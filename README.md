@@ -47,10 +47,10 @@ Une fois l'intégration téléchargée, redémarrez votre Home Assistant.
 
 TODO (capture)
 
-## Liens utiles
+## Liens utiles pour
 Pour les possesseurs:
-* de contrant Tempo
-  - l'intégration [RTE Tempo](https://github.com/hekmon/rtetempo)
-* de panneaux photovoltaiques:
-  - [OpenDTU de Mathieu Carbou](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1)
-  - [Cartes Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant)
+* d'un contrant d'énergie Tempo
+  - l'intégration d'Edouard Hur @hekmon qui permet d'avoir le calendrier des jours Tempo ainsi que des capteurs très utiles [RTE Tempo](https://github.com/hekmon/rtetempo)
+* de panneaux photovoltaiques, Mathieu Carbou @mathieucarbou propose :
+  - un boitier [OpenDTU](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1) clé en main déjà prêt pour être connecté aux micro-onduleurs de vos panneaux
+  - des [Cartes pour Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant) afin de rendre plus facile le suivi de production de vos panneaux dans les tableaux de bord
