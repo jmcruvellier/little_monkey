@@ -21,6 +21,9 @@ DEFAULT_LANG = 'fr-FR'
 # Language Supported Codes
 LANG_CODES = [ 'fr-FR', 'en-US' ]
 
+# APIs
+CONF_API_TIMEOUT = 2
+
 # URLs
 ECOJOKO_LOGIN_URL = "https://service.ecojoko.com/login"
 ECOJOKO_GATEWAYS_URL = "https://service.ecojoko.com/gateways"

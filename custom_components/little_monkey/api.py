@@ -11,6 +11,7 @@ import aiohttp
 import async_timeout
 
 from .const import (
+    CONF_API_TIMEOUT,
     ECOJOKO_LOGIN_URL,
     ECOJOKO_GATEWAYS_URL,
     ECOJOKO_GATEWAY_URL,
@@ -280,7 +281,7 @@ class LittleMonkeyApiClient:
     ) -> any:
         """Get cookies from the API."""
         try:
-            async with async_timeout.timeout(1):
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=ECOJOKO_LOGIN_URL,
                     headers=self._headers,
@@ -313,7 +314,7 @@ class LittleMonkeyApiClient:
     async def _gatewayapi_wrapper(self) -> any:
         """Get gateway Id from the API."""
         try:
-            async with async_timeout.timeout(1):
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=ECOJOKO_GATEWAYS_URL,
                     headers=self._headers,
@@ -361,7 +362,7 @@ class LittleMonkeyApiClient:
         """Get realtime consumption from the API."""
         try:
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/realtime_conso"
-            async with async_timeout.timeout(1):
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
                     headers=self._headers,
@@ -396,7 +397,7 @@ class LittleMonkeyApiClient:
         """Get kwhstat from the API."""
         try:
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/kwhstat"
-            async with async_timeout.timeout(1):
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
                     headers=self._headers,
@@ -456,7 +457,7 @@ class LittleMonkeyApiClient:
         """Get tempstat from the API."""
         try:
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/tempstat/d4/{self._formatted_date}"
-            async with async_timeout.timeout(1):
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
                     headers=self._headers,
@@ -492,7 +493,7 @@ class LittleMonkeyApiClient:
         """Get humstat from the API."""
         try:
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/humstat/d4/{self._formatted_date}"
-            async with async_timeout.timeout(1):
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
                     headers=self._headers,
