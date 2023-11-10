@@ -283,7 +283,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(entities)
 
 class LittleMonkeySensor(LittleMonkeyEntity,SensorEntity):
-    """Representation of Little Monkey sensor"""
+    """Representation of Little Monkey sensor."""
 
     #_attr_has_entity_name = True
 

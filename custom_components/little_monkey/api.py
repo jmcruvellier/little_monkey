@@ -196,7 +196,7 @@ class LittleMonkeyApiClient:
             LOGGER.debug("NE RETOURNE PAS DE TEMPHUM")
 
     async def async_get_realtime_conso(self) -> any:
-        """Get Ecojoko realtime consumption"""
+        """Get Ecojoko realtime consumption."""
         try:
             if self._cookies is None:
                 LOGGER.debug("Pas de cookies")
@@ -216,7 +216,7 @@ class LittleMonkeyApiClient:
         #     ) from exception
 
     async def async_get_kwhstat(self) -> any:
-        """Get Ecojoko kwhstat"""
+        """Get Ecojoko kwhstat."""
         try:
             if self._cookies is None:
                 LOGGER.debug("Pas de cookies")
@@ -236,7 +236,7 @@ class LittleMonkeyApiClient:
         #     ) from exception
 
     async def async_get_tempstat(self) -> any:
-        """Get Ecojoko tempstat"""
+        """Get Ecojoko tempstat."""
         try:
             if self._cookies is None:
                 LOGGER.debug("Pas de cookies")
@@ -256,7 +256,7 @@ class LittleMonkeyApiClient:
         #     ) from exception
 
     async def async_get_humstat(self) -> any:
-        """Get Ecojoko humstat"""
+        """Get Ecojoko humstat."""
         try:
             if self._cookies is None:
                 LOGGER.debug("Pas de cookies")

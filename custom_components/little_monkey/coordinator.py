@@ -54,11 +54,11 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
 
     @property
     def tranfile(self):
-        """get tranflie"""
+        """Get tranfile."""
         return self._tranfile
 
     def get_tran_file(self):
-        """get translation file for wupws sensor friendly_name"""
+        """Get translation file for wupws sensor friendly_name."""
         tfiledir = f'custom_components/{DOMAIN}/{DOMAIN}_translations/'
         tfilename = self._lang.split('-', 1)[0]
         try:
