@@ -287,14 +287,17 @@ class LittleMonkeyApiClient:
             return await response.json()
 
         except asyncio.TimeoutError as exception:
+            LOGGER.error("API CK timeout error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API CK client error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API CK other error: %s", exception)
             raise LittleMonkeyApiClientError(
                 "Something really wrong happened!"
             ) from exception
@@ -331,14 +334,17 @@ class LittleMonkeyApiClient:
             return await response.json()
 
         except asyncio.TimeoutError as exception:
+            LOGGER.error("API GTW timeout error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API GTW client error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API GTW other error: %s", exception)
             raise LittleMonkeyApiClientError(
                 "Something really wrong happened!"
             ) from exception
@@ -363,14 +369,17 @@ class LittleMonkeyApiClient:
             return await response.json()
 
         except asyncio.TimeoutError as exception:
+            LOGGER.error("API RT timeout error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API RT client error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API RT other error: %s", exception)
             raise LittleMonkeyApiClientError(
                 "Something really wrong happened!"
             ) from exception
@@ -420,14 +429,17 @@ class LittleMonkeyApiClient:
             return await response.json()
 
         except asyncio.TimeoutError as exception:
+            LOGGER.error("API KWHSTAT timeout error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API KWHSTAT client error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API KWHSTAT other error: %s", exception)
             raise LittleMonkeyApiClientError(
                 "Something really wrong happened!"
             ) from exception
@@ -453,14 +465,17 @@ class LittleMonkeyApiClient:
             return await response.json()
 
         except asyncio.TimeoutError as exception:
+            LOGGER.error("API TEMPSTAT timeout error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API TEMPSTAT client error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API TEMPSTAT other error: %s", exception)
             raise LittleMonkeyApiClientError(
                 "Something really wrong happened!"
             ) from exception
@@ -486,14 +501,17 @@ class LittleMonkeyApiClient:
             return await response.json()
 
         except asyncio.TimeoutError as exception:
+            LOGGER.error("API HUMSTAT timeout error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API HUMSTAT client error: %s", exception)
             raise LittleMonkeyApiClientCommunicationError(
                 "Error fetching information",
             ) from exception
         except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API HUMSTAT other error: %s", exception)
             raise LittleMonkeyApiClientError(
                 "Something really wrong happened!"
             ) from exception
