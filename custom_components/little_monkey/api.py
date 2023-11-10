@@ -207,10 +207,12 @@ class LittleMonkeyApiClient:
                 LOGGER.debug("Pas de power meter")
                 # TOTO raise exception
             return await self._realtimeconso_wrapper()
-        except Exception as exception:  # pylint: disable=broad-except
-            raise LittleMonkeyApiClientError(
-                "Something really wrong happened!"
-            ) from exception
+        except Exception:  # pylint: disable=broad-except
+            return
+        # except Exception as exception:  # pylint: disable=broad-except
+        #     raise LittleMonkeyApiClientError(
+        #         "Something really wrong happened!"
+        #     ) from exception
 
     async def async_get_kwhstat(self) -> any:
         """Get Ecojoko kwhstat"""
@@ -225,10 +227,12 @@ class LittleMonkeyApiClient:
                 LOGGER.debug("Pas de power meter")
                 # TOTO raise exception
             return await self._kwhstat_wrapper()
-        except Exception as exception:  # pylint: disable=broad-except
-            raise LittleMonkeyApiClientError(
-                "Something really wrong happened!"
-            ) from exception
+        except Exception:  # pylint: disable=broad-except
+            return
+        # except Exception as exception:  # pylint: disable=broad-except
+        #     raise LittleMonkeyApiClientError(
+        #         "Something really wrong happened!"
+        #     ) from exception
 
     async def async_get_tempstat(self) -> any:
         """Get Ecojoko tempstat"""
@@ -243,10 +247,12 @@ class LittleMonkeyApiClient:
                 LOGGER.debug("Pas de temphum")
                 # TOTO raise exception
             return await self._tempstat_wrapper()
-        except Exception as exception:  # pylint: disable=broad-except
-            raise LittleMonkeyApiClientError(
-                "Something really wrong happened!"
-            ) from exception
+        except Exception:  # pylint: disable=broad-except
+            return
+        # except Exception as exception:  # pylint: disable=broad-except
+        #     raise LittleMonkeyApiClientError(
+        #         "Something really wrong happened!"
+        #     ) from exception
 
     async def async_get_humstat(self) -> any:
         """Get Ecojoko humstat"""
@@ -261,10 +267,12 @@ class LittleMonkeyApiClient:
                 LOGGER.debug("Pas de temphum")
                 # TOTO raise exception
             return await self._humstat_wrapper()
-        except Exception as exception:  # pylint: disable=broad-except
-            raise LittleMonkeyApiClientError(
-                "Something really wrong happened!"
-            ) from exception
+        except Exception:  # pylint: disable=broad-except
+            return
+        # except Exception as exception:  # pylint: disable=broad-except
+        #     raise LittleMonkeyApiClientError(
+        #         "Something really wrong happened!"
+        #     ) from exception
 
     async def _cookiesapi_wrapper(
         self,
