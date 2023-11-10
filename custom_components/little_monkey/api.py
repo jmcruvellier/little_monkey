@@ -415,21 +415,22 @@ class LittleMonkeyApiClient:
             else:
                 LOGGER.debug("NE RETOURNE PAS DE HC/HP")
             if self._use_tempo is True:
-                pricing_details = value_json['stat']['pricing_details']
-                # Looking for humidity temperature and  power meter devices id
-                for item in pricing_details:
-                    if item["label"] == "HC Bleu":
-                        self._tempo_hc_blue = self._kwh_hc_ns
-                    elif item["label"] == "HP Bleu":
-                        self._tempo_hp_blue = self._kwh_hp_ns
-                    elif item["label"] == "HC Blanc":
-                        self._tempo_hc_white = self._kwh_hc_ns
-                    elif item["label"] == "HP Blanc":
-                        self._tempo_hp_white = self._kwh_hp_ns
-                    elif item["label"] == "HC Rouge":
-                        self._tempo_hc_red = self._kwh_hc_ns
-                    elif item["label"] == "HP Rouge":
-                        self._tempo_hp_red = self._kwh_hp_ns
+                if "pricing_details" in value_json["stat"]:
+                    pricing_details = value_json['stat']['pricing_details']
+                    # Looking for humidity temperature and  power meter devices id
+                    for item in pricing_details:
+                        if item["label"] == "HC Bleu":
+                            self._tempo_hc_blue = self._kwh_hc_ns
+                        elif item["label"] == "HP Bleu":
+                            self._tempo_hp_blue = self._kwh_hp_ns
+                        elif item["label"] == "HC Blanc":
+                            self._tempo_hc_white = self._kwh_hc_ns
+                        elif item["label"] == "HP Blanc":
+                            self._tempo_hp_white = self._kwh_hp_ns
+                        elif item["label"] == "HC Rouge":
+                            self._tempo_hc_red = self._kwh_hc_ns
+                        elif item["label"] == "HP Rouge":
+                            self._tempo_hp_red = self._kwh_hp_ns
             if self._use_prod is True:
                 self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
             else:
