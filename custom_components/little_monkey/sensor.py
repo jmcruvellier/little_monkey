@@ -283,7 +283,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(entities)
 
 class LittleMonkeySensor(LittleMonkeyEntity,SensorEntity):
-    """Representation of Little Monkey sensor"""
+    """Representation of Little Monkey sensor."""
 
     #_attr_has_entity_name = True
 
@@ -301,14 +301,17 @@ class LittleMonkeySensor(LittleMonkeyEntity,SensorEntity):
 
     @property
     def unique_id(self):
+        """Return the unique id of the sensor."""
         return f"{self._coordinator.name}_{self._sensor_type}"
 
     @property
     def available(self):
+        """Return the availability of the sensor."""
         return self._coordinator.last_update_success
 
     @property
     def name(self):
+        """Return the name of the sensor."""
 #        return f"{self.entity_description.name}"
         return self.coordinator.tranfile[self.entity_description.key]
 
