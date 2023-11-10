@@ -47,7 +47,7 @@ class LittleMonkeyApiClient:
         use_prod: bool,
         session: aiohttp.ClientSession,
     ) -> None:
-        """API Client."""
+        """Initialize."""
         self._username = username
         self._password = password
         self._use_hchp = use_hchp

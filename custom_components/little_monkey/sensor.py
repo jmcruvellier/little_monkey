@@ -301,14 +301,17 @@ class LittleMonkeySensor(LittleMonkeyEntity,SensorEntity):
 
     @property
     def unique_id(self):
+        """Return the unique id of the sensor."""
         return f"{self._coordinator.name}_{self._sensor_type}"
 
     @property
     def available(self):
+        """Return the availability of the sensor."""
         return self._coordinator.last_update_success
 
     @property
     def name(self):
+        """Return the name of the sensor."""
 #        return f"{self.entity_description.name}"
         return self.coordinator.tranfile[self.entity_description.key]
 
