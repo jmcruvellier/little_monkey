@@ -94,6 +94,11 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             self.data = data
             return data
         except LittleMonkeyApiClientAuthenticationError as exception:
+            LOGGER.error("COORDINATOR API client authentication error: %s", exception)
             raise ConfigEntryAuthFailed(exception) from exception
         except LittleMonkeyApiClientError as exception:
+            LOGGER.error("COORDINATOR API client error: %s", exception)
+            raise UpdateFailed(exception) from exception
+        except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("COORDINATOR other error: %s", exception)
             raise UpdateFailed(exception) from exception
