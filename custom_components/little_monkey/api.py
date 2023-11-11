@@ -324,23 +324,24 @@ class LittleMonkeyApiClient:
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
-            value_json = await response.json()
-            gateways = value_json.get('gateways')
+            if "application/json" in response.headers.get("Content-Type", ""):
+                value_json = await response.json()
+                gateways = value_json.get('gateways')
 
-            # Looking for gateway Id
-            gateway_id = gateways[0].get('gateway_id')
-            self._gateway_id = gateway_id
+                # Looking for gateway Id
+                gateway_id = gateways[0].get('gateway_id')
+                self._gateway_id = gateway_id
 
-            value_json = gateways[0].get('devices')
-            # Looking for humidity temperature and  power meter devices id
-            for item in value_json:
-                if item["device_type"] == "TEMP_HUM":
-                    self._temp_hum_id = item["device_id"]
-                if item["device_type"] == "POWER_METER":
-                    self._power_meter_id = item["device_id"]
+                value_json = gateways[0].get('devices')
+                # Looking for humidity temperature and  power meter devices id
+                for item in value_json:
+                    if item["device_type"] == "TEMP_HUM":
+                        self._temp_hum_id = item["device_id"]
+                    if item["device_type"] == "POWER_METER":
+                        self._power_meter_id = item["device_id"]
 
-            response.raise_for_status()
-            return await response.json()
+                response.raise_for_status()
+                return await response.json()
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API GTW timeout error: %s", exception)
@@ -372,10 +373,11 @@ class LittleMonkeyApiClient:
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
-            value_json = await response.json()
-            self._realtime_conso = value_json['real_time']['value']
-            response.raise_for_status()
-            return await response.json()
+            if "application/json" in response.headers.get("Content-Type", ""):
+                value_json = await response.json()
+                self._realtime_conso = value_json['real_time']['value']
+                response.raise_for_status()
+                return await response.json()
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API RT timeout error: %s", exception)
@@ -407,36 +409,37 @@ class LittleMonkeyApiClient:
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
-            value_json = await response.json()
-            self._kwh = value_json['stat']['period']['kwh']
-            if self._use_hchp is True:
-                self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
-                self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
-            else:
-                LOGGER.debug("NE RETOURNE PAS DE HC/HP")
-            if self._use_tempo is True:
-                if "pricing_details" in value_json["stat"]:
-                    pricing_details = value_json['stat']['pricing_details']
-                    # Looking for humidity temperature and  power meter devices id
-                    for item in pricing_details:
-                        if item["label"] == "HC Bleu":
-                            self._tempo_hc_blue = self._kwh_hc_ns
-                        elif item["label"] == "HP Bleu":
-                            self._tempo_hp_blue = self._kwh_hp_ns
-                        elif item["label"] == "HC Blanc":
-                            self._tempo_hc_white = self._kwh_hc_ns
-                        elif item["label"] == "HP Blanc":
-                            self._tempo_hp_white = self._kwh_hp_ns
-                        elif item["label"] == "HC Rouge":
-                            self._tempo_hc_red = self._kwh_hc_ns
-                        elif item["label"] == "HP Rouge":
-                            self._tempo_hp_red = self._kwh_hp_ns
-            if self._use_prod is True:
-                self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
-            else:
-                LOGGER.debug("NE RETOURNE PAS DE PROD")
-            response.raise_for_status()
-            return await response.json()
+            if "application/json" in response.headers.get("Content-Type", ""):
+                value_json = await response.json()
+                self._kwh = value_json['stat']['period']['kwh']
+                if self._use_hchp is True:
+                    self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
+                    self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
+                else:
+                    LOGGER.debug("NE RETOURNE PAS DE HC/HP")
+                if self._use_tempo is True:
+                    if "pricing_details" in value_json["stat"]:
+                        pricing_details = value_json['stat']['pricing_details']
+                        # Looking for humidity temperature and  power meter devices id
+                        for item in pricing_details:
+                            if item["label"] == "HC Bleu":
+                                self._tempo_hc_blue = self._kwh_hc_ns
+                            elif item["label"] == "HP Bleu":
+                                self._tempo_hp_blue = self._kwh_hp_ns
+                            elif item["label"] == "HC Blanc":
+                                self._tempo_hc_white = self._kwh_hc_ns
+                            elif item["label"] == "HP Blanc":
+                                self._tempo_hp_white = self._kwh_hp_ns
+                            elif item["label"] == "HC Rouge":
+                                self._tempo_hc_red = self._kwh_hc_ns
+                            elif item["label"] == "HP Rouge":
+                                self._tempo_hp_red = self._kwh_hp_ns
+                if self._use_prod is True:
+                    self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
+                else:
+                    LOGGER.debug("NE RETOURNE PAS DE PROD")
+                response.raise_for_status()
+                return await response.json()
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API KWHSTAT timeout error: %s", exception)
@@ -468,11 +471,12 @@ class LittleMonkeyApiClient:
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
-            value_json = await response.json()
-            self._indoor_temp = value_json['stat']['data'][-1]['value']
-            self._outdoor_temp = value_json['stat']['data'][-1]['ext_value']
-            response.raise_for_status()
-            return await response.json()
+            if "application/json" in response.headers.get("Content-Type", ""):
+                value_json = await response.json()
+                self._indoor_temp = value_json['stat']['data'][-1]['value']
+                self._outdoor_temp = value_json['stat']['data'][-1]['ext_value']
+                response.raise_for_status()
+                return await response.json()
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API TEMPSTAT timeout error: %s", exception)
@@ -504,11 +508,12 @@ class LittleMonkeyApiClient:
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
-            value_json = await response.json()
-            self._indoor_hum = value_json['stat']['data'][-1]['value']
-            self._outdoor_hum = value_json['stat']['data'][-1]['ext_value']
-            response.raise_for_status()
-            return await response.json()
+            if "application/json" in response.headers.get("Content-Type", ""):
+                value_json = await response.json()
+                self._indoor_hum = value_json['stat']['data'][-1]['value']
+                self._outdoor_hum = value_json['stat']['data'][-1]['ext_value']
+                response.raise_for_status()
+                return await response.json()
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API HUMSTAT timeout error: %s", exception)
