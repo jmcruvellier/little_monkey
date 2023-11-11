@@ -13,15 +13,13 @@ from .const import (
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
-    CONF_USE_PROD_FEATURE,
+    CONF_USE_PROD_FEATURE
 )
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the custom component sensors."""
     # Fetch data or configure your sensors here
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
-
-    # Beginning of new code
 
     # Create the main device entity
     firmware = coordinator.data["gateway_firmware_version"]
