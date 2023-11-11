@@ -40,7 +40,6 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self.hass = hass
         self.config_entry = entry
         self.client = client
-        LOGGER.debug("OPTIONS: %s", entry.options)
         self._lang = entry.options[CONF_LANG]
         self._tranfile = self.get_tran_file()
 
@@ -75,6 +74,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             await self.client.async_get_data()
             data = {
+                "gateway_firmware_version" : self.client.gateway_firmware_version,
                 "realtime_consumption" : self.client.realtime_conso,
                 "grid_consumption": self.client.kwh,
                 "hc_grid_consumption": self.client.kwh_hc_ns,
@@ -94,11 +94,11 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             self.data = data
             return data
         except LittleMonkeyApiClientAuthenticationError as exception:
-            LOGGER.error("COORDINATOR API client authentication error: %s", exception)
+            # LOGGER.error("COORDINATOR API client authentication error: %s", exception)
             raise ConfigEntryAuthFailed(exception) from exception
         except LittleMonkeyApiClientError as exception:
-            LOGGER.error("COORDINATOR API client error: %s", exception)
+            # LOGGER.error("COORDINATOR API client error: %s", exception)
             raise UpdateFailed(exception) from exception
         except Exception as exception:  # pylint: disable=broad-except
-            LOGGER.error("COORDINATOR other error: %s", exception)
+            # LOGGER.error("COORDINATOR other error: %s", exception)
             raise UpdateFailed(exception) from exception
