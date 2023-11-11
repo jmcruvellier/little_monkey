@@ -58,6 +58,7 @@ class LittleMonkeyApiClient:
         self._headers={"Content-type": "application/json"}
         self._cookies = None
         self._gateway_id = None
+        self._gateway_firmware_version = None
         self._power_meter_id = None
         self._temp_hum_id = None
         self._realtime_conso = None
@@ -79,6 +80,11 @@ class LittleMonkeyApiClient:
         self._current_date = datetime.date.today()
         # Format the date as 'YYYY-MM-DD'
         self._formatted_date = self._current_date.strftime('%Y-%m-%d')
+
+    @property
+    def gateway_firmware_version(self) -> str:
+        """Return the native value of the sensor."""
+        return self._gateway_firmware_version
 
     @property
     def realtime_conso(self) -> int:
@@ -332,6 +338,10 @@ class LittleMonkeyApiClient:
                 gateway_id = gateways[0].get('gateway_id')
                 self._gateway_id = gateway_id
 
+                # Looking for gateway firmware
+                gateway_firmware_version = gateways[0].get('gateway_firmware_version')
+                self._gateway_firmware_version = gateway_firmware_version
+
                 value_json = gateways[0].get('devices')
                 # Looking for humidity temperature and  power meter devices id
                 for item in value_json:
@@ -418,6 +428,8 @@ class LittleMonkeyApiClient:
                 else:
                     LOGGER.debug("NE RETOURNE PAS DE HC/HP")
                 if self._use_tempo is True:
+                    self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
+                    self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
                     if "pricing_details" in value_json["stat"]:
                         pricing_details = value_json['stat']['pricing_details']
                         # Looking for humidity temperature and  power meter devices id

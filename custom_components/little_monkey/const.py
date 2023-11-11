@@ -6,6 +6,7 @@ LOGGER: Logger = getLogger(__package__)
 NAME = "Little Monkey"
 DOMAIN = "little_monkey"
 MANUFACTURER = "Jean-Marc Cruvellier"
+MODEL = "Ecojoko"
 VERSION = "0.0.1"
 ATTRIBUTION = "Data provided by https://service.ecojoko.com//"
 POLL_INTERVAL = "poll_interval"
