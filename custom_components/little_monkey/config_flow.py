@@ -215,9 +215,9 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
         if user_input is not None:
             # Update config entry with data from user input
             self.hass.config_entries.async_update_entry(
-                self._config_entry,
+                entry=self._config_entry,
                 data=user_input,
-                options={ CONF_LANG: DEFAULT_LANG }
+                # options={ CONF_LANG: DEFAULT_LANG }
             )
 
             client = await self._get_cookies(
