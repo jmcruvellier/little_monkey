@@ -6,23 +6,23 @@
 
 ![Etape 1](/custom_components/little_monkey/res/install_step_01.png)
 
-1. Cliquer sur le bouton "Ajouter":
+2. Cliquer sur le bouton "Ajouter":
 
 ![Etape 2](/custom_components/little_monkey/res/install_step_02.png)
 
-1. Cliquer sur le bouton "Télécharger" en bas de la page:
+3. Cliquer sur le bouton "Télécharger" en bas de la page:
 
 ![Etape 3](/custom_components/little_monkey/res/install_step_03.png)
 
-1. Cliquer sur le bouton "Télécharger":
+4. Cliquer sur le bouton "Télécharger":
 
 ![Etape 4](/custom_components/little_monkey/res/install_step_04.png)
 
-1. L'intégration "Little Monkey" apparaît dans le Ouvrir Home Assistant Community Store (HACS):
+5. L'intégration "Little Monkey" apparaît dans le Ouvrir Home Assistant Community Store (HACS):
 
 ![Etape 5](/custom_components/little_monkey/res/install_step_05.png)
 
-1. Il est nécessaire de redémarrer Home Assistant pour que l'intégration fonctionne:
+6. Il est nécessaire de redémarrer Home Assistant pour que l'intégration fonctionne:
   - Aller dans "Paramètres":
 
   ![Etape 6](/custom_components/little_monkey/res/install_step_06.png)
@@ -31,7 +31,7 @@
 
   ![Etape 7](/custom_components/little_monkey/res/install_step_07.png)
 
-1. Le redémarrage est lancé:
+7. Le redémarrage est lancé:
   ![Etape 8](/custom_components/little_monkey/res/install_step_08.png)
 
 
@@ -43,7 +43,7 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 
 ![Etape 9](/custom_components/little_monkey/res/install_step_09.png)
 
-1. Saisir et Sélectionner les options de configurations:
+2. Saisir et Sélectionner les options de configurations:
   - Nom: nom qui sera utilisé pour préfixer les noms de tous les capteurs
   - Nom d'utilisateur et Mot de passe: vos identifiants ecojoko<sup>©️</sup>
   - Capteurs HP/HC: à ne sélectionner que si vous avez renseigné un tarif d'électricité avec des Heures Creuses dans ecojoko<sup>©️</sup>
@@ -58,10 +58,10 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 
 ![Etape 1](/custom_components/little_monkey/res/config_step_01.png)
 
-1. La configuration est terminée:
+3. La configuration est terminée:
 
 ![Etape 2](/custom_components/little_monkey/res/config_step_02.png)
 
-1. Voici un exemple de tous les capteurs créés:
+4. Voici un exemple de tous les capteurs créés:
 
 ![Etape 3](/custom_components/little_monkey/res/config_step_03.png)
