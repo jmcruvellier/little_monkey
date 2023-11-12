@@ -422,7 +422,7 @@ class LittleMonkeyApiClient:
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
                 self._kwh = value_json['stat']['period']['kwh']
-                LOGGER.warning("REPONSE ECOJOKO: %s", value_json)
+                # LOGGER.warning("REPONSE ECOJOKO: %s", value_json)
                 if self._use_hchp is True:
                     self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
                     self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
