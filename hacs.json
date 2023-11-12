@@ -2,7 +2,7 @@
     "name": "Little Monkey",
     "filename": "little_monkey.zip",
     "hide_default_branch": true,
-    "homeassistant": "2023.8.0",
+    "homeassistant": "2023.9.0",
     "render_readme": true,
     "zip_release": true
 }

@@ -58,7 +58,7 @@ Cliquer sur le lien ci-dessous pour ajouter le dépôt de l'intégration:
 
 ### Installation & Configuration de l'intégration
 
-Suivre les [instructions d'installation et de configuration](CONFIGURATION.md)
+Suivre les [instructions d'installation et de configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md)
 
 ## Liens utiles
 Pour les possesseurs:
