@@ -49,16 +49,16 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
                         ),
                     ),
                 vol.Optional(
-                    CONF_USE_HCHP_FEATURE, default=True,
+                    CONF_USE_HCHP_FEATURE, default=False,
                 ): cv.boolean,
                 vol.Optional(
-                    CONF_USE_TEMPO_FEATURE, default=True,
+                    CONF_USE_TEMPO_FEATURE, default=False,
                 ): cv.boolean,
                 vol.Optional(
                     CONF_USE_PROD_FEATURE, default=False,
                 ): cv.boolean,
                 vol.Optional(
-                    CONF_USE_TEMPHUM_FEATURE, default=True,
+                    CONF_USE_TEMPHUM_FEATURE, default=False,
                 ): cv.boolean,
                 vol.Required(POLL_INTERVAL, default=DEFAULT_POLL_INTERVAL): selector.NumberSelector(
                         selector.NumberSelectorConfig(
