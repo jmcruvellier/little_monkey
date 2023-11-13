@@ -76,10 +76,6 @@ class LittleMonkeyApiClient:
         self._outdoor_temp = None
         self._indoor_hum = None
         self._outdoor_hum = None
-        # Get the current date
-        self._current_date = datetime.date.today()
-        # Format the date as 'YYYY-MM-DD'
-        self._formatted_date = self._current_date.strftime('%Y-%m-%d')
 
     @property
     def gateway_firmware_version(self) -> str:
@@ -473,7 +469,12 @@ class LittleMonkeyApiClient:
     async def _tempstat_wrapper(self) -> any:
         """Get tempstat from the API."""
         try:
-            url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/tempstat/d4/{self._formatted_date}"
+            #59 bug fix
+            # Get the current date
+            current_date = datetime.date.today()
+            # Format the date as 'YYYY-MM-DD'
+            formatted_date = current_date.strftime('%Y-%m-%d')
+            url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/tempstat/d4/{formatted_date}"
             async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
@@ -510,7 +511,12 @@ class LittleMonkeyApiClient:
     async def _humstat_wrapper(self) -> any:
         """Get humstat from the API."""
         try:
-            url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/humstat/d4/{self._formatted_date}"
+            #59 bug fix
+            # Get the current date
+            current_date = datetime.date.today()
+            # Format the date as 'YYYY-MM-DD'
+            formatted_date = current_date.strftime('%Y-%m-%d')
+            url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/humstat/d4/{formatted_date}"
             async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
