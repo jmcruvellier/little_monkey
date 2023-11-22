@@ -10,6 +10,8 @@ import json
 import aiohttp
 import async_timeout
 
+import pytz
+
 from .const import (
     CONF_API_TIMEOUT,
     ECOJOKO_LOGIN_URL,
@@ -156,6 +158,13 @@ class LittleMonkeyApiClient:
     def outdoor_hum(self) -> int:
         """Return the native value of the sensor."""
         return self._outdoor_hum
+
+    async def get_interval_for_time(self, input_time, time_intervals) -> any:
+        """Function to determine the interval for a given time."""
+        for interval in time_intervals:
+            if interval["start"] <= input_time <= interval["end"]:
+                return interval["value"]
+        return "Outside of defined intervals"
 
     async def async_get_cookiesdata(self) -> any:
         """Perform login and return cookies."""
@@ -429,20 +438,31 @@ class LittleMonkeyApiClient:
                     self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
                     if "pricing_details" in value_json["stat"]:
                         pricing_details = value_json['stat']['pricing_details']
-                        # Looking for humidity temperature and  power meter devices id
-                        for item in pricing_details:
-                            if item["label"] == "HC Bleu":
-                                self._tempo_hc_blue = self._kwh_hc_ns
-                            elif item["label"] == "HP Bleu":
-                                self._tempo_hp_blue = self._kwh_hp_ns
-                            elif item["label"] == "HC Blanc":
-                                self._tempo_hc_white = self._kwh_hc_ns
-                            elif item["label"] == "HP Blanc":
-                                self._tempo_hp_white = self._kwh_hp_ns
-                            elif item["label"] == "HC Rouge":
-                                self._tempo_hc_red = self._kwh_hc_ns
-                            elif item["label"] == "HP Rouge":
-                                self._tempo_hp_red = self._kwh_hp_ns
+                        # Pricing details
+                        #63 fix
+                        time_intervals = []
+                        for i in range(len(pricing_details)):
+                            if i == 0:
+                                time_intervals.append({"start": datetime.time(0, 0, 0), "end": datetime.time(5, 59, 59), "value": pricing_details[0]["label"]})
+                            elif i==1:
+                                time_intervals.append({"start": datetime.time(6, 0, 0), "end": datetime.time(21, 59, 59), "value": pricing_details[1]["label"]})
+                            elif i==2:
+                                time_intervals.append({"start": datetime.time(22, 0, 0), "end": datetime.time(23, 59, 59), "value": pricing_details[2]["label"]})
+                        paris_tz = pytz.timezone('Europe/Paris')
+                        local_time = datetime.datetime.now(paris_tz).time()
+                        result = await self.get_interval_for_time(local_time, time_intervals)
+                        if result == "HC Bleu":
+                            self._tempo_hc_blue = self._kwh_hc_ns
+                        elif result == "HP Bleu":
+                            self._tempo_hp_blue = self._kwh_hp_ns
+                        elif result == "HC Blanc":
+                            self._tempo_hc_white = self._kwh_hc_ns
+                        elif result == "HP Blanc":
+                            self._tempo_hp_white = self._kwh_hp_ns
+                        elif result == "HC Rouge":
+                            self._tempo_hc_red = self._kwh_hc_ns
+                        elif result == "HP Rouge":
+                            self._tempo_hp_red = self._kwh_hp_ns
                 if self._use_prod is True:
                     self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
                 else:
@@ -487,8 +507,13 @@ class LittleMonkeyApiClient:
                 )
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
-                self._indoor_temp = value_json['stat']['data'][-1]['value']
-                self._outdoor_temp = value_json['stat']['data'][-1]['ext_value']
+                if len(value_json['stat']['data']) > 1:
+                    self._indoor_temp = value_json['stat']['data'][-1]['value']
+                    self._outdoor_temp = value_json['stat']['data'][-1]['ext_value']
+                else:
+                    # LOGGER.debug("TEMP UNE SEULE VALEUR: %s", value_json)
+                    self._indoor_temp = value_json['stat']['data']['value']
+                    self._outdoor_temp = value_json['stat']['data']['ext_value']
                 response.raise_for_status()
                 return await response.json()
 
@@ -529,8 +554,13 @@ class LittleMonkeyApiClient:
                 )
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
-                self._indoor_hum = value_json['stat']['data'][-1]['value']
-                self._outdoor_hum = value_json['stat']['data'][-1]['ext_value']
+                if len(value_json['stat']['data']) > 1:
+                    self._indoor_hum = value_json['stat']['data'][-1]['value']
+                    self._outdoor_hum = value_json['stat']['data'][-1]['ext_value']
+                else:
+                    # LOGGER.debug("HUM UNE SEULE VALEUR: %s", value_json)
+                    self._indoor_hum = value_json['stat']['data']['value']
+                    self._outdoor_hum = value_json['stat']['data']['ext_value']
                 response.raise_for_status()
                 return await response.json()
 
