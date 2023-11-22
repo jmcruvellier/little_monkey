@@ -160,7 +160,7 @@ class LittleMonkeyApiClient:
         return self._outdoor_hum
 
     async def get_interval_for_time(self, input_time, time_intervals) -> any:
-        """Function to determine the interval for a given time."""
+        """Return the interval for a given time."""
         for interval in time_intervals:
             if interval["start"] <= input_time <= interval["end"]:
                 return interval["value"]
