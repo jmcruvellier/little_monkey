@@ -41,6 +41,7 @@ class LittleMonkeyApiClientAuthenticationError(
 
 class PricingZone(Enum):
     """Pricing zone enum."""
+
     HC_NIGHT = 0
     HP = 1
     HC_EVENING = 2
@@ -200,7 +201,7 @@ class LittleMonkeyApiClient:
         return self._outdoor_hum
 
     async def async_get_date_time(self) -> any:
-        """Return local time"""
+        """Return local time."""
         # Get the current date
         self._current_date = datetime.date.today()
         paris_tz = pytz.timezone('Europe/Paris')
