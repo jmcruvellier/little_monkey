@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1
+
+- Bug fix [#67](https://github.com/jmcruvellier/little_monkey/issues/67)
+- Bug fix [#68](https://github.com/jmcruvellier/little_monkey/issues/68)
+
+## 1.0.0
+
+- HACS country by @jmcruvellier in https://github.com/jmcruvellier/little_monkey/pull/66
+- Ready for publication in Home Assistant Community Store https://github.com/hacs/default/pull/2162
+
 ## 0.1.3
 
 - Bug fix [#63](https://github.com/jmcruvellier/little_monkey/issues/63)
