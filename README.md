@@ -1,3 +1,9 @@
+[![GitHub Release][releases-shield]][releases]
+[![CodeQL](https://github.com/jmcruvellier/little_monkey/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/github-code-scanning/codeql)
+[![HACS](https://github.com/jmcruvellier/little_monkey/actions/workflows/hacs.yaml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/hacs.yaml)
+[![hassfest](https://github.com/jmcruvellier/little_monkey/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/hassfest.yaml)
+[![Validate](https://github.com/jmcruvellier/little_monkey/actions/workflows/validate.yml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/validate.yml)
+
 ![](/custom_components/little_monkey/res/logo_small.png)
 # Little Monkey / Petit Singe
 
