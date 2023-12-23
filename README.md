@@ -1,4 +1,3 @@
-[![GitHub Release][releases-shield]][releases]
 [![CodeQL](https://github.com/jmcruvellier/little_monkey/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/github-code-scanning/codeql)
 [![HACS](https://github.com/jmcruvellier/little_monkey/actions/workflows/hacs.yaml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/hacs.yaml)
 [![hassfest](https://github.com/jmcruvellier/little_monkey/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/hassfest.yaml)
