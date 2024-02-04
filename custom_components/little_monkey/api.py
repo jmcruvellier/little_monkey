@@ -737,6 +737,47 @@ class LittleMonkeyApiClient:
                 "Something really wrong happened!"
             ) from exception
 
+    async def Tempo(self) -> any:
+        """Tempo data analysis."""
+        if self._current_pricing_details == "HC Bleu":
+            if self.current_pricingzone == PricingZone.HC_EVENING:
+                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                        self._tempo_hc_blue = self._kwh_hc_ns - self._kwh_hc_night
+                elif self._current_pricing_details == self._night_pricing_details:
+                    if self._kwh_hc_ns >= 0:
+                        self._tempo_hc_blue = self._kwh_hc_ns
+            else:
+                self._tempo_hc_blue = self._kwh_hc_ns
+                self._kwh_hc_night = self._kwh_hc_ns
+        elif self._current_pricing_details == "HP Bleu":
+            self._tempo_hp_blue = self._kwh_hp_ns
+        elif self._current_pricing_details == "HC Blanc":
+            if self.current_pricingzone == PricingZone.HC_EVENING:
+                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                        self._tempo_hc_white = self._kwh_hc_ns - self._kwh_hc_night
+                elif self._current_pricing_details == self._night_pricing_details:
+                    if self._kwh_hc_ns >= 0:
+                        self._tempo_hc_white = self._kwh_hc_ns
+            else:
+                self._tempo_hc_white = self._kwh_hc_ns
+                self._kwh_hc_night = self._kwh_hc_ns
+        elif self._current_pricing_details == "HP Blanc":
+            self._tempo_hp_white = self._kwh_hp_ns
+        elif self._current_pricing_details == "HC Rouge":
+            if self.current_pricingzone == PricingZone.HC_EVENING:
+                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                        self._tempo_hc_red = self._kwh_hc_ns - self._kwh_hc_night
+                elif self._current_pricing_details == self._night_pricing_details:
+                    if self._kwh_hc_ns >= 0:
+                        self._tempo_hc_red = self._kwh_hc_ns
+            else:
+                self._tempo_hc_red = self._kwh_hc_ns
+                self._kwh_hc_night = self._kwh_hc_ns
+        elif self._current_pricing_details == "HP Rouge":
+            self._tempo_hp_red = self._kwh_hp_ns
 
     async def _kwhstat_wrapper(self) -> any:
         """Get kwhstat from the API."""
@@ -767,45 +808,46 @@ class LittleMonkeyApiClient:
                         self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
                         self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
                         #63
-                        if self._current_pricing_details == "HC Bleu":
-                            if self.current_pricingzone == PricingZone.HC_EVENING:
-                                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
-                                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
-                                        self._tempo_hc_blue = self._kwh_hc_ns - self._kwh_hc_night
-                                elif self._current_pricing_details == self._night_pricing_details:
-                                    if self._kwh_hc_ns >= 0:
-                                        self._tempo_hc_blue = self._kwh_hc_ns
-                            else:
-                                self._tempo_hc_blue = self._kwh_hc_ns
-                                self._kwh_hc_night = self._kwh_hc_ns
-                        elif self._current_pricing_details == "HP Bleu":
-                            self._tempo_hp_blue = self._kwh_hp_ns
-                        elif self._current_pricing_details == "HC Blanc":
-                            if self.current_pricingzone == PricingZone.HC_EVENING:
-                                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
-                                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
-                                        self._tempo_hc_white = self._kwh_hc_ns - self._kwh_hc_night
-                                elif self._current_pricing_details == self._night_pricing_details:
-                                    if self._kwh_hc_ns >= 0:
-                                        self._tempo_hc_white = self._kwh_hc_ns
-                            else:
-                                self._tempo_hc_white = self._kwh_hc_ns
-                                self._kwh_hc_night = self._kwh_hc_ns
-                        elif self._current_pricing_details == "HP Blanc":
-                            self._tempo_hp_white = self._kwh_hp_ns
-                        elif self._current_pricing_details == "HC Rouge":
-                            if self.current_pricingzone == PricingZone.HC_EVENING:
-                                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
-                                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
-                                        self._tempo_hc_red = self._kwh_hc_ns - self._kwh_hc_night
-                                elif self._current_pricing_details == self._night_pricing_details:
-                                    if self._kwh_hc_ns >= 0:
-                                        self._tempo_hc_red = self._kwh_hc_ns
-                            else:
-                                self._tempo_hc_red = self._kwh_hc_ns
-                                self._kwh_hc_night = self._kwh_hc_ns
-                        elif self._current_pricing_details == "HP Rouge":
-                            self._tempo_hp_red = self._kwh_hp_ns
+                        await self.Tempo()
+                        # if self._current_pricing_details == "HC Bleu":
+                        #     if self.current_pricingzone == PricingZone.HC_EVENING:
+                        #         if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                        #             if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                        #                 self._tempo_hc_blue = self._kwh_hc_ns - self._kwh_hc_night
+                        #         elif self._current_pricing_details == self._night_pricing_details:
+                        #             if self._kwh_hc_ns >= 0:
+                        #                 self._tempo_hc_blue = self._kwh_hc_ns
+                        #     else:
+                        #         self._tempo_hc_blue = self._kwh_hc_ns
+                        #         self._kwh_hc_night = self._kwh_hc_ns
+                        # elif self._current_pricing_details == "HP Bleu":
+                        #     self._tempo_hp_blue = self._kwh_hp_ns
+                        # elif self._current_pricing_details == "HC Blanc":
+                        #     if self.current_pricingzone == PricingZone.HC_EVENING:
+                        #         if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                        #             if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                        #                 self._tempo_hc_white = self._kwh_hc_ns - self._kwh_hc_night
+                        #         elif self._current_pricing_details == self._night_pricing_details:
+                        #             if self._kwh_hc_ns >= 0:
+                        #                 self._tempo_hc_white = self._kwh_hc_ns
+                        #     else:
+                        #         self._tempo_hc_white = self._kwh_hc_ns
+                        #         self._kwh_hc_night = self._kwh_hc_ns
+                        # elif self._current_pricing_details == "HP Blanc":
+                        #     self._tempo_hp_white = self._kwh_hp_ns
+                        # elif self._current_pricing_details == "HC Rouge":
+                        #     if self.current_pricingzone == PricingZone.HC_EVENING:
+                        #         if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                        #             if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                        #                 self._tempo_hc_red = self._kwh_hc_ns - self._kwh_hc_night
+                        #         elif self._current_pricing_details == self._night_pricing_details:
+                        #             if self._kwh_hc_ns >= 0:
+                        #                 self._tempo_hc_red = self._kwh_hc_ns
+                        #     else:
+                        #         self._tempo_hc_red = self._kwh_hc_ns
+                        #         self._kwh_hc_night = self._kwh_hc_ns
+                        # elif self._current_pricing_details == "HP Rouge":
+                        #     self._tempo_hp_red = self._kwh_hp_ns
                     if self._use_prod is True:
                         self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
                     # else:
