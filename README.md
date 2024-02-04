@@ -10,24 +10,27 @@ Cette intégration vous permet de récupérer les informations collectées par v
 
 Elle intègre dans Home Assistant les capteurs suivants:
 
-* Consommation Temps Réel (Puissance en W)
-* Consommation Réseau (Energie en kWh)
-* Si vous avez un contrat d'énergie HC/HP
-  - Consommation HC Réseau (Energie en kWh)
-  - Consommation HP Réseau (Energie en kWh)
-  - Si c'est un contrat Tempo:
-    - Consommation HC Bleu Réseau (Energie en kWh)
-    - Consommation HP Bleu Réseau (Energie en kWh)
-    - Consommation HC Blanc Réseau (Energie en kWh)
-    - Consommation HP Blanc Réseau (Energie en kWh)
-    - Consommation HC Rouge Réseau (Energie en kWh)
-    - Consommation HP Rouge Réseau (Energie en kWh)
-* Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération:
-  - Surplus de Production (Energie en kWh)
-* Température Intérieure (en °C)
-* Température Extérieure (en °C)
-* Humidité Intérieure (en %)
-* Humidité Extérieure (en %)
+| Version | Capteur | Type | Unité | Disponibilité | Commentaire |
+| ------- | ------- | ---- | ----- | ------------- | ----------- |
+| 1.0.0 | Consommation Temps Réel | Puissance | W | Permanent | |
+| 1.0.0 | Consommation Réseau | Energie | kWh | Permanent | |
+| 1.0.0 | Consommation HC Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
+| 1.0.0 | Consommation HP Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
+| 1.0.0 | Consommation HC Bleu Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Consommation HP Bleu Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Consommation HC Blanc Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Consommation HP Blanc Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Consommation HC Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Consommation HP Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
+| 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
+| 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
+| 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |
+| 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
+| 1.1.0 | Consommation Dernière Mesure | Puissance | W | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
+| 1.1.0 | Consommation Réseau Dernière Mesure | Energie | kWh | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
+| 1.1.0 | Consommation HC Réseau Dernière Mesure | Energie | kWh | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
+| 1.1.0 | Consommation HP Réseau Dernière Mesure | Energie | kWh | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
 
 > [!IMPORTANT]
 > Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**

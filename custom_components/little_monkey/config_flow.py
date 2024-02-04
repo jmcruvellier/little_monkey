@@ -22,6 +22,7 @@ from .const import (
     DOMAIN,
     POLL_INTERVAL,
     DEFAULT_POLL_INTERVAL,
+    CONF_USE_LAST_MEASURE_FEATURE,
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
@@ -48,6 +49,9 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
                             type=selector.TextSelectorType.PASSWORD
                         ),
                     ),
+                vol.Optional(
+                    CONF_USE_LAST_MEASURE_FEATURE, default=False,
+                ): cv.boolean,
                 vol.Optional(
                     CONF_USE_HCHP_FEATURE, default=False,
                 ): cv.boolean,
@@ -97,6 +101,9 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
                             type=selector.TextSelectorType.PASSWORD
                         ),
                     ),
+            vol.Optional(
+                CONF_USE_LAST_MEASURE_FEATURE, default=config_entry.data.get(CONF_USE_LAST_MEASURE_FEATURE),
+            ): cv.boolean,
             vol.Optional(
                 CONF_USE_HCHP_FEATURE, default=config_entry.data.get(CONF_USE_HCHP_FEATURE),
             ): cv.boolean,
@@ -151,6 +158,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 await self._get_cookies(
                     username=user_input[CONF_USERNAME],
                     password=user_input[CONF_PASSWORD],
+                    use_last_measure=user_input[CONF_USE_LAST_MEASURE_FEATURE],
                     use_hchp=user_input[CONF_USE_HCHP_FEATURE],
                     use_tempo=user_input[CONF_USE_TEMPO_FEATURE],
                     use_temphum=user_input[CONF_USE_TEMPHUM_FEATURE],
@@ -178,10 +186,11 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=_errors,
         )
 
-    async def _get_cookies(self, username: str, password: str, use_hchp: bool, use_temphum: bool, use_tempo: bool, use_prod: bool) -> None:
+    async def _get_cookies(self, username: str, password: str, use_last_measure: bool, use_hchp: bool, use_temphum: bool, use_tempo: bool, use_prod: bool) -> None:
         client = LittleMonkeyApiClient(
             username=username,
             password=password,
+            use_last_measure=use_last_measure,
             use_hchp=use_hchp,
             use_tempo=use_tempo,
             use_temphum=use_temphum,
@@ -223,6 +232,7 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
             client = await self._get_cookies(
                 username=user_input[CONF_USERNAME],
                 password=user_input[CONF_PASSWORD],
+                use_last_measure=user_input[CONF_USE_LAST_MEASURE_FEATURE],
                 use_hchp=user_input[CONF_USE_HCHP_FEATURE],
                 use_tempo=user_input[CONF_USE_TEMPO_FEATURE],
                 use_temphum=user_input[CONF_USE_TEMPHUM_FEATURE],
@@ -246,10 +256,11 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
             errors=self._errors,
         )
 
-    async def _get_cookies(self, username: str, password: str, use_hchp: bool, use_tempo: bool, use_temphum: bool, use_prod: bool) -> LittleMonkeyApiClient:
+    async def _get_cookies(self, username: str, password: str, use_last_measure: bool, use_hchp: bool, use_tempo: bool, use_temphum: bool, use_prod: bool) -> LittleMonkeyApiClient:
         client = LittleMonkeyApiClient(
             username=username,
             password=password,
+            use_last_measure=use_last_measure,
             use_hchp=use_hchp,
             use_tempo=use_tempo,
             use_temphum=use_temphum,

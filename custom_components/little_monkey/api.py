@@ -1,7 +1,7 @@
 """API Client for little_monkey."""
 from __future__ import annotations
 
-# import traceback
+#import traceback
 
 import asyncio
 import datetime
@@ -59,6 +59,7 @@ class LittleMonkeyApiClient:
         self,
         username: str,
         password: str,
+        use_last_measure: bool,
         use_hchp: bool,
         use_tempo: bool,
         use_temphum: bool,
@@ -68,6 +69,7 @@ class LittleMonkeyApiClient:
         """Initialize."""
         self._username = username
         self._password = password
+        self._use_last_measure = use_last_measure
         self._use_hchp = use_hchp
         self._use_tempo = use_tempo
         self._use_temphum = use_temphum
@@ -81,6 +83,7 @@ class LittleMonkeyApiClient:
         self._temp_hum_id = None
         self._current_date = None
         self._local_time = None
+        self._local_date = None
         self._current_pricing_details = None
         self._night_pricing_details = None
         self._day_pricing_details = None
@@ -91,6 +94,9 @@ class LittleMonkeyApiClient:
         self._kwh_hc_night = None
         self._kwh_hc_ns = None
         self._kwh_hp_ns = None
+        self._last_kwh = None
+        self._last_kwh_hc_ns = None
+        self._last_kwh_hp_ns = None
         self._tempo_hc_blue = None
         self._tempo_hp_blue = None
         self._tempo_hc_white = None
@@ -102,6 +108,7 @@ class LittleMonkeyApiClient:
         self._outdoor_temp = None
         self._indoor_hum = None
         self._outdoor_hum = None
+        self._last_consumption_measure = None
         #67 fix
         self._status = APIStatus.INIT
 
@@ -114,6 +121,11 @@ class LittleMonkeyApiClient:
     def current_date(self) -> datetime.date:
         """Return the native value of the sensor."""
         return self._current_date
+
+    @property
+    def local_date(self) -> datetime.time:
+        """Return the native value of the sensor."""
+        return self._local_date
 
     @property
     def local_time(self) -> datetime.time:
@@ -154,6 +166,21 @@ class LittleMonkeyApiClient:
     def kwh_hp_ns(self) -> int:
         """Return the native value of the sensor."""
         return self._kwh_hp_ns
+
+    @property
+    def last_kwh(self) -> int:
+        """Return the native value of the sensor."""
+        return self._last_kwh
+
+    @property
+    def last_kwh_hc_ns(self) -> int:
+        """Return the native value of the sensor."""
+        return self._last_kwh_hc_ns
+
+    @property
+    def last_kwh_hp_ns(self) -> int:
+        """Return the native value of the sensor."""
+        return self._last_kwh_hp_ns
 
     @property
     def tempo_hc_blue(self) -> int:
@@ -210,6 +237,11 @@ class LittleMonkeyApiClient:
         """Return the native value of the sensor."""
         return self._outdoor_hum
 
+    @property
+    def last_consumption_measure(self) -> int:
+        """Return the native value of the sensor."""
+        return self._last_consumption_measure
+
     def has_day_changed(self, datetime1, datetime2):
         """Compare two dates and return if day has changed."""
         # Extract date components (year, month, day)
@@ -224,6 +256,7 @@ class LittleMonkeyApiClient:
         # Get the current date
         self._current_date = datetime.date.today()
         paris_tz = pytz.timezone('Europe/Paris')
+        self._local_date = datetime.datetime.now(paris_tz).date()
         self._local_time = datetime.datetime.now(paris_tz).time()
         return
 
@@ -235,7 +268,7 @@ class LittleMonkeyApiClient:
             if self._gateway_id is None:
                 await self.async_get_gatewaydata()
 
-            previous_date = self._current_date
+            previous_local_date = self._local_date
             previous_local_time = self._local_time
             await self.async_get_date_time()
             if self._current_pricingzone is None or (
@@ -259,7 +292,7 @@ class LittleMonkeyApiClient:
                     # Retrieving Night HC
                     night_time = datetime.time(1, 0, 0)
                     await self.async_get_pricing_details(is_current=False,
-                                                        specific_date=self._current_date,
+                                                        specific_date=self._local_date,
                                                         specific_time=night_time)
                     self._kwh_hc_night = await self.async_get_powerstat(self._night_pricing_details)
                     if self._night_pricing_details == "HC Bleu":
@@ -273,7 +306,7 @@ class LittleMonkeyApiClient:
                         # Retrieving Day HP
                         day_time = datetime.time(14, 0, 0)
                         await self.async_get_pricing_details(is_current=False,
-                                                            specific_date=self._current_date,
+                                                            specific_date=self._local_date,
                                                             specific_time=day_time)
                         kwh_hp = await self.async_get_powerstat(self._day_pricing_details)
                         if self._day_pricing_details == "HP Bleu":
@@ -284,8 +317,8 @@ class LittleMonkeyApiClient:
                             self._tempo_hp_red = kwh_hp
             else:
                 #68 fix Tempo sensors not being reset when day changes
-                date1 = datetime.datetime(previous_date.year, previous_date.month, previous_date.day, previous_local_time.hour, previous_local_time.minute, previous_local_time.second)
-                date2 = datetime.datetime(self._current_date.year, self._current_date.month, self._current_date.day, self._local_time.hour, self._local_time.minute, self._local_time.second)
+                date1 = datetime.datetime(previous_local_date.year, previous_local_date.month, previous_local_date.day, previous_local_time.hour, previous_local_time.minute, previous_local_time.second)
+                date2 = datetime.datetime(self._local_date.year, self._local_date.month, self._local_date.day, self._local_time.hour, self._local_time.minute, self._local_time.second)
                 if self.has_day_changed(date1, date2) is True:
                     self._kwh_hc_night = None
                     self._tempo_hc_blue = None
@@ -297,6 +330,8 @@ class LittleMonkeyApiClient:
 
 
             await self.async_get_realtime_conso()
+            if self._use_last_measure is True:
+                await self.async_get_last_measure()
             await self.async_get_kwhstat()
             if self._use_temphum is True:
                 await self.async_get_tempstat()
@@ -369,6 +404,27 @@ class LittleMonkeyApiClient:
         #     raise LittleMonkeyApiClientError(
         #         "Something really wrong happened!"
         #     ) from exception
+
+    async def async_get_last_measure(self) -> any:
+        """Get Ecojoko last measure."""
+        try:
+            if self._cookies is None:
+                LOGGER.debug("Pas de cookies")
+                # raise exception
+            if self._gateway_id is None:
+                LOGGER.debug("Pas de gateway")
+                # TOTO raise exception
+            if self._power_meter_id is None:
+                LOGGER.debug("Pas de power meter")
+                # TOTO raise exception
+            return await self._last_measure_wrapper()
+        except Exception:  # pylint: disable=broad-except
+            return
+        # except Exception as exception:  # pylint: disable=broad-except
+        #     raise LittleMonkeyApiClientError(
+        #         "Something really wrong happened!"
+        #     ) from exception
+
 
     async def async_get_kwhstat(self) -> any:
         """Get Ecojoko kwhstat."""
@@ -463,12 +519,14 @@ class LittleMonkeyApiClient:
                     data=data
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
             self._cookies = response.cookies
-            response.raise_for_status()
-            return await response.json()
+            #response.raise_for_status()
+            return
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API Cookies timeout error")
@@ -496,6 +554,8 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
@@ -519,8 +579,8 @@ class LittleMonkeyApiClient:
                     if item["device_type"] == "POWER_METER":
                         self._power_meter_id = item["device_id"]
 
-                response.raise_for_status()
-                return await response.json()
+                #response.raise_for_status()
+                return
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API Gateway timeout error")
@@ -548,7 +608,7 @@ class LittleMonkeyApiClient:
             # Retrieve current Tempo pricing
             # Format the date as 'YYYY-MM-DD'
             if specific_date is None:
-                formatted_date = self._current_date.strftime('%Y-%m-%d')
+                formatted_date = self._local_date.strftime('%Y-%m-%d')
             else:
                 #67 fix
                 formatted_date = specific_date.strftime('%Y-%m-%d')
@@ -568,6 +628,8 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
@@ -592,11 +654,11 @@ class LittleMonkeyApiClient:
                         self._evening_pricing_details = pricing_details
             else:
                 LOGGER.debug("PAS DE PRICING DETAILS")
-            response.raise_for_status()
-            return await response.json()
+            #response.raise_for_status()
+            return
 
         except asyncio.TimeoutError as exception:
-            LOGGER.error("API Pricing Details timeout error: %s")
+            LOGGER.error("API Pricing Details timeout error")
             raise LittleMonkeyApiClientCommunicationError(
                 "Timeout error fetching information",
             ) from exception
@@ -623,14 +685,16 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
                 self._realtime_conso = value_json['real_time']['value']
-                response.raise_for_status()
-                return await response.json()
+            #response.raise_for_status()
+            return
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API Realtime timeout error")
@@ -648,6 +712,67 @@ class LittleMonkeyApiClient:
                 "Something really wrong happened!"
             ) from exception
 
+    async def _last_measure_wrapper(self) -> any:
+        """Get last measure from the API."""
+        try:
+            # Format the date as 'YYYY-MM-DD'
+            formatted_date = self._local_date.strftime('%Y-%m-%d')
+            LOGGER.debug("DATE COURANTE: %s", formatted_date)
+            url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/powerstat/d4/{formatted_date}"
+            LOGGER.debug("URL: %s", url)
+            # formatted_date = formatted_date + self._local_time.strftime('%H:%M')
+            # url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/powerstat/h/{formatted_date}"
+            async with async_timeout.timeout(CONF_API_TIMEOUT):
+                response = await self._session.get(
+                    url=url,
+                    headers=self._headers,
+                    cookies=self._cookies,
+                )
+            if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
+                raise LittleMonkeyApiClientAuthenticationError(
+                    "Invalid credentials",
+                )
+            if "application/json" in response.headers.get("Content-Type", ""):
+                value_json = await response.json()
+                if "data" in value_json['stat']:
+                    if len(value_json['stat']['data']) > 1:
+                        self._last_consumption_measure = value_json['stat']['data'][-1]['value']
+                    else:
+                        # LOGGER.debug("UNE SEULE VALEUR: %s", value_json)
+                        self._last_consumption_measure = value_json['stat']['data']['value']
+
+                if "period" in value_json['stat']:
+                    self._last_kwh = value_json['stat']['period']['kwh']
+                    # LOGGER.warning("REPONSE ECOJOKO: %s", value_json)
+                    if self._use_hchp is True:
+                        self._last_kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
+                        self._last_kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
+                    else:
+                        LOGGER.debug("NE RETOURNE PAS DE HC/HP")
+
+                #response.raise_for_status()
+                return #await response.json()
+
+        except asyncio.TimeoutError as exception:
+            LOGGER.error("API Last Measure timeout error")
+            raise LittleMonkeyApiClientCommunicationError(
+                "Timeout error fetching information",
+            ) from exception
+        except (aiohttp.ClientError, socket.gaierror) as exception:
+            LOGGER.error("API Last Measure client error: %s", exception)
+            raise LittleMonkeyApiClientCommunicationError(
+                "Error fetching information",
+            ) from exception
+        except Exception as exception:  # pylint: disable=broad-except
+            LOGGER.error("API Last Measure other error: %s", exception)
+            #traceback.print_exc()
+            raise LittleMonkeyApiClientError(
+                "Something really wrong happened!"
+            ) from exception
+
+
     async def _kwhstat_wrapper(self) -> any:
         """Get kwhstat from the API."""
         try:
@@ -659,67 +784,76 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
-                self._kwh = value_json['stat']['period']['kwh']
-                # LOGGER.warning("REPONSE ECOJOKO: %s", value_json)
-                if self._use_hchp is True:
-                    self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
-                    self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
-                else:
-                    LOGGER.debug("NE RETOURNE PAS DE HC/HP")
-                if self._use_tempo is True:
-                    self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
-                    self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
-                    #63
-                    if self._current_pricing_details == "HC Bleu":
-                        if self.current_pricingzone == PricingZone.HC_EVENING:
-                            if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
-                                self._tempo_hc_blue = self._kwh_hc_ns - self._kwh_hc_night
-                            elif self._current_pricing_details == self._night_pricing_details:
+                if "period" in value_json['stat']:
+                    self._kwh = value_json['stat']['period']['kwh']
+                    # LOGGER.warning("REPONSE ECOJOKO: %s", value_json)
+                    if self._use_hchp is True:
+                        self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
+                        self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
+                    else:
+                        LOGGER.debug("NE RETOURNE PAS DE HC/HP")
+                    if self._use_tempo is True:
+                        self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
+                        self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
+                        #63
+                        if self._current_pricing_details == "HC Bleu":
+                            if self.current_pricingzone == PricingZone.HC_EVENING:
+                                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                                        self._tempo_hc_blue = self._kwh_hc_ns - self._kwh_hc_night
+                                elif self._current_pricing_details == self._night_pricing_details:
+                                    if self._kwh_hc_ns >= 0:
+                                        self._tempo_hc_blue = self._kwh_hc_ns
+                                # else:
+                                #     self._tempo_hc_blue = self._kwh_hc_ns
+                            else:
                                 self._tempo_hc_blue = self._kwh_hc_ns
-                            # else:
-                            #     self._tempo_hc_blue = self._kwh_hc_ns
-                        else:
-                            self._tempo_hc_blue = self._kwh_hc_ns
-                            self._kwh_hc_night = self._kwh_hc_ns
-                    elif self._current_pricing_details == "HP Bleu":
-                        self._tempo_hp_blue = self._kwh_hp_ns
-                    elif self._current_pricing_details == "HC Blanc":
-                        if self.current_pricingzone == PricingZone.HC_EVENING:
-                            if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
-                                self._tempo_hc_white = self._kwh_hc_ns - self._kwh_hc_night
-                            elif self._current_pricing_details == self._night_pricing_details:
+                                self._kwh_hc_night = self._kwh_hc_ns
+                        elif self._current_pricing_details == "HP Bleu":
+                            self._tempo_hp_blue = self._kwh_hp_ns
+                        elif self._current_pricing_details == "HC Blanc":
+                            if self.current_pricingzone == PricingZone.HC_EVENING:
+                                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                                        self._tempo_hc_white = self._kwh_hc_ns - self._kwh_hc_night
+                                elif self._current_pricing_details == self._night_pricing_details:
+                                    if self._kwh_hc_ns >= 0:
+                                        self._tempo_hc_white = self._kwh_hc_ns
+                                # else:
+                                #     self._tempo_hc_white = self._kwh_hc_ns
+                            else:
                                 self._tempo_hc_white = self._kwh_hc_ns
-                            # else:
-                            #     self._tempo_hc_white = self._kwh_hc_ns
-                        else:
-                            self._tempo_hc_white = self._kwh_hc_ns
-                            self._kwh_hc_night = self._kwh_hc_ns
-                    elif self._current_pricing_details == "HP Blanc":
-                        self._tempo_hp_white = self._kwh_hp_ns
-                    elif self._current_pricing_details == "HC Rouge":
-                        if self.current_pricingzone == PricingZone.HC_EVENING:
-                            if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
-                                self._tempo_hc_red = self._kwh_hc_ns - self._kwh_hc_night
-                            elif self._current_pricing_details == self._night_pricing_details:
+                                self._kwh_hc_night = self._kwh_hc_ns
+                        elif self._current_pricing_details == "HP Blanc":
+                            self._tempo_hp_white = self._kwh_hp_ns
+                        elif self._current_pricing_details == "HC Rouge":
+                            if self.current_pricingzone == PricingZone.HC_EVENING:
+                                if self._kwh_hc_night is not None and self._current_pricing_details != self._night_pricing_details:
+                                    if (self._kwh_hc_ns - self._kwh_hc_night) >= 0:
+                                        self._tempo_hc_red = self._kwh_hc_ns - self._kwh_hc_night
+                                elif self._current_pricing_details == self._night_pricing_details:
+                                    if self._kwh_hc_ns >= 0:
+                                        self._tempo_hc_red = self._kwh_hc_ns
+                                # else:
+                                #     self._tempo_hc_red = self._kwh_hc_ns
+                            else:
                                 self._tempo_hc_red = self._kwh_hc_ns
-                            # else:
-                            #     self._tempo_hc_red = self._kwh_hc_ns
-                        else:
-                            self._tempo_hc_red = self._kwh_hc_ns
-                            self._kwh_hc_night = self._kwh_hc_ns
-                    elif self._current_pricing_details == "HP Rouge":
-                        self._tempo_hp_red = self._kwh_hp_ns
-                if self._use_prod is True:
-                    self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
-                else:
-                    LOGGER.debug("NE RETOURNE PAS DE PROD")
-                response.raise_for_status()
-                return await response.json()
+                                self._kwh_hc_night = self._kwh_hc_ns
+                        elif self._current_pricing_details == "HP Rouge":
+                            self._tempo_hp_red = self._kwh_hp_ns
+                    if self._use_prod is True:
+                        self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
+                    else:
+                        LOGGER.debug("NE RETOURNE PAS DE PROD")
+            #response.raise_for_status()
+            return
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API KWHSTAT timeout error")
@@ -741,11 +875,8 @@ class LittleMonkeyApiClient:
     async def _tempstat_wrapper(self) -> any:
         """Get tempstat from the API."""
         try:
-            #59 bug fix
-            # Get the current date
-            current_date = datetime.date.today()
             # Format the date as 'YYYY-MM-DD'
-            formatted_date = current_date.strftime('%Y-%m-%d')
+            formatted_date = self._local_date.strftime('%Y-%m-%d')
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/tempstat/d4/{formatted_date}"
             async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
@@ -754,20 +885,23 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
-                if len(value_json['stat']['data']) > 1:
-                    self._indoor_temp = value_json['stat']['data'][-1]['value']
-                    self._outdoor_temp = value_json['stat']['data'][-1]['ext_value']
-                else:
-                    # LOGGER.debug("TEMP UNE SEULE VALEUR: %s", value_json)
-                    self._indoor_temp = value_json['stat']['data']['value']
-                    self._outdoor_temp = value_json['stat']['data']['ext_value']
-                response.raise_for_status()
-                return await response.json()
+                if "data" in value_json['stat']:
+                    if len(value_json['stat']['data']) > 1:
+                        self._indoor_temp = value_json['stat']['data'][-1]['value']
+                        self._outdoor_temp = value_json['stat']['data'][-1]['ext_value']
+                    else:
+                        # LOGGER.debug("TEMP UNE SEULE VALEUR: %s", value_json)
+                        self._indoor_temp = value_json['stat']['data']['value']
+                        self._outdoor_temp = value_json['stat']['data']['ext_value']
+            #response.raise_for_status()
+            return
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API TEMPSTAT timeout error")
@@ -788,11 +922,8 @@ class LittleMonkeyApiClient:
     async def _humstat_wrapper(self) -> any:
         """Get humstat from the API."""
         try:
-            #59 bug fix
-            # Get the current date
-            current_date = datetime.date.today()
             # Format the date as 'YYYY-MM-DD'
-            formatted_date = current_date.strftime('%Y-%m-%d')
+            formatted_date = self._local_date.strftime('%Y-%m-%d')
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._temp_hum_id}/humstat/d4/{formatted_date}"
             async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
@@ -801,20 +932,23 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
-                if len(value_json['stat']['data']) > 1:
-                    self._indoor_hum = value_json['stat']['data'][-1]['value']
-                    self._outdoor_hum = value_json['stat']['data'][-1]['ext_value']
-                else:
-                    # LOGGER.debug("HUM UNE SEULE VALEUR: %s", value_json)
-                    self._indoor_hum = value_json['stat']['data']['value']
-                    self._outdoor_hum = value_json['stat']['data']['ext_value']
-                response.raise_for_status()
-                return await response.json()
+                if "data" in value_json['stat']:
+                    if len(value_json['stat']['data']) > 1:
+                        self._indoor_hum = value_json['stat']['data'][-1]['value']
+                        self._outdoor_hum = value_json['stat']['data'][-1]['ext_value']
+                    else:
+                        # LOGGER.debug("HUM UNE SEULE VALEUR: %s", value_json)
+                        self._indoor_hum = value_json['stat']['data']['value']
+                        self._outdoor_hum = value_json['stat']['data']['ext_value']
+            #response.raise_for_status()
+            return
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API HUMSTAT timeout error")
@@ -836,10 +970,8 @@ class LittleMonkeyApiClient:
         """Get powerstat from the API."""
         try:
             result = None
-            # Get the current date
-            current_date = datetime.date.today()
             # Format the date as 'YYYY-MM-DD'
-            formatted_date = current_date.strftime('%Y-%m-%d')
+            formatted_date = self._local_date.strftime('%Y-%m-%d')
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/powerstat/w/{formatted_date}"
             async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
@@ -848,18 +980,22 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
+                #71 bug fix
+                self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
+            result = None
             if "application/json" in response.headers.get("Content-Type", ""):
                 value_json = await response.json()
-                week_day = self._current_date.weekday()
-                if len(value_json['stat']['data']) > week_day:
-                    for subconscomption in value_json['stat']['data'][week_day]['subconsumption']:
-                        if subconscomption['label'] == pricing_details:
-                            result = subconscomption['kwh']
-                            break
-                return result
+                if "data" in value_json['stat']:
+                    week_day = self._local_date.weekday()
+                    if len(value_json['stat']['data']) > week_day:
+                        for subconscomption in value_json['stat']['data'][week_day]['subconsumption']:
+                            if subconscomption['label'] == pricing_details:
+                                result = subconscomption['kwh']
+                                break
+            return result
 
         except asyncio.TimeoutError as exception:
             LOGGER.error("API HUMSTAT timeout error")

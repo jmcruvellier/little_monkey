@@ -14,12 +14,22 @@ from .api import LittleMonkeyApiClient
 from .const import (
     DOMAIN,
     PLATFORMS,
+    CONF_USE_LAST_MEASURE_FEATURE,
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE
 )
 from .coordinator import LittleMonkeyDataUpdateCoordinator
+
+def get_boolean(array, index):
+    """Read the value with a default of False if the key is not found"""
+    return array.get(index, False)
+
+def get_string(array, index):
+    """Read the value with a default of empty string if the key is not found"""
+    return array.get(index, "")
+
 
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
@@ -29,12 +39,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass=hass,
         entry=entry,
         client=LittleMonkeyApiClient(
-            username=entry.data[CONF_USERNAME],
-            password=entry.data[CONF_PASSWORD],
-            use_hchp=entry.data[CONF_USE_HCHP_FEATURE],
-            use_tempo=entry.data[CONF_USE_TEMPO_FEATURE],
-            use_temphum=entry.data[CONF_USE_TEMPHUM_FEATURE],
-            use_prod=entry.data[CONF_USE_PROD_FEATURE],
+            username=get_string(entry.data, CONF_USERNAME),
+            password=get_string(entry.data, CONF_PASSWORD),
+            use_last_measure=get_boolean(entry.data, CONF_USE_LAST_MEASURE_FEATURE),
+            use_hchp=get_boolean(entry.data, CONF_USE_HCHP_FEATURE),
+            use_tempo=get_boolean(entry.data, CONF_USE_TEMPO_FEATURE),
+            use_temphum=get_boolean(entry.data, CONF_USE_TEMPHUM_FEATURE),
+            use_prod=get_boolean(entry.data, CONF_USE_PROD_FEATURE),
             session=async_get_clientsession(hass),
         ),
     )
