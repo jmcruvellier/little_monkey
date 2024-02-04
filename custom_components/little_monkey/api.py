@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 #import traceback
-
 import asyncio
 import datetime
 import socket
@@ -27,12 +26,10 @@ from .const import (
 class LittleMonkeyApiClientError(Exception):
     """Exception to indicate a general API error."""
 
-
 class LittleMonkeyApiClientCommunicationError(
     LittleMonkeyApiClientError
 ):
     """Exception to indicate a communication error."""
-
 
 class LittleMonkeyApiClientAuthenticationError(
     LittleMonkeyApiClientError
@@ -380,10 +377,6 @@ class LittleMonkeyApiClient:
                                                        specific_time=specific_time)
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
 
     async def async_get_realtime_conso(self) -> any:
         """Get Ecojoko realtime consumption."""
@@ -400,10 +393,6 @@ class LittleMonkeyApiClient:
             return await self._realtimeconso_wrapper()
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
 
     async def async_get_last_measure(self) -> any:
         """Get Ecojoko last measure."""
@@ -420,11 +409,6 @@ class LittleMonkeyApiClient:
             return await self._last_measure_wrapper()
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
-
 
     async def async_get_kwhstat(self) -> any:
         """Get Ecojoko kwhstat."""
@@ -441,10 +425,6 @@ class LittleMonkeyApiClient:
             return await self._kwhstat_wrapper()
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
 
     async def async_get_tempstat(self) -> any:
         """Get Ecojoko tempstat."""
@@ -461,10 +441,6 @@ class LittleMonkeyApiClient:
             return await self._tempstat_wrapper()
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
 
     async def async_get_humstat(self) -> any:
         """Get Ecojoko humstat."""
@@ -481,10 +457,6 @@ class LittleMonkeyApiClient:
             return await self._humstat_wrapper()
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
 
     async def async_get_powerstat(self, pricing_details) -> any:
         """Get Ecojoko powerstat."""
@@ -501,10 +473,6 @@ class LittleMonkeyApiClient:
             return await self._powerstat_wrapper(pricing_details)
         except Exception:  # pylint: disable=broad-except
             return
-        # except Exception as exception:  # pylint: disable=broad-except
-        #     raise LittleMonkeyApiClientError(
-        #         "Something really wrong happened!"
-        #     ) from exception
 
     async def _cookiesapi_wrapper(
         self,
@@ -790,7 +758,6 @@ class LittleMonkeyApiClient:
                 value_json = await response.json()
                 if "period" in value_json['stat']:
                     self._kwh = value_json['stat']['period']['kwh']
-                    # LOGGER.warning("REPONSE ECOJOKO: %s", value_json)
                     if self._use_hchp is True:
                         self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
                         self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
@@ -808,8 +775,6 @@ class LittleMonkeyApiClient:
                                 elif self._current_pricing_details == self._night_pricing_details:
                                     if self._kwh_hc_ns >= 0:
                                         self._tempo_hc_blue = self._kwh_hc_ns
-                                # else:
-                                #     self._tempo_hc_blue = self._kwh_hc_ns
                             else:
                                 self._tempo_hc_blue = self._kwh_hc_ns
                                 self._kwh_hc_night = self._kwh_hc_ns
@@ -823,8 +788,6 @@ class LittleMonkeyApiClient:
                                 elif self._current_pricing_details == self._night_pricing_details:
                                     if self._kwh_hc_ns >= 0:
                                         self._tempo_hc_white = self._kwh_hc_ns
-                                # else:
-                                #     self._tempo_hc_white = self._kwh_hc_ns
                             else:
                                 self._tempo_hc_white = self._kwh_hc_ns
                                 self._kwh_hc_night = self._kwh_hc_ns
@@ -838,8 +801,6 @@ class LittleMonkeyApiClient:
                                 elif self._current_pricing_details == self._night_pricing_details:
                                     if self._kwh_hc_ns >= 0:
                                         self._tempo_hc_red = self._kwh_hc_ns
-                                # else:
-                                #     self._tempo_hc_red = self._kwh_hc_ns
                             else:
                                 self._tempo_hc_red = self._kwh_hc_ns
                                 self._kwh_hc_night = self._kwh_hc_ns

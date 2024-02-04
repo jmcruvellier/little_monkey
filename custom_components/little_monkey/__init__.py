@@ -23,11 +23,11 @@ from .const import (
 from .coordinator import LittleMonkeyDataUpdateCoordinator
 
 def get_boolean(array, index):
-    """Read the value with a default of False if the key is not found"""
+    """Read the value with a default of False if the key is not found."""
     return array.get(index, False)
 
 def get_string(array, index):
-    """Read the value with a default of empty string if the key is not found"""
+    """Read the value with a default of empty string if the key is not found."""
     return array.get(index, "")
 
 
