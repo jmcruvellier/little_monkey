@@ -761,8 +761,8 @@ class LittleMonkeyApiClient:
                     if self._use_hchp is True:
                         self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
                         self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
-                    else:
-                        LOGGER.debug("NE RETOURNE PAS DE HC/HP")
+                    # else:
+                    #     LOGGER.debug("NE RETOURNE PAS DE HC/HP")
                     if self._use_tempo is True:
                         self._kwh_hp_ns = value_json['stat']['period']['kwh_hp_ns']
                         self._kwh_hc_ns = value_json['stat']['period']['kwh_hc_ns']
@@ -808,8 +808,8 @@ class LittleMonkeyApiClient:
                             self._tempo_hp_red = self._kwh_hp_ns
                     if self._use_prod is True:
                         self._kwh_prod = -float(value_json['stat']['period']['kwh_prod'])
-                    else:
-                        LOGGER.debug("NE RETOURNE PAS DE PROD")
+                    # else:
+                    #     LOGGER.debug("NE RETOURNE PAS DE PROD")
             #response.raise_for_status()
             return
 
