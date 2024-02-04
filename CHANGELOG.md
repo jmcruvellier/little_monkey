@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+- New sensors based on ecojoko Measurements APIs
+- Some performance improvement and minor bug fixes
+- Bug fix [#58](https://github.com/jmcruvellier/little_monkey/issues/58)
+- Bug fix [#71](https://github.com/jmcruvellier/little_monkey/issues/71)
+
 ## 1.0.1
 
 - Bug fix [#67](https://github.com/jmcruvellier/little_monkey/issues/67)

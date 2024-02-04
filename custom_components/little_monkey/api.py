@@ -620,7 +620,6 @@ class LittleMonkeyApiClient:
                 local_time = specific_time
                 formatted_date = formatted_date + specific_time.strftime('%H:%M')
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/powerstat/h/{formatted_date}"
-            #LOGGER.debug("URL: %s", url)
             async with async_timeout.timeout(CONF_API_TIMEOUT):
                 response = await self._session.get(
                     url=url,
@@ -717,9 +716,7 @@ class LittleMonkeyApiClient:
         try:
             # Format the date as 'YYYY-MM-DD'
             formatted_date = self._local_date.strftime('%Y-%m-%d')
-            LOGGER.debug("DATE COURANTE: %s", formatted_date)
             url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/powerstat/d4/{formatted_date}"
-            LOGGER.debug("URL: %s", url)
             # formatted_date = formatted_date + self._local_time.strftime('%H:%M')
             # url = ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/device/{self._power_meter_id}/powerstat/h/{formatted_date}"
             async with async_timeout.timeout(CONF_API_TIMEOUT):
