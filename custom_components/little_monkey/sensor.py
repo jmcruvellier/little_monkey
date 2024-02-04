@@ -13,7 +13,8 @@ from .const import (
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
-    CONF_USE_PROD_FEATURE
+    CONF_USE_PROD_FEATURE,
+    CONF_USE_LAST_MEASURE_FEATURE
 )
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -147,5 +148,31 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             SensorDeviceClass.HUMIDITY,
             PERCENTAGE,
             "mdi:water"))
+
+    # Last Consumption Measure sensor
+    if config_entry.data.get(CONF_USE_LAST_MEASURE_FEATURE) is True:
+        main_device.add_child_entity(EcojokoSensor(
+            main_device,
+            "last_consumption_measure",
+            SensorStateClass.MEASUREMENT,
+            SensorDeviceClass.POWER,
+            UnitOfPower.WATT,
+            "mdi:flash"))
+        # Last HC/HP grid consumption measure sensors
+        if config_entry.data.get(CONF_USE_HCHP_FEATURE) is True:
+            main_device.add_child_entity(EcojokoSensor(
+                main_device,
+                "last_hc_grid_consumption_measure",
+                SensorStateClass.TOTAL_INCREASING,
+                SensorDeviceClass.ENERGY,
+                UnitOfEnergy.KILO_WATT_HOUR,
+                "mdi:lightning-bolt"))
+            main_device.add_child_entity(EcojokoSensor(
+                main_device,
+                "last_hp_grid_consumption_measure",
+                SensorStateClass.TOTAL_INCREASING,
+                SensorDeviceClass.ENERGY,
+                UnitOfEnergy.KILO_WATT_HOUR,
+                "mdi:lightning-bolt"))
 
     async_add_entities([main_device] + main_device.child_entities)

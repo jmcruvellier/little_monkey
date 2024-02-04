@@ -7,7 +7,7 @@ NAME = "Little Monkey"
 DOMAIN = "little_monkey"
 MANUFACTURER = "Jean-Marc Cruvellier"
 MODEL = "Ecojoko"
-VERSION = "1.0.1"
+VERSION = "1.1.0"
 ATTRIBUTION = "Data provided by https://service.ecojoko.com//"
 POLL_INTERVAL = "poll_interval"
 DEFAULT_POLL_INTERVAL = "5"
@@ -17,6 +17,7 @@ CONF_USE_HCHP_FEATURE = "use_hchp_feature"
 CONF_USE_TEMPO_FEATURE = "use_tempo_feature"
 CONF_USE_TEMPHUM_FEATURE = "use_temphum_feature"
 CONF_USE_PROD_FEATURE = "use_prod_feature"
+CONF_USE_LAST_MEASURE_FEATURE = "use_last_measure_feature"
 CONF_LANG = 'lang'
 DEFAULT_LANG = 'fr-FR'
 # Language Supported Codes
