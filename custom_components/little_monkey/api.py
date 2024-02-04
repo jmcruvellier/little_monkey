@@ -327,7 +327,7 @@ class LittleMonkeyApiClient:
                     self._tempo_hp_white = None
                     self._tempo_hc_red = None
                     self._tempo_hp_red = None
-
+                    await self.async_get_gatewaydata()
 
             await self.async_get_realtime_conso()
             if self._use_last_measure is True:
