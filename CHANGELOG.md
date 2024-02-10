@@ -1,7 +1,9 @@
 # Changelog
 
 ## 1.2.0
-- TODO
+- Major code and performance optimization
+- Removed sensors introduced in v1.1.0 based on ecojoko Measurements APIs
+- Bug fix [#58](https://github.com/jmcruvellier/little_monkey/issues/58)
 
 ## 1.1.0
 - New sensors based on ecojoko Measurements APIs
