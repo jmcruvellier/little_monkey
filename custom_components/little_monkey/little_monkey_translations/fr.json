@@ -13,9 +13,5 @@
     "indoor_temp": "Température Intérieure",
     "outdoor_temp": "Température Extérieure",
     "indoor_hum": "Humidité Intérieure",
-    "outdoor_hum": "Humidité Extérieure",
-    "last_consumption_measure": "Consommation Dernière Mesure",
-    "last_grid_consumption_measure": "Consommation Réseau Dernière Mesure",
-    "last_hc_grid_consumption_measure": "Consommation HC Réseau Dernière Mesure",
-    "last_hp_grid_consumption_measure": "Consommation HP Réseau Dernière Mesure"
+    "outdoor_hum": "Humidité Extérieure"
 }

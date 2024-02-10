@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.0
+- TODO
+
 ## 1.1.0
 - New sensors based on ecojoko Measurements APIs
 - Some performance improvement and minor bug fixes
