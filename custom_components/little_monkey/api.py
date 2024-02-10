@@ -348,16 +348,16 @@ class LittleMonkeyApiClient:
                     self._kwh_hc_ns = convert_to_float(self._tempo_hc_blue) + convert_to_float(self._tempo_hc_white) + convert_to_float(self._tempo_hc_red)
                     self._kwh_hp_ns = convert_to_float(self._tempo_hp_blue) + convert_to_float(self._tempo_hp_white) + convert_to_float(self._tempo_hp_red)
                 elif self._use_hchp is True:
-                    self._kwh_hc_ns = get_value_from_json_array(
+                    self._kwh_hc_ns = convert_to_float(get_value_from_json_array(
                         data[week_day]['subconsumption'],
                         "label",
                         "Heures Creuses",
-                        "kwh")
-                    self._kwh_hp_ns = get_value_from_json_array(
+                        "kwh"))
+                    self._kwh_hp_ns = convert_to_float(get_value_from_json_array(
                         data[week_day]['subconsumption'],
                         "label",
                         "Heures Pleines",
-                        "kwh")
+                        "kwh"))
                 self._last_powerstat_refresh = datetime.combine(current_date, current_time)
             # Temperature
             if results[2] is not None:
