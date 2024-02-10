@@ -14,7 +14,7 @@ from .api import LittleMonkeyApiClient
 from .const import (
     DOMAIN,
     PLATFORMS,
-    CONF_USE_LAST_MEASURE_FEATURE,
+    POLL_INTERVAL,
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
@@ -25,6 +25,10 @@ from .coordinator import LittleMonkeyDataUpdateCoordinator
 def get_boolean(array, index):
     """Read the value with a default of False if the key is not found."""
     return array.get(index, False)
+
+def get_int(array, index):
+    """Read the value with a default of -1 if the key is not found."""
+    return array.get(index, -1)
 
 def get_string(array, index):
     """Read the value with a default of empty string if the key is not found."""
@@ -41,7 +45,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         client=LittleMonkeyApiClient(
             username=get_string(entry.data, CONF_USERNAME),
             password=get_string(entry.data, CONF_PASSWORD),
-            use_last_measure=get_boolean(entry.data, CONF_USE_LAST_MEASURE_FEATURE),
+            poll_interval=get_int(entry.data, POLL_INTERVAL),
             use_hchp=get_boolean(entry.data, CONF_USE_HCHP_FEATURE),
             use_tempo=get_boolean(entry.data, CONF_USE_TEMPO_FEATURE),
             use_temphum=get_boolean(entry.data, CONF_USE_TEMPHUM_FEATURE),

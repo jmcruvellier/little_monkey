@@ -27,10 +27,6 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |
 | 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
-| 1.1.0 | Consommation Dernière Mesure | Puissance | W | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
-| 1.1.0 | Consommation Réseau Dernière Mesure | Energie | kWh | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
-| 1.1.0 | Consommation HC Réseau Dernière Mesure | Energie | kWh | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
-| 1.1.0 | Consommation HP Réseau Dernière Mesure | Energie | kWh | Optionnel | Dernière valeur retournée dans la section Mesures de l'application ecojoko |
 
 > [!IMPORTANT]
 > Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
