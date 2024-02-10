@@ -13,7 +13,7 @@ def has_day_changed(datetime1, datetime2):
     return _date1 != _date2
 
 def get_paris_timezone():
-    """Get Paris timezone. """
+    """Get Paris timezone."""
     return pytz.timezone('Europe/Paris')
 
 def get_current_date(timezone):
