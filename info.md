@@ -6,7 +6,7 @@
 ![](/custom_components/little_monkey/res/logo_small.png)
 # Little Monkey / Petit Singe
 
-Cette intégration vous permet de récupérer les informations collectées par votre installation ecojoko<sup>©️</sup>.
+Cette intégration permet de récupérer les informations collectées par l'assistant d'énergie ecojoko<sup>©️</sup>.
 
 Elle intègre dans Home Assistant les capteurs suivants:
 
@@ -29,7 +29,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
 
 > [!IMPORTANT]
-> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos donnés.**
+> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos données.**
 
 Bienvenue dans la jungle!
 

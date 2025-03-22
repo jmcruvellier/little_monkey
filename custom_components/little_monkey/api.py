@@ -27,24 +27,29 @@ from .utils import (
 
 TZ = get_paris_timezone()
 
+
 class LittleMonkeyApiClientError(Exception):
     """Exception to indicate a general API error."""
+
 
 class LittleMonkeyApiClientCommunicationError(
     LittleMonkeyApiClientError
 ):
     """Exception to indicate a communication error."""
 
+
 class LittleMonkeyApiClientAuthenticationError(
     LittleMonkeyApiClientError
 ):
     """Exception to indicate an authentication error."""
+
 
 class APIStatus(Enum):
     """API status enum."""
 
     INIT = 0
     RUN = 1
+
 
 class LittleMonkeyApiClient:
     """API Client to retrieve ecojoko data."""
@@ -69,7 +74,7 @@ class LittleMonkeyApiClient:
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
-        self._headers={"Content-type": "application/json"}
+        self._headers = {"Content-type": "application/json"}
         self._cookies = None
         self._gateway_id = None
         self._power_meter_id = None
@@ -93,7 +98,7 @@ class LittleMonkeyApiClient:
         self._outdoor_hum = None
 
         """Internal."""
-        #67 fix
+        # 67 fix
         self._status = APIStatus.INIT
         self._last_powerstat_refresh = None
         self._last_tempstat_refresh = None
@@ -216,7 +221,7 @@ class LittleMonkeyApiClient:
                         cookies=self._cookies,
                     )
                 if response.status in (401, 403):
-                    #71 bug fix
+                    # 71 bug fix
                     self._cookies = None
                     raise LittleMonkeyApiClientAuthenticationError(
                         "Invalid credentials",
@@ -259,7 +264,8 @@ class LittleMonkeyApiClient:
                 refresh_powerstat = True
             else:
                 difference = current_datetime - self._last_powerstat_refresh
-                refresh_powerstat = difference > timedelta(seconds=CONF_API_STAT_REFRESH)
+                refresh_powerstat = difference > timedelta(
+                    seconds=CONF_API_STAT_REFRESH)
             #   - Temperature
             if refresh_powerstat is False:
                 difference = current_datetime - self._last_powerstat_refresh
@@ -279,23 +285,23 @@ class LittleMonkeyApiClient:
 
             apis = []
             powermeterurl = f"/{self._gateway_id}/device/{self._power_meter_id}"
-            apis.append({"name" : "realtime_conso",
-                        "url" : ECOJOKO_GATEWAY_URL + powermeterurl +
-                        "/realtime_conso",
-                        "call" : True})
-            apis.append({"name" : "powerstat (w)",
-                         "url" : ECOJOKO_GATEWAY_URL + powermeterurl +
+            apis.append({"name": "realtime_conso",
+                        "url": ECOJOKO_GATEWAY_URL + powermeterurl +
+                         "/realtime_conso",
+                         "call": True})
+            apis.append({"name": "powerstat (w)",
+                         "url": ECOJOKO_GATEWAY_URL + powermeterurl +
                          f"/powerstat/w/{formatted_date}",
-                         "call" : refresh_powerstat})
+                         "call": refresh_powerstat})
             temphumurl = f"/{self._gateway_id}/device/{self._temp_hum_id}"
-            apis.append({"name" : "tempstat (d)",
-                         "url" : ECOJOKO_GATEWAY_URL + temphumurl +
+            apis.append({"name": "tempstat (d)",
+                         "url": ECOJOKO_GATEWAY_URL + temphumurl +
                          f"/tempstat/d4/{formatted_date}",
-                         "call" : refresh_tempstat})
-            apis.append({"name" : "humstat (d)",
-                         "url" : ECOJOKO_GATEWAY_URL + temphumurl +
+                         "call": refresh_tempstat})
+            apis.append({"name": "humstat (d)",
+                         "url": ECOJOKO_GATEWAY_URL + temphumurl +
                          f"/humstat/d4/{formatted_date}",
-                         "call" : refresh_humstat})
+                         "call": refresh_humstat})
 
             tasks = [self.fetch_data(api) for api in apis]
             results = await asyncio.gather(*tasks)
@@ -306,13 +312,15 @@ class LittleMonkeyApiClient:
                 data = results[1]['stat']['data']
                 self._kwh = data[week_day]['kwh']
                 # Surplus Production
-                if self._use_prod is True:
+                # 78 bug fix
+                if self._use_prod is True and 'kwh_prod' in data[week_day]:
                     if float(data[week_day]['kwh_prod']) != 0:
                         self._kwh_prod = -float(data[week_day]['kwh_prod'])
                     else:
                         self._kwh_prod = 0
                 # Tempo option
-                if self._use_tempo is True:
+                # 78 bug fix
+                if self._use_tempo is True and 'subconsumption' in data[week_day]:
                     self._tempo_hc_blue = get_value_from_json_array(
                         data[week_day]['subconsumption'],
                         "label",
@@ -345,9 +353,12 @@ class LittleMonkeyApiClient:
                         "kwh")
                 # HC/HP option
                 if self._use_tempo is True and self._use_hchp is True:
-                    self._kwh_hc_ns = convert_to_float(self._tempo_hc_blue) + convert_to_float(self._tempo_hc_white) + convert_to_float(self._tempo_hc_red)
-                    self._kwh_hp_ns = convert_to_float(self._tempo_hp_blue) + convert_to_float(self._tempo_hp_white) + convert_to_float(self._tempo_hp_red)
-                elif self._use_hchp is True:
+                    self._kwh_hc_ns = convert_to_float(self._tempo_hc_blue) + convert_to_float(
+                        self._tempo_hc_white) + convert_to_float(self._tempo_hc_red)
+                    self._kwh_hp_ns = convert_to_float(self._tempo_hp_blue) + convert_to_float(
+                        self._tempo_hp_white) + convert_to_float(self._tempo_hp_red)
+                # 78 bug fix
+                elif self._use_hchp is True and 'subconsumption' in data[week_day]:
                     self._kwh_hc_ns = convert_to_float(get_value_from_json_array(
                         data[week_day]['subconsumption'],
                         "label",
@@ -358,7 +369,8 @@ class LittleMonkeyApiClient:
                         "label",
                         "Heures Pleines",
                         "kwh"))
-                self._last_powerstat_refresh = datetime.combine(current_date, current_time)
+                self._last_powerstat_refresh = datetime.combine(
+                    current_date, current_time)
             # Temperature
             if results[2] is not None:
                 data = results[2]['stat']['data']
@@ -400,13 +412,13 @@ class LittleMonkeyApiClient:
                     data=data
                 )
             if response.status in (401, 403):
-                #71 bug fix
+                # 71 bug fix
                 self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
                 )
             self._cookies = response.cookies
-            #response.raise_for_status()
+            # response.raise_for_status()
             return
 
         except asyncio.TimeoutError as exception:
@@ -435,7 +447,7 @@ class LittleMonkeyApiClient:
                     cookies=self._cookies,
                 )
             if response.status in (401, 403):
-                #71 bug fix
+                # 71 bug fix
                 self._cookies = None
                 raise LittleMonkeyApiClientAuthenticationError(
                     "Invalid credentials",
@@ -449,7 +461,8 @@ class LittleMonkeyApiClient:
                 self._gateway_id = gateway_id
 
                 # Looking for gateway firmware
-                gateway_firmware_version = gateways[0].get('gateway_firmware_version')
+                gateway_firmware_version = gateways[0].get(
+                    'gateway_firmware_version')
                 self._gateway_firmware_version = gateway_firmware_version
 
                 value_json = gateways[0].get('devices')
@@ -460,7 +473,7 @@ class LittleMonkeyApiClient:
                     if item["device_type"] == "POWER_METER":
                         self._power_meter_id = item["device_id"]
 
-                #response.raise_for_status()
+                # response.raise_for_status()
                 return
 
         except asyncio.TimeoutError as exception:
