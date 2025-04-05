@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.2
+- Bug fix [#74](https://github.com/jmcruvellier/little_monkey/issues/74)
+
 ## 1.2.1
 - Bug fix [#78](https://github.com/jmcruvellier/little_monkey/issues/78)
 
