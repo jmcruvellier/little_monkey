@@ -359,16 +359,14 @@ class LittleMonkeyApiClient:
                         self._tempo_hp_white) + convert_to_float(self._tempo_hp_red)
                 # 78 bug fix
                 elif self._use_hchp is True and 'subconsumption' in data[week_day]:
-                    self._kwh_hc_ns = convert_to_float(get_value_from_json_array(
-                        data[week_day]['subconsumption'],
-                        "label",
-                        "Heures Creuses",
-                        "kwh"))
-                    self._kwh_hp_ns = convert_to_float(get_value_from_json_array(
-                        data[week_day]['subconsumption'],
-                        "label",
-                        "Heures Pleines",
-                        "kwh"))
+                    # 74 bug fix
+                    for item in data[week_day]['subconsumption']:
+                        if item['label'] == "Heures Creuses" or \
+                                item['label'].startswith("HC"):
+                            self._kwh_hc_ns = convert_to_float(item['kwh'])
+                        if item['label'] == "Heures Pleines" or \
+                                item['label'].startswith("HP"):
+                            self._kwh_hp_ns = convert_to_float(item['kwh'])
                 self._last_powerstat_refresh = datetime.combine(
                     current_date, current_time)
             # Temperature
