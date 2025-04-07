@@ -1,0 +1,47 @@
+{
+    "title": "Pequeno Macaco",
+    "config": {
+        "step": {
+            "user": {
+                "description": "Se precisar de ajuda com a configuração, veja aqui: https://github.com/jmcruvellier/little_monkey",
+                "data": {
+                    "name": "Nome",
+                    "username": "Nome de utilizador",
+                    "password": "Palavra-passe",
+                    "use_hchp_feature": "Sensores HP/HC",
+                    "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
+                    "use_temphum_feature": "Sensores de Humidade e Temperatura",
+                    "use_prod_feature": "Sensor de Produção",
+                    "poll_interval": "Intervalo de sondagem (em segundos)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Nome de utilizador/Palavra-passe está incorreto.",
+            "connection": "Não foi possível ligar ao servidor.",
+            "unknown": "Ocorreu um erro desconhecido."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "description": "Se precisar de ajuda com a configuração, veja aqui: https://github.com/jmcruvellier/little_monkey",
+                "data": {
+                    "name": "Nome",
+                    "username": "Nome de utilizador",
+                    "password": "Palavra-passe",
+                    "use_hchp_feature": "Sensores HP/HC",
+                    "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
+                    "use_temphum_feature": "Sensores de Humidade e Temperatura",
+                    "use_prod_feature": "Sensor de Produção",
+                    "poll_interval": "Intervalo de sondagem (em segundos)"
+                }
+            }
+        },
+        "error": {
+            "auth": "Nome de utilizador/Palavra-passe está incorreto.",
+            "connection": "Não foi possível ligar ao servidor.",
+            "unknown": "Ocorreu um erro desconhecido."
+        }
+    }
+}
