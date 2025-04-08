@@ -20,7 +20,7 @@ CONF_USE_PROD_FEATURE = "use_prod_feature"
 CONF_LANG = 'lang'
 DEFAULT_LANG = 'fr-FR'
 # Language Supported Codes
-LANG_CODES = ['fr-FR', 'en-US']
+LANG_CODES = ['fr-FR', 'en-US', 'pt-PT']
 
 # APIs
 CONF_API_TIMEOUT = 3
