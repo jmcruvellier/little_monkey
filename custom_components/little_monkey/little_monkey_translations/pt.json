@@ -1,0 +1,17 @@
+{
+    "realtime_consumption": "Consumo em Tempo Real",
+    "grid_consumption": "Consumo da Rede",
+    "hc_grid_consumption": "Consumo da Rede em Vazio",
+    "hp_grid_consumption": "Consumo da Rede em Ponta",
+    "blue_hc_grid_consumption": "Consumo da Rede Azul em Vazio",
+    "blue_hp_grid_consumption": "Consumo da Rede Azul em Ponta",
+    "white_hc_grid_consumption": "Consumo da Rede Branca em Vazio",
+    "white_hp_grid_consumption": "Consumo da Rede Branca em Ponta",
+    "red_hc_grid_consumption": "Consumo da Rede Vermelha em Vazio",
+    "red_hp_grid_consumption": "Consumo da Rede Vermelha em Ponta",
+    "production_surplus": "Excedente de Produção",
+    "indoor_temp": "Temperatura Interior",
+    "outdoor_temp": "Temperatura Exterior",
+    "indoor_hum": "Humidade Interior",
+    "outdoor_hum": "Humidade Exterior"
+}
