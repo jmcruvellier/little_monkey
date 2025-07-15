@@ -10,6 +10,8 @@ on:
 
 jobs:
   ruff:
+    permissions:
+      contents: read
     name: "Ruff"
     runs-on: "ubuntu-latest"
     steps:
