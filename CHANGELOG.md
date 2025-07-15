@@ -4,7 +4,6 @@
 - Bug fix [#93](https://github.com/jmcruvellier/little_monkey/issues/93)
 - Addition of Portuguese to the list of available languages [#80](https://github.com/jmcruvellier/little_monkey/pull/80) [#88](https://github.com/jmcruvellier/little_monkey/pull/88) [#89](https://github.com/jmcruvellier/little_monkey/pull/89)
 
-
 ## 1.2.2
 - Bug fix [#74](https://github.com/jmcruvellier/little_monkey/issues/74)
 
