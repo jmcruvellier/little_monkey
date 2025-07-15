@@ -25,6 +25,8 @@ from .const import (
 )
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
+
+
 class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the Ecojoko APIs."""
 
@@ -41,14 +43,16 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self.config_entry = entry
         self.client = client
         self._lang = entry.options[CONF_LANG]
-        self._tranfile = self.get_tran_file()
+        # 93 bug fix
+        self._tranfile = None
 
         super().__init__(
             hass=hass,
             logger=LOGGER,
             name=DOMAIN,
             update_method=self._async_update_data,
-            update_interval=timedelta(seconds=int(entry.data.get(POLL_INTERVAL))),
+            update_interval=timedelta(
+                seconds=int(entry.data.get(POLL_INTERVAL))),
         )
 
     @property
@@ -56,17 +60,32 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         """Get tranfile."""
         return self._tranfile
 
-    def get_tran_file(self):
-        """Get translation file for wupws sensor friendly_name."""
+    # 93 bug fix
+    async def async_initialize(self):
+        """Async load the translation file."""
+        self._tranfile = await self.get_tran_file()
+
+    # 93 bug fix
+    async def get_tran_file(self):
+        """Async get translation file for wupws sensor friendly_name."""
         tfiledir = f'custom_components/{DOMAIN}/{DOMAIN}_translations/'
         tfilename = self._lang.split('-', 1)[0]
-        try:
-            tfiledata = json.load_json(f'{tfiledir}{tfilename}.json')
-        except Exception:  # pylint: disable=broad-except
-            tfiledata = json.load_json(f'{tfiledir}en.json')
+        filepath = f'{tfiledir}{tfilename}.json'
+        fallback_filepath = f'{tfiledir}en.json'
+
+        def load_json(path):
+            try:
+                return json.load_json(path)
+            except Exception:
+                return None
+
+        tfiledata = await self.hass.async_add_executor_job(load_json, filepath)
+        if tfiledata is None:
+            tfiledata = await self.hass.async_add_executor_job(load_json, fallback_filepath)
             LOGGER.warning(
                 'Sensor translation file %s.json does not exist. Defaulting to en-US.',
-                 tfilename.keys)
+                tfilename
+            )
         return tfiledata
 
     async def _async_update_data(self):
@@ -74,8 +93,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             await self.client.async_get_data()
             data = {
-                "gateway_firmware_version" : self.client.gateway_firmware_version,
-                "realtime_consumption" : self.client.realtime_conso,
+                "gateway_firmware_version": self.client.gateway_firmware_version,
+                "realtime_consumption": self.client.realtime_conso,
                 "grid_consumption": self.client.kwh,
                 "hc_grid_consumption": self.client.kwh_hc_ns,
                 "hp_grid_consumption": self.client.kwh_hp_ns,

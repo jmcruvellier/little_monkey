@@ -22,13 +22,16 @@ from .const import (
 )
 from .coordinator import LittleMonkeyDataUpdateCoordinator
 
+
 def get_boolean(array, index):
     """Read the value with a default of False if the key is not found."""
     return array.get(index, False)
 
+
 def get_int(array, index):
     """Read the value with a default of -1 if the key is not found."""
     return array.get(index, -1)
+
 
 def get_string(array, index):
     """Read the value with a default of empty string if the key is not found."""
@@ -53,6 +56,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             session=async_get_clientsession(hass),
         ),
     )
+    # 93 bug fix
+    await coordinator.async_initialize()
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     await coordinator.async_config_entry_first_refresh()
 
@@ -70,6 +75,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if unloaded := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
         hass.data[DOMAIN].pop(entry.entry_id)
     return unloaded
+
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
