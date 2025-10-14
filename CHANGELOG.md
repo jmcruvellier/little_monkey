@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.4
+- Bug fix [#101](https://github.com/jmcruvellier/little_monkey/issues/101)
+
 ## 1.2.3
 - Bug fix [#93](https://github.com/jmcruvellier/little_monkey/issues/93)
 - Addition of Portuguese to the list of available languages [#80](https://github.com/jmcruvellier/little_monkey/pull/80) [#88](https://github.com/jmcruvellier/little_monkey/pull/88) [#89](https://github.com/jmcruvellier/little_monkey/pull/89)
