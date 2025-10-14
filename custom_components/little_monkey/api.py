@@ -377,8 +377,9 @@ class LittleMonkeyApiClient:
                     self._outdoor_temp = data[-1]['ext_value']
                 else:
                     # LOGGER.debug("TEMP UNE SEULE VALEUR: %s", value_json)
-                    self._indoor_temp = data['value']
-                    self._outdoor_temp = data['ext_value']
+                    # 101 bug fix
+                    self._indoor_temp = data[0]['value']
+                    self._outdoor_temp = data[0]['ext_value']
             # Humidity
             if results[3] is not None:
                 data = results[3]['stat']['data']
@@ -387,8 +388,9 @@ class LittleMonkeyApiClient:
                     self._outdoor_hum = data[-1]['ext_value']
                 else:
                     # LOGGER.debug("HUM UNE SEULE VALEUR: %s", value_json)
-                    self._indoor_hum = data['value']
-                    self._outdoor_hum = data['ext_value']
+                    # 101 bug fix
+                    self._indoor_hum = data[0]['value']
+                    self._outdoor_hum = data[0]['ext_value']
 
             self._status = APIStatus.RUN
             return
