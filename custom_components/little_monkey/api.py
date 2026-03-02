@@ -315,7 +315,7 @@ class LittleMonkeyApiClient:
                 # 78 bug fix
                 if self._use_prod is True and 'kwh_prod' in data[week_day]:
                     if float(data[week_day]['kwh_prod']) != 0:
-                        self._kwh_prod = -float(data[week_day]['kwh_prod'])
+                        self._kwh_prod = float(data[week_day]['kwh_prod'])
                     else:
                         self._kwh_prod = 0
                 # Tempo option
