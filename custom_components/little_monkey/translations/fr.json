@@ -3,7 +3,7 @@
     "config": {
         "step": {
             "user": {
-                "description": "Si vous avez besoin d'aide pour la configuration, allez voir ici : https://github.com/jmcruvellier/little_monkey",
+                "description": "Si vous avez besoin d'aide pour la configuration, allez voir la documentation",
                 "data": {
                     "name": "Nom",
                     "username": "Nom d'utilisateur",
@@ -25,7 +25,7 @@
     "options": {
         "step": {
             "init": {
-                "description": "Si vous avez besoin d'aide pour la configuration, allez voir ici : https://github.com/jmcruvellier/little_monkey",
+                "description": "Si vous avez besoin d'aide pour la configuration, allez voir la documentation",
                 "data": {
                     "name": "Nom",
                     "username": "Nom d'utilisateur",
