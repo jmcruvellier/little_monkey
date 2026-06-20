@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5
+- Correction du bug [#110](https://github.com/jmcruvellier/little_monkey/issues/110) : Surplus de production attendu en positif et plus en négatif
+- Fix URL dans le json des traductions (nouvelle règle de validation de la qualité du code)
+
 ## 1.2.4
 - Bug fix [#101](https://github.com/jmcruvellier/little_monkey/issues/101)
 
