@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.6
+- Correction du bug [#110](https://github.com/jmcruvellier/little_monkey/issues/116) : Problème de reporting sur la page energie
+
 ## 1.2.5
 - Correction du bug [#110](https://github.com/jmcruvellier/little_monkey/issues/110) : Surplus de production attendu en positif et plus en négatif
 - Fix URL dans le json des traductions (nouvelle règle de validation de la qualité du code)
