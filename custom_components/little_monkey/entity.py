@@ -68,7 +68,6 @@ class EcojokoSensor(CoordinatorEntity, SensorEntity):
         self._device_class = device_class
         self._unit_of_measurement = unit_of_measurement
         self._icon = icon
-        # self._attr_translation_key = sensor_name
         self._attr_has_entity_name = False
 
     @property
