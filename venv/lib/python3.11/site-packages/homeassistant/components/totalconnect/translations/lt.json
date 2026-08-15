@@ -1,0 +1,53 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paskyra jau sukonfig\u016bruota",
+            "no_locations": "\u0160iam vartotojui viet\u0173 n\u0117ra, patikrinkite TotalConnect nustatymus",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "usercode": "Vartotojo kodas negalioja \u0161iam vartotojui \u0161ioje vietoje"
+        },
+        "step": {
+            "locations": {
+                "data": {
+                    "usercode": "Vartotojo kodas"
+                },
+                "description": "\u012eveskite \u0161io naudotojo naudotojo kod\u0105 vietoje {location_id}",
+                "title": "Vietos naudojimo kodai"
+            },
+            "reauth_confirm": {
+                "description": "\u201eTotal Connect\u201c turi i\u0161 naujo autentifikuoti j\u016bs\u0173 paskyr\u0105",
+                "title": "Baig\u0117si {name} autentifikavimo galiojimas"
+            },
+            "user": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "username": "Prisijungimos vardas"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "auto_bypass_low_battery": "Automatinis ap\u0117jimas, kai i\u0161sikrov\u0119s akumuliatorius"
+                },
+                "description": "Automati\u0161kai apeiti zonas, kai jos prane\u0161a apie i\u0161sikrovusi\u0105 baterij\u0105.",
+                "title": "TotalConnect parinktys"
+            }
+        }
+    },
+    "services": {
+        "arm_away_instant": {
+            "description": "Arms Away be nulinio \u012f\u0117jimo delsos.",
+            "name": "Apsauga i\u0161vykus nedelsiant"
+        },
+        "arm_home_instant": {
+            "description": "Apsaugoti Namai su nulinio \u012f\u0117jimo delsa.",
+            "name": "Apsaugota home instant"
+        }
+    }
+}

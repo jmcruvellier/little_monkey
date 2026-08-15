@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Ba\u011flanma hatas\u0131",
+            "invalid_auth": "Ge\u00e7ersiz kimlik do\u011frulama"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u015eifre"
+                },
+                "description": "Honeywell entegrasyonunun hesab\u0131n\u0131z\u0131 yeniden do\u011frulamas\u0131 gerekiyor",
+                "title": "{name} i\u00e7in kimlik do\u011frulaman\u0131n s\u00fcresi doldu"
+            },
+            "user": {
+                "data": {
+                    "password": "\u015eifre",
+                    "username": "Kullan\u0131c\u0131 Ad\u0131"
+                },
+                "description": "L\u00fctfen mytotalconnectcomfort.com'da oturum a\u00e7mak i\u00e7in kullan\u0131lan kimlik bilgilerini girin."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "D\u0131\u015far\u0131da",
+                            "hold": "Tut",
+                            "none": "Hi\u00e7biri"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "D\u0131\u015f ortam nemi"
+            },
+            "outdoor_temperature": {
+                "name": "D\u0131\u015f ortam s\u0131cakl\u0131\u011f\u0131"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Uzak so\u011futma derecesi",
+                    "away_heat_temperature": "Uzak \u0131s\u0131tma derecesi"
+                },
+                "description": "Ek Honeywell yap\u0131land\u0131rma se\u00e7enekleri. S\u0131cakl\u0131klar Fahrenheit cinsinden ayarlan\u0131r."
+            }
+        }
+    }
+}

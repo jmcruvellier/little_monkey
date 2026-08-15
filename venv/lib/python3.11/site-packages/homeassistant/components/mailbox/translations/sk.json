@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Platforma po\u0161tov\u00fdch schr\u00e1nok sa odstra\u0148uje. Nahl\u00e1ste to autorovi vlastnej integr\u00e1cie '{integration_domain}'.",
+            "title": "Platforma po\u0161tov\u00fdch schr\u00e1nok sa odstra\u0148uje"
+        }
+    },
+    "title": "Po\u0161tov\u00e1 schr\u00e1nka"
+}

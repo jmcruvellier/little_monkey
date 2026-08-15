@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Verwirft eine HTML5-Benachrichtigung.",
+            "fields": {
+                "data": {
+                    "description": "Erweiterte Informationen zur Benachrichtigung. Unterst\u00fctzt Tag.",
+                    "name": "Daten"
+                },
+                "target": {
+                    "description": "Eine Reihe von Zielen.",
+                    "name": "Ziel"
+                }
+            },
+            "name": "Ausblenden"
+        }
+    }
+}

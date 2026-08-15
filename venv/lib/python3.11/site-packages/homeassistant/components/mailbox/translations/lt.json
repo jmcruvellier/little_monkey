@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Pa\u0161alinama pa\u0161to d\u0117\u017eut\u0117s platforma. Prane\u0161kite apie tai tinkintos integracijos '{integration_domain}'autoriui.",
+            "title": "Pa\u0161alinama pa\u0161to d\u0117\u017eut\u0117s platforma"
+        }
+    },
+    "title": "Pa\u0161to d\u0117\u017eut\u0117"
+}

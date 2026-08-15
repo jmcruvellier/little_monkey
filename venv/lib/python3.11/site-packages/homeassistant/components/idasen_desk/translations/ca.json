@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat",
+            "already_in_progress": "El flux de configuraci\u00f3 ja est\u00e0 en curs",
+            "no_devices_found": "No s'han trobat dispositius a la xarxa",
+            "not_supported": "Dispositiu no compatible"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "unknown": "Error inesperat"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "address": "Adre\u00e7a Bluetooth"
+                }
+            }
+        }
+    },
+    "entity": {
+        "button": {
+            "connect": {
+                "name": "Connecta"
+            },
+            "disconnect": {
+                "name": "Desconnecta"
+            }
+        },
+        "sensor": {
+            "height": {
+                "name": "Al\u00e7ada"
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "services": {
+        "alarm_clear_bypass": {
+            "fields": {
+                "code": {
+                    "name": "C\u00f3digo"
+                }
+            }
+        },
+        "alarm_display_message": {
+            "fields": {
+                "clear": {
+                    "name": "Eliminar"
+                }
+            }
+        }
+    }
+}

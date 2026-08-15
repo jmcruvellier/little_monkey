@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Il dispositivo \u00e8 gi\u00e0 configurato",
+            "reauth_successful": "La riautenticazione ha avuto successo"
+        },
+        "error": {
+            "cannot_connect": "Impossibile connettersi",
+            "invalid_auth": "Autenticazione non valida"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Password"
+                },
+                "description": "L'integrazione Aladdin Connect deve autenticare nuovamente il tuo account",
+                "title": "Autentica nuovamente l'integrazione {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Password",
+                    "username": "Nome utente"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ble_strength": {
+                "name": "Forza BLE"
+            },
+            "wifi_strength": {
+                "name": "Wi-Fi RSSI"
+            }
+        }
+    }
+}

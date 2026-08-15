@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Unbekannter Fehler beim Generieren eines Zugriffstokens.",
+            "already_configured": "Konto wurde bereits konfiguriert",
+            "missing_configuration": "Die Komponente ist nicht konfiguriert. Bitte der Dokumentation folgen."
+        },
+        "create_entry": {
+            "default": "Erfolgreich authentifiziert"
+        },
+        "error": {
+            "follow_link": "Bitte folge dem Link und authentifiziere dich, bevor du auf Senden dr\u00fcckst",
+            "no_token": "Nicht authentifiziert mit Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Bitte folge diesem [Link]({authorization_url}) und **Erlaube** Zugriff auf dein Ambiclimate-Konto, komme dann zur\u00fcck und dr\u00fccke **Senden** darunter.\n (Pr\u00fcfe, dass die angegebene Callback-URL {cb_url} ist.)",
+                "title": "Ambiclimate authentifizieren"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Alle Ambiclimate-Dienste werden mit Wirkung zum 31. M\u00e4rz 2024 eingestellt, da Ambi Labs den Gesch\u00e4ftsbetrieb einstellt und die Ambiclimate-Integration aus Home Assistant entfernt wird. \n\nUm dieses Problem zu beheben, entferne bitte die Integrationseintr\u00e4ge aus deinem Home Assistant-Setup. [Klicke hier, um deine bestehenden Logi Circle-Integrationseintr\u00e4ge anzuzeigen]({entries}).",
+            "title": "Die Ambiclimate-Integration ist veraltet und wird entfernt"
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Sendet eine R\u00fcckmeldung f\u00fcr den Komfortmodus.",
+            "fields": {
+                "name": {
+                    "description": "String mit Ger\u00e4tename.",
+                    "name": "Ger\u00e4tename"
+                },
+                "value": {
+                    "description": "Sende einen der folgenden Komfortwerte: too_hot, too_warm, bit_warm, comfortable, bit_cold, too_cold, freezing",
+                    "name": "Komfort-Wert"
+                }
+            },
+            "name": "Komfort-Feedback senden"
+        },
+        "set_comfort_mode": {
+            "description": "Aktiviert den Komfortmodus Ihrer Klimaanlage.",
+            "fields": {
+                "name": {
+                    "description": "String mit Ger\u00e4tename.",
+                    "name": "Ger\u00e4tename"
+                }
+            },
+            "name": "Komfortmodus einstellen"
+        },
+        "set_temperature_mode": {
+            "description": "Aktiviert den Temperaturmodus deiner Klimaanlage.",
+            "fields": {
+                "name": {
+                    "description": "String mit Ger\u00e4tename.",
+                    "name": "Ger\u00e4tename"
+                },
+                "value": {
+                    "description": "Zielwert in Celsius.",
+                    "name": "Temperatur"
+                }
+            },
+            "name": "Temperaturmodus einstellen"
+        }
+    }
+}

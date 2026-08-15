@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Perangkat sudah dikonfigurasi"
+        },
+        "error": {
+            "cannot_connect": "Gagal terhubung"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "Alamat IP"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "power_save_idle": {
+                "name": "Tidur"
+            },
+            "roaming": {
+                "name": "Mode roaming"
+            }
+        },
+        "sensor": {
+            "elevation": {
+                "name": "Ketinggian"
+            },
+            "ping": {
+                "name": "Ping"
+            }
+        }
+    }
+}

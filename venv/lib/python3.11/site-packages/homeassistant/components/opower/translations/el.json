@@ -1,0 +1,11 @@
+{
+    "config": {
+        "step": {
+            "mfa": {
+                "data": {
+                    "totp_secret": "\u039c\u03c5\u03c3\u03c4\u03b9\u03ba\u03cc TOTP"
+                }
+            }
+        }
+    }
+}

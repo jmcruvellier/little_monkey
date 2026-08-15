@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\uc11c\ube44\uc2a4\uac00 \uc774\ubbf8 \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4"
+        },
+        "step": {
+            "user": {
+                "description": "\ucd08\uae30 \uc124\uc815\uc744 \uc704\ud574 \uc81c\ucd9c\uc744 \ub204\ub974\uc138\uc694. \uc0dd\uc131\ub41c \uad6c\uc131 \ud56d\ubaa9\uc5d0\uc11c \uad6c\uc131\uc744 \ub20c\ub7ec \uc120\ud0dd\ud55c \ud504\ub85c\uc138\uc2a4\uc5d0 \ub300\ud55c \uc13c\uc11c\ub97c \ucd94\uac00\ud569\ub2c8\ub2e4."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "process": "\uc13c\uc11c\ub85c \ucd94\uac00\ud560 \ud504\ub85c\uc138\uc2a4"
+                },
+                "data_description": {
+                    "process": "\ubaa9\ub85d\uc5d0\uc11c \uc2e4\ud589 \uc911\uc778 \ud504\ub85c\uc138\uc2a4\ub97c \uc120\ud0dd\ud558\uac70\ub098 \uc0ac\uc6a9\uc790 \uc9c0\uc815 \uac12\uc744 \ucd94\uac00\ud569\ub2c8\ub2e4. \ub2e4\uc911 \uc120\ud0dd/\uc0ac\uc6a9\uc790 \uc9c0\uc815 \uac12\uc774 \uc9c0\uc6d0\ub429\ub2c8\ub2e4."
+                },
+                "description": "\uc2e4\ud589 \uc911\uc778 \ud504\ub85c\uc138\uc2a4\uc5d0 \ub300\ud55c \ubaa8\ub2c8\ud130\ub9c1 \uc13c\uc11c \uad6c\uc131"
+            }
+        }
+    }
+}

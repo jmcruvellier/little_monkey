@@ -1,0 +1,48 @@
+{
+    "services": {
+        "clear_sleep_timer": {
+            "description": "Bir Bluesound zamanlay\u0131c\u0131s\u0131n\u0131 silin.",
+            "fields": {
+                "entity_id": {
+                    "description": "Zamanlay\u0131c\u0131y\u0131 temizleyecek varl\u0131klar\u0131n adlar\u0131.",
+                    "name": "Varl\u0131k"
+                }
+            },
+            "name": "Uyku zamanlay\u0131c\u0131s\u0131n\u0131 temizle"
+        },
+        "join": {
+            "description": "Oyuncular\u0131 birlikte gruplay\u0131n.",
+            "fields": {
+                "entity_id": {
+                    "description": "Grupland\u0131rmay\u0131 koordine edecek varl\u0131\u011f\u0131n ad\u0131. Platforma ba\u011fl\u0131.",
+                    "name": "Varl\u0131k"
+                },
+                "master": {
+                    "description": "Grubun y\u00f6neticisi olmas\u0131 gereken oyuncunun varl\u0131k kimli\u011fi.",
+                    "name": "Ana"
+                }
+            },
+            "name": "Kat\u0131l\u0131n"
+        },
+        "set_sleep_timer": {
+            "description": "Bir Bluesound zamanlay\u0131c\u0131 ayarlay\u0131n. Zamanlay\u0131c\u0131y\u0131 ad\u0131m ad\u0131m art\u0131racakt\u0131r: 15, 30, 45, 60, 90, 0.",
+            "fields": {
+                "entity_id": {
+                    "description": "Bir zamanlay\u0131c\u0131 seti olacak varl\u0131klar\u0131n adlar\u0131.",
+                    "name": "Varl\u0131k"
+                }
+            },
+            "name": "Uyku zamanlay\u0131c\u0131s\u0131n\u0131 ayarla"
+        },
+        "unjoin": {
+            "description": "Oyuncunun bir gruptan ayr\u0131lmas\u0131n\u0131 sa\u011flay\u0131n.",
+            "fields": {
+                "entity_id": {
+                    "description": "Grubundan ayr\u0131lacak varl\u0131\u011f\u0131n ad\u0131. Platforma ba\u011fl\u0131.",
+                    "name": "Varl\u0131k"
+                }
+            },
+            "name": "Ayr\u0131l"
+        }
+    }
+}

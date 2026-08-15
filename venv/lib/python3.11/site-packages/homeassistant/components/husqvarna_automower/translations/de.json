@@ -1,0 +1,95 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Konto wurde bereits konfiguriert",
+            "already_in_progress": "Der Konfigurationsablauf wird bereits ausgef\u00fchrt",
+            "authorize_url_timeout": "Zeit\u00fcberschreitung beim Erstellen der Authorisierungs-URL.",
+            "missing_configuration": "Die Komponente ist nicht konfiguriert. Bitte der Dokumentation folgen.",
+            "missing_credentials": "F\u00fcr die Integration sind Anmeldedaten der Anwendung erforderlich.",
+            "no_url_available": "Keine URL verf\u00fcgbar. Informationen zu diesem Fehler findest du [im Hilfebereich]({docs_url}).",
+            "oauth_error": "Ung\u00fcltige Token-Daten empfangen.",
+            "oauth_failed": "Fehler beim Abrufen des Zugriffstokens.",
+            "oauth_timeout": "Zeit\u00fcberschreitung beim Aufl\u00f6sen des OAuth-Tokens.",
+            "oauth_unauthorized": "OAuth-Autorisierungsfehler beim Abrufen des Zugriffstokens.",
+            "reauth_successful": "Die erneute Authentifizierung war erfolgreich",
+            "user_rejected_authorize": "Kontoverkn\u00fcpfung abgelehnt: {error}",
+            "wrong_account": "Du kannst diesen Eintrag nur mit demselben Husqvarna-Konto erneut authentifizieren."
+        },
+        "create_entry": {
+            "default": "Erfolgreich authentifiziert"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "W\u00e4hle die Authentifizierungsmethode"
+            },
+            "reauth_confirm": {
+                "description": "Die Husqvarna Automower-Integration muss dein Konto erneut authentifizieren",
+                "title": "Die Authentifizierung ist abgelaufen f\u00fcr {name}"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "leaving_dock": {
+                "name": "Verlassen der Dockingstation"
+            },
+            "returning_to_dock": {
+                "name": "R\u00fcckkehr zur Dockingstation"
+            }
+        },
+        "select": {
+            "headlight_mode": {
+                "name": "Scheinwerfermodus",
+                "state": {
+                    "always_off": "Immer ausgeschaltet",
+                    "always_on": "Immer eingeschaltet",
+                    "evening_and_night": "Abends und nachts",
+                    "evening_only": "Nur abends"
+                }
+            }
+        },
+        "sensor": {
+            "cutting_blade_usage_time": {
+                "name": "Nutzungsdauer der Schneidklinge"
+            },
+            "mode": {
+                "name": "Modus",
+                "state": {
+                    "demo": "Demo",
+                    "home": "Zu Hause",
+                    "main_area": "Hauptbereich",
+                    "secondary_area": "Sekund\u00e4rer Bereich"
+                }
+            },
+            "next_start_timestamp": {
+                "name": "N\u00e4chster Start"
+            },
+            "number_of_charging_cycles": {
+                "name": "Anzahl der Ladezyklen"
+            },
+            "number_of_collisions": {
+                "name": "Anzahl der Kollisionen"
+            },
+            "total_charging_time": {
+                "name": "Gesamtladezeit"
+            },
+            "total_cutting_time": {
+                "name": "Gesamtschnittzeit"
+            },
+            "total_drive_distance": {
+                "name": "Gesamtfahrstrecke"
+            },
+            "total_running_time": {
+                "name": "Gesamtlaufzeit"
+            },
+            "total_searching_time": {
+                "name": "Gesamtsuchzeit"
+            }
+        },
+        "switch": {
+            "enable_schedule": {
+                "name": "Zeitplan aktivieren"
+            }
+        }
+    }
+}

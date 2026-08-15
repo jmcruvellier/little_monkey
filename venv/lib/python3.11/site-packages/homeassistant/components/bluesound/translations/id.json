@@ -1,0 +1,11 @@
+{
+    "services": {
+        "set_sleep_timer": {
+            "fields": {
+                "entity_id": {
+                    "name": "Entitas"
+                }
+            }
+        }
+    }
+}

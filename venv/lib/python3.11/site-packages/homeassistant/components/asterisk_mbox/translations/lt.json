@@ -1,0 +1,8 @@
+{
+    "issues": {
+        "deprecated_integration": {
+            "description": "{integration_title} pa\u0161alinama, nes pa\u0161alinama \u201e {mailbox} \u201c platforma, o {integration_title} nepalaiko joki\u0173 kit\u0173 platform\u0173. Pa\u0161alinkite {domain} konfig\u016bracij\u0105 i\u0161 failo configuration.yaml ir i\u0161 naujo paleiskite \u201eHome Assistant\u201c, kad i\u0161spr\u0119stum\u0117te \u0161i\u0105 problem\u0105.",
+            "title": "{integration_title} pa\u0161alinamas"
+        }
+    }
+}

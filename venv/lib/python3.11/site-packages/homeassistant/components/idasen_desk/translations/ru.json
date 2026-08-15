@@ -1,0 +1,17 @@
+{
+    "entity": {
+        "button": {
+            "connect": {
+                "name": "\u041f\u043e\u0434\u043a\u043b\u044e\u0447\u0438\u0442\u044c"
+            },
+            "disconnect": {
+                "name": "\u041e\u0442\u043a\u043b\u044e\u0447\u0438\u0442\u044c"
+            }
+        },
+        "sensor": {
+            "height": {
+                "name": "\u0412\u044b\u0441\u043e\u0442\u0430"
+            }
+        }
+    }
+}

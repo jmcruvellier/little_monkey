@@ -1,0 +1,19 @@
+{
+    "exceptions": {
+        "client_error": {
+            "message": "Hiba t\u00f6rt\u00e9nt az er\u0151forr\u00e1s lek\u00e9rdez\u00e9se sor\u00e1n"
+        },
+        "decoding_error": {
+            "message": "A kiszolg\u00e1l\u00f3 v\u00e1lasz\u00e1t nem siker\u00fclt dek\u00f3dolni {decoding_type} form\u00e1tumban"
+        },
+        "timeout": {
+            "message": "Id\u0151t\u00fall\u00e9p\u00e9s a szerver v\u00e1lasz\u00e1nak v\u00e1rakoz\u00e1sa k\u00f6zben"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "\u00dajrat\u00f6lti a RESTful parancsokat a YAML-konfigur\u00e1ci\u00f3b\u00f3l.",
+            "name": "\u00dajrat\u00f6lt\u00e9s"
+        }
+    }
+}

@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Slapta\u017eodis"
+                },
+                "description": "\"Aladdin Connect\" integracija turi i\u0161 naujo patvirtinti j\u016bs\u0173 paskyros autenti\u0161kum\u0105",
+                "title": "Baig\u0117si {name} autentifikavimo galiojimas"
+            },
+            "user": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "username": "Prisijungimos vardas"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ble_strength": {
+                "name": "BLE stiprumas"
+            },
+            "wifi_strength": {
+                "name": "Wi-Fi RSSI"
+            }
+        }
+    }
+}

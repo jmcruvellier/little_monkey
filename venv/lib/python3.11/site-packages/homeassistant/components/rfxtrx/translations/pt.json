@@ -1,0 +1,41 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispositivo j\u00e1 configurado",
+            "cannot_connect": "A liga\u00e7\u00e3o falhou"
+        },
+        "error": {
+            "cannot_connect": "A liga\u00e7\u00e3o falhou"
+        },
+        "step": {
+            "setup_network": {
+                "data": {
+                    "host": "Anfitri\u00e3o",
+                    "port": "Porta"
+                }
+            },
+            "setup_serial": {
+                "title": "Dispositivo"
+            },
+            "setup_serial_manual_path": {
+                "data": {
+                    "device": "Caminho do Dispositivo USB"
+                },
+                "title": "Caminho"
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "already_configured_device": "Dispositivo j\u00e1 configurado",
+            "unknown": "Erro inesperado"
+        },
+        "step": {
+            "prompt_options": {
+                "data": {
+                    "protocols": "Protocolos"
+                }
+            }
+        }
+    }
+}

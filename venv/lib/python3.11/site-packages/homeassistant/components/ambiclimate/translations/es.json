@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Error desconocido al generar un token de acceso.",
+            "already_configured": "La cuenta ya est\u00e1 configurada",
+            "missing_configuration": "El componente no est\u00e1 configurado. Por favor, sigue la documentaci\u00f3n."
+        },
+        "create_entry": {
+            "default": "Autenticado correctamente"
+        },
+        "error": {
+            "follow_link": "Por favor, sigue el enlace y autent\u00edcate antes de pulsar Enviar",
+            "no_token": "No autenticado con Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Por favor, sigue este [enlace]({authorization_url}) y **Permite** el acceso a tu cuenta Ambiclimate, luego regresa y pulsa **Enviar** a continuaci\u00f3n.\n(Aseg\u00farate de que la URL de devoluci\u00f3n de llamada especificada sea {cb_url})",
+                "title": "Autenticar Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Todos los servicios de Ambiclimate finalizar\u00e1n a partir del 31 de marzo de 2024, cuando Ambi Labs cierre sus operaciones comerciales y la integraci\u00f3n de Ambiclimate se eliminar\u00e1 de Home Assistant. \n\nPara resolver este problema, por favor, elimina las entradas de integraci\u00f3n de la configuraci\u00f3n de Home Assistant. [Haz clic aqu\u00ed para ver tus entradas existentes de la integraci\u00f3n Ambiclimate]({entries}).",
+            "title": "La integraci\u00f3n de Ambiclimate ha quedado obsoleta y ser\u00e1 eliminada."
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Env\u00eda comentarios para el modo confort.",
+            "fields": {
+                "name": {
+                    "description": "Cadena de texto con el nombre del dispositivo.",
+                    "name": "Nombre del dispositivo"
+                },
+                "value": {
+                    "description": "Env\u00eda cualquiera de los siguientes valores de confort: too_hot, too_warm, bit_warm, comfortable, bit_cold, too_cold, freezing.",
+                    "name": "Valor de confort"
+                }
+            },
+            "name": "Enviar comentarios de confort"
+        },
+        "set_comfort_mode": {
+            "description": "Habilita el modo confort en tu AA.",
+            "fields": {
+                "name": {
+                    "description": "Cadena de texto con el nombre del dispositivo.",
+                    "name": "Nombre del dispositivo"
+                }
+            },
+            "name": "Configurar el modo confort"
+        },
+        "set_temperature_mode": {
+            "description": "Habilita el modo de temperatura en tu AA.",
+            "fields": {
+                "name": {
+                    "description": "Cadena de texto con el nombre del dispositivo.",
+                    "name": "Nombre del dispositivo"
+                },
+                "value": {
+                    "description": "Valor objetivo en Celsius.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Configurar el modo de temperatura"
+        }
+    }
+}

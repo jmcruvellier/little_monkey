@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Errore sconosciuto durante la generazione di un token di accesso.",
+            "already_configured": "L'account \u00e8 gi\u00e0 configurato",
+            "missing_configuration": "Il componente non \u00e8 configurato. Segui la documentazione."
+        },
+        "create_entry": {
+            "default": "Autenticazione riuscita"
+        },
+        "error": {
+            "follow_link": "Segui il collegamento e autenticati prima di premere Invia",
+            "no_token": "Non autenticato con Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Segui questo [link]({authorization_url}) e **Consenti** l'accesso al tuo account Ambiclimate, quindi torna indietro e premi **Invia** qui sotto. \n(Assicurati che l'URL di richiamata specificato sia {cb_url})",
+                "title": "Autentica Ambiclimate"
+            }
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Invia feedback per la modalit\u00e0 comfort.",
+            "fields": {
+                "name": {
+                    "description": "Stringa con il nome del dispositivo.",
+                    "name": "Nome del dispositivo"
+                },
+                "value": {
+                    "description": "Inviare uno qualsiasi dei seguenti valori di comfort: troppo caldo, molto caldo, poco caldo, confortevole, poco freddo, troppo freddo, congelamento\n.",
+                    "name": "Valore del comfort"
+                }
+            },
+            "name": "Invia un feedback sul comfort"
+        },
+        "set_comfort_mode": {
+            "description": "Attiva la modalit\u00e0 comfort sul condizionatore.",
+            "fields": {
+                "name": {
+                    "description": "Stringa con il nome del dispositivo.",
+                    "name": "Nome del dispositivo"
+                }
+            },
+            "name": "Imposta la modalit\u00e0 comfort"
+        },
+        "set_temperature_mode": {
+            "description": "Attiva la modalit\u00e0 temperatura sul condizionatore.",
+            "fields": {
+                "name": {
+                    "description": "Stringa con il nome del dispositivo.",
+                    "name": "Nome del dispositivo"
+                },
+                "value": {
+                    "description": "Valore desiderato in gradi centigradi.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Imposta la modalit\u00e0 temperatura"
+        }
+    }
+}

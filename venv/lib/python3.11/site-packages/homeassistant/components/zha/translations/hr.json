@@ -1,0 +1,59 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Ve\u0107 konfigurirano. Mogu\u0107a samo jedna konfiguracija."
+        },
+        "error": {
+            "cannot_connect": "Povezivanje nije uspjelo"
+        }
+    },
+    "entity": {
+        "number": {
+            "local_temperature_calibration": {
+                "name": "Pomak lokalne temperature"
+            },
+            "presence_detection_timeout": {
+                "name": "Istek vremena otkrivanja prisutnosti"
+            }
+        },
+        "select": {
+            "detection_sensitivity": {
+                "name": "Osjetljivost detekcije"
+            }
+        },
+        "sensor": {
+            "power_source": {
+                "name": "Izvor napajanja"
+            }
+        },
+        "switch": {
+            "smart_fan_mode": {
+                "name": "Pametni na\u010din rada ventilatora"
+            },
+            "valve_detection": {
+                "name": "Detekcija ventila"
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "single_instance_allowed": "Ve\u0107 konfigurirano. Mogu\u0107a samo jedna konfiguracija."
+        },
+        "error": {
+            "cannot_connect": "Povezivanje nije uspjelo"
+        },
+        "step": {
+            "intent_migrate": {
+                "title": "Migracija na novi radio"
+            },
+            "prompt_migrate_or_reconfigure": {
+                "description": "Migrirate li na novi radio ili rekonfigurirate trenutni radio?",
+                "menu_options": {
+                    "intent_migrate": "Migracija na novi radio",
+                    "intent_reconfigure": "Ponovno konfiguriranje trenutnog radija"
+                },
+                "title": "Migracija ili ponovna konfiguracija"
+            }
+        }
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Palvelu {domain}.{service} kutsui palvelua {child_domain}.{child_service}, jota ei l\u00f6ytynyt."
+        }
+    }
+}

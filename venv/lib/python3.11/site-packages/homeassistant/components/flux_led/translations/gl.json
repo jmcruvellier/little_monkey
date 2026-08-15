@@ -1,0 +1,28 @@
+{
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "mode": "O modo de brillo escollido."
+                }
+            }
+        }
+    },
+    "services": {
+        "set_custom_effect": {
+            "fields": {
+                "colors": {
+                    "description": "Lista de cores para o efecto personalizado (RGB). (M\u00e1x 16 Cores).",
+                    "name": "Cores"
+                }
+            }
+        },
+        "set_music_mode": {
+            "fields": {
+                "background_color": {
+                    "description": "A cor de fondo RGB (S\u00f3 modelos enderezables)."
+                }
+            }
+        }
+    }
+}

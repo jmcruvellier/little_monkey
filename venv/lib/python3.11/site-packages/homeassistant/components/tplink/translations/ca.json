@@ -1,0 +1,160 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat",
+            "no_devices_found": "No s'han trobat dispositius a la xarxa",
+            "reauth_successful": "Re-autenticaci\u00f3 realitzada correctament"
+        },
+        "error": {
+            "cannot_connect": "Error de connexi\u00f3: {error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                },
+                "description": "El dispositiu necessita autenticar-te. Introdueix les teves credencials a continuaci\u00f3.",
+                "title": "Autenticaci\u00f3"
+            },
+            "discovery_confirm": {
+                "description": "Vols configurar {name} {model} ({host})?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "Dispositiu"
+                }
+            },
+            "reauth": {
+                "description": "El dispositiu necessita autenticar-te. Introdueix les teves credencials a continuaci\u00f3.",
+                "title": "L'autenticaci\u00f3 de {name} ha caducat"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                },
+                "description": "El dispositiu necessita autenticar-te. Introdueix les teves credencials a continuaci\u00f3.",
+                "title": "L'autenticaci\u00f3 de {name} ha caducat"
+            },
+            "user": {
+                "data": {
+                    "host": "Amfitri\u00f3"
+                },
+                "description": "Si deixes l'amfitri\u00f3 buit, s'utilitzar\u00e0 el descobriment per cercar dispositius."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                },
+                "description": "El dispositiu necessita autenticar-te. Introdueix les teves credencials a continuaci\u00f3.",
+                "title": "Autenticaci\u00f3"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_consumption": {
+                "name": "Consum actual"
+            },
+            "today_consumption": {
+                "name": "Consum d'avui"
+            },
+            "total_consumption": {
+                "name": "Consum total"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "Configura un efecte aleatori.",
+            "fields": {
+                "backgrounds": {
+                    "description": "Llista de seq\u00fc\u00e8ncies de HSV (m\u00e0x. 16).",
+                    "name": "Fons"
+                },
+                "brightness": {
+                    "description": "Lluminositat inicial.",
+                    "name": "Lluminositat"
+                },
+                "brightness_range": {
+                    "description": "Rang de lluminositat.",
+                    "name": "Rang de lluminositat"
+                },
+                "duration": {
+                    "description": "Durada.",
+                    "name": "Durada"
+                },
+                "fadeoff": {
+                    "description": "Esvaeix.",
+                    "name": "Esvaeix"
+                },
+                "init_states": {
+                    "name": "Estats inicials"
+                },
+                "random_seed": {
+                    "description": "Llavor aleat\u00f2ria.",
+                    "name": "Llavor aleat\u00f2ria"
+                },
+                "segments": {
+                    "description": "Llista de segments (0 per a tots).",
+                    "name": "Segments"
+                },
+                "transition": {
+                    "description": "Transici\u00f3.",
+                    "name": "Transici\u00f3"
+                },
+                "transition_range": {
+                    "description": "Rang de la transici\u00f3.",
+                    "name": "Rang de transici\u00f3"
+                }
+            },
+            "name": "Efecte aleatori"
+        },
+        "sequence_effect": {
+            "description": "Configura un efecte de seq\u00fc\u00e8ncia.",
+            "fields": {
+                "brightness": {
+                    "description": "Lluminositat inicial.",
+                    "name": "Lluminositat"
+                },
+                "direction": {
+                    "description": "Direcci\u00f3.",
+                    "name": "Direcci\u00f3"
+                },
+                "duration": {
+                    "description": "Durada.",
+                    "name": "Durada"
+                },
+                "repeat_times": {
+                    "description": "Repeticions (0 per continu).",
+                    "name": "Repeticions"
+                },
+                "segments": {
+                    "description": "Llista de segments (0 per tot).",
+                    "name": "Segments"
+                },
+                "sequence": {
+                    "description": "Llista de seq\u00fc\u00e8ncies de HSV (m\u00e0x. 16).",
+                    "name": "Seq\u00fc\u00e8ncia"
+                },
+                "spread": {
+                    "description": "Velocitat de propagaci\u00f3.",
+                    "name": "Propagaci\u00f3"
+                },
+                "transition": {
+                    "description": "Transici\u00f3.",
+                    "name": "Transici\u00f3"
+                }
+            },
+            "name": "Efecte seq\u00fc\u00e8ncia"
+        }
+    }
+}

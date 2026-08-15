@@ -1,0 +1,16 @@
+{
+    "config": {
+        "error": {
+            "unknown": "L\u1ed7i kh\u00f4ng mong \u0111\u1ee3i"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "prompt": "M\u1eabu nh\u1eafc"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El servei ja est\u00e0 configurat",
+            "reauth_successful": "Re-autenticaci\u00f3 realitzada correctament"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_auth": "Autenticaci\u00f3 inv\u00e0lida"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "api_key": "Clau API"
+                },
+                "description": "Els tokens API de Tailscale s\u00f3n v\u00e0lids durant 90 dies. Pots crear una nova clau API de Tailscale a https://login.tailscale.com/admin/settings/authkeys."
+            },
+            "user": {
+                "data": {
+                    "api_key": "Clau API",
+                    "tailnet": "Tailnet"
+                },
+                "description": "Aquesta integraci\u00f3 monitoritza la teva xarxa Tailscale, per\u00f2 NO fa que Home Assistant sigui accessible a trav\u00e9s de la VPN de Tailscale.\n\nPer autenticar-te amb Tailscale, has de crear una clau API a {authkeys_url}. \n\nTailnet \u00e9s el nom de la teva xarxa Tailscale. La pots trobar a l'extrem superior esquerre del tauler d'administraci\u00f3 de Tailscale (al costat del logotip de Tailscale)."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "client": {
+                "name": "Client"
+            },
+            "client_supports_hair_pinning": {
+                "name": "Suporta 'hairpinning'"
+            },
+            "client_supports_ipv6": {
+                "name": "Admet IPv6"
+            },
+            "client_supports_pcp": {
+                "name": "Suporta PCP"
+            },
+            "client_supports_pmp": {
+                "name": "Suporta NAT-PMP"
+            },
+            "client_supports_udp": {
+                "name": "Suporta UDP"
+            },
+            "client_supports_upnp": {
+                "name": "Suporta UPnP"
+            }
+        },
+        "sensor": {
+            "expires": {
+                "name": "Caduca"
+            },
+            "ip": {
+                "name": "Adre\u00e7a IP"
+            },
+            "last_seen": {
+                "name": "Vist per \u00faltim cop"
+            }
+        }
+    }
+}

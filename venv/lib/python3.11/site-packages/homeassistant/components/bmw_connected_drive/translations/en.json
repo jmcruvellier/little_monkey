@@ -1,0 +1,139 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Account is already configured",
+            "reauth_successful": "Re-authentication was successful"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Password",
+                    "region": "ConnectedDrive Region",
+                    "username": "Username"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging_status": {
+                "name": "Charging status"
+            },
+            "check_control_messages": {
+                "name": "Check control messages"
+            },
+            "condition_based_services": {
+                "name": "Condition based services"
+            },
+            "connection_status": {
+                "name": "Connection status"
+            },
+            "door_lock_state": {
+                "name": "Door lock state"
+            },
+            "is_pre_entry_climatization_enabled": {
+                "name": "Pre entry climatization"
+            },
+            "lids": {
+                "name": "Lids"
+            },
+            "windows": {
+                "name": "Windows"
+            }
+        },
+        "button": {
+            "activate_air_conditioning": {
+                "name": "Activate air conditioning"
+            },
+            "find_vehicle": {
+                "name": "Find vehicle"
+            },
+            "light_flash": {
+                "name": "Flash lights"
+            },
+            "refresh": {
+                "name": "Refresh from cloud"
+            },
+            "sound_horn": {
+                "name": "Sound horn"
+            }
+        },
+        "lock": {
+            "lock": {
+                "name": "Lock"
+            }
+        },
+        "number": {
+            "target_soc": {
+                "name": "Target SoC"
+            }
+        },
+        "select": {
+            "ac_limit": {
+                "name": "AC Charging Limit"
+            },
+            "charging_mode": {
+                "name": "Charging Mode"
+            }
+        },
+        "sensor": {
+            "ac_current_limit": {
+                "name": "AC current limit"
+            },
+            "charging_end_time": {
+                "name": "Charging end time"
+            },
+            "charging_start_time": {
+                "name": "Charging start time"
+            },
+            "charging_status": {
+                "name": "Charging status"
+            },
+            "charging_target": {
+                "name": "Charging target"
+            },
+            "mileage": {
+                "name": "Mileage"
+            },
+            "remaining_battery_percent": {
+                "name": "Remaining battery percent"
+            },
+            "remaining_fuel": {
+                "name": "Remaining fuel"
+            },
+            "remaining_fuel_percent": {
+                "name": "Remaining fuel percent"
+            },
+            "remaining_range_electric": {
+                "name": "Remaining range electric"
+            },
+            "remaining_range_fuel": {
+                "name": "Remaining range fuel"
+            },
+            "remaining_range_total": {
+                "name": "Remaining range total"
+            }
+        },
+        "switch": {
+            "charging": {
+                "name": "Charging"
+            },
+            "climate": {
+                "name": "Climate"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "account_options": {
+                "data": {
+                    "read_only": "Read-only (only sensors and notify, no execution of services, no lock)"
+                }
+            }
+        }
+    }
+}

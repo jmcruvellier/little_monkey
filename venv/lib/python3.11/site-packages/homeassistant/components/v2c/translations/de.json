@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "Hostname oder IP-Adresse deiner V2C Trydan EVSE."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "L\u00e4dt"
+            },
+            "connected": {
+                "name": "Verbunden"
+            },
+            "ready": {
+                "name": "Bereit"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intensit\u00e4t"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "Ladeenergie"
+            },
+            "charge_power": {
+                "name": "Ladeleistung"
+            },
+            "charge_time": {
+                "name": "Ladezeit"
+            },
+            "fv_power": {
+                "name": "Photovoltaik-Strom"
+            },
+            "house_power": {
+                "name": "Hausstrom"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "Dynamische Intensit\u00e4tsmodulation"
+            },
+            "locked": {
+                "name": "EVSE sperren"
+            },
+            "pause_dynamic": {
+                "name": "Modulation der dynamischen Steuerung pausieren"
+            },
+            "paused": {
+                "name": "Sitzung pausieren"
+            },
+            "timer": {
+                "name": "Ladepunkt-Timer"
+            }
+        }
+    }
+}

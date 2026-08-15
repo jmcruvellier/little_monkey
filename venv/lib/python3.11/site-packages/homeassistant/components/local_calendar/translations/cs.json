@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "calendar_name": "N\u00e1zev kalend\u00e1\u0159e"
+                },
+                "description": "Zvolte n\u00e1zev nov\u00e9ho kalend\u00e1\u0159e"
+            }
+        }
+    },
+    "title": "M\u00edstn\u00ed kalend\u00e1\u0159"
+}

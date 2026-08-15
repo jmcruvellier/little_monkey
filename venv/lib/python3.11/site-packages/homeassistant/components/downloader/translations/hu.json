@@ -1,0 +1,31 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "M\u00e1r konfigur\u00e1lva van. Csak egy konfigur\u00e1ci\u00f3 lehets\u00e9ges."
+        }
+    },
+    "services": {
+        "download_file": {
+            "description": "Let\u00f6lt egy f\u00e1jlt a let\u00f6lt\u00e9si helyre.",
+            "fields": {
+                "filename": {
+                    "description": "Hat\u00e1rozza meg a f\u00e1jl nev\u00e9t.",
+                    "name": "F\u00e1jln\u00e9v"
+                },
+                "overwrite": {
+                    "description": "F\u00e1jl fel\u00fcl\u00edr\u00e1s\u00e1nak az enged\u00e9lyez\u00e9se, ha m\u00e1r l\u00e9tezik a f\u00e1jl.",
+                    "name": "Fel\u00fcl\u00edr\u00e1s"
+                },
+                "subdir": {
+                    "description": "Let\u00f6lt\u00e9s alk\u00f6nyvt\u00e1rba.",
+                    "name": "Alk\u00f6nyvt\u00e1r"
+                },
+                "url": {
+                    "description": "A let\u00f6lteni k\u00edv\u00e1nt f\u00e1jl URL-c\u00edme.",
+                    "name": "URL"
+                }
+            },
+            "name": "F\u00e1jl let\u00f6lt\u00e9se"
+        }
+    }
+}

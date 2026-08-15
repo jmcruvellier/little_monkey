@@ -1,0 +1,40 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u00c9chec de connexion",
+            "invalid_access_token": "Jeton d'acc\u00e8s non valide",
+            "subscription_required": "Abonnement requis, veuillez visiter {short_url}",
+            "unknown": "Erreur inattendue"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Jeton d'acc\u00e8s"
+                },
+                "description": "Saisissez un jeton d'acc\u00e8s \u00e0 partir de {url}."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "driver_temp": {
+                "name": "Climat",
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "camp": "Mode camping",
+                            "dog": "Mode chien",
+                            "keep": "Maintien de la climatisation",
+                            "off": "Normal"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "charge_state_battery_level": {
+                "name": "Niveau de batterie"
+            }
+        }
+    }
+}

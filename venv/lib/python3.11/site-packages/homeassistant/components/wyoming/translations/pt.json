@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Servi\u00e7o j\u00e1 configurado"
+        },
+        "error": {
+            "cannot_connect": "A liga\u00e7\u00e3o falhou"
+        },
+        "step": {
+            "hassio_confirm": {
+                "description": "Pretende configurar o Home Assistant para se ligar ao servi\u00e7o Wyoming fornecido pelo suplemento: {addon}?"
+            },
+            "user": {
+                "data": {
+                    "host": "Anfitri\u00e3o",
+                    "port": "Porta"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "assist_in_progress": {
+                "name": "Assist em curso"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Fluxo do Assist",
+                "state": {
+                    "preferred": "Preferencial"
+                }
+            }
+        }
+    }
+}

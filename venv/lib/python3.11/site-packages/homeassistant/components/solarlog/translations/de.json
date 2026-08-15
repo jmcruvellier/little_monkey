@@ -1,0 +1,93 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert"
+        },
+        "error": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert",
+            "cannot_connect": "Verbindung fehlgeschlagen"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Das Pr\u00e4fix, das f\u00fcr deine Solar-Log-Sensoren verwendet werden soll"
+                },
+                "data_description": {
+                    "host": "Der Hostname oder die IP-Adresse deines Solar-Log-Ger\u00e4ts."
+                },
+                "title": "Definiere deine Solar-Log-Verbindung"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "alternator_loss": {
+                "name": "Wechselstromerzeuger Verlust"
+            },
+            "capacity": {
+                "name": "Kapazit\u00e4t"
+            },
+            "consumption_ac": {
+                "name": "Verbrauch AC"
+            },
+            "consumption_day": {
+                "name": "Tagesverbrauch"
+            },
+            "consumption_month": {
+                "name": "Monatsverbrauch"
+            },
+            "consumption_total": {
+                "name": "Gesamtverbrauch"
+            },
+            "consumption_year": {
+                "name": "Jahresverbrauch"
+            },
+            "consumption_yesterday": {
+                "name": "Verbrauch gestern"
+            },
+            "efficiency": {
+                "name": "Wirkungsgrad"
+            },
+            "last_update": {
+                "name": "Letzte Aktualisierung"
+            },
+            "power_ac": {
+                "name": "Leistung Wechselstrom"
+            },
+            "power_available": {
+                "name": "Verf\u00fcgbare Leistung"
+            },
+            "power_dc": {
+                "name": "Leistung Gleichstrom"
+            },
+            "total_power": {
+                "name": "Installierte Spitzenleistung"
+            },
+            "usage": {
+                "name": "Verbrauch"
+            },
+            "voltage_ac": {
+                "name": "Spannung AC"
+            },
+            "voltage_dc": {
+                "name": "Spannung DC"
+            },
+            "yield_day": {
+                "name": "Ertrag Tag"
+            },
+            "yield_month": {
+                "name": "Ertrag Monat"
+            },
+            "yield_total": {
+                "name": "Ertrag insgesamt"
+            },
+            "yield_year": {
+                "name": "Ertrag Jahr"
+            },
+            "yield_yesterday": {
+                "name": "Ertrag gestern"
+            }
+        }
+    }
+}

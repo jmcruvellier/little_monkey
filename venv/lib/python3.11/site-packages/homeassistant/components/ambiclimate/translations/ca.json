@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "S'ha produ\u00eft un error desconegut al generat un token d'acc\u00e9s.",
+            "already_configured": "El compte ja est\u00e0 configurat",
+            "missing_configuration": "El component no est\u00e0 configurat. Mira'n la documentaci\u00f3."
+        },
+        "create_entry": {
+            "default": "Autenticaci\u00f3 exitosa"
+        },
+        "error": {
+            "follow_link": "V\u00e9s a l'enlla\u00e7 i autentica't abans de pr\u00e9mer Envia",
+            "no_token": "No autenticat amb Ambi Climate"
+        },
+        "step": {
+            "auth": {
+                "description": "V\u00e9s a l'[enlla\u00e7]({authorization_url}) i **Permet** l'acc\u00e9s al teu compte de Ambiclimate, despr\u00e9s torna i prem **Envia** a sota.\n(Assegura't que l'enlla\u00e7 de retorn \u00e9s el seg\u00fcent {cb_url})",
+                "title": "Autenticaci\u00f3 amb Ambi Climate"
+            }
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Envia informaci\u00f3 respecte al mode confort.",
+            "fields": {
+                "name": {
+                    "description": "Cadena de car\u00e0cters amb el nom del dispositiu.",
+                    "name": "Nom del dispositiu"
+                },
+                "value": {
+                    "description": "Envieu qualsevol dels valors de confort seg\u00fcents: too_hot, too_warm, bit_warm, comfortable, bit_cold, too_cold, freezing.",
+                    "name": "Valor de confort"
+                }
+            },
+            "name": "Envia informaci\u00f3 sobre el confort"
+        },
+        "set_comfort_mode": {
+            "description": "Activa el mode confort al teu AC.",
+            "fields": {
+                "name": {
+                    "description": "Cadena de car\u00e0cters amb el nom del dispositiu.",
+                    "name": "Nom del dispositiu"
+                }
+            },
+            "name": "Configura el mode confort"
+        },
+        "set_temperature_mode": {
+            "description": "Activa el mode de temperatura al teu AC.",
+            "fields": {
+                "name": {
+                    "description": "Cadena de car\u00e0cters amb el nom del dispositiu.",
+                    "name": "Nom del dispositiu"
+                },
+                "value": {
+                    "description": "Valor objectiu en graus cent\u00edgrads.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Configura el mode de temperatura"
+        }
+    }
+}

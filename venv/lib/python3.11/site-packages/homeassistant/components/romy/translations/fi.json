@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Laite on jo m\u00e4\u00e4ritetty",
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui"
+        },
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "invalid_auth": "Virheellinen todennus"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "password": {
+                "data": {
+                    "password": "Salasana"
+                },
+                "data_description": {
+                    "password": "(8 merkki\u00e4, katso QR-koodi roskakorin alla)."
+                },
+                "title": "Salasana vaaditaan"
+            },
+            "user": {
+                "data": {
+                    "host": "Palvelin"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Haluatko lis\u00e4t\u00e4 ROMY-p\u00f6lynimuri {name} yrityksen Home Assistant muistilistalle?"
+            }
+        }
+    },
+    "entity": {
+        "vacuum": {
+            "romy": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "auto": "Automaattinen",
+                            "default": "Oletus",
+                            "high": "Nopea",
+                            "intensive": "Intensiivinen",
+                            "normal": "Normaali",
+                            "silent": "Hiljainen",
+                            "super_silent": "Eritt\u00e4in hiljainen"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

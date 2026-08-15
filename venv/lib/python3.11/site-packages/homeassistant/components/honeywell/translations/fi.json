@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "invalid_auth": "Virheellinen todennus"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Salasana"
+                },
+                "description": "Honeywell-integraation on todennettava tilisi uudelleen.",
+                "title": "Todennus vanhentui kohteella {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Salasana",
+                    "username": "K\u00e4ytt\u00e4j\u00e4tunnus"
+                },
+                "description": "Sy\u00f6t\u00e4 tunnukset, joilla kirjaudut sis\u00e4\u00e4n mytotalconnectcomfort.com-sivustolle."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "Poissa",
+                            "hold": "Pid\u00e4",
+                            "none": "Ei mit\u00e4\u00e4n"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "Ulkoilman kosteus"
+            },
+            "outdoor_temperature": {
+                "name": "Ulkol\u00e4mp\u00f6tila"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Poissa viile\u00e4 l\u00e4mp\u00f6tila",
+                    "away_heat_temperature": "Poissa l\u00e4mp\u00f6tila"
+                },
+                "description": "Honeywellin lis\u00e4konfiguraatiovaihtoehdot. L\u00e4mp\u00f6tilat asetetaan Fahrenheit-asteikolla."
+            }
+        }
+    }
+}

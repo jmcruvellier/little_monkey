@@ -1,0 +1,38 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "confirm": {
+                "description": "\u60a8\u60f3\u8981\u8bbe\u7f6e{name} {model} ( {host} ) \u5417\uff1f"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                }
+            }
+        }
+    },
+    "entity": {
+        "switch": {
+            "hold": {
+                "name": "\u4fdd\u6301\u6a21\u5f0f"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "hold_temp": "\u8c03\u8282\u6e29\u5ea6\u65f6\u8bbe\u7f6e\u6c38\u4e45\u4fdd\u6301\u3002"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "config": {
+        "error": {
+            "invalid_hostname": "Neteisingas pagrindinio kompiuterio pavadinimas"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "hostname": "Pagrindinio kompiuterio pavadinimas, kuriam reikia atlikti DNS u\u017eklaus\u0105",
+                    "resolver": "IPV4 paie\u0161kos sprendimas",
+                    "resolver_ipv6": "IPV6 paie\u0161kos sprendimas"
+                }
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "already_configured": "Paslauga jau sukonfig\u016bruota"
+        },
+        "error": {
+            "invalid_resolver": "Netinkamas sprendiklio IP adresas"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "resolver": "IPV4 paie\u0161kos sprendimas",
+                    "resolver_ipv6": "IPV6 paie\u0161kos sprendimas"
+                }
+            }
+        }
+    }
+}

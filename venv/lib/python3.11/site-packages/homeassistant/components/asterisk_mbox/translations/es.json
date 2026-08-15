@@ -1,0 +1,8 @@
+{
+    "issues": {
+        "deprecated_integration": {
+            "description": "Se va a eliminar {integration_title} porque la plataforma `{mailbox}` se va a eliminar y {integration_title} no admite otras plataformas. Elimina la configuraci\u00f3n `{domain}` de tu archivo configuration.yaml y reinicia Home Assistant para solucionar este problema.",
+            "title": "Se va a eliminar {integration_title}"
+        }
+    }
+}

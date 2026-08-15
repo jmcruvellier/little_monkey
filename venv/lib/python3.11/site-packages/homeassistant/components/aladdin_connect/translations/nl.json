@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd",
+            "reauth_successful": "Herauthenticatie geslaagd"
+        },
+        "error": {
+            "cannot_connect": "Kan geen verbinding maken",
+            "invalid_auth": "Ongeldige authenticatie"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Wachtwoord"
+                },
+                "description": "De Aladdin Connect-integratie moet je account opnieuw verifi\u00ebren",
+                "title": "Authenticatie is verlopen voor {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Wachtwoord",
+                    "username": "Gebruikersnaam"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ble_strength": {
+                "name": "BLE Sterkte"
+            },
+            "wifi_strength": {
+                "name": "Wi-Fi RSSI"
+            }
+        }
+    }
+}

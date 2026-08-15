@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Cihaz s\u0131n\u0131f\u0131",
+                    "name": "Ad"
+                },
+                "title": "Rastgele ikili sens\u00f6r"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Cihaz s\u0131n\u0131f\u0131",
+                    "maximum": "Maksimum",
+                    "minimum": "Minimum",
+                    "name": "Ad",
+                    "unit_of_measurement": "\u00d6l\u00e7\u00fc birimi"
+                },
+                "title": "Rastgele sens\u00f6r"
+            },
+            "user": {
+                "description": "Bu yard\u0131mc\u0131, rastgele bir de\u011fer yayan bir yard\u0131mc\u0131 olu\u015fturman\u0131za olanak tan\u0131r.",
+                "menu_options": {
+                    "binary_sensor": "Rastgele ikili sens\u00f6r",
+                    "sensor": "Rastgele sens\u00f6r"
+                },
+                "title": "Rastgele yard\u0131mc\u0131"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Bu yard\u0131mc\u0131n\u0131n herhangi bir se\u00e7ene\u011fi yok.",
+                "title": "Rastgele ikili sens\u00f6r"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Cihaz s\u0131n\u0131f\u0131",
+                    "maximum": "Maksimum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "\u00d6l\u00e7\u00fc birimi"
+                },
+                "title": "Rastgele sens\u00f6r"
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispozitivul a fost configurat deja"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_auth": "Autentificare nevalid\u0103",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "flow_title": "Configurare LOQED Touch Smartlock",
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Cheie API",
+                    "name": "Numele lac\u0103tului \u00een aplica\u021bia LOQED."
+                },
+                "description": "Autentific\u0103-te la {config_url} \u0219i: \n* Creeaz\u0103 o cheie de API ap\u0103s\u00e2nd pe 'Create' \n* Copiaz\u0103 token-ul de acces creat."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ble_strength": {
+                "name": "Semnal Bluetooth"
+            }
+        }
+    }
+}

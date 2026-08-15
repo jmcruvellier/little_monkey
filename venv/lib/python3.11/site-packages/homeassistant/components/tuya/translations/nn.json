@@ -1,0 +1,14 @@
+{
+    "entity": {
+        "select": {
+            "vacuum_mode": {
+                "state": {
+                    "spiral": "Spiral",
+                    "standby": "Avventar",
+                    "wall_follow": "F\u00f8lg vegg",
+                    "zone": "Sone"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_auth": "Ung\u00fcltige Authentifizierung"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Passwort"
+                },
+                "description": "Die Honeywell-Integration muss dein Konto erneut authentifizieren",
+                "title": "Die Authentifizierung ist abgelaufen f\u00fcr {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "description": "Bitte gib die Anmeldedaten ein, mit denen du dich bei mytotalconnectcomfort.com anmeldest."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "Abwesend",
+                            "hold": "Halten",
+                            "none": "Keine"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "Luftfeuchtigkeit im Freien"
+            },
+            "outdoor_temperature": {
+                "name": "Au\u00dfentemperatur"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Abwesend K\u00fchlungstemperatur",
+                    "away_heat_temperature": "Abwesend Heiztemperatur"
+                },
+                "description": "Zus\u00e4tzliche Honeywell-Konfigurationsoptionen. Die Temperaturen werden in Fahrenheit eingestellt."
+            }
+        }
+    }
+}

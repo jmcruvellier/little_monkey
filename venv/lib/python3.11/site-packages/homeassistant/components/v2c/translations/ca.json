@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Amfitri\u00f3"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "Carregant"
+            },
+            "connected": {
+                "name": "Connectat"
+            },
+            "ready": {
+                "name": "A punt"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intensitat"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "Energia de c\u00e0rrega"
+            },
+            "charge_power": {
+                "name": "Pot\u00e8ncia de c\u00e0rrega"
+            },
+            "charge_time": {
+                "name": "Temps de c\u00e0rrega"
+            },
+            "fv_power": {
+                "name": "Pot\u00e8ncia fotovoltaica"
+            },
+            "house_power": {
+                "name": "Pot\u00e8ncia de la casa"
+            }
+        },
+        "switch": {
+            "paused": {
+                "name": "Pausa la sessi\u00f3"
+            }
+        }
+    }
+}

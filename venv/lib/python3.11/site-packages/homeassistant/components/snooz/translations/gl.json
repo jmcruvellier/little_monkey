@@ -1,0 +1,12 @@
+{
+    "config": {
+        "progress": {
+            "wait_for_pairing_mode": "Para completar a configuraci\u00f3n, pon este dispositivo en modo de emparellamento.\n\n### Como entrar no modo de emparellamento\n1. Forza o peche das aplicaci\u00f3ns m\u00f3beis SNOOZ.\n2. Mant\u00e9n presionado o bot\u00f3n de encendido no dispositivo. Solta cando as luces comecen a parpadear (aproximadamente 5 segundos)."
+        },
+        "step": {
+            "pairing_timeout": {
+                "description": "O dispositivo non entrou no modo de emparellamento. Fai clic en Enviar para tentar de novo.\n\n### Soluci\u00f3n de problemas\n1. Comproba que o dispositivo non est\u00e1 conectado \u00e1 aplicaci\u00f3n m\u00f3bil.\n2. Desconecta o dispositivo durante 5 segundos, e logo volve conectalo."
+            }
+        }
+    }
+}

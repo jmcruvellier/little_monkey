@@ -1,0 +1,40 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "password": "Passwort",
+                    "pin": "PIN-Code",
+                    "ssl": "Verwendet ein SSL-Zertifikat",
+                    "username": "Benutzername"
+                },
+                "data_description": {
+                    "host": "Hostname oder IP-Adresse deines Venstar-Thermostats."
+                },
+                "description": "Anschluss an den Venstar-Thermostat",
+                "title": "Mit Venstar-Thermostat verbinden"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "schedule_part": {
+                "state": {
+                    "day": "Tag",
+                    "evening": "Abend",
+                    "inactive": "Inaktiv",
+                    "morning": "Morgen",
+                    "night": "Nacht"
+                }
+            }
+        }
+    }
+}

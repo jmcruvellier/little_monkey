@@ -1,0 +1,33 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_access_token": "\u8bbf\u95ee Token \u65e0\u6548",
+            "timeout": "\u8fde\u63a5\u5230 Tibber \u8d85\u65f6"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "\u8bbf\u95ee Token"
+                },
+                "description": "\u4ece {url} \u8f93\u5165\u60a8\u7684\u8bbf\u95ee\u4ee4\u724c"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_l1": {
+                "name": "\u5f53\u524dL1"
+            },
+            "current_l2": {
+                "name": "\u5f53\u524dL2"
+            },
+            "current_l3": {
+                "name": "\u5f53\u524dL3"
+            }
+        }
+    }
+}

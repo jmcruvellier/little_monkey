@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "invalid_auth": "Tuvastamine nurjus"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Salas\u00f5na"
+                },
+                "description": "Honeywell sidumine peab konto uuesti tuvastama.",
+                "title": "{name} autentimine aegus"
+            },
+            "user": {
+                "data": {
+                    "password": "Salas\u00f5na",
+                    "username": "Kasutajanimi"
+                },
+                "description": "Sisesta saidile mytotalconnectcomfort.com sisenemiseks kasutatav mandaat."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "Eemal",
+                            "hold": "Hoia",
+                            "none": "Puudub"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "V\u00e4lis\u00f5hu niiskus"
+            },
+            "outdoor_temperature": {
+                "name": "V\u00e4listemperatuur"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Eemaloleku jahutuse temperatuur",
+                    "away_heat_temperature": "Eemaloleku k\u00fctte temperatuur"
+                },
+                "description": "T\u00e4iendavad Honeywelli seadistusv\u00f5imalused. Temperatuurid on Fahrenheiti kraadides."
+            }
+        }
+    }
+}

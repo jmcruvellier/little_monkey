@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "\u9078\u629e\u3057\u305f\u30bf\u30fc\u30b2\u30c3\u30c8\u306b\u901a\u77e5\u30e1\u30c3\u30bb\u30fc\u30b8\u3092\u9001\u4fe1\u3057\u307e\u3059\u3002",
+            "fields": {
+                "data": {
+                    "description": "\u4e00\u90e8\u306e\u7d71\u5408\u3067\u306f\u62e1\u5f35\u6a5f\u80fd\u304c\u63d0\u4f9b\u3055\u308c\u307e\u3059\u3002 _data_ \u306e\u4f7f\u7528\u65b9\u6cd5\u306b\u3064\u3044\u3066\u306f\u3001\u7d71\u5408\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+                    "name": "\u30c7\u30fc\u30bf"
+                },
+                "message": {
+                    "description": "\u901a\u77e5\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u672c\u6587\u3002",
+                    "name": "\u30e1\u30c3\u30bb\u30fc\u30b8"
+                },
+                "target": {
+                    "description": "\u4e00\u90e8\u306e\u7d71\u5408\u3067\u306f\u3001\u901a\u77e5\u3092\u53d7\u4fe1\u3059\u308b\u30bf\u30fc\u30b2\u30c3\u30c8\u3092\u6307\u5b9a\u3067\u304d\u307e\u3059\u3002\u8a73\u7d30\u306b\u3064\u3044\u3066\u306f\u3001\u7d71\u5408\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+                    "name": "\u30bf\u30fc\u30b2\u30c3\u30c8"
+                },
+                "title": {
+                    "description": "\u901a\u77e5\u306e\u30bf\u30a4\u30c8\u30eb\u3002",
+                    "name": "\u30bf\u30a4\u30c8\u30eb"
+                }
+            },
+            "name": "\u901a\u77e5\u306e\u9001\u4fe1"
+        },
+        "persistent_notification": {
+            "description": "**\u901a\u77e5** \u30d1\u30cd\u30eb\u306b\u8868\u793a\u3055\u308c\u308b\u901a\u77e5\u3092\u9001\u4fe1\u3057\u307e\u3059\u3002",
+            "fields": {
+                "data": {
+                    "description": "\u4e00\u90e8\u306e\u7d71\u5408\u3067\u306f\u62e1\u5f35\u6a5f\u80fd\u304c\u63d0\u4f9b\u3055\u308c\u307e\u3059\u3002 _data_ \u306e\u4f7f\u7528\u65b9\u6cd5\u306b\u3064\u3044\u3066\u306f\u3001\u7d71\u5408\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+                    "name": "\u30c7\u30fc\u30bf"
+                },
+                "message": {
+                    "description": "\u901a\u77e5\u306e\u30e1\u30c3\u30bb\u30fc\u30b8\u672c\u6587\u3002",
+                    "name": "\u30e1\u30c3\u30bb\u30fc\u30b8"
+                },
+                "title": {
+                    "description": "\u901a\u77e5\u306e\u30bf\u30a4\u30c8\u30eb\u3002",
+                    "name": "\u30bf\u30a4\u30c8\u30eb"
+                }
+            },
+            "name": "\u6c38\u7d9a\u7684\u306a\u901a\u77e5\u3092\u9001\u4fe1\u3059\u308b"
+        }
+    },
+    "title": "\u901a\u77e5"
+}

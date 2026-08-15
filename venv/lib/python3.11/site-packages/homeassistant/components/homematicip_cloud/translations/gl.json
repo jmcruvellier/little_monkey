@@ -1,0 +1,28 @@
+{
+    "services": {
+        "reset_energy_counter": {
+            "description": "Restablece o contador de enerx\u00eda dunha entidade de medici\u00f3n.",
+            "fields": {
+                "entity_id": {
+                    "description": "O ID da entidade de medici\u00f3n. Use a palabra clave 'todos' para reiniciar todos os contadores de enerx\u00eda.",
+                    "name": "Entidade"
+                }
+            },
+            "name": "Restablecer o contador de enerx\u00eda"
+        },
+        "set_active_climate_profile": {
+            "description": "Establece o \u00edndice do perfil clim\u00e1tico activo.",
+            "fields": {
+                "climate_profile_index": {
+                    "description": "O \u00edndice do perfil clim\u00e1tico.",
+                    "name": "\u00cdndice de perfil clim\u00e1tico"
+                },
+                "entity_id": {
+                    "description": "O ID da entidade clim\u00e1tica. Use a palabra clave 'all' para cambiar o perfil de todas as entidades.",
+                    "name": "Entidade"
+                }
+            },
+            "name": "Establecer perfil de clima activo"
+        }
+    }
+}

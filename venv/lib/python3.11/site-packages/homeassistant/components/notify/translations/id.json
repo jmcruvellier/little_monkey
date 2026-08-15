@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "Mengirimkan pesan notifikasi ke target yang dipilih.",
+            "fields": {
+                "data": {
+                    "description": "Beberapa integrasi menyediakan fungsionalitas yang diperluas. Untuk informasi tentang cara menggunakan _data_, lihat dokumentasi integrasi.",
+                    "name": "Data"
+                },
+                "message": {
+                    "description": "Isi pesan notifikasi.",
+                    "name": "Pesan"
+                },
+                "target": {
+                    "description": "Beberapa integrasi memungkinkan Anda menentukan target yang menerima notifikasi. Untuk informasi selengkapnya, lihat dokumentasi integrasi.",
+                    "name": "Target"
+                },
+                "title": {
+                    "description": "Judul notifikasi Anda.",
+                    "name": "Judul"
+                }
+            },
+            "name": "Kirim notifikasi"
+        },
+        "persistent_notification": {
+            "description": "Mengirimkan notifikasi yang terlihat di panel **Notifikasi**.",
+            "fields": {
+                "data": {
+                    "description": "Beberapa integrasi menyediakan fungsionalitas yang diperluas. Untuk informasi tentang cara menggunakan _data_, lihat dokumentasi integrasi.",
+                    "name": "Data"
+                },
+                "message": {
+                    "description": "Isi pesan notifikasi.",
+                    "name": "Pesan"
+                },
+                "title": {
+                    "description": "Judul notifikasi.",
+                    "name": "Judul"
+                }
+            },
+            "name": "Kirim notifikasi persisten"
+        }
+    },
+    "title": "Notifikasi"
+}

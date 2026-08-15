@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "Se\u00e7ilen hedeflere bir bildirim mesaj\u0131 g\u00f6nderir.",
+            "fields": {
+                "data": {
+                    "description": "Baz\u0131 entegrasyonlar geni\u015fletilmi\u015f i\u015flevsellik sa\u011flar. _data_'n\u0131n nas\u0131l kullan\u0131laca\u011f\u0131 hakk\u0131nda bilgi i\u00e7in entegrasyon belgelerine bak\u0131n.",
+                    "name": "Veri"
+                },
+                "message": {
+                    "description": "Bildirimin mesaj g\u00f6vdesi.",
+                    "name": "\u0130leti"
+                },
+                "target": {
+                    "description": "Baz\u0131 entegrasyonlar, bildirimi alacak hedefleri belirlemenize olanak tan\u0131r. Daha fazla bilgi i\u00e7in entegrasyon belgelerine bak\u0131n.",
+                    "name": "Hedef"
+                },
+                "title": {
+                    "description": "Bildiriminiz i\u00e7in ba\u015fl\u0131k.",
+                    "name": "Ba\u015fl\u0131k"
+                }
+            },
+            "name": "Bildirim g\u00f6nder"
+        },
+        "persistent_notification": {
+            "description": "**Bildirimler** panelinde g\u00f6r\u00fcnen bir bildirim g\u00f6nderir.",
+            "fields": {
+                "data": {
+                    "description": "Baz\u0131 entegrasyonlar geni\u015fletilmi\u015f i\u015flevsellik sa\u011flar. _data_ kullan\u0131m\u0131 hakk\u0131nda bilgi i\u00e7in entegrasyon belgelerine ba\u015fvurun.",
+                    "name": "Veri"
+                },
+                "message": {
+                    "description": "Bildirimin mesaj g\u00f6vdesi.",
+                    "name": "\u0130leti"
+                },
+                "title": {
+                    "description": "Bildirimin ba\u015fl\u0131\u011f\u0131.",
+                    "name": "Ba\u015fl\u0131k"
+                }
+            },
+            "name": "Kal\u0131c\u0131 bildirim g\u00f6nder"
+        }
+    },
+    "title": "Bildirimler"
+}

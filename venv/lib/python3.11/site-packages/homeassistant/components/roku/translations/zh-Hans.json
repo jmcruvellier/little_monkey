@@ -1,0 +1,32 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "already_in_progress": "\u914d\u7f6e\u6d41\u7a0b\u5df2\u5728\u8fdb\u884c\u4e2d",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "discovery_confirm": {
+                "data": {
+                    "other": " "
+                },
+                "description": "\u60a8\u8981\u8bbe\u7f6e{name}\u5417\uff1f"
+            },
+            "ssdp_confirm": {
+                "data": {
+                    "other": "\u7a7a"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                },
+                "description": "\u8f93\u5165\u60a8\u7684 Roku \u4fe1\u606f\u3002"
+            }
+        }
+    }
+}

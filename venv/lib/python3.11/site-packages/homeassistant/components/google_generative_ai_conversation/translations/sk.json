@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_auth": "Neplatn\u00e9 overenie",
+            "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API k\u013e\u00fa\u010d"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Maxim\u00e1lny po\u010det tokenov, ktor\u00e9 sa maj\u00fa vr\u00e1ti\u0165 v odpovedi",
+                    "model": "Model",
+                    "prompt": "\u0160abl\u00f3na v\u00fdzvy",
+                    "temperature": "Teplota",
+                    "top_k": "Top K",
+                    "top_p": "Top P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Generovanie obsahu z v\u00fdzvy pozost\u00e1vaj\u00facej z textu a volite\u013en\u00fdch obr\u00e1zkov",
+            "fields": {
+                "image_filename": {
+                    "description": "Obr\u00e1zky",
+                    "example": "/config/www/image.jpg",
+                    "name": "N\u00e1zov s\u00faboru obr\u00e1zka"
+                },
+                "prompt": {
+                    "description": "V\u00fdzva",
+                    "example": "Op\u00ed\u0161te, \u010do vid\u00edte na t\u00fdchto obr\u00e1zkoch",
+                    "name": "Prompt"
+                }
+            },
+            "name": "Generovanie obsahu"
+        }
+    }
+}

@@ -1,0 +1,276 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Urz\u0105dzenie jest ju\u017c skonfigurowane"
+        },
+        "error": {
+            "cannot_connect": "Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                },
+                "title": "Konfiguracja serwera"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "hub_short_0": {
+                "name": "Hub short on branch 0"
+            },
+            "hub_short_1": {
+                "name": "Hub short on branch 1"
+            },
+            "hub_short_2": {
+                "name": "Hub short on branch 2"
+            },
+            "hub_short_3": {
+                "name": "Hub short on branch 3"
+            },
+            "sensed_0": {
+                "name": "Sensed 0"
+            },
+            "sensed_1": {
+                "name": "Sensed 1"
+            },
+            "sensed_2": {
+                "name": "Sensed 2"
+            },
+            "sensed_3": {
+                "name": "Sensed 3"
+            },
+            "sensed_4": {
+                "name": "Sensed 4"
+            },
+            "sensed_5": {
+                "name": "Sensed 5"
+            },
+            "sensed_6": {
+                "name": "Sensed 6"
+            },
+            "sensed_7": {
+                "name": "Sensed 7"
+            },
+            "sensed_a": {
+                "name": "Sensed A"
+            },
+            "sensed_b": {
+                "name": "Sensed B"
+            }
+        },
+        "sensor": {
+            "counter_a": {
+                "name": "Counter A"
+            },
+            "counter_b": {
+                "name": "Counter B"
+            },
+            "humidity": {
+                "name": "Wilgotno\u015b\u0107"
+            },
+            "humidity_hih3600": {
+                "name": "Wilgotno\u015b\u0107 HIH3600"
+            },
+            "humidity_hih4000": {
+                "name": "Wilgotno\u015b\u0107 HIH4000"
+            },
+            "humidity_hih5030": {
+                "name": "Wilgotno\u015b\u0107 HIH5030"
+            },
+            "humidity_htm1735": {
+                "name": "Wilgotno\u015b\u0107 HTM1735"
+            },
+            "humidity_raw": {
+                "name": "Surowa wilgotno\u015b\u0107"
+            },
+            "illuminance": {
+                "name": "Nat\u0119\u017cenie o\u015bwietlenia"
+            },
+            "moisture_1": {
+                "name": "Wilgo\u0107 1"
+            },
+            "moisture_2": {
+                "name": "Wilgo\u0107 2"
+            },
+            "moisture_3": {
+                "name": "Wilgo\u0107 3"
+            },
+            "moisture_4": {
+                "name": "Wilgo\u0107 4"
+            },
+            "pressure": {
+                "name": "Ci\u015bnienie"
+            },
+            "temperature": {
+                "name": "Temperatura"
+            },
+            "thermocouple_temperature_k": {
+                "name": "Temperatura termopary (K)"
+            },
+            "voltage": {
+                "name": "Napi\u0119cie"
+            },
+            "voltage_vad": {
+                "name": "Napi\u0119cie VAD"
+            },
+            "voltage_vdd": {
+                "name": "Napi\u0119cie VDD"
+            },
+            "voltage_vis": {
+                "name": "R\u00f3\u017cnica napi\u0119cia VIS"
+            },
+            "voltage_vis_gradient": {
+                "name": "Gradient napi\u0119cia VIS"
+            },
+            "wetness_0": {
+                "name": "Wilgotno\u015b\u0107 0"
+            },
+            "wetness_1": {
+                "name": "Wilgotno\u015b\u0107 1"
+            },
+            "wetness_2": {
+                "name": "Wilgotno\u015b\u0107 2"
+            },
+            "wetness_3": {
+                "name": "Wilgotno\u015b\u0107 3"
+            }
+        },
+        "switch": {
+            "hub_branch_0": {
+                "name": "Hub branch 0"
+            },
+            "hub_branch_1": {
+                "name": "Hub branch 1"
+            },
+            "hub_branch_2": {
+                "name": "Hub branch 2"
+            },
+            "hub_branch_3": {
+                "name": "Hub branch 3"
+            },
+            "iad": {
+                "name": "Bie\u017c\u0105ca kontrola A/D"
+            },
+            "latch_0": {
+                "name": "Latch 0"
+            },
+            "latch_1": {
+                "name": "Latch 1"
+            },
+            "latch_2": {
+                "name": "Latch 2"
+            },
+            "latch_3": {
+                "name": "Latch 3"
+            },
+            "latch_4": {
+                "name": "Latch 4"
+            },
+            "latch_5": {
+                "name": "Latch 5"
+            },
+            "latch_6": {
+                "name": "Latch 6"
+            },
+            "latch_7": {
+                "name": "Latch 7"
+            },
+            "latch_a": {
+                "name": "Latch A"
+            },
+            "latch_b": {
+                "name": "Latch B"
+            },
+            "leaf_sensor_0": {
+                "name": "Sensor leaf 0"
+            },
+            "leaf_sensor_1": {
+                "name": "Sensor leaf 1"
+            },
+            "leaf_sensor_2": {
+                "name": "Sensor leaf 2"
+            },
+            "leaf_sensor_3": {
+                "name": "Sensor leaf 3"
+            },
+            "moisture_sensor_0": {
+                "name": "Sensor wilgoci 0"
+            },
+            "moisture_sensor_1": {
+                "name": "Sensor wilgoci 1"
+            },
+            "moisture_sensor_2": {
+                "name": "Sensor wilgoci 2"
+            },
+            "moisture_sensor_3": {
+                "name": "Sensor wilgoci 3"
+            },
+            "pio": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie"
+            },
+            "pio_0": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 0"
+            },
+            "pio_1": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 1"
+            },
+            "pio_2": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 2"
+            },
+            "pio_3": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 3"
+            },
+            "pio_4": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 4"
+            },
+            "pio_5": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 5"
+            },
+            "pio_6": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 6"
+            },
+            "pio_7": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie 7"
+            },
+            "pio_a": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie A"
+            },
+            "pio_b": {
+                "name": "Zaprogramowane wej\u015bcie-wyj\u015bcie B"
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "device_not_selected": "Wybierz urz\u0105dzenia do skonfigurowania"
+        },
+        "step": {
+            "ack_no_options": {
+                "data": {
+                    "few": "Pustych",
+                    "many": "Pustych",
+                    "one": "Pusty",
+                    "other": "Puste"
+                }
+            },
+            "configure_device": {
+                "data": {
+                    "precision": "Dok\u0142adno\u015b\u0107 sensora"
+                },
+                "description": "Wybierz dok\u0142adno\u015b\u0107 dla sensora {sensor_id}",
+                "title": "Dok\u0142adno\u015b\u0107 sensora OneWire"
+            },
+            "device_selection": {
+                "data": {
+                    "clear_device_options": "Wyczy\u015b\u0107 wszystkie konfiguracje urz\u0105dze\u0144",
+                    "device_selection": "Wybierz urz\u0105dzenia do skonfigurowania"
+                },
+                "description": "Wybierz, kt\u00f3re kroki konfiguracji maj\u0105 by\u0107 przetworzone",
+                "title": "Opcje urz\u0105dze\u0144 OneWire"
+            }
+        }
+    }
+}

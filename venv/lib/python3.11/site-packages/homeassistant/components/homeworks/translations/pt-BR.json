@@ -1,0 +1,16 @@
+{
+    "options": {
+        "step": {
+            "add_button": {
+                "data": {
+                    "led": "LED"
+                }
+            },
+            "edit_button": {
+                "data": {
+                    "led": "LED"
+                }
+            }
+        }
+    }
+}

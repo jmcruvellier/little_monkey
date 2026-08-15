@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Gagal terhubung",
+            "invalid_auth": "Autentikasi tidak valid",
+            "unknown": "Kesalahan tak terduga"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Kunci API"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Jumlah token maksimum untuk dikembalikan sebagai respons",
+                    "model": "Model",
+                    "prompt": "Templat Permintaan",
+                    "temperature": "Suhu",
+                    "top_k": "K Teratas",
+                    "top_p": "P Teratas"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Menghasilkan konten dari perintah yang terdiri dari teks dan gambar secara opsional",
+            "fields": {
+                "image_filename": {
+                    "description": "Gambar",
+                    "example": "/config/www/image.jpg",
+                    "name": "Nama file gambar"
+                },
+                "prompt": {
+                    "description": "Perintah",
+                    "example": "Jelaskan apa yang Anda lihat dalam gambar ini",
+                    "name": "Perintah"
+                }
+            },
+            "name": "Hasilkan konten"
+        }
+    }
+}

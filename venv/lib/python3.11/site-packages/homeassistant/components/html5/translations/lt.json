@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Atsisako html5 prane\u0161imo.",
+            "fields": {
+                "data": {
+                    "description": "I\u0161pl\u0117stin\u0117 prane\u0161imo informacija. Palaiko \u017eym\u0105.",
+                    "name": "Duomenys"
+                },
+                "target": {
+                    "description": "Taikini\u0173 masyvas.",
+                    "name": "Tikslas"
+                }
+            },
+            "name": "Atsisakyti"
+        }
+    }
+}

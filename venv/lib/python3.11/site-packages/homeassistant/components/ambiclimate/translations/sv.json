@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Ok\u00e4nt fel vid generering av \u00e5tkomsttoken.",
+            "already_configured": "Konto har redan konfigurerats",
+            "missing_configuration": "Komponenten har inte konfigurerats. F\u00f6lj dokumentationen."
+        },
+        "create_entry": {
+            "default": "Autentisering lyckades"
+        },
+        "error": {
+            "follow_link": "V\u00e4nligen f\u00f6lj l\u00e4nken och autentisera dig innan du trycker p\u00e5 Skicka",
+            "no_token": "Inte autentiserad med Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "F\u00f6lj denna [l\u00e4nk]( {authorization_url} ) och **Till\u00e5t** \u00e5tkomst till ditt Ambiclimate-konto, kom sedan tillbaka och tryck p\u00e5 **Skicka** nedan.\n (Se till att den angivna \u00e5teruppringningsadressen \u00e4r {cb_url}",
+                "title": "Autentisera Ambiclimate"
+            }
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Skickar \u00e5terkoppling f\u00f6r komfortl\u00e4ge.",
+            "fields": {
+                "name": {
+                    "description": "Str\u00e4ng med enhetsnamn.",
+                    "name": "Enhetsnamn"
+                },
+                "value": {
+                    "description": "Skicka n\u00e5got av f\u00f6ljande komfortv\u00e4rden: too_hot, too_warm, bit_warm, comfortable, bit_cold, too_cold, freezing\n.",
+                    "name": "Komfortv\u00e4rde"
+                }
+            },
+            "name": "Skicka komfortfeedback"
+        },
+        "set_comfort_mode": {
+            "description": "Aktiverar komfortl\u00e4ge p\u00e5 din AC.",
+            "fields": {
+                "name": {
+                    "description": "Str\u00e4ng med enhetsnamn.",
+                    "name": "Enhetsnamn"
+                }
+            },
+            "name": "St\u00e4ll in komfortl\u00e4ge"
+        },
+        "set_temperature_mode": {
+            "description": "Aktiverar temperaturl\u00e4ge p\u00e5 din AC.",
+            "fields": {
+                "name": {
+                    "description": "Str\u00e4ng med enhetsnamn.",
+                    "name": "Enhetsnamn"
+                },
+                "value": {
+                    "description": "M\u00e5ltemperatur i celsius.",
+                    "name": "Temperatur"
+                }
+            },
+            "name": "St\u00e4ll in temperaturl\u00e4ge"
+        }
+    }
+}

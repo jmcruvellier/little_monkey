@@ -1,0 +1,85 @@
+{
+    "services": {
+        "send_animation": {
+            "description": "Envoyer une animation.",
+            "fields": {
+                "password": {
+                    "name": "Mot de passe"
+                },
+                "username": {
+                    "name": "Nom d'utilisateur"
+                },
+                "verify_ssl": {
+                    "name": "V\u00e9rifier le certificat SSL"
+                }
+            }
+        },
+        "send_document": {
+            "fields": {
+                "password": {
+                    "name": "Mot de passe"
+                },
+                "username": {
+                    "name": "Nom d'utilisateur"
+                },
+                "verify_ssl": {
+                    "name": "V\u00e9rifier le certificat SSL"
+                }
+            }
+        },
+        "send_photo": {
+            "fields": {
+                "password": {
+                    "name": "Mot de passe"
+                },
+                "username": {
+                    "name": "Nom d'utilisateur"
+                },
+                "verify_ssl": {
+                    "description": "Active ou d\u00e9sactive la v\u00e9rification du certificat SSL. D\u00e9finissez cette option sur false si vous t\u00e9l\u00e9chargez le fichier \u00e0 partir d'une URL et que vous ne souhaitez pas valider le certificat SSL du serveur.",
+                    "name": "V\u00e9rifier le certificat SSL"
+                }
+            }
+        },
+        "send_sticker": {
+            "fields": {
+                "password": {
+                    "name": "Mot de passe"
+                },
+                "url": {
+                    "name": "URL"
+                },
+                "username": {
+                    "name": "Nom d'utilisateur"
+                },
+                "verify_ssl": {
+                    "description": "Active ou d\u00e9sactive la v\u00e9rification du certificat SSL. D\u00e9finissez cette option sur false si vous t\u00e9l\u00e9chargez le fichier \u00e0 partir d'une URL et que vous ne souhaitez pas valider le certificat SSL du serveur.",
+                    "name": "V\u00e9rifier le certificat SSL"
+                }
+            }
+        },
+        "send_video": {
+            "fields": {
+                "password": {
+                    "name": "Mot de passe"
+                },
+                "username": {
+                    "name": "Nom d'utilisateur"
+                },
+                "verify_ssl": {
+                    "name": "V\u00e9rifier le certificat SSL"
+                }
+            }
+        },
+        "send_voice": {
+            "fields": {
+                "password": {
+                    "name": "Mot de passe"
+                },
+                "username": {
+                    "name": "Nom d'utilisateur"
+                }
+            }
+        }
+    }
+}

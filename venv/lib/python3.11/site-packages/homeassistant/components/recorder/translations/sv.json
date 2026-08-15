@@ -1,0 +1,63 @@
+{
+    "issues": {
+        "maria_db_range_index_regression": {
+            "description": "\u00c4ldre versioner av MariaDB har en betydande prestandaf\u00f6rlust vid h\u00e4mtning av historikdata eller rensning av databasen. Uppdatera till MariaDB version {min_version} eller senare och starta om Home Assistant. Om du anv\u00e4nder MariaDB core add-on, se till att uppdatera den till den senaste versionen.",
+            "title": "Uppdatera MariaDB till {min_version} eller senare f\u00f6r att l\u00f6sa ett betydande prestandaproblem"
+        }
+    },
+    "services": {
+        "disable": {
+            "description": "Stoppar inspelningen av h\u00e4ndelser och tillst\u00e5nds\u00e4ndringar.",
+            "name": "Inaktivera"
+        },
+        "enable": {
+            "description": "Startar inspelningen av h\u00e4ndelser och tillst\u00e5nds\u00e4ndringar.",
+            "name": "Aktivera"
+        },
+        "purge": {
+            "description": "Startar rensningsuppgift - f\u00f6r att rensa bort gammal data fr\u00e5n din databas.",
+            "fields": {
+                "apply_filter": {
+                    "description": "Till\u00e4mpar 'entity_id'- och 'event_type'-filter ut\u00f6ver tidsbaserad rensning.",
+                    "name": "Till\u00e4mpa filter"
+                },
+                "keep_days": {
+                    "description": "Antal dagar som data ska sparas i databasen. B\u00f6rjar idag och r\u00e4knas bak\u00e5t. Ett v\u00e4rde p\u00e5 '7' inneb\u00e4r att allt som \u00e4r \u00e4ldre \u00e4n en vecka kommer att rensas.",
+                    "name": "Dagar att beh\u00e5lla"
+                },
+                "repack": {
+                    "description": "F\u00f6rs\u00f6ker att spara diskutrymme genom att skriva om hela databasfilen.",
+                    "name": "Packa om"
+                }
+            },
+            "name": "Rensa"
+        },
+        "purge_entities": {
+            "description": "Startar en rensningsuppgift f\u00f6r att rensa bort gammal data som \u00e4r relaterade till specifika entiteter fr\u00e5n databasen.",
+            "fields": {
+                "domains": {
+                    "description": "Lista \u00f6ver dom\u00e4ner f\u00f6r vilka data kommer att tas bort fr\u00e5n databasen.",
+                    "name": "Dom\u00e4ner att ta bort"
+                },
+                "entity_globs": {
+                    "description": "Lista \u00f6ver glob-m\u00f6nster som anv\u00e4nds f\u00f6r att v\u00e4lja de entiteter f\u00f6r vilka data kommer att tas bort fr\u00e5n databasen.",
+                    "name": "Entity-globs att ta bort"
+                },
+                "keep_days": {
+                    "description": "Antal dagar som data sparas f\u00f6r rader som matchar filtret. B\u00f6rjar idag och r\u00e4knas bak\u00e5t. Ett v\u00e4rde p\u00e5 '7' inneb\u00e4r att allt som \u00e4r \u00e4ldre \u00e4n en vecka kommer att rensas bort. Standardv\u00e4rdet 0 dagar inneb\u00e4r att alla matchande rader tas bort omedelbart.",
+                    "name": "Dagar att beh\u00e5lla"
+                }
+            },
+            "name": "Rensa entiteter"
+        }
+    },
+    "system_health": {
+        "info": {
+            "current_recorder_run": "Aktuell starttid",
+            "database_engine": "Databasmotor",
+            "database_version": "Databasversion",
+            "estimated_db_size": "Ber\u00e4knad databasstorlek (MiB)",
+            "oldest_recorder_run": "\u00c4ldsta starttid"
+        }
+    }
+}

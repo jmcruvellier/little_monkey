@@ -1,0 +1,263 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "step": {
+            "confirm": {
+                "description": "\u786e\u4fdd\u5728 DSMR Reader \u4e2d\u914d\u7f6e\u201c\u62c6\u5206\u4e3b\u9898\u201d\u6570\u636e\u6e90\u3002"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_day_fixed_cost": {
+                "name": "\u5f53\u65e5\u56fa\u5b9a\u6210\u672c"
+            },
+            "current_gas_usage": {
+                "name": "\u5f53\u524d\u71c3\u6c14\u4f7f\u7528\u91cf"
+            },
+            "current_month_fixed_cost": {
+                "name": "\u5f53\u6708\u56fa\u5b9a\u6210\u672c"
+            },
+            "current_month_gas_cost": {
+                "name": "\u5f53\u6708\u71c3\u6c14\u8d39"
+            },
+            "current_month_gas_usage": {
+                "name": "\u5f53\u6708\u71c3\u6c14\u4f7f\u7528\u91cf"
+            },
+            "current_month_high_tariff_cost": {
+                "name": "\u5f53\u6708\u8d44\u8d39\u6210\u672c\u9ad8"
+            },
+            "current_month_high_tariff_returned": {
+                "name": "\u5f53\u6708\u9ad8\u989d\u5173\u7a0e\u9000\u56de"
+            },
+            "current_month_high_tariff_usage": {
+                "name": "\u5f53\u6708\u9ad8\u8d44\u8d39\u4f7f\u7528\u60c5\u51b5"
+            },
+            "current_month_low_tariff_cost": {
+                "name": "\u5f53\u6708\u4f4e\u8d44\u8d39\u6210\u672c"
+            },
+            "current_month_low_tariff_returned": {
+                "name": "\u5f53\u6708\u4f4e\u8d44\u8d39\u8fd4\u8fd8"
+            },
+            "current_month_low_tariff_usage": {
+                "name": "\u5f53\u6708\u4f4e\u8d44\u8d39\u4f7f\u7528\u60c5\u51b5"
+            },
+            "current_month_power_return_total": {
+                "name": "\u5f53\u6708\u7535\u91cf\u8fd4\u8fd8\u603b\u989d"
+            },
+            "current_month_power_total_cost": {
+                "name": "\u5f53\u6708\u7535\u529b\u603b\u6210\u672c"
+            },
+            "current_month_power_usage_total": {
+                "name": "\u5f53\u6708\u603b\u7528\u7535\u91cf"
+            },
+            "current_month_total_cost": {
+                "name": "\u5f53\u6708\u603b\u8d39\u7528"
+            },
+            "current_power_return": {
+                "name": "\u7535\u6d41\u529f\u7387\u8fd4\u56de"
+            },
+            "current_power_return_l1": {
+                "name": "\u5f53\u524d\u529f\u7387\u8fd4\u56deL1"
+            },
+            "current_power_return_l2": {
+                "name": "\u5f53\u524d\u529f\u7387\u8fd4\u56deL2"
+            },
+            "current_power_return_l3": {
+                "name": "\u5f53\u524d\u529f\u7387\u8fd4\u56deL3"
+            },
+            "current_power_usage": {
+                "name": "\u5f53\u524d\u7528\u7535\u91cf"
+            },
+            "current_power_usage_l1": {
+                "name": "L1\u76f8\u7528\u7535\u91cf"
+            },
+            "current_power_usage_l2": {
+                "name": "L2\u76f8\u7528\u7535\u91cf"
+            },
+            "current_power_usage_l3": {
+                "name": "L3\u76f8\u7528\u7535\u91cf"
+            },
+            "current_voltage_l1": {
+                "name": "\u5f53\u524d\u7535\u538b L1"
+            },
+            "current_voltage_l2": {
+                "name": "\u5f53\u524d\u7535\u538bL2"
+            },
+            "current_voltage_l3": {
+                "name": "\u5f53\u524d\u7535\u538b L3"
+            },
+            "current_year_fixed_cost": {
+                "name": "\u672c\u5e74\u5ea6\u56fa\u5b9a\u6210\u672c"
+            },
+            "current_year_gas_cost": {
+                "name": "\u672c\u5e74\u5ea6\u5929\u7136\u6c14\u6210\u672c"
+            },
+            "current_year_gas_usage": {
+                "name": "\u672c\u5e74\u5ea6\u71c3\u6c14\u4f7f\u7528\u91cf"
+            },
+            "current_year_high_tariff_cost": {
+                "name": "\u5f53\u5e74\u9ad8\u8d44\u8d39\u6210\u672c"
+            },
+            "current_year_high_tariff_returned": {
+                "name": "\u5f53\u5e74\u9ad8\u8d44\u8d39\u9000\u56de"
+            },
+            "current_year_high_tariff_usage": {
+                "name": "\u5f53\u5e74\u9ad8\u8d44\u8d39\u4f7f\u7528\u91cf"
+            },
+            "current_year_low_tariff_cost": {
+                "name": "\u5f53\u5e74\u4f4e\u8d44\u8d39\u6210\u672c"
+            },
+            "current_year_low_tariff_returned": {
+                "name": "\u5f53\u5e74\u4f4e\u8d44\u8d39\u8fd4\u8fd8"
+            },
+            "current_year_low_tariff_usage": {
+                "name": "\u5f53\u5e74\u4f4e\u8d44\u8d39\u4f7f\u7528\u60c5\u51b5"
+            },
+            "current_year_power_returned_total": {
+                "name": "\u5f53\u5e74\u8fd4\u8fd8\u7535\u91cf\u5408\u8ba1"
+            },
+            "current_year_power_total_cost": {
+                "name": "\u5f53\u5e74\u7535\u529b\u603b\u6210\u672c"
+            },
+            "current_year_power_usage_total": {
+                "name": "\u672c\u5e74\u5ea6\u7528\u7535\u91cf\u5408\u8ba1"
+            },
+            "current_year_total_cost": {
+                "name": "\u672c\u5e74\u5ea6\u603b\u6210\u672c"
+            },
+            "daily_gas_usage": {
+                "name": "\u71c3\u6c14\u4f7f\u7528\u91cf\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_high_tariff_cost": {
+                "name": "\u9ad8\u8d44\u8d39\u6210\u672c\uff08\u65e5\uff09"
+            },
+            "daily_high_tariff_return": {
+                "name": "\u9ad8\u8d44\u8d39\u8fd4\u8fd8\uff08\u65e5\uff09"
+            },
+            "daily_high_tariff_usage": {
+                "name": "\u9ad8\u8d44\u8d39\u4f7f\u7528\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_low_tariff_cost": {
+                "name": "\u5173\u7a0e\u6210\u672c\u4f4e\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_low_tariff_return": {
+                "name": "\u4f4e\u5173\u7a0e\u56de\u62a5\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_low_tariff_usage": {
+                "name": "\u4f4e\u8d44\u8d39\u4f7f\u7528\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_power_return_total": {
+                "name": "\u603b\u529f\u7387\u56de\u9988\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_power_total_cost": {
+                "name": "\u7535\u529b\u603b\u6210\u672c\uff08\u6bcf\u65e5\uff09"
+            },
+            "daily_power_usage_total": {
+                "name": "\u603b\u7528\u7535\u91cf\uff08\u6bcf\u65e5\uff09"
+            },
+            "dsmr_version": {
+                "name": "DSMR\u7248\u672c"
+            },
+            "electricity_tariff": {
+                "name": "\u7535\u8d39",
+                "state": {
+                    "high": "\u9ad8",
+                    "low": "\u4f4e"
+                }
+            },
+            "gas_cost": {
+                "name": "\u5929\u7136\u6c14\u6210\u672c"
+            },
+            "gas_meter_read": {
+                "name": "\u71c3\u6c14\u8868\u8bfb\u6570"
+            },
+            "gas_meter_usage": {
+                "name": "\u71c3\u6c14\u8868\u4f7f\u7528\u60c5\u51b5"
+            },
+            "gas_price": {
+                "name": "\u5929\u7136\u6c14\u4ef7\u683c"
+            },
+            "gas_usage": {
+                "name": "\u71c3\u6c14\u4f7f\u7528\u60c5\u51b5"
+            },
+            "high_tariff_delivered_price": {
+                "name": "\u9ad8\u5173\u7a0e\u4ea4\u8d27\u4ef7\u683c"
+            },
+            "high_tariff_returned": {
+                "name": "\u9ad8\u989d\u5173\u7a0e\u9000\u56de"
+            },
+            "high_tariff_returned_price": {
+                "name": "\u9ad8\u8d44\u8d39\u8fd4\u8fd8"
+            },
+            "high_tariff_usage": {
+                "name": "\u9ad8\u8d44\u8d39\u4f7f\u7528\u7387"
+            },
+            "long_power_failure_count": {
+                "name": "\u957f\u65f6\u505c\u7535\u8ba1\u6570"
+            },
+            "low_tariff_delivered_price": {
+                "name": "\u4f4e\u8d44\u8d39\u6210\u4ea4\u4ef7"
+            },
+            "low_tariff_returned": {
+                "name": "\u4f4e\u8d44\u8d39\u8fd4\u8fd8"
+            },
+            "low_tariff_returned_price": {
+                "name": "\u4f4e\u8d44\u8d39\u8fd4\u8fd8\u4ef7\u683c"
+            },
+            "low_tariff_usage": {
+                "name": "\u4f4e\u8d44\u8d39\u4f7f\u7528"
+            },
+            "phase_power_current_l1": {
+                "name": "\u76f8\u529f\u7387\u7535\u6d41 L1"
+            },
+            "phase_power_current_l2": {
+                "name": "\u76f8\u529f\u7387\u7535\u6d41 L2"
+            },
+            "phase_power_current_l3": {
+                "name": "\u76f8\u529f\u7387\u7535\u6d41 L3"
+            },
+            "power_failure_count": {
+                "name": "\u505c\u7535\u8ba1\u6570"
+            },
+            "previous_quarter_hour_peak_usage": {
+                "name": "\u524d\u4e00\u523b\u949f\u5cf0\u503c\u4f7f\u7528\u91cf"
+            },
+            "quarter_hour_peak_end_time": {
+                "name": "\u4e00\u523b\u949f\u5cf0\u503c\u7ed3\u675f\u65f6\u95f4"
+            },
+            "quarter_hour_peak_start_time": {
+                "name": "\u4e00\u523b\u949f\u5cf0\u503c\u5f00\u59cb\u65f6\u95f4"
+            },
+            "rejected_telegrams": {
+                "name": "\u5df2\u62d2\u7edd Telegram"
+            },
+            "telegram_timestamp": {
+                "name": "Telegram \u65f6\u95f4\u6233"
+            },
+            "total_cost": {
+                "name": "\u603b\u6210\u672c"
+            },
+            "voltage_sag_l1": {
+                "name": "\u7535\u538b\u8dcc\u843d L1"
+            },
+            "voltage_sag_l2": {
+                "name": "\u7535\u538b\u8dcc\u843d L2"
+            },
+            "voltage_sag_l3": {
+                "name": "\u7535\u538b\u8dcc\u843d L3"
+            },
+            "voltage_swell_l1": {
+                "name": "\u7535\u538b\u9aa4\u5347 L1"
+            },
+            "voltage_swell_l2": {
+                "name": "\u7535\u538b\u9aa4\u5347 L2"
+            },
+            "voltage_swell_l3": {
+                "name": "\u7535\u538b\u9aa4\u5347 L3"
+            }
+        }
+    }
+}

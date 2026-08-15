@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "already_configured_device": "Enheden er allerede konfigureret",
+            "cannot_connect": "Forbindelse mislykkedes",
+            "no_devices_found": "Ingen enheder fundet p\u00e5 netv\u00e6rket",
+            "unknown": "Uventet fejl"
+        },
+        "step": {
+            "lock_auth": {
+                "data": {
+                    "password": "Adgangskode",
+                    "username": "Brugernavn"
+                }
+            },
+            "password": {
+                "data": {
+                    "password": "Adgangskode"
+                }
+            }
+        }
+    },
+    "entity": {
+        "switch": {
+            "bot": {
+                "state_attributes": {
+                    "last_run_success": {
+                        "state": {
+                            "true": "OK"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

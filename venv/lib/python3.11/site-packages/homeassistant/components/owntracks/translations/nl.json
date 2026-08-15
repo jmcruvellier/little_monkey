@@ -1,0 +1,17 @@
+{
+    "config": {
+        "abort": {
+            "cloud_not_connected": "Niet verbonden met Home Assistant Cloud.",
+            "single_instance_allowed": "Al geconfigureerd. Slechts \u00e9\u00e9n configuratie mogelijk."
+        },
+        "create_entry": {
+            "default": "\n\nOp Android, open [de OwnTracks app]({android_url}), ga naar Preferences > Connection. Verander de volgende instellingen:\n - Mode: HTTP\n - Host: {webhook_url}\n - Identification:\n   - Username: `'<Jouw naam>'`\n   - Device ID: `'<Jouw apparaatnaam>'`\n\nOp iOS, open [de OwnTracks app]({ios_url}), tik op het (i)-pictogram links boven -> Settings. Verander de volgende instellingen:\n - Mode: HTTP\n - URL: {webhook_url}\n - Zet 'authentication' aan\n - UserID: `'<Jouw naam>'`\n\n{secret}\n\nZie [de documentatie]({docs_url}) voor meer informatie."
+        },
+        "step": {
+            "user": {
+                "description": "Weet je zeker dat je OwnTracks wilt instellen?",
+                "title": "Stel OwnTracks in"
+            }
+        }
+    }
+}

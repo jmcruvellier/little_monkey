@@ -1,0 +1,72 @@
+{
+    "device_automation": {
+        "action_type": {
+            "arm_away": "Activa {entity_name} fora",
+            "arm_home": "Activa {entity_name} a casa",
+            "arm_night": "Activa {entity_name} nocturn",
+            "arm_vacation": "Activa {entity_name} en mode vacances",
+            "disarm": "Desactiva {entity_name}",
+            "trigger": "Dispara {entity_name}"
+        },
+        "condition_type": {
+            "is_armed_away": "{entity_name} est\u00e0 activada en mode 'a fora'",
+            "is_armed_home": "{entity_name} est\u00e0 activada en mode 'a casa'",
+            "is_armed_night": "{entity_name} est\u00e0 activada en mode 'nocturn'",
+            "is_armed_vacation": "{entity_name} activada en mode vacances",
+            "is_disarmed": "{entity_name} est\u00e0 desactivada",
+            "is_triggered": "{entity_name} est\u00e0 disparada"
+        },
+        "trigger_type": {
+            "armed_away": "{entity_name} activada en mode 'a fora'",
+            "armed_home": "{entity_name} activada en mode 'a casa'",
+            "armed_night": "{entity_name} activada en mode 'nocturn'",
+            "armed_vacation": "{entity_name} s'activa en mode vacances",
+            "disarmed": "{entity_name} desactivada",
+            "triggered": "{entity_name} disparat/ada"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "name": "Panell de control d'alarma",
+            "state": {
+                "armed": "Activada",
+                "armed_away": "Activada, mode fora",
+                "armed_custom_bypass": "Activada, bypass personalitzat",
+                "armed_home": "Activada, mode a casa",
+                "armed_night": "Activada, mode nocturn",
+                "armed_vacation": "Activada, mode vacances",
+                "arming": "Activant",
+                "disarmed": "Desactivada",
+                "disarming": "Desactivant",
+                "pending": "Pendent",
+                "triggered": "Disparada"
+            },
+            "state_attributes": {
+                "changed_by": {
+                    "name": "Canviat per"
+                },
+                "code_arm_required": {
+                    "name": "Codi per a l'activaci\u00f3",
+                    "state": {
+                        "false": "Opcional",
+                        "true": "Obligatori"
+                    }
+                },
+                "code_format": {
+                    "name": "Format del codi",
+                    "state": {
+                        "number": "N\u00famero",
+                        "text": "Text"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "La plataforma {platform} de la integraci\u00f3 {domain} no \u00e9s compatible amb la configuraci\u00f3 de la plataforma.\n\nElimina-la de la teva configuraci\u00f3 i reinicia Home Assistant per solucionar aquest problema.",
+            "title": "Suport de la plataforma no compatible"
+        }
+    },
+    "title": "Panell de control d'alarma"
+}

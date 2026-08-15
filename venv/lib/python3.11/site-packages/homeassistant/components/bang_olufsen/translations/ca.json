@@ -1,0 +1,21 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ja configurat. Nom\u00e9s \u00e9s possible una sola configuraci\u00f3.",
+            "already_in_progress": "El flux de configuraci\u00f3 ja est\u00e0 en curs"
+        },
+        "error": {
+            "api_exception": "Ha fallat la connexi\u00f3",
+            "client_connector_error": "Ha fallat la connexi\u00f3",
+            "timeout_error": "Ha fallat la connexi\u00f3"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Adre\u00e7a IP",
+                    "model": "Model"
+                }
+            }
+        }
+    }
+}

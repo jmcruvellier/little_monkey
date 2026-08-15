@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paslauga jau sukonfig\u016bruota"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "email": "El. pa\u0161tas",
+                    "password": "Slapta\u017eodis"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Jau sukonfig\u016bruota. Galima tik viena konfig\u016bracija."
+        },
+        "error": {
+            "invalid_ip_address": "Netinkamas IPv4 adresas."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP adresas"
+                },
+                "description": "Gaukite balso skambu\u010dius per IP, kad gal\u0117tum\u0117te bendrauti su \u201eAssist\u201c."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "call_active": {
+                "name": "Skambutis Aktyvus"
+            },
+            "call_in_progress": {
+                "name": "Vykdomas skambutis"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assist vamzdynas",
+                "state": {
+                    "preferred": "Pageidautina"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Baigtas kalb\u0117jimo aptikimas",
+                "state": {
+                    "aggressive": "Agresyvus",
+                    "default": "Numatytas",
+                    "relaxed": "Atsipalaidav\u0119s"
+                }
+            }
+        },
+        "switch": {
+            "allow_call": {
+                "name": "Leisti skambu\u010dius"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sip_port": "SIP prievadas"
+                }
+            }
+        }
+    }
+}

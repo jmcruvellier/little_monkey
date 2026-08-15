@@ -1,0 +1,38 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enhet er allerede konfigurert",
+            "connection_error_during_import": "Tilkoblingsfeil oppsto under import av yaml-konfigurasjon",
+            "reauth_successful": "Autentisering p\u00e5 nytt var vellykket"
+        },
+        "error": {
+            "connection_error": "Tilkobling mislyktes",
+            "invalid_auth": "Ugyldig godkjenning"
+        },
+        "flow_title": "Nextcloud",
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Passord",
+                    "username": "Brukernavn"
+                },
+                "description": "Oppdater p\u00e5loggingsinformasjonen for {url} ."
+            },
+            "user": {
+                "data": {
+                    "password": "Passord",
+                    "url": "URL",
+                    "username": "Brukernavn",
+                    "verify_ssl": "Verifisere SSL-sertifikat"
+                },
+                "description": "Skriv inn din Nextcloud-informasjon."
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Konfigurering av Nextcloud ved hjelp av YAML har blitt avviklet. \n\n Din eksisterende YAML-konfigurasjon har blitt importert til brukergrensesnittet automatisk. \n\n Fjern `nextcloud` YAML-konfigurasjonen fra configuration.yaml-filen og start Home Assistant p\u00e5 nytt for \u00e5 fikse dette problemet.",
+            "title": "Netxcloud YAML-konfigurasjonen er avviklet"
+        }
+    }
+}

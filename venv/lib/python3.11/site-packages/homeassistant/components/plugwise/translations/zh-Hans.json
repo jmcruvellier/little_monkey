@@ -1,0 +1,260 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "anna_with_adam": "\u540c\u65f6\u68c0\u6d4b\u5230\u4e86 Anna \u548c Adam\u3002\u8bf7\u6dfb\u52a0 Adam \u800c\u4e0d\u662f Anna"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "invalid_setup": "\u6dfb\u52a0\u60a8\u7684\u4e9a\u5f53\u800c\u4e0d\u662f\u60a8\u7684\u5b89\u5a1c\uff0c\u8bf7\u53c2\u9605\u6587\u6863",
+            "response_error": "\u65e0\u6548\u7684 XML \u6570\u636e\uff0c\u6216\u6536\u5230\u7684\u9519\u8bef\u6307\u793a",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef",
+            "unsupported": "\u8bbe\u5907\u5b89\u88c5\u4e86\u4e0d\u88ab\u652f\u6301\u7684\u56fa\u4ef6"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP \u5730\u5740",
+                    "password": "Smile ID",
+                    "port": "\u7aef\u53e3",
+                    "username": "Smile \u7528\u6237\u540d"
+                },
+                "description": "\u8bf7\u8f93\u5165",
+                "title": "\u8fde\u63a5\u5230 Smile"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "compressor_state": {
+                "name": "\u538b\u7f29\u673a\u72b6\u6001"
+            },
+            "cooling_enabled": {
+                "name": "\u51b7\u5374\u542f\u7528"
+            },
+            "cooling_state": {
+                "name": "\u5236\u51b7"
+            },
+            "dhw_state": {
+                "name": "DHW \u72b6\u6001"
+            },
+            "flame_state": {
+                "name": "\u706b\u7130\u72b6\u6001"
+            },
+            "heating_state": {
+                "name": "\u5236\u70ed"
+            },
+            "plugwise_notification": {
+                "name": "\u63d2\u5165\u901a\u77e5"
+            },
+            "slave_boiler_state": {
+                "name": "\u4e8c\u7ea7\u9505\u7089\u72b6\u6001"
+            }
+        },
+        "climate": {
+            "plugwise": {
+                "state_attributes": {
+                    "available_schemas": {
+                        "name": "\u53ef\u7528\u9009\u9879"
+                    },
+                    "preset_mode": {
+                        "state": {
+                            "asleep": "\u591c\u95f4\u6a21\u5f0f",
+                            "away": "\u79bb\u5f00",
+                            "home": "\u5728\u5bb6",
+                            "no_frost": "\u9664\u971c",
+                            "vacation": "\u5ea6\u5047\u6a21\u5f0f"
+                        }
+                    },
+                    "selected_schema": {
+                        "name": "\u9009\u62e9\u9879"
+                    }
+                }
+            }
+        },
+        "number": {
+            "maximum_boiler_temperature": {
+                "name": "\u6700\u9ad8\u9505\u7089\u6e29\u5ea6\u8bbe\u5b9a\u503c"
+            }
+        },
+        "select": {
+            "dhw_mode": {
+                "name": "DHW \u6a21\u5f0f",
+                "state": {
+                    "auto": "\u81ea\u52a8",
+                    "boost": "\u5f3a\u52b2",
+                    "comfort": "\u8212\u9002",
+                    "off": "\u5173\u95ed"
+                }
+            },
+            "regulation_mode": {
+                "name": "\u8c03\u8282\u65b9\u5f0f",
+                "state": {
+                    "bleeding_cold": "\u8fc7\u51b7",
+                    "bleeding_hot": "\u8fc7\u70ed",
+                    "cooling": "\u5236\u51b7",
+                    "heating": "\u5236\u70ed",
+                    "off": "\u5173\u95ed"
+                }
+            },
+            "select_schedule": {
+                "name": "\u6052\u6e29\u5668\u5b9a\u65f6"
+            }
+        },
+        "sensor": {
+            "cooling_setpoint": {
+                "name": "\u51b7\u5374\u8bbe\u5b9a\u503c"
+            },
+            "dhw_temperature": {
+                "name": "DHW \u6e29\u5ea6"
+            },
+            "domestic_hot_water_setpoint": {
+                "name": "DHW \u8bbe\u5b9a\u503c"
+            },
+            "electricity_consumed": {
+                "name": "\u7528\u7535\u91cf"
+            },
+            "electricity_consumed_interval": {
+                "name": "\u7528\u7535\u91cf\u533a\u95f4"
+            },
+            "electricity_consumed_off_peak_cumulative": {
+                "name": "\u975e\u9ad8\u5cf0\u7d2f\u8ba1\u7528\u7535\u91cf"
+            },
+            "electricity_consumed_off_peak_interval": {
+                "name": "\u975e\u9ad8\u5cf0\u65f6\u6bb5\u7528\u7535\u91cf"
+            },
+            "electricity_consumed_off_peak_point": {
+                "name": "\u975e\u9ad8\u5cf0\u7528\u7535\u91cf"
+            },
+            "electricity_consumed_peak_cumulative": {
+                "name": "\u7d2f\u8ba1\u7528\u7535\u91cf\u5cf0\u503c"
+            },
+            "electricity_consumed_peak_interval": {
+                "name": "\u7528\u7535\u91cf\u9ad8\u5cf0\u65f6\u6bb5"
+            },
+            "electricity_consumed_peak_point": {
+                "name": "\u7528\u7535\u91cf\u5cf0\u503c\u70b9"
+            },
+            "electricity_consumed_point": {
+                "name": "\u7528\u7535\u91cf\u70b9"
+            },
+            "electricity_phase_one_consumed": {
+                "name": "\u76f8\u4f4d\u4e00\u7528\u7535\u91cf"
+            },
+            "electricity_phase_one_produced": {
+                "name": "\u76f8\u4f4d\u4e00\u53d1\u7535\u91cf"
+            },
+            "electricity_phase_three_consumed": {
+                "name": "\u76f8\u4f4d\u4e09\u7528\u7535\u91cf"
+            },
+            "electricity_phase_three_produced": {
+                "name": "\u76f8\u4f4d\u4e09\u53d1\u7535\u91cf"
+            },
+            "electricity_phase_two_consumed": {
+                "name": "\u76f8\u4f4d\u4e8c\u7528\u7535\u91cf"
+            },
+            "electricity_phase_two_produced": {
+                "name": "\u76f8\u4f4d\u4e8c\u53d1\u7535\u91cf"
+            },
+            "electricity_produced": {
+                "name": "\u53d1\u7535\u91cf"
+            },
+            "electricity_produced_interval": {
+                "name": "\u53d1\u7535\u95f4\u9694"
+            },
+            "electricity_produced_off_peak_cumulative": {
+                "name": "\u975e\u9ad8\u5cf0\u7d2f\u8ba1\u53d1\u7535\u91cf"
+            },
+            "electricity_produced_off_peak_interval": {
+                "name": "\u975e\u9ad8\u5cf0\u65f6\u6bb5\u7684\u53d1\u7535\u91cf"
+            },
+            "electricity_produced_off_peak_point": {
+                "name": "\u975e\u9ad8\u5cf0\u53d1\u7535\u91cf"
+            },
+            "electricity_produced_peak_cumulative": {
+                "name": "\u7d2f\u8ba1\u53d1\u7535\u5cf0\u503c"
+            },
+            "electricity_produced_peak_interval": {
+                "name": "\u53d1\u7535\u9ad8\u5cf0\u65f6\u6bb5"
+            },
+            "electricity_produced_peak_point": {
+                "name": "\u53d1\u7535\u5cf0\u503c\u70b9"
+            },
+            "electricity_produced_point": {
+                "name": "\u53d1\u7535\u70b9"
+            },
+            "gas_consumed_cumulative": {
+                "name": "\u7d2f\u8ba1\u8017\u6c14\u91cf"
+            },
+            "gas_consumed_interval": {
+                "name": "\u8017\u6c14\u95f4\u9694"
+            },
+            "heating_setpoint": {
+                "name": "\u4f9b\u6696\u8bbe\u5b9a\u503c"
+            },
+            "intended_boiler_temperature": {
+                "name": "\u9884\u671f\u9505\u7089\u6e29\u5ea6"
+            },
+            "maximum_boiler_temperature": {
+                "name": "\u6700\u9ad8\u9505\u7089\u6e29\u5ea6"
+            },
+            "modulation_level": {
+                "name": "\u8c03\u5236\u7535\u5e73"
+            },
+            "net_electricity_cumulative": {
+                "name": "\u7d2f\u8ba1\u51c0\u7535\u91cf"
+            },
+            "net_electricity_point": {
+                "name": "\u51c0\u7535\u70b9"
+            },
+            "outdoor_air_temperature": {
+                "name": "\u5ba4\u5916\u6c14\u6e29"
+            },
+            "outdoor_temperature": {
+                "name": "\u5ba4\u5916\u6e29\u5ea6"
+            },
+            "return_temperature": {
+                "name": "\u56de\u6c34\u6e29\u5ea6"
+            },
+            "setpoint": {
+                "name": "\u8bbe\u5b9a\u70b9"
+            },
+            "temperature_difference": {
+                "name": "\u6e29\u5dee"
+            },
+            "valve_position": {
+                "name": "\u9600\u95e8\u4f4d\u7f6e"
+            },
+            "voltage_phase_one": {
+                "name": "\u76f8\u4f4d 1 \u7535\u538b"
+            },
+            "voltage_phase_three": {
+                "name": "\u76f8\u4f4d 3 \u7535\u538b"
+            },
+            "voltage_phase_two": {
+                "name": "\u76f8\u4f4d 2 \u7535\u538b"
+            },
+            "water_pressure": {
+                "name": "\u6c34\u538b"
+            },
+            "water_temperature": {
+                "name": "\u6c34\u6e29"
+            }
+        },
+        "switch": {
+            "cooling_ena_switch": {
+                "name": "\u5236\u51b7"
+            },
+            "dhw_cm_switch": {
+                "name": "DHW \u8212\u9002\u6a21\u5f0f"
+            },
+            "lock": {
+                "name": "\u9501"
+            },
+            "relay": {
+                "name": "\u4e2d\u7ee7"
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "issues": {
+        "deprecation_warning_characteristic": {
+            "description": "Statistikos integravimo konfig\u016bracijos parametras \u201estate_characteristic\u201c taps privalomas. \n\n Prid\u0117kite \u201estate_characteristic: {characteristic} \u201c prie jutiklio \u201e {entity} \u201c konfig\u016bracijos, kad i\u0161laikytum\u0117te dabartin\u012f elges\u012f. \n\n Nor\u0117dami gauti daugiau informacijos, skaitykite statistikos integravimo dokumentacij\u0105: https://www.home-assistant.io/integrations/statistics/",
+            "title": "Privaloma \u201estate_characteristic\u201c, taikoma statistikos objektui"
+        },
+        "deprecation_warning_size": {
+            "description": "Statistikos integravimo konfig\u016bracijos parametro \u201esampling_size\u201c reik\u0161m\u0117 iki \u0161iol buvo 20, kuri pasikeis. \n\n Patikrinkite jutiklio \u201e {entity} \u201c konfig\u016bracij\u0105 ir prid\u0117kite tinkam\u0173 rib\u0173, pvz., \u201esampling_size: 20\u201c, kad i\u0161laikytum\u0117te dabartin\u012f elges\u012f. Statistikos integravimo konfig\u016bracija taps lankstesn\u0117 naudojant 2022.12.0 versij\u0105 ir bus priimtini \u201esampling_size\u201c arba \u201emax_age\u201c, arba abu nustatymai. Auk\u0161\u010diau pateikta u\u017eklausa paruo\u0161ia j\u016bs\u0173 konfig\u016bracij\u0105 \u0161iam kitaip neveikian\u010diam pakeitimui. \n\n Nor\u0117dami gauti daugiau informacijos, skaitykite statistikos integravimo dokumentacij\u0105: https://www.home-assistant.io/integrations/statistics/",
+            "title": "Numanomas statistikos objekto \u201esampling_size\u201c."
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "I\u0161 naujo \u012fkelia statistikos jutiklius i\u0161 YAML konfig\u016bracijos.",
+            "name": "\u012ekelti i\u0161 naujo"
+        }
+    }
+}

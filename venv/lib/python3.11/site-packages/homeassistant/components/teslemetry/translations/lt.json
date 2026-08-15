@@ -1,0 +1,157 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_access_token": "Neteisingas prieigos raktas",
+            "subscription_required": "B\u016btina prenumerata, apsilankykite {short_url}",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Prieigos raktas"
+                },
+                "description": "\u012eveskite prieigos rakt\u0105 i\u0161 {url} ."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "driver_temp": {
+                "name": "Termostatas",
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "camp": "Stovyklos re\u017eimas",
+                            "dog": "\u0160uns re\u017eimas",
+                            "keep": "Laikykite re\u017eim\u0105",
+                            "off": "Normalus"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "battery_power": {
+                "name": "Baterijos galia"
+            },
+            "charge_state_battery_range": {
+                "name": "Baterijos veikimo diapazonas"
+            },
+            "charge_state_charge_energy_added": {
+                "name": "Prid\u0117ta \u012fkrovimo energija"
+            },
+            "charge_state_charge_rate": {
+                "name": "Apmokestinimo norma"
+            },
+            "charge_state_charger_actual_current": {
+                "name": "\u012ekroviklio srov\u0117"
+            },
+            "charge_state_charger_power": {
+                "name": "\u012ekroviklio galia"
+            },
+            "charge_state_charger_voltage": {
+                "name": "\u012ekroviklio \u012ftampa"
+            },
+            "charge_state_minutes_to_full_charge": {
+                "name": "Laikas pilnai \u012fkrauti"
+            },
+            "charge_state_usable_battery_level": {
+                "name": "Baterijos lygis"
+            },
+            "climate_state_driver_temp_setting": {
+                "name": "Vairuotojo temperat\u016bros nustatymas"
+            },
+            "climate_state_inside_temp": {
+                "name": "Vidaus temperat\u016bra"
+            },
+            "climate_state_outside_temp": {
+                "name": "Lauko temperat\u016bra"
+            },
+            "climate_state_passenger_temp_setting": {
+                "name": "Keleivio temperat\u016bros nustatymas"
+            },
+            "drive_state_active_route_destination": {
+                "name": "Kelion\u0117s tikslas"
+            },
+            "drive_state_active_route_energy_at_arrival": {
+                "name": "Mokes\u010dio b\u016bsena atvykus"
+            },
+            "drive_state_active_route_miles_to_arrival": {
+                "name": "Atstumas iki atvykimo"
+            },
+            "drive_state_active_route_minutes_to_arrival": {
+                "name": "Laikas atvykti"
+            },
+            "drive_state_active_route_traffic_minutes_delay": {
+                "name": "Eismo v\u0117lavimas"
+            },
+            "drive_state_power": {
+                "name": "Galia"
+            },
+            "drive_state_shift_state": {
+                "name": "Pakeitimo b\u016bsena",
+                "state": {
+                    "d": "Vairuoti",
+                    "n": "Neutralus",
+                    "p": "Parkas",
+                    "r": "Atvirk\u0161\u010diai"
+                }
+            },
+            "drive_state_speed": {
+                "name": "Greitis"
+            },
+            "energy_left": {
+                "name": "Liko energija"
+            },
+            "generator_power": {
+                "name": "Generatoriaus galia"
+            },
+            "grid_power": {
+                "name": "Tinklo galia"
+            },
+            "grid_services_power": {
+                "name": "Tinklo paslaug\u0173 galia"
+            },
+            "load_power": {
+                "name": "Apkrovos galia"
+            },
+            "percentage_charged": {
+                "name": "Apmokestintas procentas"
+            },
+            "solar_power": {
+                "name": "Saul\u0117s energija"
+            },
+            "total_pack_energy": {
+                "name": "Bendra pakuot\u0117s energija"
+            },
+            "vehicle_state_odometer": {
+                "name": "Odometras"
+            },
+            "vehicle_state_tpms_pressure_fl": {
+                "name": "Padang\u0173 sl\u0117gis priekyje kair\u0117je"
+            },
+            "vehicle_state_tpms_pressure_fr": {
+                "name": "Padang\u0173 sl\u0117gis priekyje de\u0161in\u0117je"
+            },
+            "vehicle_state_tpms_pressure_rl": {
+                "name": "Padang\u0173 sl\u0117gis galin\u0117je kair\u0117je"
+            },
+            "vehicle_state_tpms_pressure_rr": {
+                "name": "Padang\u0173 sl\u0117gis galin\u0117je de\u0161in\u0117je"
+            },
+            "vin": {
+                "name": "Transporto priemon\u0117"
+            },
+            "wall_connector_fault_state": {
+                "name": "Gedimo b\u016bsenos kodas"
+            },
+            "wall_connector_power": {
+                "name": "Galia"
+            },
+            "wall_connector_state": {
+                "name": "Valstyb\u0117s kodas"
+            }
+        }
+    }
+}

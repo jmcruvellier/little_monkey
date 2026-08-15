@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Ricarica i sensori delle statistiche della cronologia dalla configurazione YAML.",
+            "name": "Ricarica"
+        }
+    }
+}

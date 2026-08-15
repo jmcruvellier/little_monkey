@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "A hely m\u00e1r konfigur\u00e1lva van"
+        },
+        "error": {
+            "cannot_connect": "Sikertelen csatlakoz\u00e1s"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "destination": "\u00c9rkez\u00e9s helye",
+                    "name": "Elnevez\u00e9s",
+                    "origin": "Indul\u00e1s helye",
+                    "region": "R\u00e9gi\u00f3"
+                },
+                "description": "Az 'Indul\u00e1s helye' \u00e9s az '\u00c9rkez\u00e9s helye' mez\u0151ben adja meg a hely c\u00edm\u00e9t vagy a GPS-koordin\u00e1t\u00e1kat (a GPS-koordin\u00e1t\u00e1kat vessz\u0151vel kell elv\u00e1lasztani). Megadhat egy olyan entit\u00e1s azonos\u00edt\u00f3t is, amely ezt az inform\u00e1ci\u00f3t az \u00e1llapot\u00e1ban adja meg, egy sz\u00e9less\u00e9gi \u00e9s hossz\u00fas\u00e1gi attrib\u00fatumokkal rendelkez\u0151 entit\u00e1s azonos\u00edt\u00f3t vagy egy z\u00f3na bar\u00e1ts\u00e1gos nev\u00e9t."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "avoid_ferries": "Ker\u00fclje kompokat?",
+                    "avoid_subscription_roads": "Ker\u00fclje el az utakat, amelyekre matrica / enged\u00e9ly sz\u00fcks\u00e9ges?",
+                    "avoid_toll_roads": "Ker\u00fclje a fizet\u0151s utakat?",
+                    "excl_filter": "Sz\u00f6veg r\u00e9szlet ami NE legyen az \u00fatvonaltervben",
+                    "incl_filter": "Sz\u00f6veg r\u00e9szlet amit az \u00fatvonaltervnek \u00e9rentine kell",
+                    "realtime": "Val\u00f3s idej\u0171 utaz\u00e1si id\u0151?",
+                    "units": "M\u00e9rt\u00e9kegys\u00e9g",
+                    "vehicle_type": "J\u00e1rm\u0171 t\u00edpus"
+                },
+                "description": "A lenti `sz\u00f6veg r\u00e9szlet` bemenetek lehet\u0151v\u00e9 teszik, hogy k\u00e9nyszer\u00edtse az integr\u00e1ci\u00f3t egy adott \u00fatvonal haszn\u00e1lat\u00e1ra, vagy elker\u00fclje az adott \u00fatvonalat az utaz\u00e1si id\u0151 kisz\u00e1m\u00edt\u00e1s\u00e1ban."
+            }
+        }
+    },
+    "selector": {
+        "region": {
+            "options": {
+                "au": "Ausztr\u00e1lia",
+                "eu": "Eur\u00f3pa",
+                "il": "Izrael",
+                "na": "\u00c9szak-Amerika",
+                "us": "USA"
+            }
+        },
+        "units": {
+            "options": {
+                "imperial": "Angolsz\u00e1sz rendszer",
+                "metric": "Metrikus rendszer"
+            }
+        },
+        "vehicle_type": {
+            "options": {
+                "car": "Aut\u00f3",
+                "motorcycle": "Motorker\u00e9kp\u00e1r",
+                "taxi": "Taxi"
+            }
+        }
+    },
+    "title": "Waze Travel Time"
+}

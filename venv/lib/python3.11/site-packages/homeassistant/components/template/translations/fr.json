@@ -1,0 +1,165 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Classe d'appareil",
+                    "name": "Nom",
+                    "state": "Mod\u00e8le d'\u00e9tat",
+                    "state_template": "Mod\u00e8le d'\u00e9tat"
+                },
+                "title": "Mod\u00e8le capteur binaire"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Classe d'appareil",
+                    "name": "Nom",
+                    "state": "Mod\u00e8le d'\u00e9tat",
+                    "state_class": "Classe d'\u00e9tat",
+                    "state_template": "Mod\u00e8le d'\u00e9tat",
+                    "unit_of_measurement": "Unit\u00e9 de mesure"
+                },
+                "title": "Capteur de mod\u00e8le"
+            },
+            "user": {
+                "description": "Cet assistant vous permet de cr\u00e9er des entit\u00e9s d'assistance qui d\u00e9finissent leur \u00e9tat \u00e0 l'aide d'un mod\u00e8le.",
+                "menu_options": {
+                    "binary_sensor": "Mod\u00e9liser un capteur binaire",
+                    "sensor": "Mod\u00e9liser un capteur"
+                },
+                "title": "Assistant de mod\u00e8le"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Classe d'appareil",
+                    "state": "Mod\u00e8le d'\u00e9tat",
+                    "state_template": "Mod\u00e8le d'\u00e9tat"
+                },
+                "title": "Mod\u00e8le capteur binaire"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Classe d'appareil",
+                    "state": "Mod\u00e8le d'\u00e9tat",
+                    "state_class": "Classe d'\u00e9tat",
+                    "state_template": "Mod\u00e8le d'\u00e9tat",
+                    "unit_of_measurement": "Unit\u00e9 de mesure"
+                },
+                "title": "Capteur de mod\u00e8le"
+            }
+        }
+    },
+    "selector": {
+        "binary_sensor_device_class": {
+            "options": {
+                "battery": "Batterie",
+                "battery_charging": "En charge",
+                "carbon_monoxide": "Monoxyde de carbone",
+                "cold": "Froid",
+                "connectivity": "Connectivit\u00e9",
+                "door": "Porte",
+                "garage_door": "Porte de garage",
+                "gas": "Gaz",
+                "heat": "Chaleur",
+                "light": "Lumi\u00e8re",
+                "lock": "Serrure",
+                "moisture": "Humidit\u00e9",
+                "motion": "Mouvement",
+                "moving": "En mouvement",
+                "none": "Aucune classe d'appareil",
+                "occupancy": "Occupation",
+                "opening": "Ouverture",
+                "plug": "Prise",
+                "power": "Puissance",
+                "presence": "Pr\u00e9sence",
+                "problem": "Probl\u00e8me",
+                "running": "En cours d'ex\u00e9cution",
+                "safety": "S\u00e9curit\u00e9",
+                "smoke": "Fum\u00e9e",
+                "sound": "Son",
+                "tamper": "Manipulation",
+                "update": "Mise \u00e0 jour",
+                "vibration": "Vibration",
+                "window": "Fen\u00eatre"
+            }
+        },
+        "sensor_device_class": {
+            "options": {
+                "apparent_power": "Puissance apparente",
+                "aqi": "Indice de qualit\u00e9 de l'air",
+                "atmospheric_pressure": "Pression atmosph\u00e9rique",
+                "battery": "Batterie",
+                "carbon_dioxide": "Dioxyde de carbone",
+                "carbon_monoxide": "Monoxyde de carbone",
+                "current": "Courant",
+                "data_rate": "D\u00e9bit de donn\u00e9es",
+                "data_size": "Taille des donn\u00e9es",
+                "date": "Date",
+                "distance": "Distance",
+                "duration": "Dur\u00e9e",
+                "energy": "\u00c9nergie",
+                "energy_storage": "\u00c9nergie stock\u00e9e",
+                "frequency": "Fr\u00e9quence",
+                "gas": "Gaz",
+                "humidity": "Humidit\u00e9",
+                "illuminance": "\u00c9clairement",
+                "irradiance": "Irradiance",
+                "moisture": "Humidit\u00e9",
+                "monetary": "Solde",
+                "nitrogen_dioxide": "Dioxyde d'azote",
+                "nitrogen_monoxide": "Monoxyde d'azote",
+                "nitrous_oxide": "Protoxyde d'azote",
+                "none": "Aucune classe d'appareil",
+                "ozone": "Ozone",
+                "ph": "pH",
+                "pm1": "PM1",
+                "pm10": "PM10",
+                "pm25": "PM2.5",
+                "power": "Puissance",
+                "power_factor": "Facteur de puissance",
+                "precipitation": "Pr\u00e9cipitation",
+                "precipitation_intensity": "Intensit\u00e9 des pr\u00e9cipitations",
+                "pressure": "Pression",
+                "reactive_power": "Puissance r\u00e9active",
+                "signal_strength": "Force du signal",
+                "sound_pressure": "Pression acoustique",
+                "speed": "Vitesse",
+                "sulphur_dioxide": "Dioxyde de soufre",
+                "temperature": "Temp\u00e9rature",
+                "timestamp": "Horodatage",
+                "volatile_organic_compounds": "COV",
+                "volatile_organic_compounds_parts": "COV",
+                "voltage": "Tension",
+                "volume": "Volume",
+                "volume_flow_rate": "D\u00e9bit volum\u00e9trique",
+                "volume_storage": "Volume stock\u00e9",
+                "water": "Eau",
+                "weight": "Poids",
+                "wind_speed": "Vitesse du vent"
+            }
+        },
+        "sensor_state_class": {
+            "options": {
+                "measurement": "Mesure",
+                "none": "Pas de classe d'\u00e9tat",
+                "total": "Total",
+                "total_increasing": "Total en augmentation"
+            }
+        },
+        "sensor_unit_of_measurement": {
+            "options": {
+                "none": "Aucune unit\u00e9 de mesure"
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Recharge les entit\u00e9s de mod\u00e8le \u00e0 partir de la configuration YAML.",
+            "name": "Recharger"
+        }
+    }
+}

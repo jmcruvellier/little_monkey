@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "Atsisiun\u010dia fail\u0105 \u012f atsisiuntimo viet\u0105.",
+            "fields": {
+                "filename": {
+                    "description": "Nustatykite failo pavadinim\u0105.",
+                    "name": "Failo pavadinimas"
+                },
+                "overwrite": {
+                    "description": "Ar perra\u0161yti fail\u0105, ar ne.",
+                    "name": "Perra\u0161yti"
+                },
+                "subdir": {
+                    "description": "Atsisi\u0173sti \u012f pakatalog\u012f.",
+                    "name": "Pakatalogis"
+                },
+                "url": {
+                    "description": "Atsisiun\u010diamo failo URL.",
+                    "name": "URL"
+                }
+            },
+            "name": "Atsisi\u0173sti fail\u0105"
+        }
+    }
+}

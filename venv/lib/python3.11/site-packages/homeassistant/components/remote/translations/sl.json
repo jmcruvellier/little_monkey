@@ -1,0 +1,11 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "off": "Izklopljeno",
+                "on": "Vklopljeno"
+            }
+        }
+    },
+    "title": "Oddaljeno"
+}

@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "unknown": "Ootamatu t\u00f5rge"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "V2C Trydan EVSE hostinimi v\u00f5i IP-aadress."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "Laadimine"
+            },
+            "connected": {
+                "name": "\u00dchendatud"
+            },
+            "ready": {
+                "name": "Valmis"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intensiivsus"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "Laadimisenergia"
+            },
+            "charge_power": {
+                "name": "Laadimisv\u00f5imsus"
+            },
+            "charge_time": {
+                "name": "Laadimisaeg"
+            },
+            "fv_power": {
+                "name": "P\u00e4ikesepaneelide v\u00f5imsus"
+            },
+            "house_power": {
+                "name": "Majapidamise v\u00f5imsus"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "D\u00fcnaamiline intensiivsuse modulatsioon"
+            },
+            "locked": {
+                "name": "Lukusta EVSE"
+            },
+            "pause_dynamic": {
+                "name": "D\u00fcnaamilise juhtimismodulatsiooni paus"
+            },
+            "paused": {
+                "name": "Seansi peatamine"
+            },
+            "timer": {
+                "name": "Laadimispunkti taimer"
+            }
+        }
+    }
+}

@@ -1,0 +1,57 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "no_flipr_id_found": "Su j\u016bs\u0173 paskyra kol kas n\u0117ra susieto \u201eFlipr ID\u201c. Pirmiausia tur\u0117tum\u0117te patikrinti, ar jis veikia su Flipr mobili\u0105ja programa.",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "flipr_id": {
+                "data": {
+                    "flipr_id": "Flipr ID"
+                },
+                "description": "S\u0105ra\u0161e pasirinkite savo Flipr ID",
+                "title": "Pasirinkite savo Flipr"
+            },
+            "user": {
+                "data": {
+                    "email": "El. pa\u0161tas",
+                    "password": "Slapta\u017eodis"
+                },
+                "description": "Prisijunkite naudodami savo Flipr paskyr\u0105.",
+                "title": "Prisijunkite prie Flipr"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "chlorine_status": {
+                "name": "Chloro b\u016bkl\u0117"
+            },
+            "ph_status": {
+                "name": "pH b\u016bsena"
+            }
+        },
+        "sensor": {
+            "chlorine": {
+                "name": "Chloras"
+            },
+            "last_measured": {
+                "name": "Paskutin\u012f kart\u0105 i\u0161matuotas"
+            },
+            "ph": {
+                "name": "pH"
+            },
+            "red_ox": {
+                "name": "Raudonasis OX"
+            },
+            "water_temperature": {
+                "name": "Vandens temperat\u016bra"
+            }
+        }
+    }
+}

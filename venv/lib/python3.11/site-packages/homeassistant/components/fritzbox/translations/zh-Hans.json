@@ -1,0 +1,94 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "already_in_progress": "\u914d\u7f6e\u6d41\u7a0b\u5df2\u5728\u8fdb\u884c\u4e2d",
+            "ignore_ip6_link_local": "\u4e0d\u652f\u6301 IPv6 \u94fe\u8def\u672c\u5730\u5730\u5740\u3002",
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907",
+            "not_supported": "\u5df2\u8fde\u63a5\u5230 AVM FRITZ!Box\uff0c\u4f46\u65e0\u6cd5\u63a7\u5236\u667a\u80fd\u5bb6\u5c45\u8bbe\u5907\u3002",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "invalid_auth": "\u9a8c\u8bc1\u7801\u65e0\u6548"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "confirm": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u60a8\u8981\u8bbe\u7f6e{name}\u5417\uff1f"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u66f4\u65b0\u60a8\u7684{name}\u767b\u5f55\u4fe1\u606f\u3002"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8f93\u5165\u60a8\u7684 AVM FRITZ!Box \u4fe1\u606f\u3002"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "alarm": {
+                "name": "\u8b66\u62a5"
+            },
+            "device_lock": {
+                "name": "\u901a\u8fc7 UI \u6309\u94ae\u9501\u5b9a"
+            },
+            "lock": {
+                "name": "\u8bbe\u5907\u4e0a\u7684\u6309\u94ae\u9501\u5b9a"
+            }
+        },
+        "sensor": {
+            "battery": {
+                "name": "\u7535\u6c60"
+            },
+            "comfort_temperature": {
+                "name": "\u8212\u9002\u6e29\u5ea6"
+            },
+            "eco_temperature": {
+                "name": "\u8282\u80fd\u6e29\u5ea6"
+            },
+            "electric_current": {
+                "name": "\u7535\u6d41"
+            },
+            "humidity": {
+                "name": "\u6e7f\u5ea6"
+            },
+            "nextchange_preset": {
+                "name": "\u4e0b\u4e00\u4e2a\u9884\u8bbe"
+            },
+            "nextchange_temperature": {
+                "name": "\u4e0b\u4e00\u4e2a\u9884\u5b9a\u6e29\u5ea6"
+            },
+            "nextchange_time": {
+                "name": "\u4e0b\u4e00\u4e2a\u8ba1\u5212\u7684\u66f4\u6539\u65f6\u95f4"
+            },
+            "power_consumption": {
+                "name": "\u529f\u7387"
+            },
+            "scheduled_preset": {
+                "name": "\u5f53\u524d\u8ba1\u5212\u9884\u8bbe"
+            },
+            "temperature": {
+                "name": "\u6e29\u5ea6"
+            },
+            "total_energy": {
+                "name": "\u80fd\u8017"
+            },
+            "voltage": {
+                "name": "\u7535\u538b"
+            }
+        }
+    }
+}

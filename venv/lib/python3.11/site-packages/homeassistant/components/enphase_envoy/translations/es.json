@@ -1,0 +1,213 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado",
+            "reauth_successful": "La autenticaci\u00f3n se volvi\u00f3 a realizar correctamente"
+        },
+        "error": {
+            "cannot_connect": "No se puede conectar: {reason}",
+            "invalid_auth": "Autenticaci\u00f3n no v\u00e1lida: {reason}",
+            "unknown": "Error inesperado"
+        },
+        "flow_title": "{serial} ({host})",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "password": "Contrase\u00f1a",
+                    "username": "Nombre de usuario"
+                },
+                "data_description": {
+                    "host": "El nombre de host o la direcci\u00f3n IP de tu puerta de enlace Enphase Envoy."
+                },
+                "description": "Para la versi\u00f3n de firmware 7.0 y posteriores, introduce las credenciales de la nube de Enphase; para modelos m\u00e1s antiguos, introduce el nombre de usuario \"installer\" sin contrase\u00f1a."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "communicating": {
+                "name": "Comunicando"
+            },
+            "dc_switch": {
+                "name": "Interruptor de CC"
+            },
+            "grid_status": {
+                "name": "Estado de la red"
+            },
+            "operating": {
+                "name": "En funcionamiento"
+            },
+            "relay": {
+                "name": "Estado del rel\u00e9"
+            }
+        },
+        "number": {
+            "cutoff_battery_level": {
+                "name": "Nivel de corte de bater\u00eda"
+            },
+            "reserve_soc": {
+                "name": "Nivel de bater\u00eda de reserva"
+            },
+            "restore_battery_level": {
+                "name": "Nivel de restauraci\u00f3n de bater\u00eda"
+            }
+        },
+        "select": {
+            "relay_generator_action": {
+                "name": "Acci\u00f3n del generador",
+                "state": {
+                    "none": "Ninguna",
+                    "not_powered": "Sin alimentaci\u00f3n",
+                    "powered": "Alimentado",
+                    "schedule": "Seguir programaci\u00f3n"
+                }
+            },
+            "relay_grid_action": {
+                "name": "Acci\u00f3n de red",
+                "state": {
+                    "none": "Ninguna",
+                    "not_powered": "Sin alimentaci\u00f3n",
+                    "powered": "Alimentado",
+                    "schedule": "Seguir programaci\u00f3n"
+                }
+            },
+            "relay_microgrid_action": {
+                "name": "Acci\u00f3n de microrred",
+                "state": {
+                    "none": "Ninguna",
+                    "not_powered": "Sin alimentaci\u00f3n",
+                    "powered": "Alimentado",
+                    "schedule": "Seguir programaci\u00f3n"
+                }
+            },
+            "relay_mode": {
+                "name": "Modo",
+                "state": {
+                    "battery": "Nivel de bater\u00eda",
+                    "standard": "Est\u00e1ndar"
+                }
+            },
+            "storage_mode": {
+                "name": "Modo de almacenamiento",
+                "state": {
+                    "backup": "Copia de seguridad completa",
+                    "savings": "Modo ahorro",
+                    "self_consumption": "Autoconsumo"
+                }
+            }
+        },
+        "sensor": {
+            "available_energy": {
+                "name": "Energ\u00eda de la bater\u00eda disponible"
+            },
+            "configured_reserve_soc": {
+                "name": "Nivel de bater\u00eda de reserva configurado"
+            },
+            "current_power_consumption": {
+                "name": "Consumo actual de energ\u00eda"
+            },
+            "current_power_consumption_phase": {
+                "name": "Consumo de energ\u00eda actual de {phase_name}"
+            },
+            "current_power_production": {
+                "name": "Producci\u00f3n actual de energ\u00eda"
+            },
+            "current_power_production_phase": {
+                "name": "Producci\u00f3n de energ\u00eda actual de {phase_name}"
+            },
+            "daily_consumption": {
+                "name": "Consumo de energ\u00eda hoy"
+            },
+            "daily_consumption_phase": {
+                "name": "Consumo de energ\u00eda hoy en {phase_name}"
+            },
+            "daily_production": {
+                "name": "Producci\u00f3n de energ\u00eda hoy"
+            },
+            "daily_production_phase": {
+                "name": "Producci\u00f3n de energ\u00eda hoy en {phase_name}"
+            },
+            "last_reported": {
+                "name": "\u00daltimo informe"
+            },
+            "lifetime_consumption": {
+                "name": "Consumo de energ\u00eda durante toda la vida"
+            },
+            "lifetime_consumption_phase": {
+                "name": "Consumo de energ\u00eda durante toda la vida en {phase_name}"
+            },
+            "lifetime_production": {
+                "name": "Producci\u00f3n de energ\u00eda durante toda la vida"
+            },
+            "lifetime_production_phase": {
+                "name": "Producci\u00f3n de energ\u00eda durante toda la vida en {phase_name}"
+            },
+            "max_capacity": {
+                "name": "Capacidad de la bater\u00eda"
+            },
+            "net_ct_frequency": {
+                "name": "Frecuencia de consumo neto CT"
+            },
+            "net_ct_frequency_phase": {
+                "name": "Frecuencia de consumo neto CT {phase_name}"
+            },
+            "net_ct_metering_status": {
+                "name": "Estado de medici\u00f3n consumo neto CT"
+            },
+            "net_ct_metering_status_phase": {
+                "name": "Estado de medici\u00f3n consumo neto CT {phase_name}"
+            },
+            "net_ct_status_flags": {
+                "name": "Indicadores de estado del contador consumo neto activo CT"
+            },
+            "net_ct_status_flags_phase": {
+                "name": "Indicadores de estado del contador consumo neto activo CT {phase_name}"
+            },
+            "net_ct_voltage": {
+                "name": "Consumo neto de tensi\u00f3n CT"
+            },
+            "net_ct_voltage_phase": {
+                "name": "Consumo neto de tensi\u00f3n CT {phase_name}"
+            },
+            "production_ct_metering_status": {
+                "name": "Estado de contador producci\u00f3n CT"
+            },
+            "production_ct_metering_status_phase": {
+                "name": "Estado de contador producci\u00f3n CT {phase_name}"
+            },
+            "production_ct_status_flags": {
+                "name": "Indicadores de estado del contador producci\u00f3n activa CT"
+            },
+            "production_ct_status_flags_phase": {
+                "name": "Indicadores de estado del contador producci\u00f3n activa CT {phase_name}"
+            },
+            "reserve_energy": {
+                "name": "Energ\u00eda de bater\u00eda de reserva"
+            },
+            "reserve_soc": {
+                "name": "Nivel de bater\u00eda de reserva"
+            },
+            "seven_days_consumption": {
+                "name": "Consumo de energ\u00eda en los \u00faltimos siete d\u00edas"
+            },
+            "seven_days_consumption_phase": {
+                "name": "Consumo de energ\u00eda en los \u00faltimos siete d\u00edas en {phase_name}"
+            },
+            "seven_days_production": {
+                "name": "Producci\u00f3n de energ\u00eda en los \u00faltimos siete d\u00edas"
+            },
+            "seven_days_production_phase": {
+                "name": "Producci\u00f3n de energ\u00eda en los \u00faltimos siete d\u00edas en {phase_name}"
+            }
+        },
+        "switch": {
+            "charge_from_grid": {
+                "name": "Carga desde la red"
+            },
+            "grid_enabled": {
+                "name": "Red habilitada"
+            }
+        }
+    }
+}

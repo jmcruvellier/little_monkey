@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u00da\u010det je u\u017e nakonfigurovan\u00fd"
+        },
+        "error": {
+            "invalid_credentials": "Neplatn\u00e9 overenie",
+            "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API k\u013e\u00fa\u010d",
+                    "api_user": "ID pou\u017e\u00edvate\u013ea API spolo\u010dnosti Habitica",
+                    "name": "Prep\u00edsa\u0165 pou\u017e\u00edvate\u013esk\u00e9 meno Habitica. Bude sa pou\u017e\u00edva\u0165 na servisn\u00e9 hovory",
+                    "url": "URL"
+                },
+                "description": "Pripojte svoj profil Habitica, aby ste umo\u017enili sledovanie profilu a \u00faloh v\u00e1\u0161ho pou\u017e\u00edvate\u013ea. Upozor\u0148ujeme, \u017ee api_id a api_key je potrebn\u00e9 z\u00edska\u0165 z https://habitica.com/user/settings/api"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Zavol\u00e1 Habitica API.",
+            "fields": {
+                "args": {
+                    "description": "Ak\u00e9ko\u013evek \u010fal\u0161ie argumenty JSON alebo parametrov URL. Cestu n\u00e1jdete v \u010dasti apidoc. Pr\u00edklad pou\u017e\u00edva rovnak\u00fd koncov\u00fd bod API.",
+                    "name": "Argumenty"
+                },
+                "name": {
+                    "description": "U\u017e\u00edvate\u013esk\u00e9 meno Habitica na zavolanie.",
+                    "name": "N\u00e1zov"
+                },
+                "path": {
+                    "description": "Polo\u017eky z adresy URL API vo forme po\u013ea s met\u00f3dou pripojenou na konci. Pozrite si str\u00e1nku https://habitica.com/apidoc/. Pr\u00edklad pou\u017e\u00edva adresu https://habitica.com/apidoc/#api-Task-CreateUserTasks.",
+                    "name": "Cesta"
+                }
+            },
+            "name": "N\u00e1zov API"
+        }
+    }
+}

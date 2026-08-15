@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "cannot_connect": "Kan geen verbinding maken",
+            "invalid_auth": "Ongeldige authenticatie",
+            "no_flipr_id_found": "Er is nog geen flipr id aan je account gekoppeld. Je moet eerst controleren of het werkt met de mobiele app van Flipr.",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "flipr_id": {
+                "data": {
+                    "flipr_id": "Flipr ID"
+                },
+                "description": "Kies je Flipr-ID in de lijst",
+                "title": "Kies je Flipr"
+            },
+            "user": {
+                "data": {
+                    "email": "E-mail",
+                    "password": "Wachtwoord"
+                },
+                "description": "Maak verbinding met je Flipr-account.",
+                "title": "Maak verbinding met Flipr"
+            }
+        }
+    }
+}

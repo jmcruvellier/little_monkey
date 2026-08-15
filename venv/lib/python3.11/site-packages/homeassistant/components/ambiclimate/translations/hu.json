@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Ismeretlen hiba a hozz\u00e1f\u00e9r\u00e9si token l\u00e9trehoz\u00e1sakor.",
+            "already_configured": "A fi\u00f3k m\u00e1r konfigur\u00e1lva van",
+            "missing_configuration": "A komponens nincs konfigur\u00e1lva. K\u00e9rem, k\u00f6vesse a dokument\u00e1ci\u00f3t."
+        },
+        "create_entry": {
+            "default": "Sikeres hiteles\u00edt\u00e9s"
+        },
+        "error": {
+            "follow_link": "K\u00e9rj\u00fck, k\u00f6vesse a linket \u00e9s hiteles\u00edtse mag\u00e1t, miel\u0151tt megnyomja a mehet gombot.",
+            "no_token": "Ambiclimate-al nem siker\u00fclt a hiteles\u00edt\u00e9s"
+        },
+        "step": {
+            "auth": {
+                "description": "K\u00e9rem, k\u00f6vesse a [linket]({authorization_url}) \u00e9s **Enged\u00e9lyezze** a hozz\u00e1f\u00e9r\u00e9st Ambiclimate -fi\u00f3kj\u00e1hoz, majd t\u00e9rjen vissza \u00e9s nyomja meg az al\u00e1bbi **Mehet** gombot.\n(Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a visszah\u00edv\u00e1si URL {cb_url})",
+                "title": "Ambiclimate hiteles\u00edt\u00e9se"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "2024. m\u00e1rcius 31-i hat\u00e1llyal minden Ambiclimate szolg\u00e1ltat\u00e1s megsz\u0171nik, mivel az Ambi Labs megsz\u00fcnteti \u00fczleti tev\u00e9kenys\u00e9g\u00e9t \u00e9s az Ambiclimate integr\u00e1ci\u00f3t el\u00e1tvol\u00edt\u00e1sra ker\u00fcl a Home Assistantb\u00f3l.\n\nA probl\u00e9ma megold\u00e1s\u00e1hoz t\u00e1vol\u00edtsa el az integr\u00e1ci\u00f3s bejegyz\u00e9seket a Home Assistant be\u00e1ll\u00edt\u00e1s\u00e1b\u00f3l. [Kattintson ide a megl\u00e9v\u0151 Logi Circle integr\u00e1ci\u00f3s bejegyz\u00e9sek megtekint\u00e9s\u00e9hez] ({entries}).",
+            "title": "Az Ambiclimate integr\u00e1ci\u00f3 elavult \u00e9s elt\u00e1vol\u00edt\u00e1sra ker\u00fcl."
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Visszajelz\u00e9st k\u00fcld a komfort m\u00f3dhoz.",
+            "fields": {
+                "name": {
+                    "description": "Karakterl\u00e1nc az eszk\u00f6z nev\u00e9vel.",
+                    "name": "Eszk\u00f6z neve"
+                },
+                "value": {
+                    "description": "K\u00fcldje el a k\u00f6vetkez\u0151 komfort \u00e9rt\u00e9kek b\u00e1rmelyik\u00e9t: too_hot, too_warm, bit_warm, comfortable, bit_cold, too_cold, freezing (Magyarul: t\u00fal forr\u00f3, t\u00fal meleg, kiss\u00e9 meleg, kellemes, kiss\u00e9 hideg, t\u00fal hideg, fagyos).",
+                    "name": "Komfort \u00e9rt\u00e9k"
+                }
+            },
+            "name": "Komfort m\u00f3d visszajelz\u00e9s k\u00fcld\u00e9se"
+        },
+        "set_comfort_mode": {
+            "description": "Enged\u00e9lyezi a kl\u00edmaberendez\u00e9s komfort \u00fczemm\u00f3dj\u00e1t.",
+            "fields": {
+                "name": {
+                    "description": "Karakterl\u00e1nc az eszk\u00f6z nev\u00e9vel.",
+                    "name": "Eszk\u00f6z neve"
+                }
+            },
+            "name": "Komfort m\u00f3d be\u00e1ll\u00edt\u00e1sa"
+        },
+        "set_temperature_mode": {
+            "description": "Be\u00e1ll\u00edtja a h\u0151m\u00e9rs\u00e9klet m\u00f3dot az \u00f6n l\u00e9gkondicion\u00e1l\u00f3j\u00e1n.",
+            "fields": {
+                "name": {
+                    "description": "Karakterl\u00e1nc az eszk\u00f6z nev\u00e9vel.",
+                    "name": "Eszk\u00f6z neve"
+                },
+                "value": {
+                    "description": "C\u00e9l\u00e9rt\u00e9k celsiusban.",
+                    "name": "H\u0151m\u00e9rs\u00e9klet"
+                }
+            },
+            "name": "H\u0151m\u00e9rs\u00e9klet m\u00f3d be\u00e1ll\u00edt\u00e1sa"
+        }
+    }
+}

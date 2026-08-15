@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "Saadab valitud sihtm\u00e4rkidele teavituss\u00f5numi.",
+            "fields": {
+                "data": {
+                    "description": "M\u00f5ned integratsioonid pakuvad laiendatud funktsioone. Lisateavet _andmete_ kasutamise kohta leiad integratsiooni dokumentatsioonist.",
+                    "name": "Andmed"
+                },
+                "message": {
+                    "description": "Teatise s\u00f5numi sisu.",
+                    "name": "S\u00f5num"
+                },
+                "target": {
+                    "description": "M\u00f5ned sidumised v\u00f5imaldavad m\u00e4\u00e4rata saajad mis teatise saavad. Lisateabe saamiseks vaata sidumise dokumentatsiooni.",
+                    "name": "Saaja"
+                },
+                "title": {
+                    "description": "Teatise pealkiri.",
+                    "name": "Pealkiri"
+                }
+            },
+            "name": "Saada teavitus"
+        },
+        "persistent_notification": {
+            "description": "Saadab teate, mis on n\u00e4htav paneelil **Teavitused**.",
+            "fields": {
+                "data": {
+                    "description": "M\u00f5ned sidumised pakuvad laiendatud funktsionaalsust. Teavet selle kohta, kuidas kasutada _data_, leiad integratsiooni dokumentatsioonist..",
+                    "name": "Andmed"
+                },
+                "message": {
+                    "description": "Teatise s\u00f5numi sisu.",
+                    "name": "S\u00f5num"
+                },
+                "title": {
+                    "description": "Teatise pealkiri.",
+                    "name": "Nimetus"
+                }
+            },
+            "name": "Saada p\u00fcsiteatis"
+        }
+    },
+    "title": "Teavitused"
+}

@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "A postal\u00e1daplatform elt\u00e1vol\u00edt\u00e1sa folyamatban van. K\u00e9rj\u00fck, jelentse a '{integration_domain}' egy\u00e9ni integr\u00e1ci\u00f3 szerz\u0151j\u00e9nek.",
+            "title": "A postafi\u00f3k platform elt\u00e1vol\u00edt\u00e1sra ker\u00fcl"
+        }
+    },
+    "title": "Postafi\u00f3k"
+}

@@ -1,0 +1,15 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Serviciul este deja configurat"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "language": "Limb\u0103",
+                    "tld": "TLD"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "no_services": "\u5728\u7aef\u70b9\u627e\u4e0d\u5230\u670d\u52a1"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "hassio_confirm": {
+                "description": "\u662f\u5426\u8981\u901a\u8fc7\u6269\u5c55: {addon}\u914d\u7f6eHome Assistant\u4ee5\u8fde\u63a5\u5230Wyoming\u670d\u52a1\uff1f"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "port": "\u7aef\u53e3"
+                }
+            }
+        }
+    }
+}

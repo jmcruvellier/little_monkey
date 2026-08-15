@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Odmietne upozornenie vo form\u00e1te HTML5.",
+            "fields": {
+                "data": {
+                    "description": "Roz\u0161\u00edren\u00e9 inform\u00e1cie o ozn\u00e1men\u00ed. Podporuje tag.",
+                    "name": "\u00dadaje"
+                },
+                "target": {
+                    "description": "S\u00fabor cie\u013eov.",
+                    "name": "Cie\u013e"
+                }
+            },
+            "name": "Zru\u0161i\u0165"
+        }
+    }
+}

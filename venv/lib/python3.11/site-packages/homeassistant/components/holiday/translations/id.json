@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Sudah dikonfigurasi. Hanya satu konfigurasi negara/provinsi yang diizinkan."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Provinsi"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Negara"
+                }
+            }
+        }
+    },
+    "title": "Hari Libur"
+}

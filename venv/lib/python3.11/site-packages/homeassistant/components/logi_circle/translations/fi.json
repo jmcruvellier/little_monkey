@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Tili on jo m\u00e4\u00e4ritetty",
+            "external_error": "Poikkeus tapahtui toisesta asennuspolusta.",
+            "external_setup": "Logi Circle on m\u00e4\u00e4ritetty onnistuneesti toisesta asennuspolusta.",
+            "missing_configuration": "Komponenttia ei ole m\u00e4\u00e4ritetty. Seuraa dokumentaatiota."
+        },
+        "error": {
+            "authorize_url_timeout": "Valtuutus-URL-osoitteen luomisen aikakatkaisu.",
+            "follow_link": "Seuraa linkki\u00e4 ja vahvista ennen kuin painat L\u00e4het\u00e4.",
+            "invalid_auth": "Virheellinen todennus"
+        },
+        "step": {
+            "auth": {
+                "description": "Seuraa alla olevaa linkki\u00e4 ja **Hyv\u00e4ksy** p\u00e4\u00e4sy Logi Circle -tilillesi, palaa sitten takaisin ja paina **L\u00e4het\u00e4** alla.\n\n[Linkki]({authorization_url})",
+                "title": "Todenna Logi Circlen avulla"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Tarjoaja"
+                },
+                "description": "Valitse, mink\u00e4 todennuspalveluntarjoajan kautta haluat tunnistautua Logi Circleen.",
+                "title": "Todentamisen tarjoaja"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "Viimeinen toiminta"
+            },
+            "recording_mode": {
+                "name": "Tallennustila"
+            },
+            "streaming_mode": {
+                "name": "Suoratoistotila"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi-signaaliluokka"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi-signaalin voimakkuus"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Logitech lakkasi hyv\u00e4ksym\u00e4st\u00e4 hakemuksia Logi Circle API:n k\u00e4ytt\u00f6oikeuksista toukokuussa 2022, ja Logi Circle -integraatio poistetaan Home Assistantista.\n\nVoit ratkaista t\u00e4m\u00e4n ongelman poistamalla integraatiomerkinn\u00e4t Home Assistant -asetuksistasi. [Klikkaa t\u00e4st\u00e4 n\u00e4hd\u00e4ksesi olemassa olevat Logi Circle -integraatiomerkinn\u00e4t]({entries}).",
+            "title": "Logi Circle -integraatio on poistettu k\u00e4yt\u00f6st\u00e4 ja se poistetaan."
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Ottaa videotallenteen kameran livestriimist\u00e4.",
+            "fields": {
+                "duration": {
+                    "description": "Tallennuksen kesto.",
+                    "name": "Kesto"
+                },
+                "entity_id": {
+                    "description": "Niiden entiteettien nimet, joista tallenteita luodaan.",
+                    "name": "Kohde"
+                },
+                "filename": {
+                    "description": "Tiedostonimen malli. Muuttuja on entity_id.",
+                    "name": "Tiedoston nimi"
+                }
+            },
+            "name": "Livestream-tallennus"
+        },
+        "livestream_snapshot": {
+            "description": "Ottaa tilannekuvan kameran livestriimist\u00e4. Her\u00e4tt\u00e4\u00e4 kameran lepotilasta tarvittaessa.",
+            "fields": {
+                "entity_id": {
+                    "description": "Niiden entiteettien nimet, joista tilannekuvia luodaan.",
+                    "name": "Kohde"
+                },
+                "filename": {
+                    "description": "Tiedostonimen malli. Muuttuja on entity_id.",
+                    "name": "Tiedoston nimi"
+                }
+            },
+            "name": "Livestream tilannekuva"
+        },
+        "set_config": {
+            "description": "Asettaa konfigurointiominaisuuden.",
+            "fields": {
+                "entity_id": {
+                    "description": "Niiden kohteiden nimet, joihin toimintatilaa k\u00e4skytet\u00e4\u00e4n.",
+                    "name": "Kohde"
+                },
+                "mode": {
+                    "description": "Toimintatila. Sallitut arvot: LED, RECORDING_MODE.",
+                    "name": "Tila"
+                },
+                "value": {
+                    "description": "Toiminta-arvo.",
+                    "name": "Arvo"
+                }
+            },
+            "name": "Aseta konfiguraatio"
+        }
+    }
+}

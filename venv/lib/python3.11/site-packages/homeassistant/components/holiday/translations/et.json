@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Juba seadistatud. V\u00f5imalik ainult \u00fcks riigi/maakonna kombinatsioon."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Maakond"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Riik"
+                }
+            }
+        }
+    },
+    "title": "P\u00fchad"
+}

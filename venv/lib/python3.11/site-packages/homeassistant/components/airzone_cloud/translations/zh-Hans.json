@@ -1,0 +1,19 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "\u5b89\u88c5",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    }
+}

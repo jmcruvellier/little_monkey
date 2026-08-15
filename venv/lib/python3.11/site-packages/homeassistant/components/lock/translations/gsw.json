@@ -1,0 +1,11 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "locked": "Bschlosse",
+                "unlocked": "Ufbschlosse"
+            }
+        }
+    },
+    "title": "Schloss"
+}

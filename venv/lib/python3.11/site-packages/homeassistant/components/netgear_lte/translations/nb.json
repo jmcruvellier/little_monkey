@@ -1,0 +1,48 @@
+{
+    "entity": {
+        "sensor": {
+            "service_type": {
+                "name": "Tjenestetype"
+            },
+            "sms": {
+                "name": "SMS"
+            },
+            "sms_total": {
+                "name": "SMS totalt"
+            },
+            "usage": {
+                "name": "Bruk"
+            }
+        }
+    },
+    "services": {
+        "connect_lte": {
+            "fields": {
+                "host": {
+                    "name": "Vert"
+                }
+            }
+        },
+        "delete_sms": {
+            "fields": {
+                "host": {
+                    "name": "Vert"
+                }
+            }
+        },
+        "disconnect_lte": {
+            "fields": {
+                "host": {
+                    "name": "Vert"
+                }
+            }
+        },
+        "set_option": {
+            "fields": {
+                "host": {
+                    "name": "Vert"
+                }
+            }
+        }
+    }
+}

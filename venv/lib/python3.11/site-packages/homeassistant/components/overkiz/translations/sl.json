@@ -1,0 +1,43 @@
+{
+    "entity": {
+        "climate": {
+            "overkiz": {
+                "state_attributes": {
+                    "fan_mode": {
+                        "state": {
+                            "away": "Odsoten"
+                        }
+                    },
+                    "preset_mode": {
+                        "state": {
+                            "auto": "Samodejno",
+                            "drying": "Su\u0161enje"
+                        }
+                    }
+                }
+            }
+        },
+        "select": {
+            "open_closed_pedestrian": {
+                "state": {
+                    "closed": "Zaprto",
+                    "open": "Odprto",
+                    "pedestrian": "Pe\u0161ec"
+                }
+            }
+        },
+        "sensor": {
+            "priority_lock_originator": {
+                "state": {
+                    "temperature": "Temperatura"
+                }
+            },
+            "three_way_handle_direction": {
+                "state": {
+                    "closed": "Zaprto",
+                    "open": "Odprto"
+                }
+            }
+        }
+    }
+}

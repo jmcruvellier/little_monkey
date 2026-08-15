@@ -1,0 +1,139 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Kasutaja on juba seadistatud",
+            "reauth_successful": "Taastuvastamine \u00f5nnestus"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "invalid_auth": "Vigane autentimine"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Salas\u00f5na",
+                    "region": "ConnectedDrive'i piirkond",
+                    "username": "Kasutajanimi"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging_status": {
+                "name": "Laadimise olek"
+            },
+            "check_control_messages": {
+                "name": "Kontrolli juhts\u00f5numeid"
+            },
+            "condition_based_services": {
+                "name": "Tingimusel p\u00f5hinevad teenused"
+            },
+            "connection_status": {
+                "name": "\u00dchenduse olek"
+            },
+            "door_lock_state": {
+                "name": "Ukse lukustuse olek"
+            },
+            "is_pre_entry_climatization_enabled": {
+                "name": "Sisenemiseelne klimatiseerimine"
+            },
+            "lids": {
+                "name": "Luugid"
+            },
+            "windows": {
+                "name": "Aknad"
+            }
+        },
+        "button": {
+            "activate_air_conditioning": {
+                "name": "Aktiveeri kliimaseade"
+            },
+            "find_vehicle": {
+                "name": "Leia s\u00f5iduk"
+            },
+            "light_flash": {
+                "name": "Vilguta tulesid"
+            },
+            "refresh": {
+                "name": "V\u00e4rskenda pilvest"
+            },
+            "sound_horn": {
+                "name": "Lase signaali"
+            }
+        },
+        "lock": {
+            "lock": {
+                "name": "Lukk"
+            }
+        },
+        "number": {
+            "target_soc": {
+                "name": "Siht-SoC"
+            }
+        },
+        "select": {
+            "ac_limit": {
+                "name": "Vahelduvvoolu laadimise piirang"
+            },
+            "charging_mode": {
+                "name": "Laadimisre\u017eiim"
+            }
+        },
+        "sensor": {
+            "ac_current_limit": {
+                "name": "Vahelduvvoolu piirv\u00e4\u00e4rtus"
+            },
+            "charging_end_time": {
+                "name": "Laadimise l\u00f5puaeg"
+            },
+            "charging_start_time": {
+                "name": "Laadimise algusaeg"
+            },
+            "charging_status": {
+                "name": "Laadimise olek"
+            },
+            "charging_target": {
+                "name": "Laadimise sihtpunkt"
+            },
+            "mileage": {
+                "name": "L\u00e4bis\u00f5it"
+            },
+            "remaining_battery_percent": {
+                "name": "J\u00e4\u00e4nud aku protsent"
+            },
+            "remaining_fuel": {
+                "name": "K\u00fctuse j\u00e4\u00e4k"
+            },
+            "remaining_fuel_percent": {
+                "name": "J\u00e4\u00e4nud k\u00fctuse protsent"
+            },
+            "remaining_range_electric": {
+                "name": "J\u00e4\u00e4nud s\u00f5iduulatus elektriga"
+            },
+            "remaining_range_fuel": {
+                "name": "J\u00e4\u00e4nud s\u00f5iduulatus k\u00fctusega"
+            },
+            "remaining_range_total": {
+                "name": "J\u00e4\u00e4nud s\u00f5iduulatus"
+            }
+        },
+        "switch": {
+            "charging": {
+                "name": "Laadimine"
+            },
+            "climate": {
+                "name": "Kliimaseade"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "account_options": {
+                "data": {
+                    "read_only": "Kirjutuskaitstud (ainult andurid ja teavitused, ei k\u00e4ivita teenuseid, kood puudub)"
+                }
+            }
+        }
+    }
+}

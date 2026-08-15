@@ -1,0 +1,85 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "L'appareil est d\u00e9j\u00e0 configur\u00e9",
+            "no_devices_found": "Aucun appareil trouv\u00e9 sur le r\u00e9seau",
+            "reauth_successful": "La r\u00e9-authentification a r\u00e9ussi"
+        },
+        "error": {
+            "cannot_connect": "Erreur de connexion\u00a0: {error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Mot de passe",
+                    "username": "Nom d'utilisateur"
+                },
+                "description": "L'appareil n\u00e9cessite une authentification, veuillez saisir vos informations d'identification TP-Link ci-dessous.",
+                "title": "Authentification"
+            },
+            "discovery_confirm": {
+                "description": "Voulez-vous configurer {name} {model} ({host})\u00a0?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "Appareil"
+                }
+            },
+            "reauth": {
+                "description": "L'appareil n\u00e9cessite une authentification, veuillez saisir vos informations d'identification TP-Link ci-dessous.",
+                "title": "L'authentification a expir\u00e9 pour {name}"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Mot de passe",
+                    "username": "Nom d'utilisateur"
+                },
+                "description": "L'appareil n\u00e9cessite une authentification, veuillez saisir vos informations d'identification TP-Link ci-dessous.",
+                "title": "L'authentification a expir\u00e9 pour {name}"
+            },
+            "user": {
+                "data": {
+                    "host": "H\u00f4te"
+                },
+                "description": "Si vous laissez l'h\u00f4te vide, la d\u00e9couverte sera utilis\u00e9e pour trouver des appareils."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Mot de passe",
+                    "username": "Nom d'utilisateur"
+                },
+                "description": "L'appareil n\u00e9cessite une authentification, veuillez saisir vos informations d'identification TP-Link ci-dessous.",
+                "title": "Authentification"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_consumption": {
+                "name": "Consommation actuelle"
+            },
+            "today_consumption": {
+                "name": "Consommation d'aujourd'hui"
+            },
+            "total_consumption": {
+                "name": "Consommation totale"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "fields": {
+                "hue_range": {
+                    "description": "Gamme de teinte.",
+                    "name": "Gamme de teinte"
+                }
+            }
+        }
+    }
+}

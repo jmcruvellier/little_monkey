@@ -1,0 +1,21 @@
+{
+    "config": {
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "pin": "Pincode"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "pin": "Pincode",
+                    "port": "Poort"
+                },
+                "data_description": {
+                    "host": "De hostnaam of IP-adres van je Comelit apparaat."
+                }
+            }
+        }
+    }
+}

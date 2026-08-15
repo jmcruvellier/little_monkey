@@ -1,0 +1,45 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "api_ratelimit": "API \u8c03\u7528\u9891\u7387\u8d85\u9650",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "api_ratelimit": "API \u8c03\u7528\u9891\u7387\u8d85\u9650",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "no_data": "\u4f60\u6240\u9009\u62e9\u7684\u4f4d\u7f6e\u6ca1\u6709\u6570\u636e",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "coordinates": {
+                "data": {
+                    "latitude": "\u7eac\u5ea6",
+                    "longitude": "\u7ecf\u5ea6"
+                }
+            },
+            "country": {
+                "data": {
+                    "country_code": "\u56fd\u5bb6/\u5730\u533a\u4ee3\u7801"
+                }
+            },
+            "user": {
+                "data": {
+                    "api_key": "\u8bbf\u95ee Token",
+                    "location": "\u83b7\u53d6\u6570\u636e\u7684\u4f4d\u7f6e"
+                },
+                "description": "\u8bf7\u8bbf\u95ee https://electricitymaps.com/free-tier \u6765\u7533\u8bf7 token\u3002"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "carbon_intensity": {
+                "name": "\u4e8c\u6c27\u5316\u78b3\u6d53\u5ea6"
+            },
+            "fossil_fuel_percentage": {
+                "name": "\u7535\u7f51\u5316\u77f3\u71c3\u6599\u767e\u5206\u6bd4"
+            }
+        }
+    }
+}

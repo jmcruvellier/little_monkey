@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "D\u00e9j\u00e0 configur\u00e9. Une seule configuration possible pour la combinaison pays/province."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Province"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Pays"
+                }
+            }
+        }
+    },
+    "title": "Vacances"
+}

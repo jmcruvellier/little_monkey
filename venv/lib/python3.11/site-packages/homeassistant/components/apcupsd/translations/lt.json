@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "no_status": "Priegloba neprane\u0161a apie b\u016bsen\u0105"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Prievadas"
+                },
+                "description": "\u012eveskite pagrindin\u012f kompiuter\u012f ir prievad\u0105, kuriame aptarnaujamas apcupsd NIS."
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Pa\u0161alinamas APC UPS demono konfig\u016bravimas naudojant YAML. \n\n J\u016bs\u0173 esama YAML konfig\u016bracija buvo automati\u0161kai importuota \u012f vartotojo s\u0105saj\u0105. \n\n Pa\u0161alinkite APC UPS Daemon YAML konfig\u016bracij\u0105 i\u0161 savo configuration.yaml failo ir i\u0161 naujo paleiskite Home Assistant, kad i\u0161spr\u0119stum\u0117te \u0161i\u0105 problem\u0105.",
+            "title": "APC UPS Daemon YAML konfig\u016bracija pa\u0161alinama"
+        }
+    }
+}

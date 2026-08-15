@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Ger\u00e4teklasse",
+                    "name": "Name"
+                },
+                "title": "Zuf\u00e4lliger bin\u00e4rer Sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Ger\u00e4teklasse",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "Name",
+                    "unit_of_measurement": "Ma\u00dfeinheit"
+                },
+                "title": "Zuf\u00e4lliger Sensor"
+            },
+            "user": {
+                "description": "Mit diesem Helfer kannst du einen Helfer erstellen, der einen zuf\u00e4lligen Wert ausgibt.",
+                "menu_options": {
+                    "binary_sensor": "Zuf\u00e4lliger bin\u00e4rer Sensor",
+                    "sensor": "Zuf\u00e4lliger Sensor"
+                },
+                "title": "Zuf\u00e4lliger Helfer"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Dieser Helfer hat keine Optionen.",
+                "title": "Zuf\u00e4lliger bin\u00e4rer Sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Ger\u00e4teklasse",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "Ma\u00dfeinheit"
+                },
+                "title": "Zuf\u00e4lliger Sensor"
+            }
+        }
+    }
+}

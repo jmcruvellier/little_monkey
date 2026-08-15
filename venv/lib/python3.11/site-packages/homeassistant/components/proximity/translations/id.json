@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Perangkat sudah dikonfigurasi",
+            "success": "Perubahan disimpan"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "dir_of_travel": {
+                "name": "Arah perjalanan {tracked_entity}"
+            },
+            "dist_to_zone": {
+                "name": "Jarak {tracked_entity}"
+            },
+            "nearest_dir_of_travel": {
+                "name": "Arah perjalanan terdekat",
+                "state": {
+                    "arrived": "Tiba",
+                    "away_from": "Menjauh dari",
+                    "stationary": "Tidak bergerak",
+                    "towards": "Menuju"
+                }
+            },
+            "nearest_dist_to_zone": {
+                "name": "Jarak terdekat"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "ignored_zones": "Zona untuk diabaikan",
+                    "tolerance": "Jarak toleransi",
+                    "tracked_entities": "Perangkat atau Orang untuk dilacak"
+                }
+            }
+        }
+    },
+    "title": "Kedekatan"
+}

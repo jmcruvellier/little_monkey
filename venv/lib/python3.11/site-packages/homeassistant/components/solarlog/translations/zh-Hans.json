@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "name": "\u7528\u4e8e Solar-Log \u4f20\u611f\u5668\u7684\u524d\u7f00"
+                },
+                "title": "\u5b9a\u4e49\u60a8\u7684 Solar-Log \u8fde\u63a5"
+            }
+        }
+    }
+}

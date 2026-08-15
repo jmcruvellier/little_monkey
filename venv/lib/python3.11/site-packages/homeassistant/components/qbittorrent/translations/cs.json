@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Za\u0159\u00edzen\u00ed je ji\u017e nastaveno"
+        },
+        "error": {
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit",
+            "invalid_auth": "Neplatn\u00e9 ov\u011b\u0159en\u00ed"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Heslo",
+                    "url": "URL",
+                    "username": "U\u017eivatelsk\u00e9 jm\u00e9no",
+                    "verify_ssl": "Ov\u011b\u0159it certifik\u00e1t SSL"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "active_torrents": {
+                "name": "Aktivn\u00ed torrenty"
+            },
+            "all_torrents": {
+                "name": "V\u0161echny torrenty"
+            },
+            "download_speed": {
+                "name": "Rychlost stahov\u00e1n\u00ed"
+            },
+            "inactive_torrents": {
+                "name": "Neaktivn\u00ed torrenty"
+            },
+            "paused_torrents": {
+                "name": "Pozastaven\u00e9 torrenty"
+            },
+            "transmission_status": {
+                "name": "Stav",
+                "state": {
+                    "downloading": "Stahov\u00e1n\u00ed",
+                    "idle": "Ne\u010dinn\u00fd",
+                    "seeding": "Seedov\u00e1n\u00ed",
+                    "up_down": "UL/DL"
+                }
+            },
+            "upload_speed": {
+                "name": "Rychlost nahr\u00e1v\u00e1n\u00ed"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Nastaven\u00ed qBittorrent pomoc\u00ed YAML se odeb\u00edr\u00e1.\n\nVa\u0161e st\u00e1vaj\u00edc\u00ed nastaven\u00ed YAML bylo importov\u00e1na do u\u017eivatelsk\u00e9ho rozhran\u00ed automaticky.\n\nOdeberte nastaven\u00ed qBittorrent YAML ze souboru configuration.yaml a restartujte Home Assistanta, abyste tento probl\u00e9m vy\u0159e\u0161ili.",
+            "title": "Nastaven\u00ed qBittorrent YAML se odeb\u00edr\u00e1"
+        }
+    }
+}

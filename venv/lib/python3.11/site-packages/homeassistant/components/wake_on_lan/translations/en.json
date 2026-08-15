@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "Configuring Wake on Lan using YAML has been moved to integration key.\n\nYour existing YAML configuration will be working for 2 more versions.\n\nMigrate your YAML configuration to the integration key according to the documentation.",
+            "title": "The Wake on Lan YAML configuration has been moved"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Sends a 'magic packet' to wake up a device with 'Wake-On-LAN' capabilities.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "Broadcast IP where to send the magic packet.",
+                    "name": "Broadcast address"
+                },
+                "broadcast_port": {
+                    "description": "Port where to send the magic packet.",
+                    "name": "Broadcast port"
+                },
+                "mac": {
+                    "description": "MAC address of the device to wake up.",
+                    "name": "MAC address"
+                }
+            },
+            "name": "Send magic packet"
+        }
+    }
+}

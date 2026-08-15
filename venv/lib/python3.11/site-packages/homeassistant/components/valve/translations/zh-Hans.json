@@ -1,0 +1,34 @@
+{
+    "entity_component": {
+        "water": {
+            "name": "\u4f9b\u6c34"
+        }
+    },
+    "services": {
+        "close_valve": {
+            "description": "\u5173\u95ed\u9600\u95e8\u3002",
+            "name": "\u5173\u95ed"
+        },
+        "open_valve": {
+            "description": "\u6253\u5f00\u9600\u95e8\u3002",
+            "name": "\u6253\u5f00"
+        },
+        "set_valve_position": {
+            "description": "\u5c06\u9600\u95e8\u79fb\u52a8\u5230\u7279\u5b9a\u4f4d\u7f6e\u3002",
+            "fields": {
+                "position": {
+                    "description": "\u76ee\u6807\u4f4d\u7f6e\u3002",
+                    "name": "\u4f4d\u7f6e"
+                }
+            },
+            "name": "\u8bbe\u5b9a\u4f4d\u7f6e"
+        },
+        "stop_valve": {
+            "description": "\u505c\u6b62\u9600\u95e8\u8fd0\u52a8\u3002",
+            "name": "\u505c\u6b62"
+        },
+        "toggle": {
+            "name": "\u5207\u6362"
+        }
+    }
+}

@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: hass-nabucasa
+Version: 0.78.0
+Summary: Home Assistant cloud integration by Nabu Casa, Inc.
+Home-page: https://www.nabucasa.com/
+Download-URL: https://github.com/NabuCasa/hass-nabucasa/tarball/0.78.0
+Author: Nabu Casa, Inc.
+Author-email: opensource@nabucasa.com
+License: GPL v3
+Keywords: homeassistant,cloud
+Platform: any
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Internet :: Proxy Servers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.10
+License-File: LICENSE
+Requires-Dist: pycognito ==2023.5.0
+Requires-Dist: snitun ==0.36.2
+Requires-Dist: ciso8601 >=2.3.0
+Requires-Dist: acme ==2.8.0
+Requires-Dist: cryptography >=42.0.0
+Requires-Dist: attrs >=19.3
+Requires-Dist: aiohttp >=3.6.1
+Requires-Dist: atomicwrites-homeassistant ==1.4.1
+

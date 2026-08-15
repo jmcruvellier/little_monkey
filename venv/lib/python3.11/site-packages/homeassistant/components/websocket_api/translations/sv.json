@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Tj\u00e4nsten {domain}.{service} anropade tj\u00e4nsten {child_domain}.{child_service} som inte hittades."
+        }
+    }
+}

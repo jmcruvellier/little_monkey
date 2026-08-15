@@ -1,0 +1,11 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "ok": "V redu",
+                "problem": "Problem"
+            }
+        }
+    },
+    "title": "Plant"
+}

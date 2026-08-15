@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Jo m\u00e4\u00e4ritetty. Vain yksi m\u00e4\u00e4ritys maa/maakunta-yhdistelm\u00e4lle on mahdollista."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Maakunta"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Maa"
+                }
+            }
+        }
+    },
+    "title": "Loma"
+}

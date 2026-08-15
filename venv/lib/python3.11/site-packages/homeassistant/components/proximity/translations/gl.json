@@ -1,0 +1,16 @@
+{
+    "entity": {
+        "sensor": {
+            "dir_of_travel": {
+                "state": {
+                    "arrived": "Chegou"
+                }
+            },
+            "nearest_dir_of_travel": {
+                "state": {
+                    "arrived": "Chegou"
+                }
+            }
+        }
+    }
+}

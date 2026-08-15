@@ -1,0 +1,15 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "La cuenta ya ha sido configurada"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Contrase\u00f1a",
+                    "username": "Nombre de usuario"
+                }
+            }
+        }
+    }
+}

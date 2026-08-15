@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907",
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "step": {
+            "confirm": {
+                "description": "\u60a8\u8981\u5f00\u59cb\u8bbe\u7f6e\u5417\uff1f"
+            }
+        }
+    },
+    "services": {
+        "set_auto_off": {
+            "description": "\u66f4\u65b0\u5207\u6362\u5668\u8bbe\u5907\u81ea\u52a8\u5173\u95ed\u8bbe\u7f6e\u3002",
+            "fields": {
+                "auto_off": {
+                    "description": "\u5305\u542b\u5c0f\u65f6\u548c\u5206\u949f\u7684\u65f6\u95f4\u6bb5\u5b57\u7b26\u4e32\u3002",
+                    "name": "\u81ea\u52a8\u5173\u95ed"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u81ea\u52a8\u5173\u95ed"
+        },
+        "turn_on_with_timer": {
+            "description": "\u5012\u8ba1\u65f6\u7ed3\u675f\u540e\u6253\u5f00\u5207\u6362\u5668\u8bbe\u5907\u3002",
+            "fields": {
+                "timer_minutes": {
+                    "description": "\u662f\u65f6\u5019\u5f00\u542f\u4e86\u3002",
+                    "name": "\u5012\u8ba1\u65f6\uff08\u5206\u949f\uff09"
+                }
+            },
+            "name": "\u5012\u8ba1\u65f6\u540e\u6253\u5f00"
+        }
+    }
+}

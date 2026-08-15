@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "calendar_name": "\u65e5\u5386\u540d\u79f0"
+                },
+                "description": "\u8bf7\u4e3a\u60a8\u7684\u65b0\u65e5\u5386\u53d6\u4e2a\u540d"
+            }
+        }
+    },
+    "title": "\u672c\u5730\u65e5\u5386"
+}

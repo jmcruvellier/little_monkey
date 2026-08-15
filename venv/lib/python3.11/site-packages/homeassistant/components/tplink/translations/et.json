@@ -1,0 +1,188 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud",
+            "no_devices_found": "V\u00f5rgust ei leitud seadmeid",
+            "reauth_successful": "Taastuvastamine \u00f5nnestus"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus: {error}",
+            "invalid_auth": "Tuvastamine nurjus: {error}"
+        },
+        "flow_title": "{name} {model} ( {host} )",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Salas\u00f5na",
+                    "username": "Kasutajanimi"
+                },
+                "description": "Seade n\u00f5uab tuvastamist, sisesta allpool oma TP Link volitused.",
+                "title": "Tuvasta"
+            },
+            "discovery_confirm": {
+                "description": "Kas seadistada {name}{model} ({host})?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "Seade"
+                }
+            },
+            "reauth": {
+                "description": "Seade n\u00f5uab tuvastamist, sisesta allpool oma TP Link volitused.",
+                "title": "{name} autentimine aegus"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Salas\u00f5na",
+                    "username": "Kasutajanimi"
+                },
+                "description": "Seade n\u00f5uab tuvastamist, sisesta allpool oma TP Link volitused.",
+                "title": "{name} autentimine aegus"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "TP-Linki seadme hostinimi v\u00f5i IP-aadress."
+                },
+                "description": "Kui j\u00e4tad hosti t\u00fchjaks kasutatakse seadmete leidmiseks avastamist."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Salas\u00f5na",
+                    "username": "Kasutajanimi"
+                },
+                "description": "Seade n\u00f5uab tuvastamist, sisesta allpool oma TP Link volitused.",
+                "title": "Tuvasta"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_child": {
+                "name": "{device_name} voolutugevus"
+            },
+            "current_consumption": {
+                "name": "Praegune tarbimine"
+            },
+            "current_consumption_child": {
+                "name": "{device_name} praegune tarbimine"
+            },
+            "today_consumption": {
+                "name": "T\u00e4nane tarbimine"
+            },
+            "today_consumption_child": {
+                "name": "{device_name} t\u00e4nane tarbimine"
+            },
+            "total_consumption": {
+                "name": "Tarbimine kokku"
+            },
+            "total_consumption_child": {
+                "name": "{device_name} kogutarbimine"
+            },
+            "voltage_child": {
+                "name": "{device_name} pinge"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "M\u00e4\u00e4rab juhusliku efekti.",
+            "fields": {
+                "backgrounds": {
+                    "description": "HSV j\u00e4rjestuste loend (max 16).",
+                    "name": "Taustad"
+                },
+                "brightness": {
+                    "description": "Esialgne heledus.",
+                    "name": "Heledus"
+                },
+                "brightness_range": {
+                    "description": "Heleduse vahemik.",
+                    "name": "Heleduse vahemik"
+                },
+                "duration": {
+                    "description": "Kestus.",
+                    "name": "Kestus"
+                },
+                "fadeoff": {
+                    "description": "H\u00e4\u00e4bu.",
+                    "name": "H\u00e4\u00e4bu"
+                },
+                "hue_range": {
+                    "description": "Toonide vahemik.",
+                    "name": "Toonide vahemik"
+                },
+                "init_states": {
+                    "description": "Algne HSV j\u00e4rjestus.",
+                    "name": "Algseisundid"
+                },
+                "random_seed": {
+                    "description": "Juhuslik v\u00e4\u00e4rtus.",
+                    "name": "Juhuslik v\u00e4\u00e4rtus"
+                },
+                "saturation_range": {
+                    "description": "K\u00fcllastuse vahemik.",
+                    "name": "K\u00fcllastuse vahemik"
+                },
+                "segments": {
+                    "description": "Segmentide loend (0 k\u00f5igi jaoks).",
+                    "name": "Segmendid"
+                },
+                "transition": {
+                    "description": "\u00dcleminek.",
+                    "name": "\u00dcleminek"
+                },
+                "transition_range": {
+                    "description": "\u00dclemineku ulatus.",
+                    "name": "\u00dclemineku vahemik"
+                }
+            },
+            "name": "Juhuslik efekt"
+        },
+        "sequence_effect": {
+            "description": "Seadistab jadaefekti.",
+            "fields": {
+                "brightness": {
+                    "description": "Esialgne heledus.",
+                    "name": "Heledus"
+                },
+                "direction": {
+                    "description": "Suund.",
+                    "name": "Suund"
+                },
+                "duration": {
+                    "description": "Kestus.",
+                    "name": "Kestus"
+                },
+                "repeat_times": {
+                    "description": "Kordused (0 pidevaks).",
+                    "name": "Kordused"
+                },
+                "segments": {
+                    "description": "Segmentide loend (0 k\u00f5igi jaoks).",
+                    "name": "Segmendid"
+                },
+                "sequence": {
+                    "description": "HSV j\u00e4rjestuste loend (max 16).",
+                    "name": "Jada"
+                },
+                "spread": {
+                    "description": "Leviku kiirus.",
+                    "name": "Levik"
+                },
+                "transition": {
+                    "description": "\u00dcleminek.",
+                    "name": "\u00dcleminek"
+                }
+            },
+            "name": "Jadaefekt"
+        }
+    }
+}

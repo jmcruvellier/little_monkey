@@ -1,0 +1,33 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u5b8c\u6210\u914d\u7f6e",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "port": "\u7aef\u53e3"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "mode": {
+                "state_attributes": {
+                    "gps_time": {
+                        "name": "\u65f6\u95f4"
+                    },
+                    "mode": {
+                        "name": "\u6a21\u5f0f"
+                    },
+                    "speed": {
+                        "name": "\u901f\u5ea6"
+                    }
+                }
+            }
+        }
+    }
+}

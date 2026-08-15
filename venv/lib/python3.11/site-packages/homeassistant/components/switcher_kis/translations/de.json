@@ -1,0 +1,59 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "Keine Ger\u00e4te im Netzwerk gefunden",
+            "single_instance_allowed": "Bereits konfiguriert. Nur eine einzige Konfiguration m\u00f6glich."
+        },
+        "step": {
+            "confirm": {
+                "description": "M\u00f6chtest du mit der Einrichtung beginnen?"
+            }
+        }
+    },
+    "entity": {
+        "button": {
+            "assume_off": {
+                "name": "Angenommen aus"
+            },
+            "assume_on": {
+                "name": "Angenommen an"
+            },
+            "vertical_swing_off": {
+                "name": "Vertikaler Schwenk aus"
+            },
+            "vertical_swing_on": {
+                "name": "Vertikaler Schwenk an"
+            }
+        },
+        "sensor": {
+            "auto_shutdown": {
+                "name": "Automatische Abschaltung"
+            },
+            "remaining_time": {
+                "name": "Verbleibende Zeit"
+            }
+        }
+    },
+    "services": {
+        "set_auto_off": {
+            "description": "Aktualisiert die Einstellung f\u00fcr die automatische Abschaltung des Switcher-Ger\u00e4ts.",
+            "fields": {
+                "auto_off": {
+                    "description": "Zeitraumzeichenfolge mit Stunden und Minuten.",
+                    "name": "Automatische Abschaltung"
+                }
+            },
+            "name": "Automatisches Abschalten einstellen"
+        },
+        "turn_on_with_timer": {
+            "description": "Schaltet das Switcher-Ger\u00e4t mit Timer ein.",
+            "fields": {
+                "timer_minutes": {
+                    "description": "Zeit zum Einschalten.",
+                    "name": "Timer"
+                }
+            },
+            "name": "Einschalten mit Timer"
+        }
+    }
+}

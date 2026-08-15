@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "Za\u0159\u00edzen\u00ed je ji\u017e nastaveno",
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit",
+            "id_exists": "ID br\u00e1ny ji\u017e existuje",
+            "timeout_connect": "Vypr\u0161el \u010dasov\u00fd limit pro nav\u00e1z\u00e1n\u00ed spojen\u00ed"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Cesta nebo URL",
+                    "id": "ID",
+                    "name": "N\u00e1zev"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "Teplota podlahy",
+                    "read_precision": "P\u0159esnost \u010dten\u00ed",
+                    "set_precision": "Nastavit p\u0159esnost",
+                    "temporary_override_mode": "Re\u017eim do\u010dasn\u00e9ho potla\u010den\u00ed nastaven\u00e9 hodnoty"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "Resetuje br\u00e1nu OpenTherm.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                }
+            },
+            "name": "Resetovat br\u00e1nu"
+        },
+        "set_central_heating_ovrd": {
+            "description": "Nastavuje volbu potla\u010den\u00ed topen\u00ed na br\u00e1n\u011b. P\u0159i p\u0159eps\u00e1n\u00ed \u017e\u00e1dan\u00e9 hodnoty \u0159\u00edzen\u00ed (prost\u0159ednictv\u00edm servisn\u00edho vol\u00e1n\u00ed set_control_setpoint s hodnotou jinou ne\u017e 0) br\u00e1na automaticky povol\u00ed p\u0159eps\u00e1n\u00ed topen\u00ed ke spu\u0161t\u011bn\u00ed vyt\u00e1p\u011bn\u00ed. Tuto slu\u017ebu pak lze pou\u017e\u00edt k ovl\u00e1d\u00e1n\u00ed stavu p\u0159eps\u00e1n\u00ed topen\u00ed. Chcete-li vr\u00e1tit \u0159\u00edzen\u00ed topen\u00ed do termostatu, zavolejte slu\u017ebu set_control_setpoint s hodnotou teploty 0. Tu budete pot\u0159ebovat jen v p\u0159\u00edpad\u011b, \u017ee si p\u00ed\u0161ete vlastn\u00ed softwarov\u00fd termostat.",
+            "fields": {
+                "ch_override": {
+                    "description": "Po\u017eadovan\u00e1 booleovsk\u00e1 hodnota pro potla\u010den\u00ed topen\u00ed.",
+                    "name": "P\u0159eps\u00e1n\u00ed topen\u00ed"
+                },
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                }
+            },
+            "name": "Nastavit potla\u010den\u00ed topen\u00ed"
+        },
+        "set_clock": {
+            "description": "Nastav\u00ed hodiny a den v t\u00fddnu na p\u0159ipojen\u00e9m termostatu.",
+            "fields": {
+                "date": {
+                    "description": "Voliteln\u00e9 datum, ze kter\u00e9ho bude extrahov\u00e1n den v t\u00fddnu. V\u00fdchoz\u00ed nastaven\u00ed je dnes.",
+                    "name": "Datum"
+                },
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "time": {
+                    "description": "Voliteln\u00fd \u010das ve 24h form\u00e1tu, kter\u00fd bude poskytnut termostatu. V\u00fdchoz\u00ed nastaven\u00ed je aktu\u00e1ln\u00ed \u010das.",
+                    "name": "\u010cas"
+                }
+            },
+            "name": "Nastavit hodiny"
+        },
+        "set_control_setpoint": {
+            "description": "Nastavuje p\u0159eps\u00e1n\u00ed po\u017eadovan\u00e9 hodnoty \u0159\u00edzen\u00ed topen\u00ed na br\u00e1n\u011b. To budete pot\u0159ebovat jen v p\u0159\u00edpad\u011b, \u017ee p\u00ed\u0161ete sv\u016fj vlastn\u00ed softwarov\u00fd termostat.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Nastaven\u00e1 hodnota topen\u00ed na br\u00e1n\u011b. Jsou akceptov\u00e1ny hodnoty mezi 0 a 90, ale ne v\u0161echny kotle tento rozsah podporuj\u00ed. Hodnota 0 deaktivuje p\u0159eps\u00e1n\u00ed nastaven\u00e9 hodnoty topen\u00ed.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavit po\u017eadovanou hodnotu ovl\u00e1d\u00e1n\u00ed"
+        },
+        "set_gpio_mode": {
+            "description": "Zm\u011bn\u00ed funkci pin\u016f GPIO br\u00e1ny.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "id": {
+                    "description": "ID pinu GPIO.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Re\u017eim pro nastaven\u00ed na pinu GPIO. Jsou akceptov\u00e1ny hodnoty 0 a\u017e 6 pro ob\u011b GPIO, 7 je akceptov\u00e1na jen pro GPIO \"B\". Vysv\u011btlen\u00ed hodnot najdete na https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes.",
+                    "name": "Re\u017eim"
+                }
+            },
+            "name": "Nastavit re\u017eim GPIO"
+        },
+        "set_hot_water_ovrd": {
+            "description": "Nastav\u00ed mo\u017enost povolen\u00ed tepl\u00e9 vody na br\u00e1n\u011b.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Ovl\u00e1d\u00e1 mo\u017enost aktivace tepl\u00e9 vody. Pokud byl kotel nastaven tak, aby nechal pokojovou jednotku ovl\u00e1dat, kdy m\u00e1 udr\u017eovat mal\u00e9 mno\u017estv\u00ed p\u0159edeh\u0159\u00e1t\u00e9 vody, m\u016f\u017ee to ovlivnit tento p\u0159\u00edkaz. Hodnota by m\u011bla b\u00fdt 0 nebo 1, chcete-li povolit p\u0159epis ve vypnut\u00e9m nebo zapnut\u00e9m stavu, nebo \"A\" pro zak\u00e1z\u00e1n\u00ed p\u0159episu.",
+                    "name": "P\u0159epsat teplou vodu"
+                },
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                }
+            },
+            "name": "Nastavit p\u0159eps\u00e1n\u00ed tepl\u00e9 vody"
+        },
+        "set_hot_water_setpoint": {
+            "description": "Nastav\u00ed nastavenou hodnotu tepl\u00e9 vody na br\u00e1n\u011b.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Nastaven\u00e1 hodnota tepl\u00e9 vody pro nastaven\u00ed na br\u00e1n\u011b. Ne v\u0161echny kotle tuto funkci podporuj\u00ed. Jsou akceptov\u00e1ny hodnoty mezi 0 a 90, ale ne v\u0161echny kotle tento rozsah podporuj\u00ed. Pod\u00edvejte se na hodnoty sn\u00edma\u010d\u016f slave_dhw_min_setp a slave_dhw_max_setp, abyste vid\u011bli podporovan\u00fd rozsah va\u0161eho kotle.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavit po\u017eadovanou hodnotu tepl\u00e9 vody"
+        },
+        "set_led_mode": {
+            "description": "Zm\u011bn\u00ed funkci LED na br\u00e1n\u011b.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "id": {
+                    "description": "ID LED.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Funkce, kter\u00e1 se m\u00e1 p\u0159i\u0159adit k LED. Vysv\u011btlen\u00ed hodnot najdete na https://www.home-assistant.io/integrations/opentherm_gw/#led-modes.",
+                    "name": "Re\u017eim"
+                }
+            },
+            "name": "Nastavit re\u017eim LED"
+        },
+        "set_max_modulation": {
+            "description": "P\u0159ep\u00ed\u0161e maxim\u00e1ln\u00ed relativn\u00ed \u00farove\u0148 modulace. To budete pot\u0159ebovat jen v p\u0159\u00edpad\u011b, \u017ee p\u00ed\u0161ete sv\u016fj vlastn\u00ed softwarov\u00fd termostat.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "level": {
+                    "description": "\u00darove\u0148 modulace, kter\u00e1 m\u00e1 b\u00fdt poskytnuta br\u00e1n\u011b. Zadejte hodnotu -1, abyste zru\u0161ili p\u0159eps\u00e1n\u00ed a znovu p\u0159edali hodnotu z termostatu.",
+                    "name": "\u00darove\u0148"
+                }
+            },
+            "name": "Nastavit maxim\u00e1ln\u00ed modulaci"
+        },
+        "set_outside_temperature": {
+            "description": "Poskytuje termostatu venkovn\u00ed teplotu. Pokud v\u00e1\u0161 termostat nedok\u00e1\u017ee zobrazit venkovn\u00ed teplotu a nepodporuje OTC (korekci venkovn\u00ed teploty), nem\u00e1 to \u017e\u00e1dn\u00fd vliv.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Teplota, kter\u00e1 m\u00e1 b\u00fdt poskytnuta termostatu. Jsou akceptov\u00e1ny hodnoty mezi -40,0 a 64,0, ale ne v\u0161echny termostaty mohou zobrazit cel\u00fd rozsah. Jak\u00e1koli hodnota nad 64,0 vyma\u017ee d\u0159\u00edve nastavenou hodnotu (n\u00e1vrh: 99).",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavit venkovn\u00ed teplotu"
+        },
+        "set_setback_temperature": {
+            "description": "Nastav\u00ed zp\u011btnou teplotu, kter\u00e1 se m\u00e1 pou\u017e\u00edt s funkc\u00ed vzd\u00e1len\u00e9ho re\u017eimu GPIO.",
+            "fields": {
+                "gateway_id": {
+                    "description": "gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Teplota poklesu, kter\u00e1 se m\u00e1 nastavit na br\u00e1n\u011b.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavit zp\u011btnou teplotu"
+        }
+    }
+}

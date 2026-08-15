@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enhet er allerede konfigurert",
+            "reauth_successful": "Autentisering p\u00e5 nytt var vellykket"
+        },
+        "step": {
+            "reauth_confirm": {
+                "title": "Oppdatering av tilgangsn\u00f8kkel kreves"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "semi_locked": {
+                "name": "Halvl\u00e5st"
+            }
+        }
+    }
+}

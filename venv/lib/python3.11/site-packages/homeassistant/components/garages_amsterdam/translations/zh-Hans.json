@@ -1,0 +1,18 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "garage_name": "\u8f66\u5e93\u540d\u79f0"
+                },
+                "title": "\u9009\u62e9\u4e00\u4e2a\u8f66\u5e93\u8fdb\u884c\u76d1\u63a7"
+            }
+        }
+    },
+    "title": "Garages Amsterdam"
+}

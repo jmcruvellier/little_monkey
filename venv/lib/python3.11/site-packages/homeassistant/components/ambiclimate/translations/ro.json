@@ -1,0 +1,22 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Eroare necunoscut\u0103 la generarea unui token de acces.",
+            "already_configured": "Contul a fost configurat deja",
+            "missing_configuration": "Componenta nu este configurat\u0103. Te rug\u0103m s\u0103 urmezi instruc\u021biunile din documenta\u021bie."
+        },
+        "create_entry": {
+            "default": "Autentificare realizat\u0103 cu succes"
+        },
+        "error": {
+            "follow_link": "Te rug\u0103m s\u0103 urmezi linkul \u0219i s\u0103 te autentifici \u00eenainte de a ap\u0103sa Trimite",
+            "no_token": "Neautentificat cu Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Te rug\u0103m s\u0103 urmezi acest [link]({authorization_url}) \u0219i s\u0103 **Permi\u021bi** accesul la contul t\u0103u Ambiclimate, apoi s\u0103 revii \u0219i s\u0103 ape\u0219i **Trimite** mai jos.\n(Asigur\u0103-te c\u0103 URL-ul de callback este {cb_url})",
+                "title": "Autentificare Ambiclimate"
+            }
+        }
+    }
+}

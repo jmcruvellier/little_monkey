@@ -1,0 +1,55 @@
+{
+    "config": {
+        "abort": {
+            "access_not_configured": "\u8bf7\u9605\u8bfb\u6211\u4eec\u4ece Google \u6536\u5230\u7684\u4ee5\u4e0b\u6d88\u606f\uff1a \n\n {message}",
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "no_channel": "\u8bf7\u521b\u5efa\u4e00\u4e2a YouTube \u9891\u9053\u4ee5\u4fbf\u80fd\u591f\u4f7f\u7528\u96c6\u6210\u3002\u6709\u5173\u8bf4\u660e\uff0c\u8bf7\u8bbf\u95ee {support_url}\u3002",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548"
+        },
+        "step": {
+            "channels": {
+                "data": {
+                    "channels": "YouTube \u9891\u9053"
+                },
+                "description": "\u9009\u62e9\u8981\u6dfb\u52a0\u7684\u9891\u9053\u3002"
+            },
+            "reauth_confirm": {
+                "description": "YouTube \u96c6\u6210\u9700\u8981\u91cd\u65b0\u9a8c\u8bc1\u60a8\u7684\u8d26\u53f7",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "latest_upload": {
+                "name": "\u6700\u65b0\u4e0a\u4f20",
+                "state_attributes": {
+                    "published_at": {
+                        "name": "\u53d1\u8868\u4e8e"
+                    },
+                    "video_id": {
+                        "name": "\u89c6\u9891 ID"
+                    }
+                }
+            },
+            "subscribers": {
+                "name": "\u8ba2\u9605\u7528\u6237"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "channels": "YouTube \u9891\u9053"
+                },
+                "description": "\u9009\u62e9\u8981\u6dfb\u52a0\u7684\u9891\u9053\u3002"
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "no_plants": "Na tomto \u00fa\u010dte neboli n\u00e1jden\u00e9 \u017eiadne rastliny"
+        },
+        "error": {
+            "invalid_auth": "Neplatn\u00e9 overenie"
+        },
+        "step": {
+            "plant": {
+                "data": {
+                    "plant_id": "Rastlina"
+                },
+                "title": "Vyberte svoju rastlinu"
+            },
+            "user": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                },
+                "title": "Zadajte svoje \u00fadaje Sun WEG"
+            }
+        }
+    }
+}

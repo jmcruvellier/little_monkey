@@ -1,0 +1,21 @@
+{
+    "entity": {
+        "button": {
+            "sync_devices": {
+                "name": "Apparaten synchroniseren"
+            }
+        }
+    },
+    "services": {
+        "request_sync": {
+            "description": "Stuurt een request_sync commando naar Google.",
+            "fields": {
+                "agent_user_id": {
+                    "description": "Alleen nodig voor automatiseringen. Specifiek Home Assistant gebruikers id (geen gebruikersnaam-ID onder Configuratie > Personen > onder Gebruikers) om te synchroniseren met Google Assistant. Dit is niet nodig als je dit via de Home Assistant front end of API gebruikt. Gebruik dit in een automatiseringsscript of ander plaats waar context.user_id mist.",
+                    "name": "Agent gebruiker-ID"
+                }
+            },
+            "name": "Vraag om synchronisatie"
+        }
+    }
+}

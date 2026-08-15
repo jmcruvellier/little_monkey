@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u30a2\u30ab\u30a6\u30f3\u30c8\u306f\u3059\u3067\u306b\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u307e\u3059"
+        },
+        "error": {
+            "invalid_credentials": "\u7121\u52b9\u306a\u8a8d\u8a3c",
+            "unknown": "\u4e88\u671f\u3057\u306a\u3044\u30a8\u30e9\u30fc"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API\u30ad\u30fc",
+                    "api_user": "Habitica API\u306e\u30e6\u30fc\u30b6\u30fcID",
+                    "name": "Habitica\u2019s\u306e\u30e6\u30fc\u30b6\u30fc\u540d\u3092\u4e0a\u66f8\u304d\u3057\u307e\u3059\u3002\u30b5\u30fc\u30d3\u30b9\u30b3\u30fc\u30eb\u3067\u4f7f\u7528\u3055\u308c\u307e\u3059",
+                    "url": "URL"
+                },
+                "description": "Habitica profile\u306b\u63a5\u7d9a\u3057\u3066\u3001\u3042\u306a\u305f\u306e\u30e6\u30fc\u30b6\u30fc\u306e\u30d7\u30ed\u30d5\u30a1\u30a4\u30eb\u3068\u30bf\u30b9\u30af\u3092\u76e3\u8996\u3067\u304d\u308b\u3088\u3046\u306b\u3057\u307e\u3059\u3002 \u6ce8\u610f: api_id\u3068api_key\u306f\u3001https://habitica.com/user/settings/api \u304b\u3089\u53d6\u5f97\u3059\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Habitica API\u3092\u547c\u3073\u51fa\u3057\u307e\u3059\u3002",
+            "fields": {
+                "args": {
+                    "description": "\u8ffd\u52a0\u306e JSON \u307e\u305f\u306f URL \u30d1\u30e9\u30e1\u30fc\u30bf\u30fc\u5f15\u6570\u3002\u30d1\u30b9\u306b\u3064\u3044\u3066\u306f\u3001\u8a00\u53ca\u3055\u308c\u3066\u3044\u308b apidoc \u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u4f8b\u3067\u306f\u540c\u3058 API \u30a8\u30f3\u30c9\u30dd\u30a4\u30f3\u30c8\u3092\u4f7f\u7528\u3057\u307e\u3059\u3002",
+                    "name": "\u5f15\u6570"
+                },
+                "name": {
+                    "description": "\u547c\u3073\u51fa\u3059 Habitica \u306e\u30e6\u30fc\u30b6\u30fc\u540d\u3002",
+                    "name": "\u540d\u524d"
+                },
+                "path": {
+                    "description": "API URL \u306e\u9805\u76ee\u3002\u672b\u5c3e\u306b\u30e1\u30bd\u30c3\u30c9\u304c\u4ed8\u52a0\u3055\u308c\u305f\u914d\u5217\u5f62\u5f0f\u3067\u3059\u3002 https://habitica.com/apidoc/ \u3092\u53c2\u7167\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u4f8b\u3067\u306f https://habitica.com/apidoc/#api-Task-CreateUserTasks \u3092\u4f7f\u7528\u3057\u307e\u3059\u3002",
+                    "name": "\u30d1\u30b9"
+                }
+            },
+            "name": "API\u540d"
+        }
+    }
+}

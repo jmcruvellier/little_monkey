@@ -1,0 +1,46 @@
+{
+    "services": {
+        "set_switch_override": {
+            "description": "Alistab l\u00fcliti m\u00e4\u00e4ratud ajaks.",
+            "fields": {
+                "duration": {
+                    "description": "Alistamise kestus. Valikuline, vaikimisi 1 tund, maksimaalselt 24 tundi.",
+                    "name": "Kestus"
+                }
+            },
+            "name": "Seadista l\u00fcliti alistamine"
+        },
+        "set_zone_mode": {
+            "description": "Sea tsoon t\u00f6\u00f6re\u017eiimile.",
+            "fields": {
+                "entity_id": {
+                    "description": "Tsooni olemi_id.",
+                    "name": "Olem"
+                },
+                "mode": {
+                    "description": "\u00dcks: v\u00e4ljas, taimer v\u00f5i jalaj\u00e4lg.",
+                    "name": "Re\u017eiim"
+                }
+            },
+            "name": "M\u00e4\u00e4ra tsoonire\u017eiim"
+        },
+        "set_zone_override": {
+            "description": "Alistab tsooni seaduspunkti antud ajaks.",
+            "fields": {
+                "duration": {
+                    "description": "Alistamise kestus. Valikuline, vaikimisi 1 tund, maksimaalselt 24 tundi.",
+                    "name": "Kestus"
+                },
+                "entity_id": {
+                    "description": "Tsooni olemi_id.",
+                    "name": "Olem"
+                },
+                "temperature": {
+                    "description": "Soovitud temperatuur",
+                    "name": "Temperatuur"
+                }
+            },
+            "name": "M\u00e4\u00e4ra tsooni alistamine"
+        }
+    }
+}

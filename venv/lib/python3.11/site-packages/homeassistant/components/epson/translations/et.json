@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "powered_off": "Kas projektor on sisse l\u00fclitatud? Esmaseks seadistamiseks pead projektori sisse l\u00fclitama."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Nimi"
+                },
+                "data_description": {
+                    "host": "Epsoni projektori hostinimi v\u00f5i IP-aadress."
+                }
+            }
+        }
+    },
+    "services": {
+        "select_cmode": {
+            "description": "Valib Epsoni projektori v\u00e4rvire\u017eiimi.",
+            "fields": {
+                "cmode": {
+                    "description": "Cmode'i nimi.",
+                    "name": "V\u00e4rvire\u017eiim"
+                }
+            },
+            "name": "Vali v\u00e4rvire\u017eiim"
+        }
+    }
+}

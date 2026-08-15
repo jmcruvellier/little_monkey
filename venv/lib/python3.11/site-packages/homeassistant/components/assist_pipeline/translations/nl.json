@@ -1,0 +1,25 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "assist_in_progress": {
+                "name": "Assistent bezig met verwerken"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assistent-pipeline",
+                "state": {
+                    "preferred": "Voorkeur"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Klaar met spraakdetectie",
+                "state": {
+                    "aggressive": "Agressief",
+                    "default": "Standaard",
+                    "relaxed": "Relaxed"
+                }
+            }
+        }
+    }
+}

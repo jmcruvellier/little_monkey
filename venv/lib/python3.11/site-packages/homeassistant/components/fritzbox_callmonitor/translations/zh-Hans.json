@@ -1,0 +1,52 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "insufficient_permissions": "\u7528\u6237\u6ca1\u6709\u8db3\u591f\u7684\u6743\u9650\u8bbf\u95ee AVM FRITZ!Box \u8bbe\u7f6e\u53ca\u5176\u7535\u8bdd\u7c3f\u3002",
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907"
+        },
+        "error": {
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "phonebook": {
+                "data": {
+                    "phonebook": "\u7535\u8bdd\u7c3f"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "password": "\u5bc6\u7801",
+                    "port": "\u7aef\u53e3",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "fritzbox_callmonitor": {
+                "state_attributes": {
+                    "device": {
+                        "name": "\u8bbe\u5907"
+                    }
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "malformed_prefixes": "\u524d\u7f00\u683c\u5f0f\u9519\u8bef\uff0c\u8bf7\u68c0\u67e5\u5176\u683c\u5f0f\u3002"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "prefixes": "\u524d\u7f00\uff08\u9017\u53f7\u5206\u9694\u5217\u8868\uff09"
+                },
+                "title": "\u914d\u7f6e\u524d\u7f00"
+            }
+        }
+    }
+}

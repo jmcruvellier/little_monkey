@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "Nastaven\u00ed Wake On Lan pomoc\u00ed YAML bylo p\u0159esunuto do integra\u010dn\u00edho kl\u00ed\u010de.\n\nVa\u0161e st\u00e1vaj\u00edc\u00ed nastaven\u00ed YAML bude fungovat pro dal\u0161\u00ed 2 verze.\n\nProve\u010fte migraci nastaven\u00ed YAML na integra\u010dn\u00ed kl\u00ed\u010d podle dokumentace.",
+            "title": "Nastaven\u00ed Wake On Lan YAML bylo p\u0159esunuto"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Ode\u0161le \"magick\u00fd paket\" k probuzen\u00ed za\u0159\u00edzen\u00ed s funkc\u00ed \"Wake-On-LAN\".",
+            "fields": {
+                "broadcast_address": {
+                    "description": "IP, kam se po\u0161le magick\u00fd paket.",
+                    "name": "IP adresa, kam poslat magick\u00fd paket"
+                },
+                "broadcast_port": {
+                    "description": "Port, kam se po\u0161le magick\u00fd paket.",
+                    "name": "Port, kam poslat magick\u00fd paket"
+                },
+                "mac": {
+                    "description": "MAC adresa za\u0159\u00edzen\u00ed, kter\u00e9 se m\u00e1 probudit.",
+                    "name": "MAC adresa"
+                }
+            },
+            "name": "Odeslat magick\u00fd paket"
+        }
+    }
+}

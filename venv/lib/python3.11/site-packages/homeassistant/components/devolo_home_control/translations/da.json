@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Kontoen er allerede konfigureret",
+            "reauth_successful": "Genautentificering lykkedes"
+        },
+        "error": {
+            "invalid_auth": "Ugyldig godkendelse"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "mydevolo_url": "mydevolo URL",
+                    "password": "Adgangskode",
+                    "username": "Email / devolo ID"
+                }
+            },
+            "zeroconf_confirm": {
+                "data": {
+                    "mydevolo_url": "mydevolo URL",
+                    "password": "Adgangskode",
+                    "username": "Email / devolo ID"
+                }
+            }
+        }
+    }
+}

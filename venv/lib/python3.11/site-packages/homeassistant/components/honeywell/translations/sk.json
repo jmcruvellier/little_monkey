@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_auth": "Neplatn\u00e9 overenie"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Heslo"
+                },
+                "description": "Integr\u00e1cia Honeywell mus\u00ed znova overi\u0165 v\u00e1\u0161 \u00fa\u010det",
+                "title": "Vypr\u0161ala platnos\u0165 overenia pre {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                },
+                "description": "Zadajte prihlasovacie \u00fadaje pou\u017eit\u00e9 na prihl\u00e1senie na mytotalconnectcomfort.com."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "Nepr\u00edtomnos\u0165",
+                            "hold": "Podr\u017ea\u0165",
+                            "none": "\u017diadna"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "Vonkaj\u0161ia vlhkos\u0165"
+            },
+            "outdoor_temperature": {
+                "name": "Vonkaj\u0161ia teplota"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Nepr\u00edtomnos\u0165 teplota chladenia",
+                    "away_heat_temperature": "Nepr\u00edtomnos\u0165 teplota vykurovania"
+                },
+                "description": "\u010eal\u0161ie mo\u017enosti konfigur\u00e1cie Honeywell. Teploty s\u00fa nastaven\u00e9 vo stup\u0148och Fahrenheita."
+            }
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paskyra jau sukonfig\u016bruota",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "project_error": "Nepavyko gauti projekto informacijos."
+        },
+        "flow_title": "{project_url}",
+        "step": {
+            "reauth": {
+                "data": {
+                    "personal_access_token": "Asmenin\u0117s prieigos prieigos raktas (PAT)"
+                },
+                "description": "Nepavyko autentifikuoti {project_url} . \u012eveskite dabartinius kredencialus.",
+                "title": "Pakartotinis autentifikavimas"
+            },
+            "user": {
+                "data": {
+                    "organization": "Organizacija",
+                    "personal_access_token": "Asmenin\u0117s prieigos prieigos raktas (PAT)",
+                    "project": "Projektas"
+                },
+                "description": "Nor\u0117dami pasiekti savo projekt\u0105, nustatykite \u201eAzure DevOps\u201c egzempliori\u0173. Asmenin\u0117s prieigos prieigos raktas reikalingas tik priva\u010diam projektui.",
+                "title": "Prid\u0117ti Azure DevOps projekt\u0105"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "latest_build": {
+                "name": "{definition_name} naujausia versija"
+            }
+        }
+    }
+}

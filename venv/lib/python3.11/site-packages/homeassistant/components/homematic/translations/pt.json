@@ -1,0 +1,31 @@
+{
+    "services": {
+        "set_device_value": {
+            "fields": {
+                "value": {
+                    "description": "Novo valor"
+                }
+            }
+        },
+        "set_install_mode": {
+            "fields": {
+                "mode": {
+                    "name": "Modo"
+                },
+                "time": {
+                    "name": "Hora"
+                }
+            }
+        },
+        "set_variable_value": {
+            "fields": {
+                "name": {
+                    "name": "Nome"
+                },
+                "value": {
+                    "description": "Novo valor"
+                }
+            }
+        }
+    }
+}

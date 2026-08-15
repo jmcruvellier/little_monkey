@@ -1,0 +1,77 @@
+{
+    "config": {
+        "step": {
+            "reauth_confirm": {
+                "title": "Autentica nuovamente l'integrazione {name}"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charge_state_battery_heater_on": {
+                "name": "Riscaldatore a batteria"
+            },
+            "charge_state_charge_enable_request": {
+                "name": "Richiesta di abilitazione della carica"
+            },
+            "charge_state_charge_port_door_open": {
+                "name": "Porta della porta di ricarica"
+            },
+            "charge_state_charging_state": {
+                "name": "Ricarica"
+            },
+            "charge_state_preconditioning_enabled": {
+                "name": "Precondizionamento abilitato"
+            },
+            "charge_state_scheduled_charging_pending": {
+                "name": "Ricarica programmata in sospeso"
+            },
+            "charge_state_trip_charging": {
+                "name": "Ricarica di viaggio"
+            },
+            "climate_state_auto_seat_climate_left": {
+                "name": "Clima del sedile auto a sinistra"
+            },
+            "climate_state_auto_seat_climate_right": {
+                "name": "Clima del sedile auto a destra"
+            },
+            "climate_state_auto_steering_wheel_heater": {
+                "name": "Riscaldatore automatico del volante"
+            },
+            "climate_state_cabin_overheat_protection": {
+                "name": "Protezione contro il surriscaldamento della cabina"
+            }
+        },
+        "sensor": {
+            "drive_state_power": {
+                "name": "Potenza"
+            },
+            "drive_state_shift_state": {
+                "state": {
+                    "d": "Guidare",
+                    "n": "Neutra",
+                    "p": "Parco",
+                    "r": "Inversione"
+                }
+            },
+            "drive_state_speed": {
+                "name": "Velocit\u00e0"
+            },
+            "vehicle_state_odometer": {
+                "name": "Contachilometri"
+            },
+            "vehicle_state_tpms_pressure_fl": {
+                "name": "Pressione pneumatici anteriore sinistra"
+            },
+            "vehicle_state_tpms_pressure_fr": {
+                "name": "Pressione pneumatici anteriore destra"
+            },
+            "vehicle_state_tpms_pressure_rl": {
+                "name": "Pressione pneumatici posteriore sinistra"
+            },
+            "vehicle_state_tpms_pressure_rr": {
+                "name": "Pressione dei pneumatici posteriore destra"
+            }
+        }
+    }
+}

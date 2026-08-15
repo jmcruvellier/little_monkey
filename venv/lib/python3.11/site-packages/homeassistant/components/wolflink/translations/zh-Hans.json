@@ -1,0 +1,56 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "device": {
+                "data": {
+                    "device_name": "\u8bbe\u5907"
+                },
+                "title": "\u9009\u62e9 WOLF \u8bbe\u5907"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "title": "WOLF SmartSet \u8fde\u63a5"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "state": {
+                "state": {
+                    "aus": "\u5df2\u7981\u7528",
+                    "ein": "\u5df2\u542f\u7528",
+                    "estrichtrocknung": "\u71a8\u5e73\u677f\u5e72\u71e5",
+                    "nachspulen": "\u51b2\u6d17\u540e",
+                    "nur_heizgerat": "\u4ec5\u9505\u7089",
+                    "parallelbetrieb": "\u5e76\u884c\u6a21\u5f0f",
+                    "partymodus": "\u6d3e\u5bf9\u6a21\u5f0f",
+                    "perm_cooling": "\u6301\u7eed\u5236\u51b7",
+                    "permanent": "\u6c38\u4e45",
+                    "permanentbetrieb": "\u6c38\u4e45\u6a21\u5f0f",
+                    "reduzierter_betrieb": "\u53d7\u9650\u6a21\u5f0f",
+                    "rt_abschaltung": "RT \u5173\u673a",
+                    "ruhekontakt": "\u9759\u63a5\u70b9",
+                    "schornsteinfeger": "\u6392\u653e\u6d4b\u8bd5",
+                    "smart_grid": "\u667a\u80fd\u7535\u7f51",
+                    "smart_home": "\u667a\u80fd\u5bb6\u5c45",
+                    "softstart": "\u8f6f\u542f\u52a8",
+                    "solarbetrieb": "\u592a\u9633\u80fd\u6a21\u5f0f",
+                    "standby": "\u5f85\u673a",
+                    "start": "\u5f00\u59cb",
+                    "telefonfernschalter": "\u7535\u8bdd\u8fdc\u7a0b\u5f00\u5173"
+                }
+            }
+        }
+    }
+}

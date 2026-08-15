@@ -1,0 +1,93 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "battery_4": {
+                "name": "Bater\u00eda 4"
+            },
+            "battery_5": {
+                "name": "Bater\u00eda 5"
+            },
+            "battery_6": {
+                "name": "Bater\u00eda 6"
+            },
+            "battery_7": {
+                "name": "Bater\u00eda 7"
+            },
+            "battery_8": {
+                "name": "Bater\u00eda 8"
+            },
+            "battery_9": {
+                "name": "Bater\u00eda 9"
+            },
+            "co2_battery": {
+                "name": "Bater\u00eda de di\u00f3xido de carbono"
+            },
+            "interior_battery": {
+                "name": "Bater\u00eda interior"
+            },
+            "leak_detector_1": {
+                "name": "Detector de fugas 1"
+            },
+            "leak_detector_2": {
+                "name": "Detector de fugas 2"
+            },
+            "leak_detector_3": {
+                "name": "Detector de fugas 3"
+            },
+            "leak_detector_4": {
+                "name": "Detector de fugas 4"
+            },
+            "leak_detector_battery_1": {
+                "name": "Bater\u00eda do detector de fugas 1"
+            },
+            "leak_detector_battery_2": {
+                "name": "Bater\u00eda do detector de fugas 2"
+            },
+            "leak_detector_battery_3": {
+                "name": "Bater\u00eda do detector de fugas 3"
+            },
+            "leak_detector_battery_4": {
+                "name": "Bater\u00eda do detector de fugas 4"
+            },
+            "lightning_detector_battery": {
+                "name": "Bater\u00eda do detector de l\u00f3stregos"
+            },
+            "pm25_battery": {
+                "name": "Bater\u00eda PM25"
+            },
+            "pm25_indoor_battery": {
+                "name": "Bater\u00eda interior PM25"
+            },
+            "relay_1": {
+                "name": "Rel\u00e9 1"
+            },
+            "relay_10": {
+                "name": "Rel\u00e9 10"
+            },
+            "relay_2": {
+                "name": "Rel\u00e9 2"
+            },
+            "relay_3": {
+                "name": "Rel\u00e9 3"
+            },
+            "relay_4": {
+                "name": "Rel\u00e9 4"
+            },
+            "relay_5": {
+                "name": "Rel\u00e9 5"
+            },
+            "relay_6": {
+                "name": "Rel\u00e9 6"
+            },
+            "relay_7": {
+                "name": "Rel\u00e9 7"
+            },
+            "relay_8": {
+                "name": "Rel\u00e9 8"
+            },
+            "relay_9": {
+                "name": "Rel\u00e9 9"
+            }
+        }
+    }
+}

@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "invalid_credentials": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "api_user": "Habitica \u7684 API \u7528\u6237 ID",
+                    "name": "\u8986\u76d6 Habitica \u7684\u7528\u6237\u540d\u3002\u5c06\u7528\u4e8e\u670d\u52a1\u547c\u53eb",
+                    "url": "URL"
+                },
+                "description": "\u8fde\u63a5\u60a8\u7684 Habitica \u4e2a\u4eba\u8d44\u6599\u4ee5\u5141\u8bb8\u76d1\u63a7\u60a8\u7684\u7528\u6237\u4e2a\u4eba\u8d44\u6599\u548c\u4efb\u52a1\u3002\u8bf7\u6ce8\u610f\uff0capi_id \u548c api_key \u5fc5\u987b\u4ece https://habitica.com/user/settings/api \u83b7\u53d6"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "\u8c03\u7528 Habitica API\u3002",
+            "fields": {
+                "args": {
+                    "description": "\u4efb\u4f55\u5176\u4ed6 JSON \u6216 URL \u53c2\u6570\u53c2\u6570\u3002\u8bf7\u53c2\u9605 apidoc \u4e2d\u63d0\u5230\u7684\u8def\u5f84\u3002\u793a\u4f8b\u4f7f\u7528\u76f8\u540c\u7684 API \u7aef\u70b9\u3002",
+                    "name": "\u53c2\u6570"
+                },
+                "name": {
+                    "description": "\u8981\u8c03\u7528\u7684 Habitica \u7528\u6237\u540d\u3002",
+                    "name": "\u540d\u79f0"
+                },
+                "path": {
+                    "description": "\u6765\u81ea API URL \u7684\u9879\u76ee\uff0c\u91c7\u7528\u6570\u7ec4\u5f62\u5f0f\uff0c\u5e76\u5728\u672b\u5c3e\u9644\u52a0\u65b9\u6cd5\u3002\u8bf7\u53c2\u9605 https://habitica.com/apidoc/\u3002\u793a\u4f8b\u4f7f\u7528 https://habitica.com/apidoc/#api-Task-CreateUserTasks\u3002",
+                    "name": "\u8def\u5f84"
+                }
+            },
+            "name": "API\u540d\u79f0"
+        }
+    }
+}

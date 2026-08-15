@@ -1,0 +1,15 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Powerwall je \u017ee nastavljen"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP naslov"
+                },
+                "title": "Pove\u017eite se s powerwall-om"
+            }
+        }
+    }
+}

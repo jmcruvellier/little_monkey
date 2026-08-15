@@ -1,0 +1,12 @@
+{
+    "config": {
+        "create_entry": {
+            "default": "Pentru a finaliza configurarea integr\u0103rii, folose\u0219te aplica\u021bia Ecowitt (pe telefon) sau acceseaz\u0103 cu un browser interfa\u021ba web Ecowitt de la adresa IP a sta\u021biei.\n\nAlege sta\u021bia -> Meniul Others -> DIY Upload Servers. Apas\u0103 Next \u0219i selecteaz\u0103 \"Customized\"\n\n- IP server: ` {server} `\n- Cale: ` {path} `\n- Port: ` {port} `\n\nApas\u0103 pe \"Save\"."
+        },
+        "step": {
+            "user": {
+                "description": "E\u0219ti sigur c\u0103 dore\u0219ti s\u0103 configurezi Ecowitt?"
+            }
+        }
+    }
+}

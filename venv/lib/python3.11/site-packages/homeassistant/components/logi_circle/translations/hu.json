@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "A fi\u00f3k m\u00e1r konfigur\u00e1lva van",
+            "external_error": "Kiv\u00e9tel t\u00f6rt\u00e9nt egy m\u00e1sik folyamatb\u00f3l.",
+            "external_setup": "LogiCircle sikeresen konfigur\u00e1lva egy m\u00e1sik folyamatb\u00f3l.",
+            "missing_configuration": "A komponens nincs konfigur\u00e1lva. K\u00e9rem, k\u00f6vesse a dokument\u00e1ci\u00f3t."
+        },
+        "error": {
+            "authorize_url_timeout": "Id\u0151t\u00fall\u00e9p\u00e9s a hiteles\u00edt\u00e9si URL l\u00e9trehoz\u00e1sakor.",
+            "follow_link": "K\u00e9rj\u00fck, kattintson a linkre \u00e9s v\u00e9gezze el a hiteles\u00edt\u00e9st, miel\u0151tt a Mehet gombra kattint.",
+            "invalid_auth": "\u00c9rv\u00e9nytelen hiteles\u00edt\u00e9s"
+        },
+        "step": {
+            "auth": {
+                "description": "Az al\u00e1bbi linken kereszt\u00fcl **Fogadja el** a LogiCircle -fi\u00f3kj\u00e1hoz val\u00f3 hozz\u00e1f\u00e9r\u00e9st, majd t\u00e9rjen vissza ide \u00e9s kattintson a **Mehet** gombra.\n\n[Link]({authorization_url})",
+                "title": "Hiteles\u00edt\u00e9s a LogiCircle seg\u00edts\u00e9g\u00e9vel"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Szolg\u00e1ltat\u00f3"
+                },
+                "description": "V\u00e1lassza ki, melyik hiteles\u00edt\u00e9si szolg\u00e1ltat\u00f3n kereszt\u00fcl szeretn\u00e9 hiteles\u00edteni a LogiCircle szolg\u00e1ltat\u00e1st.",
+                "title": "Hiteles\u00edt\u00e9si szolg\u00e1ltat\u00f3"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "Utols\u00f3 tev\u00e9kenys\u00e9g"
+            },
+            "recording_mode": {
+                "name": "Felv\u00e9teli m\u00f3d"
+            },
+            "streaming_mode": {
+                "name": "Streamel\u00e9si m\u00f3d"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi jel kateg\u00f3ria"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi jel er\u0151ss\u00e9ge"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "A Logitech 2022 m\u00e1jus\u00e1ban le\u00e1ll\u00edtotta a Logi Circle API-hoz val\u00f3 hozz\u00e1f\u00e9r\u00e9si k\u00e9relmek elfogad\u00e1s\u00e1t \u00e9s a Logi Circle integr\u00e1ci\u00f3 elt\u00e1vol\u00edt\u00e1sra ker\u00fcl a Home Assistantb\u00f3l.\n\nA probl\u00e9ma megold\u00e1s\u00e1hoz k\u00e9rj\u00fck, t\u00e1vol\u00edtsa el az integr\u00e1ci\u00f3s bejegyz\u00e9seket a Home Assistant be\u00e1ll\u00edt\u00e1saib\u00f3l. [Kattintson ide a megl\u00e9v\u0151 Logi Circle integr\u00e1ci\u00f3s bejegyz\u00e9sek megtekint\u00e9s\u00e9hez]({entries}).",
+            "title": "A Logi Circle integr\u00e1ci\u00f3 elavult \u00e9s elt\u00e1vol\u00edt\u00e1sra ker\u00fcl."
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Vide\u00f3felv\u00e9telt k\u00e9sz\u00edt a kamera \u00e9l\u0151 k\u00f6zvet\u00edt\u00e9s\u00e9b\u0151l.",
+            "fields": {
+                "duration": {
+                    "description": "A felv\u00e9tel id\u0151tartama.",
+                    "name": "Id\u0151tartam"
+                },
+                "entity_id": {
+                    "description": "Azon entit\u00e1sok neve, amelyekb\u0151l felv\u00e9teleket szeretne l\u00e9trehozni.",
+                    "name": "Entit\u00e1s"
+                },
+                "filename": {
+                    "description": "Egy f\u00e1jln\u00e9v sablonja. A v\u00e1ltoz\u00f3 \u00e9rt\u00e9ke az entit\u00e1s azonos\u00edt\u00f3.",
+                    "name": "F\u00e1jln\u00e9v"
+                }
+            },
+            "name": "\u00c9l\u0151 k\u00f6zvet\u00edt\u00e9s felv\u00e9tele"
+        },
+        "livestream_snapshot": {
+            "description": "Pillanatk\u00e9pet k\u00e9sz\u00edt a kamera \u00e9l\u0151 k\u00f6zvet\u00edt\u00e9s\u00e9b\u0151l. Sz\u00fcks\u00e9g eset\u00e9n fel\u00e9breszti a kamer\u00e1t alv\u00f3 \u00e1llapotb\u00f3l.",
+            "fields": {
+                "entity_id": {
+                    "description": "Azon entit\u00e1sok neve, amelyekb\u0151l pillanatk\u00e9peket szeretne l\u00e9trehozni.",
+                    "name": "Entit\u00e1s"
+                },
+                "filename": {
+                    "description": "Egy f\u00e1jln\u00e9v sablonja. A v\u00e1ltoz\u00f3 \u00e9rt\u00e9ke az entit\u00e1s azonos\u00edt\u00f3.",
+                    "name": "F\u00e1jln\u00e9v"
+                }
+            },
+            "name": "\u00c9l\u0151 k\u00f6zvet\u00edt\u00e9s pillanatk\u00e9pe"
+        },
+        "set_config": {
+            "description": "Be\u00e1ll\u00edt egy konfigur\u00e1ci\u00f3s tulajdons\u00e1got.",
+            "fields": {
+                "entity_id": {
+                    "description": "Azon entit\u00e1sok neve, amelyekre a m\u0171k\u00f6d\u00e9si m\u00f3d \u00e9rt\u00e9ket alkalmazni kell.",
+                    "name": "Entit\u00e1s"
+                },
+                "mode": {
+                    "description": "M\u0171k\u00f6d\u00e9si m\u00f3d. Megengedett \u00e9rt\u00e9kek: LED, RECORDING_MODE.",
+                    "name": "M\u00f3d"
+                },
+                "value": {
+                    "description": "M\u0171k\u00f6d\u00e9si m\u00f3d \u00e9rt\u00e9k.",
+                    "name": "\u00c9rt\u00e9k"
+                }
+            },
+            "name": "Konfigur\u00e1ci\u00f3 be\u00e1ll\u00edt\u00e1sa"
+        }
+    }
+}

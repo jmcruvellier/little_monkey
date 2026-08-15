@@ -1,0 +1,11 @@
+{
+    "entity": {
+        "select": {
+            "operation_mode": {
+                "state": {
+                    "off_grid": "Na\u010din izklopljenega omre\u017eja"
+                }
+            }
+        }
+    }
+}

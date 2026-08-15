@@ -1,0 +1,23 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Conta j\u00e1 configurada",
+            "missing_configuration": "O componente n\u00e3o est\u00e1 configurado. Por favor, siga a documenta\u00e7\u00e3o."
+        },
+        "error": {
+            "authorize_url_timeout": "Excedido o tempo limite para gerar um URL de autoriza\u00e7\u00e3o",
+            "invalid_auth": "Autentica\u00e7\u00e3o inv\u00e1lida"
+        },
+        "step": {
+            "user": {
+                "title": "Provedor de autentica\u00e7\u00e3o"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "A Logitech parou de aceitar pedidos de acesso \u00e0 API do Logi Circle em maio de 2022, e a integra\u00e7\u00e3o do Logi Circle ser\u00e1 removida do Home Assistant.\n\nPara resolver este problema, remova as entradas de integra\u00e7\u00e3o da configura\u00e7\u00e3o do Home Assistant. [Clique aqui para ver as entradas de integra\u00e7\u00e3o do Logi Circle existentes]({entries}).",
+            "title": "A integra\u00e7\u00e3o do Logi Circle foi descontinuada e ser\u00e1 removida"
+        }
+    }
+}

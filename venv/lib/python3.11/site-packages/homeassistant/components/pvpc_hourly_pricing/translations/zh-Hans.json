@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "step": {
+            "api_token": {
+                "title": "ESIOS API \u4ee4\u724c"
+            },
+            "user": {
+                "data": {
+                    "name": "\u4f20\u611f\u5668\u540d\u79f0",
+                    "power": "\u5408\u540c\u529f\u7387\uff08kW\uff09",
+                    "power_p3": "\u8c37\u671f\u5408\u540c\u529f\u7387P3\uff08kW\uff09",
+                    "tariff": "\u6309\u5730\u7406\u533a\u57df\u5212\u5206\u7684\u9002\u7528\u5173\u7a0e"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "power": "\u5408\u540c\u529f\u7387\uff08kW\uff09",
+                    "power_p3": "\u8c37\u671f\u5408\u540c\u529f\u7387P3\uff08kW\uff09"
+                }
+            }
+        }
+    }
+}

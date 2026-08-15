@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El servei ja est\u00e0 configurat",
+            "reauth_successful": "Re-autenticaci\u00f3 realitzada correctament"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_api_key": "Clau API inv\u00e0lida"
+        },
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_token": "Token d'API personal"
+                },
+                "description": "Re-autenticaci\u00f3 amb WeatherFlow"
+            },
+            "user": {
+                "data": {
+                    "api_token": "Token d'API personal"
+                }
+            }
+        }
+    }
+}

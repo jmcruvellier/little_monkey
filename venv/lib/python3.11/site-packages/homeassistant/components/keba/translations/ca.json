@@ -1,0 +1,10 @@
+{
+    "services": {
+        "disable": {
+            "name": "Desactiva"
+        },
+        "enable": {
+            "name": "Activa"
+        }
+    }
+}

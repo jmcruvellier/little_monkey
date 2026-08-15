@@ -1,0 +1,13 @@
+{
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "timestep": "Minute \u00eentre previziunile NowCast"
+                },
+                "description": "Dac\u0103 alegi s\u0103 activezi entitatea de prognoz\u0103 `nowcast`, po\u021bi configura num\u0103rul de minute \u00eentre fiecare 2 prognoze. Num\u0103rul de prognoze furnizate depinde de num\u0103rul de minute alese \u00eentre previziuni.",
+                "title": "Actualizare op\u021biuni ClimaCell"
+            }
+        }
+    }
+}

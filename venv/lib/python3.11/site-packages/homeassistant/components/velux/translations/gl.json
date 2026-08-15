@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reboot_gateway": {
+            "description": "Reinicia o Gateway KLF200.",
+            "name": "Reiniciar a pasarela"
+        }
+    }
+}

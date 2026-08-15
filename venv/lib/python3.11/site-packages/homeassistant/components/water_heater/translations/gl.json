@@ -1,0 +1,14 @@
+{
+    "services": {
+        "set_away_mode": {
+            "description": "Activa/desactiva o modo ausente",
+            "fields": {
+                "away_mode": {
+                    "description": "Novo valor do modo ausente.",
+                    "name": "Modo ausente"
+                }
+            },
+            "name": "Establecer modo ausente"
+        }
+    }
+}

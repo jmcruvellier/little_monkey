@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_access_token": "Token d'acc\u00e9s inv\u00e0lid",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Token d'acc\u00e9s"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "driver_temp": {
+                "name": "Climatitzaci\u00f3"
+            }
+        },
+        "sensor": {
+            "charge_state_usable_battery_level": {
+                "name": "Nivell de bateria utilitzable"
+            },
+            "climate_state_outside_temp": {
+                "name": "Temperatura exterior"
+            },
+            "drive_state_active_route_destination": {
+                "name": "Destinaci\u00f3"
+            },
+            "drive_state_active_route_energy_at_arrival": {
+                "name": "Estat de c\u00e0rrega a l'arribada"
+            },
+            "drive_state_active_route_miles_to_arrival": {
+                "name": "Dist\u00e0ncia fins a l'arribada"
+            },
+            "drive_state_active_route_minutes_to_arrival": {
+                "name": "Temps fins a l'arribada"
+            },
+            "drive_state_active_route_traffic_minutes_delay": {
+                "name": "Retard per tr\u00e0nsit"
+            },
+            "drive_state_power": {
+                "name": "Pot\u00e8ncia"
+            },
+            "vin": {
+                "name": "Vehicle"
+            },
+            "wall_connector_power": {
+                "name": "Pot\u00e8ncia"
+            },
+            "wall_connector_state": {
+                "name": "Codi d'estat"
+            }
+        }
+    }
+}

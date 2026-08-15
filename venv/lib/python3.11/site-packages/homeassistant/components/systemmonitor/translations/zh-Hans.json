@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "disk_free": {
+                "name": "\u78c1\u76d8\u53ef\u7528 {mount_point}"
+            },
+            "disk_use": {
+                "name": "\u78c1\u76d8\u5360\u7528{mount_point}"
+            },
+            "disk_use_percent": {
+                "name": "\u78c1\u76d8\u4f7f\u7528\u7387 {mount_point}"
+            },
+            "ipv4_address": {
+                "name": "IPv4\u5730\u5740{ip_address}"
+            },
+            "ipv6_address": {
+                "name": "IPv6\u5730\u5740{ip_address}"
+            },
+            "last_boot": {
+                "name": "\u4e0a\u6b21\u542f\u52a8"
+            },
+            "load_15m": {
+                "name": "\u8d1f\u8f7d\uff0815m\uff09"
+            },
+            "load_1m": {
+                "name": "\u8d1f\u8f7d\uff081m\uff09"
+            },
+            "load_5m": {
+                "name": "\u8d1f\u8f7d\uff085m\uff09"
+            },
+            "memory_free": {
+                "name": "\u53ef\u7528\u5185\u5b58"
+            },
+            "memory_use": {
+                "name": "\u5df2\u7528\u5185\u5b58"
+            },
+            "memory_use_percent": {
+                "name": "\u5185\u5b58\u4f7f\u7528\u7387"
+            },
+            "network_in": {
+                "name": "\u7f51\u7edc\u5165\u53e3 {interface}"
+            },
+            "network_out": {
+                "name": "\u7f51\u7edc\u51fa\u53e3 {interface}"
+            },
+            "packets_in": {
+                "name": "\u6570\u636e\u5305\u8f93\u5165 {interface}"
+            },
+            "packets_out": {
+                "name": "\u6570\u636e\u5305\u8f93\u51fa {interface}"
+            },
+            "process": {
+                "name": "\u5904\u7406\u5668{process}"
+            },
+            "processor_temperature": {
+                "name": "\u5904\u7406\u5668\u6e29\u5ea6"
+            },
+            "processor_use": {
+                "name": "\u5904\u7406\u5668\u5360\u7528"
+            }
+        }
+    }
+}

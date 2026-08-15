@@ -1,0 +1,14 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "county": "\u53bf"
+                }
+            }
+        }
+    }
+}

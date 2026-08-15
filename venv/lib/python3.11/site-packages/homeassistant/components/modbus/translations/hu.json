@@ -1,0 +1,90 @@
+{
+    "issues": {
+        "deprecated_close_comm_config": {
+            "description": "T\u00e1vol\u00edtsa el a `{config_key}` kulcsot a {integration} bejegyz\u00e9sb\u0151l a `configuration.yaml` f\u00e1jlban \u00e9s ind\u00edtsa \u00fajra a Home Assistantot, hogy megoldja ezt a probl\u00e9m\u00e1t. Minden hib\u00e1t jelenteni fogunk, mivel a `lazy_error_count` elfogadott, de figyelmen k\u00edv\u00fcl hagyott.",
+            "title": "`{config_key}` konfigur\u00e1ci\u00f3s kulcs elt\u00e1vol\u00edt\u00e1sra ker\u00fcl"
+        },
+        "deprecated_retries": {
+            "description": "A probl\u00e9ma megold\u00e1s\u00e1hoz t\u00e1vol\u00edtsa el a(z) \"{config_key}\" kulcsot a configuration.yaml f\u00e1jl {integration} bejegyz\u00e9s\u00e9b\u0151l, \u00e9s ind\u00edtsa \u00fajra a Home Assistantot.\n\nAz \u00fajrapr\u00f3b\u00e1lkoz\u00e1sok maxim\u00e1lis sz\u00e1ma mostant\u00f3l 3-ra van r\u00f6gz\u00edtve.",
+            "title": "A(z) \"{config_key}\" konfigur\u00e1ci\u00f3s kulcs elt\u00e1vol\u00edt\u00e1sa folyamatban van"
+        },
+        "deprecated_retry_on_empty": {
+            "description": "K\u00e9rj\u00fck, t\u00e1vol\u00edtsa el a `{config_key}` kulcsot a(z) {integration} bejegyz\u00e9sb\u0151l a configuration.yaml f\u00e1jlban \u00e9s ind\u00edtsa \u00fajra a Home Assistantot a probl\u00e9ma megold\u00e1s\u00e1hoz.\n\nA Retry on empty automatikusan alkalmaz\u00e1sra ker\u00fcl, a t\u00f6bbi hibakezel\u00e9si param\u00e9tert l\u00e1sd [a dokument\u00e1ci\u00f3ban]({url}).",
+            "title": "A ` {config_key} ` konfigur\u00e1ci\u00f3s kulcs elt\u00e1vol\u00edt\u00e1sa folyamatban van"
+        },
+        "removed_lazy_error_count": {
+            "description": "K\u00e9rj\u00fck, t\u00e1vol\u00edtsa el a `{config_key}` kulcsot a {integration} bejegyz\u00e9sb\u0151l a configuration.yaml f\u00e1jlban \u00e9s ind\u00edtsa \u00fajra a Home Assistantot a probl\u00e9ma megold\u00e1s\u00e1hoz. Minden hib\u00e1t jelenteni fogunk, mivel a lazy_error_count elfogadott, de figyelmen k\u00edv\u00fcl hagyott",
+            "title": "A `{config_key}` konfigur\u00e1ci\u00f3s kulcs elt\u00e1vol\u00edt\u00e1sa folyamatban van"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "\u00dajrat\u00f6lti az \u00f6sszes modbus entit\u00e1st.",
+            "name": "\u00dajrat\u00f6lt\u00e9s"
+        },
+        "restart": {
+            "description": "\u00dajraind\u00edtja a modbus hubot (ha fut, akkor meg\u00e1ll\u00edtja, majd elind\u00edtja).",
+            "fields": {
+                "hub": {
+                    "description": "Modbus hub n\u00e9v.",
+                    "name": "Hub"
+                }
+            },
+            "name": "\u00dajraind\u00edt\u00e1s"
+        },
+        "stop": {
+            "description": "Meg\u00e1ll\u00edtja a modbus hubot.",
+            "fields": {
+                "hub": {
+                    "description": "Modbus hub n\u00e9v.",
+                    "name": "Hub"
+                }
+            },
+            "name": "Le\u00e1ll\u00edt\u00e1s"
+        },
+        "write_coil": {
+            "description": "\u00cdr\u00e1s egy modbus tekercsbe.",
+            "fields": {
+                "address": {
+                    "description": "A regiszter c\u00edme, amelybe \u00edrni szeretne.",
+                    "name": "C\u00edm"
+                },
+                "hub": {
+                    "description": "Modbus hub n\u00e9v.",
+                    "name": "Hub"
+                },
+                "slave": {
+                    "description": "A modbus egys\u00e9g/szolga c\u00edme.",
+                    "name": "Szolga"
+                },
+                "state": {
+                    "description": "\u00cdrand\u00f3 \u00e1llapot.",
+                    "name": "\u00c1llapot"
+                }
+            },
+            "name": "Tekercs \u00edr\u00e1sa"
+        },
+        "write_register": {
+            "description": "\u00cdr\u00e1s egy modbus tart\u00f3 regiszterbe.",
+            "fields": {
+                "address": {
+                    "description": "A tart\u00f3 regiszter c\u00edme, amelybe \u00edrni szeretne.",
+                    "name": "C\u00edm"
+                },
+                "hub": {
+                    "description": "Modbus hub n\u00e9v.",
+                    "name": "Hub"
+                },
+                "slave": {
+                    "description": "A modbus egys\u00e9g/szolga c\u00edme.",
+                    "name": "Szolga"
+                },
+                "value": {
+                    "description": "\u00cdrand\u00f3 \u00e9rt\u00e9k (egyszer\u0171 \u00e9rt\u00e9k vagy t\u00f6mb).",
+                    "name": "\u00c9rt\u00e9k"
+                }
+            },
+            "name": "Regiszter \u00edr\u00e1sa"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "config": {
+        "error": {
+            "auth_failed": "Kan niet authentiseren met de `desk`. Dit kan doorgaans worden opgelost door een ESPhome Bluetooth Proxy te gebruiken. Controleer de integratiedocumentatie voor alternatieve work-a-rounds."
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "address": "Bluetooth adres"
+                }
+            }
+        }
+    }
+}

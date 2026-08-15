@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "Die Konfiguration von Wake-on-LAN mit YAML wurde in den Integrationsschl\u00fcssel verschoben. \n\nDie vorhandene YAML-Konfiguration funktioniert f\u00fcr zwei weitere Versionen. \n\nMigriere deine YAML-Konfiguration gem\u00e4\u00df der Dokumentation zum Integrationsschl\u00fcssel.",
+            "title": "Die Wake-on-LAN YAML-Konfiguration wurde verschoben"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Sendet ein \u201emagisches Paket\u201c, um ein Ger\u00e4t mit \u201eWake-on-LAN\u201c-F\u00e4higkeiten aufzuwecken.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "Broadcast-IP, an die das Magic Packet gesendet werden soll.",
+                    "name": "Broadcast-Adresse"
+                },
+                "broadcast_port": {
+                    "description": "Port, an den das magische Paket gesendet werden soll.",
+                    "name": "Broadcast-Port"
+                },
+                "mac": {
+                    "description": "MAC-Adresse des aufzuweckenden Ger\u00e4ts.",
+                    "name": "MAC-Adresse"
+                }
+            },
+            "name": "Magisches Paket senden"
+        }
+    }
+}

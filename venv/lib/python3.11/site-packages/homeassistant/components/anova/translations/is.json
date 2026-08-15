@@ -1,0 +1,12 @@
+{
+    "entity": {
+        "sensor": {
+            "mode": {
+                "name": "Hamur"
+            },
+            "state": {
+                "name": "Sta\u00f0a"
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "\u5ffd\u7565 html5 \u901a\u77e5\u3002",
+            "fields": {
+                "data": {
+                    "description": "\u901a\u77e5\u5ef6\u4f38\u8cc7\u8a0a\u3001\u652f\u63f4\u6a19\u7c64\u3002",
+                    "name": "\u8cc7\u6599"
+                },
+                "target": {
+                    "description": "\u4e00\u7cfb\u5217\u76ee\u6a19\u3002",
+                    "name": "\u76ee\u6a19"
+                }
+            },
+            "name": "\u5ffd\u7565"
+        }
+    }
+}

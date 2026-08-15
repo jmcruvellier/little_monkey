@@ -1,0 +1,32 @@
+{
+    "services": {
+        "clear_sleep_timer": {
+            "fields": {
+                "entity_id": {
+                    "name": "\u041e\u0431\u0435\u043a\u0442"
+                }
+            }
+        },
+        "join": {
+            "fields": {
+                "entity_id": {
+                    "name": "\u041e\u0431\u0435\u043a\u0442"
+                }
+            }
+        },
+        "set_sleep_timer": {
+            "fields": {
+                "entity_id": {
+                    "name": "\u041e\u0431\u0435\u043a\u0442"
+                }
+            }
+        },
+        "unjoin": {
+            "fields": {
+                "entity_id": {
+                    "name": "\u041e\u0431\u0435\u043a\u0442"
+                }
+            }
+        }
+    }
+}

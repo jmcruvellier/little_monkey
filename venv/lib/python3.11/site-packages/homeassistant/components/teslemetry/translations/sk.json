@@ -1,0 +1,183 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_access_token": "Neplatn\u00fd pr\u00edstupov\u00fd token",
+            "subscription_required": "Vy\u017eaduje sa predplatn\u00e9, nav\u0161t\u00edvte str\u00e1nku {short_url}",
+            "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Pr\u00edstupov\u00fd token"
+                },
+                "description": "Zadajte pr\u00edstupov\u00fd token z {url}."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "driver_temp": {
+                "name": "Klimatiz\u00e1cia",
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "camp": "T\u00e1borov\u00fd re\u017eim",
+                            "dog": "Re\u017eim psa",
+                            "keep": "Re\u017eim ponechania",
+                            "off": "Norm\u00e1lny"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "battery_power": {
+                "name": "V\u00fdkon bat\u00e9rie"
+            },
+            "charge_state_battery_level": {
+                "name": "\u00darove\u0148 bat\u00e9rie"
+            },
+            "charge_state_battery_range": {
+                "name": "Rozsah bat\u00e9rie"
+            },
+            "charge_state_charge_energy_added": {
+                "name": "Pridan\u00e1 energia nab\u00edjania"
+            },
+            "charge_state_charge_rate": {
+                "name": "R\u00fdchlos\u0165 nab\u00edjania"
+            },
+            "charge_state_charger_actual_current": {
+                "name": "Nab\u00edjac\u00ed pr\u00fad"
+            },
+            "charge_state_charger_power": {
+                "name": "V\u00fdkon nab\u00edja\u010dky"
+            },
+            "charge_state_charger_voltage": {
+                "name": "Nap\u00e4tie nab\u00edja\u010dky"
+            },
+            "charge_state_charging_state": {
+                "name": "Nab\u00edja sa",
+                "state": {
+                    "charging": "Nab\u00edja sa",
+                    "complete": "Kompletn\u00e9",
+                    "disconnected": "Odpojen\u00fd",
+                    "no_power": "Bez nap\u00e1jania",
+                    "starting": "Sp\u00fa\u0161\u0165a sa",
+                    "stopped": "Zastaven\u00e9"
+                }
+            },
+            "charge_state_conn_charge_cable": {
+                "name": "Nab\u00edjac\u00ed k\u00e1bel"
+            },
+            "charge_state_est_battery_range": {
+                "name": "Odhad dojazdu bat\u00e9rie"
+            },
+            "charge_state_fast_charger_type": {
+                "name": "Typ r\u00fdchlonab\u00edja\u010dky"
+            },
+            "charge_state_ideal_battery_range": {
+                "name": "Ide\u00e1lny dojazd bat\u00e9rie"
+            },
+            "charge_state_minutes_to_full_charge": {
+                "name": "\u010cas do \u00fapln\u00e9ho nabitia"
+            },
+            "charge_state_usable_battery_level": {
+                "name": "Pou\u017eite\u013en\u00e1 \u00farove\u0148 nabitia bat\u00e9rie"
+            },
+            "climate_state_driver_temp_setting": {
+                "name": "Nastavenie teploty vodi\u010da"
+            },
+            "climate_state_inside_temp": {
+                "name": "Vn\u00fatorn\u00e1 teplota"
+            },
+            "climate_state_outside_temp": {
+                "name": "Vonkaj\u0161ia teplota"
+            },
+            "climate_state_passenger_temp_setting": {
+                "name": "Nastavenie teploty spolujazdca"
+            },
+            "drive_state_active_route_destination": {
+                "name": "Cie\u013e"
+            },
+            "drive_state_active_route_energy_at_arrival": {
+                "name": "Stav nabitia pri pr\u00edchode"
+            },
+            "drive_state_active_route_miles_to_arrival": {
+                "name": "Vzdialenos\u0165 do pr\u00edchodu"
+            },
+            "drive_state_active_route_minutes_to_arrival": {
+                "name": "\u010cas pr\u00edchodu"
+            },
+            "drive_state_active_route_traffic_minutes_delay": {
+                "name": "Dopravn\u00e9 zdr\u017eanie"
+            },
+            "drive_state_power": {
+                "name": "V\u00fdkon"
+            },
+            "drive_state_shift_state": {
+                "name": "Stav posunu",
+                "state": {
+                    "d": "\u0160of\u00e9rova\u0165",
+                    "n": "Neutr\u00e1l",
+                    "p": "Parkovanie",
+                    "r": "Spiato\u010dka"
+                }
+            },
+            "drive_state_speed": {
+                "name": "R\u00fdchlos\u0165"
+            },
+            "energy_left": {
+                "name": "Energia v\u013eavo"
+            },
+            "generator_power": {
+                "name": "V\u00fdkon gener\u00e1tora"
+            },
+            "grid_power": {
+                "name": "Energia zo siete"
+            },
+            "grid_services_power": {
+                "name": "V\u00fdkon sie\u0165ov\u00fdch slu\u017eieb"
+            },
+            "load_power": {
+                "name": "Z\u00e1\u0165a\u017e export"
+            },
+            "percentage_charged": {
+                "name": "Percento nabitia"
+            },
+            "solar_power": {
+                "name": "Sol\u00e1rna energia"
+            },
+            "total_pack_energy": {
+                "name": "Celkov\u00e1 energia balenia"
+            },
+            "vehicle_state_odometer": {
+                "name": "Po\u010d\u00edtadlo kilometrov"
+            },
+            "vehicle_state_tpms_pressure_fl": {
+                "name": "Tlak v prednej \u013eavej pneumatike"
+            },
+            "vehicle_state_tpms_pressure_fr": {
+                "name": "Tlak v prednej pravej pneumatike"
+            },
+            "vehicle_state_tpms_pressure_rl": {
+                "name": "Tlak v zadnej \u013eavej pneumatike"
+            },
+            "vehicle_state_tpms_pressure_rr": {
+                "name": "Tlak v zadnej pravej pneumatike"
+            },
+            "vin": {
+                "name": "Vozidlo"
+            },
+            "wall_connector_fault_state": {
+                "name": "K\u00f3d stavu poruchy"
+            },
+            "wall_connector_power": {
+                "name": "V\u00fdkon"
+            },
+            "wall_connector_state": {
+                "name": "K\u00f3d stavu"
+            }
+        }
+    }
+}

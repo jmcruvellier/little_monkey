@@ -1,0 +1,44 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "MELCloud integratie is al geconfigureerd voor deze e-mail. Toegangstoken is vernieuwd."
+        },
+        "error": {
+            "cannot_connect": "Kan geen verbinding maken",
+            "invalid_auth": "Ongeldige authenticatie",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Wachtwoord",
+                    "username": "E-mail"
+                },
+                "description": "Maak verbinding via uw MELCloud account.",
+                "title": "Maak verbinding met MELCloud"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "daily_energy": {
+                "name": "Dagelijks verbruikte energie"
+            },
+            "flow_temperature": {
+                "name": "Aanvoertemperatuur"
+            },
+            "outside_temperature": {
+                "name": "Buitentemperatuur"
+            },
+            "return_temperature": {
+                "name": "Aanvoerretourtemperatuur"
+            },
+            "room_temperature": {
+                "name": "Temperatuur in de ruimte"
+            },
+            "tank_temperature": {
+                "name": "Tanktemperatuur"
+            }
+        }
+    }
+}

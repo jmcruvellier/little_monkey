@@ -1,0 +1,58 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit",
+            "invalid_auth": "Neplatn\u00e9 ov\u011b\u0159en\u00ed"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Heslo"
+                },
+                "description": "Integrace Honeywell pot\u0159ebuje znovu ov\u011b\u0159it v\u00e1\u0161 \u00fa\u010det",
+                "title": "Platnost ov\u011b\u0159en\u00ed pro {name} vypr\u0161ela"
+            },
+            "user": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "U\u017eivatelsk\u00e9 jm\u00e9no"
+                },
+                "description": "Zadejte p\u0159ihla\u0161ovac\u00ed \u00fadaje pou\u017eit\u00e9 k p\u0159ihl\u00e1\u0161en\u00ed na mytotalconnectcomfort.com."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "Pry\u010d",
+                            "hold": "Dr\u017eet",
+                            "none": "\u017d\u00e1dn\u00fd"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "Venkovn\u00ed vlhkost"
+            },
+            "outdoor_temperature": {
+                "name": "Venkovn\u00ed teplota"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Teplota chlazen\u00ed v re\u017eimu Pry\u010d",
+                    "away_heat_temperature": "Teplota vyt\u00e1p\u011bn\u00ed v re\u017eimu Pry\u010d"
+                },
+                "description": "Dal\u0161\u00ed volby nastaven\u00ed Honeywell. Teploty jsou nastaveny ve stupn\u00edch Fahrenheita."
+            }
+        }
+    }
+}

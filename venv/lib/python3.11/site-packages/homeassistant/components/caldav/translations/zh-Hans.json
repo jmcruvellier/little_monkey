@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "url": "URL",
+                    "username": "\u7528\u6237\u540d",
+                    "verify_ssl": "\u9a8c\u8bc1 SSL \u8bc1\u4e66"
+                }
+            }
+        }
+    }
+}

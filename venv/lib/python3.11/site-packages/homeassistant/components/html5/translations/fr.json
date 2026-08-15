@@ -1,0 +1,12 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Rejeter une notification html5.",
+            "fields": {
+                "data": {
+                    "name": "Donn\u00e9es"
+                }
+            }
+        }
+    }
+}

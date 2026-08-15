@@ -1,0 +1,34 @@
+{
+    "entity": {
+        "sensor": {
+            "carbon_monoxide": {
+                "name": "\u4e00\u6c27\u5316\u78b3"
+            },
+            "dominant_pollutant": {
+                "state": {
+                    "co": "\u4e00\u6c27\u5316\u78b3",
+                    "no2": "\u4e8c\u6c27\u5316\u6c2e",
+                    "o3": "\u81ed\u6c27",
+                    "pm10": "PM10",
+                    "pm25": "PM2.5",
+                    "so2": "\u4e8c\u6c27\u5316\u786b"
+                }
+            },
+            "nitrogen_dioxide": {
+                "name": "\u4e8c\u6c27\u5316\u6c2e"
+            },
+            "ozone": {
+                "name": "\u81ed\u6c27"
+            },
+            "pm10": {
+                "name": "PM10"
+            },
+            "pm25": {
+                "name": "PM2.5"
+            },
+            "sulphur_dioxide": {
+                "name": "\u4e8c\u6c27\u5316\u786b"
+            }
+        }
+    }
+}

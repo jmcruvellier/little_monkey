@@ -1,0 +1,13 @@
+{
+    "selector": {
+        "binary_sensor_device_class": {
+            "options": {
+                "door": "Vrata",
+                "heat": "Grejanje",
+                "light": "Svetlo",
+                "motion": "Kretanje",
+                "window": "Prozor"
+            }
+        }
+    }
+}

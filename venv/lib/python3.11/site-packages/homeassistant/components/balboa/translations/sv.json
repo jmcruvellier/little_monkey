@@ -1,0 +1,43 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "V\u00e4rd"
+                },
+                "title": "Anslut till Balboa Wi-Fi-enhet"
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "balboa": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "ready": "Redo",
+                            "ready_in_rest": "Redo i vilol\u00e4ge",
+                            "rest": "Vilol\u00e4ge"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sync_time": "H\u00e5ll din Balboa klients tid synkroniserad med Home Assistant"
+                }
+            }
+        }
+    }
+}

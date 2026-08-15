@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "Cihaz zaten yap\u0131land\u0131r\u0131lm\u0131\u015f",
+            "cannot_connect": "Ba\u011flanma hatas\u0131",
+            "id_exists": "A\u011f ge\u00e7idi kimli\u011fi zaten var",
+            "timeout_connect": "Ba\u011flant\u0131 kurulurken zaman a\u015f\u0131m\u0131"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Yol veya URL",
+                    "id": "ID",
+                    "name": "Ad"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "Zemin S\u0131cakl\u0131\u011f\u0131",
+                    "read_precision": "Hassas Okuma",
+                    "set_precision": "Hassasiyeti Ayarla",
+                    "temporary_override_mode": "Ge\u00e7ici Ayar Noktas\u0131 Ge\u00e7ersiz K\u0131lma Modu"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "OpenTherm A\u011f Ge\u00e7idini s\u0131f\u0131rlar.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                }
+            },
+            "name": "A\u011f ge\u00e7idini s\u0131f\u0131rla"
+        },
+        "set_central_heating_ovrd": {
+            "description": "A\u011f ge\u00e7idinde merkezi \u0131s\u0131tma ge\u00e7ersiz k\u0131lma se\u00e7ene\u011fini ayarlar. Kontrol ayar noktas\u0131 ge\u00e7ersiz k\u0131l\u0131nd\u0131\u011f\u0131nda (0 d\u0131\u015f\u0131nda bir de\u011fere sahip set_control_setpoint servis \u00e7a\u011fr\u0131s\u0131 arac\u0131l\u0131\u011f\u0131yla), a\u011f ge\u00e7idi \u0131s\u0131tmay\u0131 ba\u015flatmak i\u00e7in merkezi \u0131s\u0131tma ge\u00e7ersiz k\u0131lmay\u0131 otomatik olarak etkinle\u015ftirir. Bu servis daha sonra merkezi \u0131s\u0131tma ge\u00e7ersiz k\u0131lma durumunu kontrol etmek i\u00e7in kullan\u0131labilir. Merkezi \u0131s\u0131tman\u0131n kontrol\u00fcn\u00fc termostata geri vermek i\u00e7in set_control_setpoint hizmetini 0 s\u0131cakl\u0131k de\u011feriyle \u00e7a\u011f\u0131r\u0131n. Buna yaln\u0131zca kendi yaz\u0131l\u0131m termostat\u0131n\u0131z\u0131 yaz\u0131yorsan\u0131z ihtiyac\u0131n\u0131z olacakt\u0131r.\n.",
+            "fields": {
+                "ch_override": {
+                    "description": "Merkezi \u0131s\u0131tma i\u00e7in istenen boole de\u011feri ge\u00e7ersiz k\u0131l\u0131n\u0131r.",
+                    "name": "Merkezi \u0131s\u0131tmay\u0131 ge\u00e7ersiz k\u0131lma"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                }
+            },
+            "name": "Merkezi \u0131s\u0131tma ge\u00e7ersiz k\u0131lmay\u0131 ayarla"
+        },
+        "set_clock": {
+            "description": "Ba\u011fl\u0131 termostat\u0131n saatini ve haftan\u0131n g\u00fcn\u00fcn\u00fc ayarlar.",
+            "fields": {
+                "date": {
+                    "description": "Haftan\u0131n g\u00fcn\u00fcn\u00fcn \u00e7\u0131kar\u0131laca\u011f\u0131 iste\u011fe ba\u011fl\u0131 tarih. Varsay\u0131lan de\u011fer bug\u00fcnd\u00fcr.",
+                    "name": "Tarih"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "time": {
+                    "description": "Termostata sa\u011flanacak 24 saat format\u0131nda iste\u011fe ba\u011fl\u0131 zaman. Varsay\u0131lan olarak ge\u00e7erli saattir.",
+                    "name": "Zaman"
+                }
+            },
+            "name": "Saati ayarla"
+        },
+        "set_control_setpoint": {
+            "description": "A\u011f ge\u00e7idinde merkezi \u0131s\u0131tma kontrol ayar noktas\u0131n\u0131 ge\u00e7ersiz k\u0131lar. Buna yaln\u0131zca kendi yaz\u0131l\u0131m termostat\u0131n\u0131z\u0131 yaz\u0131yorsan\u0131z ihtiyac\u0131n\u0131z olacakt\u0131r.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "temperature": {
+                    "description": "A\u011f ge\u00e7idinde ayarlanacak merkezi \u0131s\u0131tma ayar noktas\u0131. 0 ile 90 aras\u0131ndaki de\u011ferler kabul edilir, ancak t\u00fcm kazanlar bu aral\u0131\u011f\u0131 desteklemez. 0 de\u011feri merkezi \u0131s\u0131tma ayar noktas\u0131 ge\u00e7ersiz k\u0131lmay\u0131 devre d\u0131\u015f\u0131 b\u0131rak\u0131r.\n.",
+                    "name": "S\u0131cakl\u0131k"
+                }
+            },
+            "name": "Kontrol ayar noktas\u0131n\u0131 ayarlay\u0131n"
+        },
+        "set_gpio_mode": {
+            "description": "A\u011f ge\u00e7idinin GPIO pinlerinin i\u015flevini de\u011fi\u015ftirir.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "id": {
+                    "description": "GPIO pininin kimli\u011fi.",
+                    "name": "Kimlik"
+                },
+                "mode": {
+                    "description": "GPIO pini \u00fczerinde ayarlanacak mod. 0 ila 6 aras\u0131ndaki de\u011ferler her iki GPIO i\u00e7in de kabul edilir, 7 yaln\u0131zca GPIO \"B\" i\u00e7in kabul edilir. De\u011ferlerin a\u00e7\u0131klamas\u0131 i\u00e7in https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes adresine bak\u0131n.\n.",
+                    "name": "Mod"
+                }
+            },
+            "name": "Gpio modunu ayarla"
+        },
+        "set_hot_water_ovrd": {
+            "description": "A\u011f ge\u00e7idinde kullan\u0131m s\u0131cak suyu etkinle\u015ftirme se\u00e7ene\u011fini ayarlar.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Kullan\u0131m s\u0131cak suyu etkinle\u015ftirme se\u00e7ene\u011fini kontrol edin. Kazan, oda \u00fcnitesinin az miktarda suyu ne zaman \u00f6nceden \u0131s\u0131taca\u011f\u0131n\u0131 kontrol etmesine izin verecek \u015fekilde yap\u0131land\u0131r\u0131lm\u0131\u015fsa, bu komut bunu etkileyebilir. Kapal\u0131 veya a\u00e7\u0131k durumda ge\u00e7ersiz k\u0131lmay\u0131 etkinle\u015ftirmek i\u00e7in de\u011fer 0 veya 1 veya ge\u00e7ersiz k\u0131lmay\u0131 devre d\u0131\u015f\u0131 b\u0131rakmak i\u00e7in \"A\" olmal\u0131d\u0131r.\n .",
+                    "name": "Evsel s\u0131cak suyun ge\u00e7ersiz k\u0131l\u0131nmas\u0131"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                }
+            },
+            "name": "S\u0131cak su ge\u00e7ersiz k\u0131lmay\u0131 ayarlay\u0131n"
+        },
+        "set_hot_water_setpoint": {
+            "description": "A\u011f ge\u00e7idindeki kullan\u0131m s\u0131cak suyu ayar noktas\u0131n\u0131 ayarlar.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "temperature": {
+                    "description": "A\u011f ge\u00e7idinde ayarlanacak kullan\u0131m s\u0131cak suyu ayar noktas\u0131. T\u00fcm kombiler bu \u00f6zelli\u011fi desteklemez. 0 ile 90 aras\u0131ndaki de\u011ferler kabul edilir, ancak t\u00fcm kazanlar bu aral\u0131\u011f\u0131 desteklemez. Kazan\u0131n\u0131zda desteklenen aral\u0131\u011f\u0131 g\u00f6rmek i\u00e7in slave_dhw_min_setp ve slave_dhw_max_setp sens\u00f6rlerinin de\u011ferlerini kontrol edin.\n.",
+                    "name": "S\u0131cakl\u0131k"
+                }
+            },
+            "name": "S\u0131cak su ayar noktas\u0131n\u0131 ayarlay\u0131n"
+        },
+        "set_led_mode": {
+            "description": "A\u011f ge\u00e7idinin LED'lerinin i\u015flevini de\u011fi\u015ftirir.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "id": {
+                    "description": "LED'in kimli\u011fi.",
+                    "name": "Kimlik"
+                },
+                "mode": {
+                    "description": "LED'e atanacak i\u015flev. De\u011ferlerin a\u00e7\u0131klamas\u0131 i\u00e7in https://www.home-assistant.io/integrations/opentherm_gw/#led-modes adresine bak\u0131n.\n .",
+                    "name": "Mod"
+                }
+            },
+            "name": "LED modunu ayarlay\u0131n"
+        },
+        "set_max_modulation": {
+            "description": "Maksimum ba\u011f\u0131l mod\u00fclasyon seviyesini ge\u00e7ersiz k\u0131lar. Buna yaln\u0131zca kendi yaz\u0131l\u0131m termostat\u0131n\u0131z\u0131 yaz\u0131yorsan\u0131z ihtiyac\u0131n\u0131z olacakt\u0131r.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "level": {
+                    "description": "A\u011f ge\u00e7idine sa\u011flanacak mod\u00fclasyon seviyesi. Ge\u00e7ersiz k\u0131lmay\u0131 temizlemek ve termostattan gelen de\u011feri tekrar iletmek i\u00e7in -1 de\u011ferini girin.\n.",
+                    "name": "D\u00fczey"
+                }
+            },
+            "name": "Maksimum mod\u00fclasyonu ayarlay\u0131n"
+        },
+        "set_outside_temperature": {
+            "description": "Termostata bir d\u0131\u015f s\u0131cakl\u0131k sa\u011flar. Termostat\u0131n\u0131z d\u0131\u015f s\u0131cakl\u0131\u011f\u0131 g\u00f6steremiyorsa ve OTC'yi (D\u0131\u015f S\u0131cakl\u0131k D\u00fczeltmesi) desteklemiyorsa, bunun bir etkisi yoktur.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "temperature": {
+                    "description": "Termostata sa\u011flanacak s\u0131cakl\u0131k. 40.0 ile 64.0 aras\u0131ndaki de\u011ferler kabul edilecektir, ancak t\u00fcm termostatlar t\u00fcm aral\u0131\u011f\u0131 g\u00f6r\u00fcnt\u00fcleyemez. 64.0'\u0131n \u00fczerindeki herhangi bir de\u011fer \u00f6nceden yap\u0131land\u0131r\u0131lm\u0131\u015f bir de\u011feri silecektir (\u00f6neri: 99)\n.",
+                    "name": "S\u0131cakl\u0131k"
+                }
+            },
+            "name": "D\u0131\u015f s\u0131cakl\u0131\u011f\u0131 ayarlay\u0131n"
+        },
+        "set_setback_temperature": {
+            "description": "GPIO uzak modu i\u015fleviyle kullan\u0131lacak gerileme s\u0131cakl\u0131\u011f\u0131n\u0131 yap\u0131land\u0131r\u0131r.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm A\u011f Ge\u00e7idinin gateway_id'si.",
+                    "name": "A\u011f Ge\u00e7idi Kimli\u011fi"
+                },
+                "temperature": {
+                    "description": "A\u011f ge\u00e7idinde yap\u0131land\u0131r\u0131lacak gerileme s\u0131cakl\u0131\u011f\u0131.",
+                    "name": "S\u0131cakl\u0131k"
+                }
+            },
+            "name": "Gerileme s\u0131cakl\u0131\u011f\u0131n\u0131 ayarla"
+        }
+    }
+}

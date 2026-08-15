@@ -1,0 +1,22 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Ukendt fejl ved generering af et adgangstoken.",
+            "already_configured": "Kontoen er allerede konfigureret",
+            "missing_configuration": "Komponenten er ikke konfigureret. F\u00f8lg venligst dokumentationen."
+        },
+        "create_entry": {
+            "default": "Godkendelse lykkedes"
+        },
+        "error": {
+            "follow_link": "F\u00f8lg linket og godkend f\u00f8r du trykker p\u00e5 send",
+            "no_token": "Ikke godkendt med Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "F\u00f8lg venligst dette [link]( {authorization_url} ) og **Tillad** adgang til din Ambiclimate-konto, og vend derefter tilbage og tryk p\u00e5 **Send** nedenfor.\n (S\u00f8rg for, at den angivne tilbagekalds-URL er {cb_url} )",
+                "title": "Godkend Ambiclimate"
+            }
+        }
+    }
+}

@@ -1,0 +1,87 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "\u5929\u6c14",
+            "state": {
+                "clear-night": "\u6674",
+                "cloudy": "\u9634",
+                "exceptional": "\u7279\u6b8a",
+                "fog": "\u96fe",
+                "hail": "\u51b0\u96f9",
+                "lightning": "\u96f7\u7535",
+                "lightning-rainy": "\u96f7\u9635\u96e8",
+                "partlycloudy": "\u591a\u4e91",
+                "pouring": "\u66b4\u96e8",
+                "rainy": "\u96e8",
+                "snowy": "\u96ea",
+                "snowy-rainy": "\u96e8\u5939\u96ea",
+                "sunny": "\u6674",
+                "windy": "\u5927\u98ce",
+                "windy-variant": "\u6709\u98ce"
+            },
+            "state_attributes": {
+                "apparent_temperature": {
+                    "name": "\u4f53\u8868\u6e29\u5ea6"
+                },
+                "cloud_coverage": {
+                    "name": "\u4e91\u8986\u76d6"
+                },
+                "dew_point": {
+                    "name": "\u9732\u70b9\u6e29\u5ea6"
+                },
+                "forecast": {
+                    "name": "\u9884\u62a5"
+                },
+                "humidity": {
+                    "name": "\u6e7f\u5ea6"
+                },
+                "ozone": {
+                    "name": "\u81ed\u6c27"
+                },
+                "precipitation_unit": {
+                    "name": "\u964d\u6c34\u91cf\u5355\u4f4d"
+                },
+                "pressure": {
+                    "name": "\u6c14\u538b"
+                },
+                "pressure_unit": {
+                    "name": "\u6c14\u538b\u5355\u4f4d"
+                },
+                "temperature": {
+                    "name": "\u6e29\u5ea6"
+                },
+                "temperature_unit": {
+                    "name": "\u6e29\u5ea6\u5355\u4f4d"
+                },
+                "uv_index": {
+                    "name": "\u7d2b\u5916\u7ebf\u6307\u6570"
+                },
+                "visibility": {
+                    "name": "\u80fd\u89c1\u5ea6"
+                },
+                "visibility_unit": {
+                    "name": "\u80fd\u89c1\u5ea6\u5355\u4f4d"
+                },
+                "wind_bearing": {
+                    "name": "\u98ce\u5411"
+                },
+                "wind_gust_speed": {
+                    "name": "\u9635\u98ce\u98ce\u901f"
+                },
+                "wind_speed": {
+                    "name": "\u98ce\u901f"
+                },
+                "wind_speed_unit": {
+                    "name": "\u98ce\u901f\u5355\u4f4d"
+                }
+            }
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "\u7528\u4e8e {domain} \u96c6\u6210\u7684 {platform} \u5e73\u53f0\u4e0d\u518d\u652f\u6301\u901a\u8fc7 YAML \u914d\u7f6e\u3002\n\n\u8bf7\u5c06\u5176\u4ece\u914d\u7f6e\u6587\u4ef6\u4e2d\u5220\u9664\uff0c\u7136\u540e\u91cd\u65b0\u542f\u52a8 Home Assistant \u4ee5\u89e3\u51b3\u6b64\u95ee\u9898\u3002",
+            "title": "\u5e73\u53f0\u4e0d\u652f\u6301"
+        }
+    },
+    "title": "\u5929\u6c14"
+}

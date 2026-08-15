@@ -1,0 +1,13 @@
+{
+    "config": {
+        "create_entry": {
+            "default": "Va\u0161 Plaato {device_type} s nazivom **{device_name}** uspje\u0161no je postavljen!"
+        },
+        "step": {
+            "user": {
+                "description": "Jeste li sigurni da \u017eelite postaviti Plaato Airlock?",
+                "title": "Postavljanje Plaato Webhook"
+            }
+        }
+    }
+}

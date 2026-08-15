@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "El servei {domain}.{service} ha cridat al servei {child_domain}.{child_service} que no s'ha trobat."
+        }
+    }
+}

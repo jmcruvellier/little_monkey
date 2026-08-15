@@ -1,0 +1,22 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "L'account \u00e8 gi\u00e0 configurato",
+            "already_in_progress": "Il flusso di configurazione \u00e8 gi\u00e0 in corso",
+            "authorize_url_timeout": "Timeout che genera l'URL di autorizzazione.",
+            "missing_configuration": "Il componente non \u00e8 configurato. Seguire la documentazione.",
+            "oauth_error": "Ricevuto dati token non validi."
+        },
+        "create_entry": {
+            "default": "Autenticato con successo"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "Scegli il metodo di autenticazione"
+            },
+            "reauth_confirm": {
+                "title": "Autentica nuovamente l'integrazione {name}"
+            }
+        }
+    }
+}

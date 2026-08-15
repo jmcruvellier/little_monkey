@@ -1,0 +1,13 @@
+{
+    "entity": {
+        "sensor": {
+            "printer": {
+                "state": {
+                    "idle": "A\u00f0ger\u00f0alaus",
+                    "printing": "Prentar",
+                    "stopped": "Stoppar"
+                }
+            }
+        }
+    }
+}

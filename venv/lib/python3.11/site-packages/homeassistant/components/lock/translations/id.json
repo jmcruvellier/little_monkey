@@ -1,0 +1,76 @@
+{
+    "device_automation": {
+        "action_type": {
+            "lock": "Kunci {entity_name}",
+            "open": "Buka {entity_name}",
+            "unlock": "Buka kunci {entity_name}"
+        },
+        "condition_type": {
+            "is_locked": "{entity_name} terkunci",
+            "is_unlocked": "{entity_name} tidak terkunci"
+        },
+        "trigger_type": {
+            "locked": "{entity_name} terkunci",
+            "unlocked": "{entity_name} tidak terkunci"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "name": "Kunci",
+            "state": {
+                "jammed": "Macet",
+                "locked": "Terkunci",
+                "locking": "Mengunci",
+                "unlocked": "Terbuka",
+                "unlocking": "Membuka kunci"
+            },
+            "state_attributes": {
+                "changed_by": {
+                    "name": "Diubah oleh"
+                },
+                "code_format": {
+                    "name": "Format kode"
+                }
+            }
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "Platform {platform} untuk integrasi {domain} tidak mendukung penyiapan platform. \n\nHarap hapus dari konfigurasi Anda dan mulai ulang Home Assistant untuk memperbaiki masalah ini.",
+            "title": "Dukungan platform tidak didukung"
+        }
+    },
+    "services": {
+        "lock": {
+            "description": "Mengunci kunci.",
+            "fields": {
+                "code": {
+                    "description": "Kode yang digunakan untuk menutup kunci.",
+                    "name": "Kode"
+                }
+            },
+            "name": "Kunci"
+        },
+        "open": {
+            "description": "Membuka kunci.",
+            "fields": {
+                "code": {
+                    "description": "Kode yang digunakan untuk membuka kunci.",
+                    "name": "Kode"
+                }
+            },
+            "name": "Buka"
+        },
+        "unlock": {
+            "description": "Membuka kunci.",
+            "fields": {
+                "code": {
+                    "description": "Kode yang digunakan untuk membuka kunci.",
+                    "name": "Kode"
+                }
+            },
+            "name": "Buka kunci"
+        }
+    },
+    "title": "Kunci"
+}

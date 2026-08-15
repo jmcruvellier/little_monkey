@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "name": "\u05e9\u05dd"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "name": "\u05e9\u05dd"
+                }
+            }
+        }
+    },
+    "selector": {
+        "time_unit": {
+            "options": {
+                "d": "\u05d9\u05de\u05d9\u05dd",
+                "h": "\u05e9\u05e2\u05d5\u05ea",
+                "min": "\u05d3\u05e7\u05d5\u05ea",
+                "s": "\u05e9\u05e0\u05d9\u05d5\u05ea"
+            }
+        }
+    }
+}

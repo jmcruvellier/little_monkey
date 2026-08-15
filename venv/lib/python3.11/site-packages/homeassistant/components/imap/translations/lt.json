@@ -1,0 +1,69 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "invalid_charset": "Nurodytas simboli\u0173 rinkinys nepalaikomas",
+            "invalid_folder": "Pasirinktas aplankas netinkamas",
+            "invalid_search": "Pasirinkta paie\u0161ka neteisinga",
+            "ssl_error": "\u012evyko SSL klaida. Pakeiskite SSL \u0161ifr\u0173 s\u0105ra\u0161\u0105 ir bandykite dar kart\u0105."
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Slapta\u017eodis"
+                },
+                "description": "Neteisingas {username} slapta\u017eodis.",
+                "title": "Baig\u0117si {name} autentifikavimo galiojimas"
+            },
+            "user": {
+                "data": {
+                    "charset": "Simboli\u0173 rinkinys",
+                    "folder": "Aplankas",
+                    "password": "Slapta\u017eodis",
+                    "port": "Prievadas",
+                    "search": "IMAP paie\u0161ka",
+                    "server": "Serveris",
+                    "ssl_cipher_list": "SSL \u0161ifr\u0173 s\u0105ra\u0161as (i\u0161pl\u0117stinis)",
+                    "username": "Prisijungimos vardas",
+                    "verify_ssl": "Patikrinkite SSL sertifikat\u0105"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "already_configured": "\u012era\u0161as su \u0161iais aplankais ir paie\u0161kos parinktimis jau yra.",
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "invalid_charset": "Nurodytas simboli\u0173 rinkinys nepalaikomas",
+            "invalid_folder": "Pasirinktas aplankas netinkamas",
+            "invalid_search": "Pasirinkta paie\u0161ka neteisinga",
+            "invalid_template": "Netinkamas \u0161ablonas"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "custom_event_data_template": "\u0160ablonas pasirinktiniams \u012fvykio duomenims kurti",
+                    "enable_push": "\u012ejunkite Push-IMAP, jei serveris j\u012f palaiko. I\u0161junkite, jei \u201ePush-IMAP\u201c naujinimai nepatikimi.",
+                    "folder": "Aplankas",
+                    "max_message_size": "Maksimalus prane\u0161imo dydis (2048 < dydis < 30000)",
+                    "search": "IMAP paie\u0161ka"
+                }
+            }
+        }
+    },
+    "selector": {
+        "ssl_cipher_list": {
+            "options": {
+                "intermediate": "Tarpiniai \u0161ifrai",
+                "modern": "\u0160iuolaikiniai \u0161ifrai",
+                "python_default": "Numatytieji nustatymai"
+            }
+        }
+    }
+}

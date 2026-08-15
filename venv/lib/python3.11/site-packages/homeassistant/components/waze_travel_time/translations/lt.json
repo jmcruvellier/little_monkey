@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Vieta jau sukonfig\u016bruota"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "destination": "Kelion\u0117s tikslas",
+                    "name": "Vardas",
+                    "origin": "Kilm\u0117",
+                    "region": "Regionas"
+                },
+                "description": "Skiltyje Prad\u017eio vieta ir  Paskirties vieta \u012fveskite adres\u0105 arba vietos GPS koordinates (GPS koordinates reikia atskirti kableliu). Taip pat galite \u012fvesti objekto ID, kuris pateikia \u0161i\u0105 informacij\u0105 jo b\u016bsenoje, objekto ID su platumos ir ilgumos atributais arba zonos pavadinim\u0105."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "avoid_ferries": "Vengti kelt\u0173?",
+                    "avoid_subscription_roads": "I\u0161vengti keli\u0173, kuriems reikia vinjet\u0117s / prenumeratos?",
+                    "avoid_toll_roads": "I\u0161vengti mokam\u0173 keli\u0173?",
+                    "excl_filter": "Poeilut\u0117 N\u0116RA pasirinkto mar\u0161ruto apra\u0161yme",
+                    "incl_filter": "Poeilut\u0117 pasirinkto mar\u0161ruto apra\u0161yme",
+                    "realtime": "Kelion\u0117s laikas realiuoju laiku?",
+                    "units": "Vienetai",
+                    "vehicle_type": "Transporto priemon\u0117s tipas"
+                },
+                "description": "\u201ePoeilut\u0117s\u201c \u012fvestis leis jums priversti integracij\u0105 naudoti konkret\u0173 mar\u0161rut\u0105 arba i\u0161vengti konkretaus mar\u0161ruto skai\u010diuojant kelion\u0117s laiku."
+            }
+        }
+    },
+    "selector": {
+        "region": {
+            "options": {
+                "au": "Australija",
+                "eu": "Europa",
+                "il": "Izraelis",
+                "na": "\u0160iaur\u0117s Amerika",
+                "us": "JAV"
+            }
+        },
+        "units": {
+            "options": {
+                "imperial": "Imperin\u0117 sistema",
+                "metric": "Metrin\u0117 sistema"
+            }
+        },
+        "vehicle_type": {
+            "options": {
+                "car": "Automobilis",
+                "motorcycle": "Motociklas",
+                "taxi": "Taksi"
+            }
+        }
+    },
+    "title": "Waze Kelioni\u0173 Laikas"
+}

@@ -1,0 +1,12 @@
+{
+    "config": {
+        "create_entry": {
+            "default": "Pour terminer la configuration de l\u2019int\u00e9gration, utilisez l\u2019application Ecowitt (sur votre t\u00e9l\u00e9phone) ou acc\u00e9dez \u00e0 l\u2019interface utilisateur Web Ecowitt dans un navigateur \u00e0 l\u2019adresse IP de la station.\n\nChoisissez votre station -> Menu \"Others\" -> \"DIY Upload Servers\". Appuyez sur \"Next\" et s\u00e9lectionnez \"Customized\"\n\n- Server IP : `{server}`\n- Path: `{path}`\n- Port : `{port}`\n\nCliquez sur 'Save'."
+        },
+        "step": {
+            "user": {
+                "description": "Voulez-vous vraiment configurer Ecowitt?"
+            }
+        }
+    }
+}

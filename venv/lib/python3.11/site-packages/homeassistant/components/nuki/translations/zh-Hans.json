@@ -1,0 +1,76 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "token": "\u8bbf\u95ee Token"
+                },
+                "description": "Nuki \u96c6\u6210\u9700\u8981\u901a\u8fc7\u60a8\u7684\u6865\u63a5\u5668\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u9a8c\u8bc1\u3002",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "port": "\u7aef\u53e3",
+                    "token": "\u8bbf\u95ee Token"
+                }
+            }
+        }
+    },
+    "entity": {
+        "lock": {
+            "nuki_lock": {
+                "state_attributes": {
+                    "battery_critical": {
+                        "state": {
+                            "off": "\u6b63\u5e38",
+                            "on": "\u4f4e"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "battery": {
+                "name": "\u7535\u6c60"
+            }
+        }
+    },
+    "issues": {
+        "https_webhook": {
+            "description": "Nuki \u6865\u63a5\u5668\u65e0\u6cd5\u5c06\u4e8b\u4ef6\u63a8\u9001\u5230 HTTPS \u5730\u5740 (SSL)\uff0c\u8bf7\u5728[\u7f51\u7edc\u8bbe\u7f6e]({network_link}) \u4e2d\u7684\u201cHome Assistant URL\u201d\u4e0b\u914d\u7f6e\uff08\u672c\u5730\uff09HTTP \u5730\u5740\u3002\u5f53\u524d\uff08\u672c\u5730\uff09\u5730\u5740\u4e3a\uff1a`{base_url}`\uff0c\u6709\u6548\u5730\u5740\u53ef\u4ee5\u662f `http://192.168.1.10:8123` \uff0c\u5176\u4e2d `192.168.1.10` \u662f Home Assistant \u8bbe\u5907\u7684 IP",
+            "title": "Nuki Webhook URL \u4f7f\u7528 HTTPS (SSL)"
+        }
+    },
+    "services": {
+        "lock_n_go": {
+            "description": "Nuki Lock 'n' Go\u3002",
+            "fields": {
+                "unlatch": {
+                    "description": "\u662f\u5426\u89e3\u9501\u3002",
+                    "name": "\u89e3\u9501"
+                }
+            },
+            "name": "Lock 'n' go"
+        },
+        "set_continuous_mode": {
+            "description": "\u542f\u7528\u6216\u7981\u7528 Nuki Opener \u4e0a\u7684\u8fde\u7eed\u6a21\u5f0f\u3002",
+            "fields": {
+                "enable": {
+                    "description": "\u662f\u5426\u542f\u7528\u6216\u7981\u7528\u8be5\u529f\u80fd\u3002",
+                    "name": "\u542f\u7528"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u8fde\u7eed\u6a21\u5f0f"
+        }
+    }
+}

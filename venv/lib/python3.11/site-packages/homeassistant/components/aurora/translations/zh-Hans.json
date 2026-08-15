@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "\u7eac\u5ea6",
+                    "longitude": "\u7ecf\u5ea6",
+                    "name": "\u540d\u79f0"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "threshold": "\u9608\u503c\uff08\uff05\uff09"
+                }
+            }
+        }
+    },
+    "title": "NOAA Aurora \u4f20\u611f\u5668"
+}

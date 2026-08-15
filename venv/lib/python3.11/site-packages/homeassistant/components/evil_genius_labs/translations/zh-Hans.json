@@ -1,0 +1,16 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "timeout": "\u5efa\u7acb\u8fde\u63a5\u8d85\u65f6",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                }
+            }
+        }
+    }
+}

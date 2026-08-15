@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "mailbox \u5e73\u53f0\u5373\u5c07\u79fb\u9664\u3002\u8acb\u56de\u5831 '{integration_domain}' \u81ea\u8a02\u6574\u5408\u4f5c\u8005\u3002",
+            "title": "mailbox \u5e73\u53f0\u5373\u5c07\u79fb\u9664"
+        }
+    },
+    "title": "\u90f5\u7bb1"
+}

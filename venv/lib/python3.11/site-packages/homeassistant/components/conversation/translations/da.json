@@ -1,0 +1,13 @@
+{
+    "services": {
+        "process": {
+            "fields": {
+                "conversation_id": {
+                    "description": "Samtalens ID, for at kunne forts\u00e6tte en tidligere samtale",
+                    "name": "Samtale-ID"
+                }
+            }
+        }
+    },
+    "title": "Samtale"
+}

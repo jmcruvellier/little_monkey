@@ -1,0 +1,61 @@
+{
+    "entity": {
+        "climate": {
+            "ubercool": {
+                "state_attributes": {
+                    "fan_mode": {
+                        "state": {
+                            "auto_high": "Samodejno visoko",
+                            "auto_low": "Samodejno nizko",
+                            "on_high": "Vklopljeno visoko",
+                            "on_low": "Vklopljeno nizko"
+                        }
+                    },
+                    "swing_mode": {
+                        "state": {
+                            "1": "1",
+                            "2": "2",
+                            "3": "3",
+                            "auto": "Samodejno",
+                            "off": "Izklopljeno"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "thermostat_mode": {
+                "state": {
+                    "away": "Odsoten"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "few": "prazni",
+                    "one": "prazen",
+                    "other": "prazni",
+                    "two": "prazna"
+                }
+            },
+            "options_1": {
+                "data": {
+                    "bool": "Izbirna logi\u010dna vrednost",
+                    "constant": "Constant",
+                    "int": "\u0160tevil\u010dni vnos"
+                }
+            },
+            "options_2": {
+                "data": {
+                    "multi": "Multiselect",
+                    "select": "Izberite mo\u017enost",
+                    "string": "Vrednost niza"
+                }
+            }
+        }
+    },
+    "title": "Demo"
+}

@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "Laddar ner en fil till nedladdningsplatsen.",
+            "fields": {
+                "filename": {
+                    "description": "Best\u00e4m filnamnet.",
+                    "name": "Filnamn"
+                },
+                "overwrite": {
+                    "description": "Om filen ska skrivas \u00f6ver eller inte.",
+                    "name": "Skriv \u00f6ver"
+                },
+                "subdir": {
+                    "description": "Ladda ner till underkatalog.",
+                    "name": "Underkatalog"
+                },
+                "url": {
+                    "description": "URL f\u00f6r den fil som ska laddas ned.",
+                    "name": "URL"
+                }
+            },
+            "name": "Ladda ner fil"
+        }
+    }
+}

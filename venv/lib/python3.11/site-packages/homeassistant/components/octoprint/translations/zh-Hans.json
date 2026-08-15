@@ -1,0 +1,53 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "auth_failed": "\u65e0\u6cd5\u68c0\u7d22\u5e94\u7528\u7a0b\u5e8f api \u5bc6\u94a5",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "OctoPrint \u6253\u5370\u673a\uff1a {host}",
+        "progress": {
+            "get_api_key": "\u6253\u5f00 OctoPrint UI\uff0c\u7136\u540e\u5355\u51fb\u201cHome Assistant\u201d\u8bbf\u95ee\u8bf7\u6c42\u4e0a\u7684\u201c\u5141\u8bb8\u201d\u3002"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "username": "\u7528\u6237\u540d"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "path": "\u5e94\u7528\u7a0b\u5e8f\u8def\u5f84",
+                    "port": "\u7aef\u53e3\u53f7",
+                    "ssl": "\u4f7f\u7528SSL",
+                    "username": "\u7528\u6237\u540d",
+                    "verify_ssl": "\u9a8c\u8bc1 SSL \u8bc1\u4e66"
+                }
+            }
+        }
+    },
+    "services": {
+        "printer_connect": {
+            "fields": {
+                "baudrate": {
+                    "description": "\u6ce2\u7279\u7387\u3002"
+                },
+                "device_id": {
+                    "description": "\u5e94\u5f53\u8fde\u63a5\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u670d\u52a1\u5668"
+                },
+                "port": {
+                    "name": "\u4e32\u53e3"
+                }
+            },
+            "name": "\u8fde\u63a5\u5230\u6253\u5370\u673a"
+        }
+    }
+}

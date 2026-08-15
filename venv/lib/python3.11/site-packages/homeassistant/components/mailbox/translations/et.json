@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Postkasti platvorm eemaldatakse. Teatasellest kohandatud sidumise '{integration_domain}' autorile.",
+            "title": "Postkasti platvorm eemaldatakse"
+        }
+    },
+    "title": "Postkast"
+}

@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Zav\u0159e ozn\u00e1men\u00ed HTML5.",
+            "fields": {
+                "data": {
+                    "description": "Roz\u0161\u00ed\u0159en\u00e9 informace o ozn\u00e1men\u00ed. Podporuje zna\u010dku.",
+                    "name": "Data"
+                },
+                "target": {
+                    "description": "Pole c\u00edl\u016f.",
+                    "name": "C\u00edl"
+                }
+            },
+            "name": "Zav\u0159\u00edt"
+        }
+    }
+}

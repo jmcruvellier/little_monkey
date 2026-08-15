@@ -1,0 +1,132 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_access_token": "Token d'acc\u00e9s inv\u00e0lid",
+            "invalid_auth": "Autenticaci\u00f3 inv\u00e0lida",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "2fa": {
+                "data": {
+                    "2fa": "Codi de dos factors"
+                },
+                "description": "Introdueix el PIN enviat per correu electr\u00f2nic o SMS",
+                "title": "Autenticaci\u00f3 de dos factors"
+            },
+            "user": {
+                "data": {
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                },
+                "title": "Inici de sessi\u00f3 amb un compte de Blink"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "camera_armed": {
+                "name": "C\u00e0mera preparada"
+            }
+        },
+        "sensor": {
+            "wifi_rssi": {
+                "name": "RSSI Wi-Fi"
+            }
+        }
+    },
+    "issues": {
+        "service_deprecation": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "El servei d'actualitzaci\u00f3 de Blink est\u00e0 sent eliminant"
+                    }
+                }
+            },
+            "title": "El servei d'actualitzaci\u00f3 de Blink est\u00e0 sent eliminant"
+        }
+    },
+    "options": {
+        "step": {
+            "simple_options": {
+                "data": {
+                    "scan_interval": "Interval d'escaneig (segons)"
+                },
+                "description": "Configura la integraci\u00f3 Blink",
+                "title": "Opcions de Blink"
+            }
+        }
+    },
+    "services": {
+        "blink_update": {
+            "description": "For\u00e7a una actualitzaci\u00f3.",
+            "fields": {
+                "device_id": {
+                    "description": "ID del dispositiu Blink.",
+                    "name": "ID de dispositiu"
+                }
+            },
+            "name": "Actualitza"
+        },
+        "save_recent_clips": {
+            "fields": {
+                "device_id": {
+                    "description": "ID del dispositiu Blink.",
+                    "name": "ID de dispositiu"
+                },
+                "file_path": {
+                    "name": "Directori de sortida"
+                },
+                "name": {
+                    "name": "Nom"
+                }
+            }
+        },
+        "save_video": {
+            "fields": {
+                "device_id": {
+                    "description": "ID del dispositiu Blink.",
+                    "name": "ID de dispositiu"
+                },
+                "filename": {
+                    "name": "Nom del fitxer"
+                },
+                "name": {
+                    "name": "Nom"
+                }
+            },
+            "name": "Desa el v\u00eddeo"
+        },
+        "send_pin": {
+            "fields": {
+                "config_entry_id": {
+                    "description": "ID de la integraci\u00f3 Blink.",
+                    "name": "ID d'integraci\u00f3"
+                },
+                "device_id": {
+                    "description": "ID del dispositiu Blink.",
+                    "name": "ID de dispositiu"
+                },
+                "pin": {
+                    "description": "PIN rebut de Blink. Deixa-ho en blanc si nom\u00e9s has rebut un correu electr\u00f2nic de verificaci\u00f3.",
+                    "name": "PIN"
+                }
+            },
+            "name": "Envia pin"
+        },
+        "trigger_camera": {
+            "description": "Demana a la c\u00e0mera que faci una foto.",
+            "fields": {
+                "device_id": {
+                    "description": "ID del dispositiu Blink.",
+                    "name": "ID de dispositiu"
+                }
+            },
+            "name": "Dispara la c\u00e0mera"
+        }
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Tuntematon virhe p\u00e4\u00e4sykoodin luomisessa.",
+            "already_configured": "Tili on jo m\u00e4\u00e4ritetty",
+            "missing_configuration": "Komponenttia ei ole m\u00e4\u00e4ritetty. Seuraa dokumentaatiota."
+        },
+        "create_entry": {
+            "default": "Todennettu onnistuneesti"
+        },
+        "error": {
+            "follow_link": "Seuraa linkki\u00e4 ja tunnistaudu ennen kuin painat L\u00e4het\u00e4.",
+            "no_token": "Ei autentikoitu Ambiclimatella"
+        },
+        "step": {
+            "auth": {
+                "description": "Seuraa t\u00e4t\u00e4 [link]({authorization_url}) ja **Salli** p\u00e4\u00e4sy Ambiclimate-tilillesi, palaa sitten takaisin ja paina **L\u00e4het\u00e4 ** alla.\n(Varmista, ett\u00e4 m\u00e4\u00e4ritetty takaisinsoiton URL-osoite on {cb_url})",
+                "title": "Autentioi Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Kaikki Ambiclimate-palvelut lopetetaan 31. maaliskuuta 2024 alkaen, kun Ambi Labs lopettaa liiketoimintansa, ja Ambiclimate-integraatio poistetaan Home Assistantista.\n\nVoit ratkaista t\u00e4m\u00e4n ongelman poistamalla integraatiomerkinn\u00e4t Home Assistant -asetuksistasi. [Klikkaa t\u00e4st\u00e4 n\u00e4hd\u00e4ksesi olemassa olevat Logi Circle -integraatiomerkinn\u00e4t]({entries}).",
+            "title": "Ambiclimate-integraatio on poistettu k\u00e4yt\u00f6st\u00e4 ja se poistetaan."
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "L\u00e4hett\u00e4\u00e4 palautetta mukavuustilassa.",
+            "fields": {
+                "name": {
+                    "description": "Laitteen nimen sis\u00e4lt\u00e4v\u00e4 merkkijono.",
+                    "name": "Laitteen nimi"
+                },
+                "value": {
+                    "description": "L\u00e4het\u00e4 jokin seuraavista mukavuusarvoista: liian_kuuma, liian_l\u00e4mmin, v\u00e4h\u00e4n_l\u00e4mmin, mukava, v\u00e4h\u00e4n_kylm\u00e4, liian_kylm\u00e4, j\u00e4\u00e4t\u00e4v\u00e4.\n.",
+                    "name": "Mukavuusarvo"
+                }
+            },
+            "name": "L\u00e4het\u00e4 palautetta mukavuudesta"
+        },
+        "set_comfort_mode": {
+            "description": "Ottaa k\u00e4ytt\u00f6\u00f6n ilmastointilaitteen mukavuustilan.",
+            "fields": {
+                "name": {
+                    "description": "Laitteen nimen sis\u00e4lt\u00e4v\u00e4 merkkijono.",
+                    "name": "Laitteen nimi"
+                }
+            },
+            "name": "Aseta mukavuustila"
+        },
+        "set_temperature_mode": {
+            "description": "Ottaa k\u00e4ytt\u00f6\u00f6n ilmastointilaitteen l\u00e4mp\u00f6tilatilan.",
+            "fields": {
+                "name": {
+                    "description": "Laitteen nimen sis\u00e4lt\u00e4v\u00e4 merkkijono.",
+                    "name": "Laitteen nimi"
+                },
+                "value": {
+                    "description": "Tavoitearvo celsiusasteina.",
+                    "name": "L\u00e4mp\u00f6tila"
+                }
+            },
+            "name": "Aseta l\u00e4mp\u00f6tilatila"
+        }
+    }
+}

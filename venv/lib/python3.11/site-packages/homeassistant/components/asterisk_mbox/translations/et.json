@@ -1,0 +1,8 @@
+{
+    "issues": {
+        "deprecated_integration": {
+            "description": "{integration_title} eemaldatakse kuna platvorm ` {mailbox} ` eemaldatakse ja {integration_title} ei toeta muid platvorme. Selle probleemi lahendamiseks eemalda failist configuration.yaml konfiguratsioon ` {domain} ` ja taask\u00e4ivita Home Assistant.",
+            "title": "{integration_title} eemaldatakse"
+        }
+    }
+}

@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "\u7522\u751f\u5b58\u53d6\u8a8d\u8b49\u78bc\u672a\u77e5\u932f\u8aa4\u3002",
+            "already_configured": "\u5e33\u865f\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210",
+            "missing_configuration": "\u5143\u4ef6\u5c1a\u672a\u8a2d\u7f6e\uff0c\u8acb\u53c3\u95b1\u6587\u4ef6\u8aaa\u660e\u3002"
+        },
+        "create_entry": {
+            "default": "\u5df2\u6210\u529f\u8a8d\u8b49"
+        },
+        "error": {
+            "follow_link": "\u8acb\u65bc\u50b3\u9001\u524d\uff0c\u5148\u4f7f\u7528\u9023\u7d50\u4e26\u9032\u884c\u8a8d\u8b49\u3002",
+            "no_token": "Ambiclimate \u672a\u6388\u6b0a"
+        },
+        "step": {
+            "auth": {
+                "description": "\u8acb\u4f7f\u7528\u6b64 [\u9023\u7d50]\uff08{authorization_url}\uff09\u4e26\u9ede\u9078**\u5141\u8a31**\u4ee5\u5b58\u53d6 Ambiclimate \u5e33\u865f\uff0c\u7136\u5f8c\u8fd4\u56de\u6b64\u9801\u9762\u4e26\u9ede\u9078\u4e0b\u65b9\u7684**\u50b3\u9001**\u3002\n\uff08\u78ba\u5b9a\u6307\u5b9a Callback URL \u70ba {cb_url}\uff09",
+                "title": "\u8a8d\u8b49 Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "\u7531\u65bc Ambi Labs \u5373\u5c07\u7d50\u675f\u71df\u904b\u696d\u52d9\u3001\u6240\u6709 Ambiclimate \u670d\u52d9\u5c07\u65bc 2024 \u5e74 3 \u6708 31 \u65e5\u7d42\u6b62\u3001Ambiclimate \u6574\u5408\u5c07\u5f9e Home Assistant \u4e2d\u79fb\u9664\u3002\n\n\u8981\u89e3\u6c7a\u6b64\u554f\u984c\uff0c\u8acb\u7531 Home Assistant \u8a2d\u5b9a\u4e2d\u79fb\u9664\u6574\u5408\u689d\u76ee\u3002[\u9ede\u64ca\u9019\u88e1\u4ee5\u6aa2\u8996\u73fe\u6709 Logi Circle \u6574\u5408\u689d\u76ee]({entries})\u3002",
+            "title": "Ambiclimate \u6574\u5408\u5df2\u4e0d\u518d\u4f7f\u7528\u3001\u4e26\u4e14\u5373\u5c07\u79fb\u9664"
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "\u50b3\u9001\u8212\u9069\u6a21\u5f0f\u7684\u56de\u994b\u3002",
+            "fields": {
+                "name": {
+                    "description": "\u88dd\u7f6e\u540d\u7a31\u5b57\u4e32\u3002",
+                    "name": "\u88dd\u7f6e\u540d\u7a31"
+                },
+                "value": {
+                    "description": "\u50b3\u9001\u4ee5\u4e0b\u8212\u9069\u503c\u4ee3\u78bc\uff1atoo_hot\u3001too_warm\u3001bit_warm\u3001comfortable\u3001bit_cold\u3001too_cold\u3001freezing\u3002",
+                    "name": "\u8212\u9069\u503c"
+                }
+            },
+            "name": "\u50b3\u9001\u8212\u9069\u5ea6\u56de\u994b"
+        },
+        "set_comfort_mode": {
+            "description": "\u958b\u555f\u7a7a\u8abf\u8212\u9069\u6a21\u5f0f\u3002",
+            "fields": {
+                "name": {
+                    "description": "\u88dd\u7f6e\u540d\u7a31\u5b57\u4e32\u3002",
+                    "name": "\u88dd\u7f6e\u540d\u7a31"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u8212\u9069\u6a21\u5f0f"
+        },
+        "set_temperature_mode": {
+            "description": "\u958b\u555f\u7a7a\u8abf\u6eab\u5ea6\u6a21\u5f0f\u3002",
+            "fields": {
+                "name": {
+                    "description": "\u88dd\u7f6e\u540d\u7a31\u5b57\u4e32\u3002",
+                    "name": "\u88dd\u7f6e\u540d\u7a31"
+                },
+                "value": {
+                    "description": "\u76ee\u6a19\u503c\uff08\u651d\u6c0f\uff09\u3002",
+                    "name": "\u6eab\u5ea6"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u6eab\u5ea6\u6a21\u5f0f"
+        }
+    }
+}

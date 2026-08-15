@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Taaslaeb ajaloo statistika andurid YAML-konfiguratsioonist.",
+            "name": "Taaslae"
+        }
+    }
+}

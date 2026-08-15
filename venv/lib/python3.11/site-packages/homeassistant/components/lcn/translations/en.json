@@ -1,0 +1,267 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "codelock": "Code lock code received",
+            "fingerprint": "Fingerprint code received",
+            "send_keys": "Send keys received",
+            "transmitter": "Transmitter code received",
+            "transponder": "Transponder code received"
+        }
+    },
+    "services": {
+        "dyn_text": {
+            "description": "Sends dynamic text to LCN-GTxD displays.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "row": {
+                    "description": "Text row.",
+                    "name": "Row"
+                },
+                "text": {
+                    "description": "Text to send (up to 60 characters encoded as UTF-8).",
+                    "name": "Text"
+                }
+            },
+            "name": "Dynamic text"
+        },
+        "led": {
+            "description": "Sets the led state.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "led": {
+                    "description": "Led.",
+                    "name": "LED"
+                },
+                "state": {
+                    "description": "Led state.",
+                    "name": "State"
+                }
+            },
+            "name": "LED"
+        },
+        "lock_keys": {
+            "description": "Locks keys.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "state": {
+                    "description": "Key lock states as string (1=on, 2=off, T=toggle, -=nochange).",
+                    "name": "State"
+                },
+                "table": {
+                    "description": "Table with keys to lock (must be A for interval).",
+                    "name": "Table"
+                },
+                "time": {
+                    "description": "Lock interval.",
+                    "name": "Time"
+                },
+                "time_unit": {
+                    "description": "Time unit of lock interval.",
+                    "name": "Time unit"
+                }
+            },
+            "name": "Lock keys"
+        },
+        "lock_regulator": {
+            "description": "Locks a regulator setpoint.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "setpoint": {
+                    "description": "Setpoint name.",
+                    "name": "Setpoint"
+                },
+                "state": {
+                    "description": "New setpoint state.",
+                    "name": "State"
+                }
+            },
+            "name": "Lock regulator"
+        },
+        "output_abs": {
+            "description": "Sets absolute brightness of output port in percent.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "brightness": {
+                    "description": "Absolute brightness.",
+                    "name": "Brightness"
+                },
+                "output": {
+                    "description": "Output port.",
+                    "name": "Output"
+                },
+                "transition": {
+                    "description": "Transition time.",
+                    "name": "Transition"
+                }
+            },
+            "name": "Output absolute brightness"
+        },
+        "output_rel": {
+            "description": "Sets relative brightness of output port in percent.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "brightness": {
+                    "description": "Relative brightness.",
+                    "name": "Brightness"
+                },
+                "output": {
+                    "description": "Output port.",
+                    "name": "Output"
+                }
+            },
+            "name": "Output relative brightness"
+        },
+        "output_toggle": {
+            "description": "Toggles output port.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "output": {
+                    "description": "Output port.",
+                    "name": "Output"
+                },
+                "transition": {
+                    "description": "Transition time.",
+                    "name": "Transition"
+                }
+            },
+            "name": "Toggle output"
+        },
+        "pck": {
+            "description": "Sends arbitrary PCK command.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "pck": {
+                    "description": "PCK command (without address header).",
+                    "name": "PCK"
+                }
+            },
+            "name": "PCK"
+        },
+        "relays": {
+            "description": "Sets the relays status.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "state": {
+                    "description": "Relays states as string (1=on, 2=off, t=toggle, -=no change).",
+                    "name": "State"
+                }
+            },
+            "name": "Relays"
+        },
+        "send_keys": {
+            "description": "Sends keys (which executes bound commands).",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "keys": {
+                    "description": "Keys to send.",
+                    "name": "Keys"
+                },
+                "state": {
+                    "description": "Key state upon sending (must be hit for deferred).",
+                    "name": "State"
+                },
+                "time": {
+                    "description": "Send delay.",
+                    "name": "Time"
+                },
+                "time_unit": {
+                    "description": "Time unit of send delay.",
+                    "name": "Time unit"
+                }
+            },
+            "name": "Send keys"
+        },
+        "var_abs": {
+            "description": "Sets absolute value of a variable or setpoint.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "unit_of_measurement": {
+                    "description": "Unit of value.",
+                    "name": "Unit of measurement"
+                },
+                "value": {
+                    "description": "Value to set.",
+                    "name": "Value"
+                },
+                "variable": {
+                    "description": "Variable or setpoint name.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Set absolute variable"
+        },
+        "var_rel": {
+            "description": "Shift value of a variable, setpoint or threshold.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "unit_of_measurement": {
+                    "description": "Unit of value.",
+                    "name": "Unit of measurement"
+                },
+                "value": {
+                    "description": "Shift value.",
+                    "name": "Value"
+                },
+                "value_reference": {
+                    "description": "Reference value for setpoint and threshold.",
+                    "name": "Reference value"
+                },
+                "variable": {
+                    "description": "Variable or setpoint name.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Shift variable"
+        },
+        "var_reset": {
+            "description": "Resets value of variable or setpoint.",
+            "fields": {
+                "address": {
+                    "description": "Module address.",
+                    "name": "Address"
+                },
+                "variable": {
+                    "description": "Variable or setpoint name.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Reset variable"
+        }
+    }
+}

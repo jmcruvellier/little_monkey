@@ -1,0 +1,25 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "assist_in_progress": {
+                "name": "Assistans p\u00e5g\u00e5r"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Pipeline f\u00f6r assistans",
+                "state": {
+                    "preferred": "F\u00f6redragen"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Slutdetektering av r\u00f6stkommando",
+                "state": {
+                    "aggressive": "Aggressiv",
+                    "default": "Standard",
+                    "relaxed": "Avslappnad"
+                }
+            }
+        }
+    }
+}

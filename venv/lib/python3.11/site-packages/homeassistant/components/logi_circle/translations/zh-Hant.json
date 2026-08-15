@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5e33\u865f\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210",
+            "external_error": "\u5176\u4ed6\u6d41\u7a0b\u767c\u751f\u7570\u5e38\u3002",
+            "external_setup": "\u5df2\u7531\u5176\u4ed6\u6d41\u7a0b\u6210\u529f\u8a2d\u5b9a Logi Circle\u3002",
+            "missing_configuration": "\u5143\u4ef6\u5c1a\u672a\u8a2d\u7f6e\uff0c\u8acb\u53c3\u95b1\u6587\u4ef6\u8aaa\u660e\u3002"
+        },
+        "error": {
+            "authorize_url_timeout": "\u7522\u751f\u8a8d\u8b49 URL \u6642\u903e\u6642\u3002",
+            "follow_link": "\u8acb\u65bc\u50b3\u9001\u524d\uff0c\u5148\u4f7f\u7528\u9023\u7d50\u4e26\u9032\u884c\u8a8d\u8b49\u3002",
+            "invalid_auth": "\u8eab\u4efd\u9a57\u8b49\u7121\u6548"
+        },
+        "step": {
+            "auth": {
+                "description": "\u8acb\u4f7f\u7528\u4e0b\u65b9\u9023\u7d50\u4e26\u9ede\u9078 **\u63a5\u53d7** \u4ee5\u5b58\u53d6 Logi Circle \u5e33\u865f\uff0c\u7136\u5f8c\u8fd4\u56de\u6b64\u9801\u9762\u4e26\u9ede\u9078\u4e0b\u65b9\u7684 **\u50b3\u9001**\u3002\n\n[\u9023\u7d50]({authorization_url})",
+                "title": "\u4ee5 Logi Circle \u8a8d\u8b49"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "\u63d0\u4f9b\u8005"
+                },
+                "description": "\u65bc\u8a8d\u8b49\u63d0\u4f9b\u8005\u4e2d\u6311\u9078\u6240\u8981\u9032\u884c Logi Circle \u8a8d\u8b49\u63d0\u4f9b\u8005\u3002",
+                "title": "\u8a8d\u8b49\u63d0\u4f9b\u8005"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "\u6700\u5f8c\u6d3b\u52d5"
+            },
+            "recording_mode": {
+                "name": "\u9304\u5f71\u6a21\u5f0f"
+            },
+            "streaming_mode": {
+                "name": "\u4e32\u6d41\u6a21\u5f0f"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi \u8a0a\u865f\u985e\u5225"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi \u8a0a\u865f\u5f37\u5ea6"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "\u7531\u65bc\u7f85\u6280\u65bc 2022 \u4e94\u6708\u958b\u59cb\u505c\u6b62 Logi Circle API \u5b58\u53d6\u7533\u8acb\u3001Logi Circle \u6574\u5408\u5c07\u5f9e Home Assistant \u4e2d\u79fb\u9664\u3002\n\n\u8981\u89e3\u6c7a\u6b64\u554f\u984c\uff0c\u8acb\u7531 Home Assistant \u8a2d\u5b9a\u4e2d\u79fb\u9664\u6574\u5408\u689d\u76ee\u3002[\u9ede\u64ca\u9019\u88e1\u4ee5\u6aa2\u8996\u73fe\u6709 Logi Circle \u6574\u5408\u689d\u76ee]({entries})\u3002",
+            "title": "Logi Circle \u6574\u5408\u5df2\u4e0d\u518d\u4f7f\u7528\u3001\u4e26\u4e14\u5373\u5c07\u79fb\u9664"
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "\u7531\u651d\u5f71\u6a5f\u4e32\u6d41\u4e2d\u9304\u88fd\u5f71\u7247\u3002",
+            "fields": {
+                "duration": {
+                    "description": "\u9304\u5f71\u6301\u7e8c\u6642\u9593\u3002",
+                    "name": "\u6301\u7e8c\u6642\u9593"
+                },
+                "entity_id": {
+                    "description": "\u7531\u9304\u5f71\u5efa\u7acb\u7684\u5be6\u9ad4\u540d\u7a31\u3002",
+                    "name": "\u5be6\u9ad4"
+                },
+                "filename": {
+                    "description": "\u6a94\u6848\u540d\u7a31\u6a21\u677f\u3001\u53ef\u8b8a\u6578\u70ba entity_id\u3002",
+                    "name": "\u6a94\u6848\u540d\u7a31"
+                }
+            },
+            "name": "\u76f4\u64ad\u9304\u5f71"
+        },
+        "livestream_snapshot": {
+            "description": "\u7531\u651d\u5f71\u6a5f\u76f4\u64ad\u4e32\u6d41\u4e2d\u64f7\u53d6\u5feb\u7167\u3002\u5047\u5982\u9700\u8981\u7684\u8a71\u3001\u6703\u559a\u9192\u651d\u5f71\u6a5f\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u7531\u5feb\u7167\u5efa\u7acb\u7684\u5be6\u9ad4\u540d\u7a31\u3002",
+                    "name": "\u5be6\u9ad4"
+                },
+                "filename": {
+                    "description": "\u6a94\u6848\u540d\u7a31\u6a21\u677f\u3001\u53ef\u8b8a\u6578\u70ba entity_id\u3002",
+                    "name": "\u6a94\u6848\u540d\u7a31"
+                }
+            },
+            "name": "\u76f4\u64ad\u5feb\u7167"
+        },
+        "set_config": {
+            "description": "\u8a2d\u5b9a\u5c6c\u6027\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u5957\u7528\u64cd\u4f5c\u6a21\u5f0f\u7684\u5be6\u9ad4\u540d\u7a31\u3002",
+                    "name": "\u5be6\u9ad4"
+                },
+                "mode": {
+                    "description": "\u64cd\u4f5c\u6a21\u5f0f\u3002\u5141\u8a31\u6578\u503c\u70ba\uff1aLED\u3001RECORDING_MODE\u3002",
+                    "name": "\u6a21\u5f0f"
+                },
+                "value": {
+                    "description": "\u64cd\u4f5c\u503c\u3002",
+                    "name": "\u6578\u503c"
+                }
+            },
+            "name": "\u8a2d\u5b9a"
+        }
+    }
+}

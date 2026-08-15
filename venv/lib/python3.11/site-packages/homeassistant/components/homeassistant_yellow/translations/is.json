@@ -1,0 +1,19 @@
+{
+    "options": {
+        "step": {
+            "hardware_settings": {
+                "data": {
+                    "disk_led": "Diska LED",
+                    "heartbeat_led": "Hjartsl\u00e1tta LED",
+                    "power_led": "Orku LED"
+                }
+            },
+            "reboot_menu": {
+                "menu_options": {
+                    "reboot_later": "Endurr\u00e6sa handvirkt s\u00ed\u00f0ar",
+                    "reboot_now": "Endurr\u00e6sa n\u00fana"
+                }
+            }
+        }
+    }
+}

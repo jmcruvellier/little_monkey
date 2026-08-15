@@ -1,0 +1,95 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Laite on jo m\u00e4\u00e4ritetty",
+            "reauth_successful": "Uudelleentodennus onnistui"
+        },
+        "error": {
+            "invalid_auth": "Virheellinen todennus",
+            "unknown": "Odottamaton virhe"
+        },
+        "step": {
+            "2fa": {
+                "data": {
+                    "2fa": "Kaksivaiheinen koodi"
+                },
+                "title": "Kaksivaiheinen tunnistautuminen"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Salasana"
+                },
+                "description": "Ring-integraation on todennettava tilisi {username} uudelleen.",
+                "title": "Todennus vanhentui kohteella {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Salasana",
+                    "username": "K\u00e4ytt\u00e4j\u00e4tunnus"
+                },
+                "title": "Kirjaudu sis\u00e4\u00e4n Ring-tilill\u00e4"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "ding": {
+                "name": "Ding"
+            }
+        },
+        "light": {
+            "light": {
+                "name": "Valo"
+            }
+        },
+        "sensor": {
+            "last_activity": {
+                "name": "Viimeisin aktiviteetti"
+            },
+            "last_ding": {
+                "name": "Viimeinen soitto"
+            },
+            "last_motion": {
+                "name": "Viimeinen liike"
+            },
+            "volume": {
+                "name": "\u00c4\u00e4nenvoimakkuus"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi-signaaliluokka"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi-signaalin voimakkuus"
+            }
+        },
+        "siren": {
+            "siren": {
+                "name": "Sireeni"
+            }
+        },
+        "switch": {
+            "siren": {
+                "name": "Sireeni"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_service_ring_update": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "K\u00e4yt\u00e4 sen sijaan `homeassistant.update_entity`, joka p\u00e4ivitt\u00e4\u00e4 kaikki ring-entiteetit.\n\nKorvaa kutsut t\u00e4h\u00e4n palveluun ja s\u00e4\u00e4d\u00e4 automaatiot ja skriptit ja valitse **L\u00e4het\u00e4** sulkeaksesi t\u00e4m\u00e4n ongelman.",
+                        "title": "Havaittiin vanhentuneen palvelun `ring.update` k\u00e4ytt\u00f6."
+                    }
+                }
+            },
+            "title": "Havaittiin vanhentuneen palvelun `ring.update` k\u00e4ytt\u00f6."
+        }
+    },
+    "services": {
+        "update": {
+            "description": "P\u00e4ivitt\u00e4\u00e4 kaikkien Ring -laitteidesi tiedot.",
+            "name": "P\u00e4ivit\u00e4"
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "La configuraci\u00f3n de Wake on Lan usando YAML se ha movido a clave de integraci\u00f3n. \n\nTu configuraci\u00f3n YAML existente funcionar\u00e1 durante 2 versiones m\u00e1s. \n\nMigra tu configuraci\u00f3n YAML a clave de integraci\u00f3n de acuerdo con la documentaci\u00f3n.",
+            "title": "La configuraci\u00f3n YAML de Wake on Lan se ha movido"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Env\u00eda un 'paquete m\u00e1gico' para activar un dispositivo con capacidades de 'Wake-On-LAN'.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "IP broadcast donde enviar el paquete m\u00e1gico.",
+                    "name": "Direcci\u00f3n de broadcast"
+                },
+                "broadcast_port": {
+                    "description": "Puerto donde enviar el paquete m\u00e1gico.",
+                    "name": "Puerto de broadcast"
+                },
+                "mac": {
+                    "description": "Direcci\u00f3n MAC del dispositivo a despertar.",
+                    "name": "Direcci\u00f3n MAC"
+                }
+            },
+            "name": "Enviar paquete m\u00e1gico"
+        }
+    }
+}

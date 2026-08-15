@@ -1,0 +1,11 @@
+{
+    "services": {
+        "set_system_mode": {
+            "fields": {
+                "mode": {
+                    "description": "Ch\u1ebf \u0111\u1ed9 c\u00e0i \u0111\u1eb7t nhi\u1ec7t \u0111\u1ed9."
+                }
+            }
+        }
+    }
+}

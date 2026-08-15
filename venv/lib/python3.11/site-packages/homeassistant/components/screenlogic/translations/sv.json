@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta."
+        },
+        "flow_title": "{name}",
+        "step": {
+            "gateway_entry": {
+                "data": {
+                    "ip_address": "IP-adress",
+                    "port": "Port"
+                },
+                "description": "Ange din ScreenLogic Gateway-information.",
+                "title": "ScreenLogic"
+            },
+            "gateway_select": {
+                "data": {
+                    "selected_gateway": "Gateway"
+                },
+                "description": "F\u00f6ljande ScreenLogic-gateways uppt\u00e4cktes. V\u00e4lj en att konfigurera, eller v\u00e4lj att manuellt konfigurera en ScreenLogic-gateway.",
+                "title": "ScreenLogic"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "Sekunder mellan skanningar"
+                },
+                "description": "Ange inst\u00e4llningar f\u00f6r {gateway_name}",
+                "title": "ScreenLogic"
+            }
+        }
+    },
+    "services": {
+        "set_color_mode": {
+            "description": "St\u00e4ller in f\u00e4rgl\u00e4get f\u00f6r alla f\u00e4rgkompatibla lampor som \u00e4r anslutna till denna ScreenLogic-gateway.",
+            "fields": {
+                "color_mode": {
+                    "description": "ScreenLogic-f\u00e4rgl\u00e4ge att st\u00e4lla in.",
+                    "name": "F\u00e4rgl\u00e4ge"
+                }
+            },
+            "name": "St\u00e4ll in f\u00e4rgl\u00e4ge"
+        }
+    }
+}

@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5730\u70b9\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_api_key": "API \u5bc6\u94a5\u65e0\u6548"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "language": "\u8bed\u8a00",
+                    "latitude": "\u7eac\u5ea6",
+                    "longitude": "\u7ecf\u5ea6",
+                    "mode": "\u6a21\u5f0f",
+                    "name": "\u540d\u79f0"
+                },
+                "description": "\u8981\u751f\u6210 API \u5bc6\u94a5\uff0c\u8bf7\u8f6c\u81f3 https://openweathermap.org/appid"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "language": "\u8bed\u8a00",
+                    "mode": "\u6a21\u5f0f"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,196 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Jo m\u00e4\u00e4ritetty. Vain yksi konfiguraatio mahdollinen."
+        }
+    },
+    "exceptions": {
+        "component_import_err": {
+            "message": "Ei voida tuoda {domain}: {error}"
+        },
+        "config_platform_import_err": {
+            "message": "Virhe m\u00e4\u00e4ritysalustan {domain} tuonnissa: {error}"
+        },
+        "config_schema_unknown_err": {
+            "message": "Tuntematon virhe kutsuttaessa {domain} CONFIG_SCHEMA. Tarkista lokitiedot lis\u00e4tietoja varten."
+        },
+        "config_validation_err": {
+            "message": "Virheellinen konfiguraatio integraatiolle {domain} kohdassa {config_file}, rivi {line}: {error}. Tarkista lokitiedot lis\u00e4tietoja varten."
+        },
+        "config_validator_unknown_err": {
+            "message": "Tuntematon virhe kutsuttaessa {domain} konfiguraatiotarkistusohjelmaa. Tarkista lokit saadaksesi lis\u00e4tietoja."
+        },
+        "integration_config_error": {
+            "message": "Integraation {domain} konfiguraation k\u00e4sittely ep\u00e4onnistui useiden ({errors}) virheiden vuoksi. Tarkista lokitiedot lis\u00e4tietoja varten."
+        },
+        "platform_component_load_err": {
+            "message": "Alustavirhe: {domain} - {error}. Tarkista lokit saadaksesi lis\u00e4tietoja."
+        },
+        "platform_component_load_exc": {
+            "message": "Alustavirhe: {domain} - {error}. Tarkista lokit saadaksesi lis\u00e4tietoja."
+        },
+        "platform_config_validation_err": {
+            "message": "Virheellinen m\u00e4\u00e4ritys verkkotunnukselle {domain} integraatiosta {p_name} tiedostossa {config_file} , rivi {line} : {error}. Tarkista lokit saadaksesi lis\u00e4tietoja."
+        },
+        "platform_schema_validator_err": {
+            "message": "Tuntematon virhe todettaessa m\u00e4\u00e4rityst\u00e4 {domain}:lle integraatiosta {p_name}"
+        },
+        "service_not_found": {
+            "message": "Palvelua {domain}.{service} ei l\u00f6ydy."
+        }
+    },
+    "issues": {
+        "config_entry_only": {
+            "description": "{domain} -integraatio ei tue m\u00e4\u00e4rityst\u00e4 YAML-tiedoston kautta. Et ehk\u00e4 huomaa mit\u00e4\u00e4n ilmeisi\u00e4 ongelmia integraatiossa, mutta YAML-tiedostossa m\u00e4\u00e4riteltyj\u00e4 konfiguraatioasetuksia ei todellisuudessa k\u00e4ytet\u00e4.\n\nVoit ratkaista t\u00e4m\u00e4n:\n\n1. Jos et ole viel\u00e4 tehnyt sit\u00e4, [lis\u00e4\u00e4 integraatio]({add_integration}).\n\n2. Poista `{domain}:` YAML-konfiguraatiotiedostosta.\n\n3. K\u00e4ynnist\u00e4 Home Assistant uudelleen.",
+            "title": "{domain} -integraatio ei tue YAML-konfigurointia."
+        },
+        "config_entry_reauth": {
+            "description": "Uudelleentodennus tarvitaan",
+            "title": "Todennus vanhentui kohteella {name}"
+        },
+        "country_not_configured": {
+            "description": "Maata ei ole m\u00e4\u00e4ritetty, p\u00e4ivit\u00e4 asetukset napsauttamalla alla olevaa \"lis\u00e4tietoja\"-painiketta.",
+            "title": "Maata ei ole konfiguroitu"
+        },
+        "deprecated_yaml": {
+            "description": "Konfigurointi {integration_title} YAML:n avulla poistetaan.\n\nOlemassa oleva YAML-konfiguraatiosi on tuotu k\u00e4ytt\u00f6liittym\u00e4\u00e4n automaattisesti.\n\nPoista `{domain}`-konfiguraatio configuration.yaml-tiedostosta ja k\u00e4ynnist\u00e4 Home Assistant uudelleen ongelman korjaamiseksi.",
+            "title": "{integration_title} YAML-konfigurointi poistetaan"
+        },
+        "historic_currency": {
+            "description": "Valuutta {currency} ei ole en\u00e4\u00e4 k\u00e4yt\u00f6ss\u00e4, m\u00e4\u00e4rit\u00e4 valuuttam\u00e4\u00e4ritykset uudelleen.",
+            "title": "M\u00e4\u00e4ritetty valuutta ei ole en\u00e4\u00e4 k\u00e4yt\u00f6ss\u00e4"
+        },
+        "integration_key_no_support": {
+            "description": "{domain} -integraatio ei tue m\u00e4\u00e4rityst\u00e4 YAML-tiedoston kautta. Et ehk\u00e4 huomaa mit\u00e4\u00e4n ilmeisi\u00e4 ongelmia integraatiossa, mutta YAML-tiedostossa m\u00e4\u00e4riteltyj\u00e4 konfiguraatioasetuksia ei todellisuudessa k\u00e4ytet\u00e4.\n\nVoit ratkaista t\u00e4m\u00e4n:\n\n1. Jos et ole viel\u00e4 tehnyt sit\u00e4, [lis\u00e4\u00e4 integraatio]({add_integration}).\n\n2. Poista `{domain}:` YAML-konfiguraatiotiedostosta.\n\n3. K\u00e4ynnist\u00e4 Home Assistant uudelleen.",
+            "title": "{domain} -integraatio ei tue YAML-konfigurointia."
+        },
+        "legacy_templates_false": {
+            "description": "Mik\u00e4\u00e4n ei muutu malleissasi.\n\nPoista `legacy_templates`-avain `homeassistant`-konfiguraatiosta configuration.yaml-tiedostosta ja k\u00e4ynnist\u00e4 Home Assistant uudelleen ongelman korjaamiseksi.",
+            "title": "`legacy_templates` -konfiguraatioavain poistetaan."
+        },
+        "legacy_templates_true": {
+            "description": "Toimi seuraavasti:\n- Ota k\u00e4ytt\u00f6\u00f6n konfiguraatiosi tukemaan mallien render\u00f6inti\u00e4 natiiveihin python-tyyppeihin.\n- Poista `legacy_templates`-avain `homeassistant`-konfiguraatiosta configuration.yaml-tiedostossasi.\n- K\u00e4ynnist\u00e4 Home Assistant uudelleen ongelman korjaamiseksi.",
+            "title": "Vanhojen mallien tuki poistetaan"
+        },
+        "no_platform_setup": {
+            "description": "Ei ole mahdollista m\u00e4\u00e4ritt\u00e4\u00e4 {platform} {domain} lis\u00e4\u00e4m\u00e4ll\u00e4 `{platform_key}` {domain} -konfiguraatioon. Katso dokumentaatiosta lis\u00e4tietoja t\u00e4m\u00e4n integraation m\u00e4\u00e4ritt\u00e4misest\u00e4.\n\nT\u00e4m\u00e4n ratkaisemiseksi:\n1. Poista `{platform_key}`-esiintym\u00e4t `{domain}:`-konfiguraatiosta YAML-konfiguraatiotiedostossa.\n2. K\u00e4ynnist\u00e4 Home Assistant uudelleen.\n\nEsimerkki, joka tulisi poistaa:\n{yaml_example}\n",
+            "title": "K\u00e4ytt\u00e4m\u00e4t\u00f6n YAML-konfiguraatio {platform} -integraatiolle"
+        },
+        "platform_only": {
+            "description": "{domain} -integraatio ei tue konfigurointia omassa avaimessaan, vaan se on konfiguroitava sen tukemilla alustoilla.\n\nT\u00e4m\u00e4n ratkaisemiseksi:\n\n1. Poista `{domain}:` YAML-konfiguraatiotiedostosta.\n\n2. K\u00e4ynnist\u00e4 Home Assistant uudelleen.",
+            "title": "{domain} -integraatio ei tue YAML-konfiguraatiota omalla avaimellaan."
+        },
+        "python_version": {
+            "description": "Tuki Home Assistantin k\u00e4ytt\u00e4miselle nykyisell\u00e4 Python-versiolla {current_python_version} on vanhentunut, ja se poistetaan Home Assistantista {breaks_in_ha_version}. P\u00e4ivit\u00e4 Python {required_python_version} -versioon, jotta Home Assistant -instanssisi ei rikkoudu.",
+            "title": "Tuki Pythonille {current_python_version} poistetaan."
+        },
+        "storage_corruption": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "Tallennustilaa `{storage_key}` ei voitu analysoida, ja se on nimetty uudelleen muotoon `{corrupt_path}`, jotta Home Assistant voi jatkaa.\n\nOletusarvoinen `{storage_key}` on ehk\u00e4 luotu automaattisesti.\n\nJos olet muokannut tallennustiedostoa manuaalisesti, korjaa `{corrupt_path}`:n mahdolliset syntaksivirheet, palauta tiedosto alkuper\u00e4iseen polkuun `{original_path}` ja k\u00e4ynnist\u00e4 Home Assistant uudelleen. Muussa tapauksessa palauta j\u00e4rjestelm\u00e4 varmuuskopiosta.\n\nVahvista, ett\u00e4 olet korjannut tiedoston tai palauttanut sen varmuuskopiosta, napsauttamalla L\u00e4het\u00e4 alla.\n\nTarkka virhe oli: {error}",
+                        "title": "S\u00e4ilytystilan korruptoituminen havaittu `{storage_key}' :ssa."
+                    }
+                }
+            },
+            "title": "S\u00e4ilytystilan korruptoituminen havaittu `{storage_key}' :ssa."
+        }
+    },
+    "services": {
+        "check_config": {
+            "description": "Tarkistaa Home Assistantin YAML-konfiguraatiotiedostot virheiden varalta. Virheet n\u00e4kyv\u00e4t Home Assistantin lokitiedoissa.",
+            "name": "Tarkista konfiguraatio"
+        },
+        "reload_all": {
+            "description": "Lataa uudelleen kaikki YAML-m\u00e4\u00e4ritykset, jotka voidaan ladata uudelleen k\u00e4ynnist\u00e4m\u00e4tt\u00e4 Home Assistantia uudelleen.",
+            "name": "Uudelleenlataa kaikki"
+        },
+        "reload_config_entry": {
+            "description": "Lataa m\u00e4\u00e4ritetyn konfigurointimerkinn\u00e4n uudelleen.",
+            "fields": {
+                "entry_id": {
+                    "description": "Uudelleenladattavan merkinn\u00e4n konfiguraatiomerkinn\u00e4n tunnus.",
+                    "name": "Konfigurointimerkinn\u00e4n tunnus"
+                }
+            },
+            "name": "Lataa konfigurointimerkint\u00e4 uudelleen"
+        },
+        "reload_core_config": {
+            "description": "Lataa ydinkonfiguraation uudelleen YAML-konfiguraatiosta.",
+            "name": "Lataa ydinkonfiguraatio uudelleen"
+        },
+        "reload_custom_templates": {
+            "description": "Lataa uudelleen Jinja2-mallit, jotka l\u00f6ytyv\u00e4t konfiguraatiosi `custom_templates`-kansiosta. Uusia arvoja k\u00e4ytet\u00e4\u00e4n mallin seuraavassa render\u00f6inniss\u00e4.",
+            "name": "Lataa mukautetut Jinja2-mallit uudelleen"
+        },
+        "restart": {
+            "description": "K\u00e4ynnist\u00e4\u00e4 Home Assistantin uudelleen.",
+            "fields": {
+                "safe_mode": {
+                    "description": "Poista mukautetut integraatiot ja mukautetut kortit k\u00e4yt\u00f6st\u00e4.",
+                    "name": "Vikasietotila"
+                }
+            },
+            "name": "Uudelleenk\u00e4ynnist\u00e4"
+        },
+        "save_persistent_states": {
+            "description": "Tallentaa pysyv\u00e4t tilat v\u00e4litt\u00f6m\u00e4sti. S\u00e4ilytt\u00e4\u00e4 normaalin jaksottaisen tallennusv\u00e4lin.",
+            "name": "Tallenna pysyvi\u00e4 tiloja"
+        },
+        "set_location": {
+            "description": "P\u00e4ivitt\u00e4\u00e4 Home Assistantin sijainnin.",
+            "fields": {
+                "elevation": {
+                    "description": "Sijaintisi korkeus.",
+                    "name": "Korkeus merenpinnasta"
+                },
+                "latitude": {
+                    "description": "Sijaintisi leveysaste.",
+                    "name": "Leveysaste"
+                },
+                "longitude": {
+                    "description": "Sijaintisi pituusaste.",
+                    "name": "Pituusaste"
+                }
+            },
+            "name": "Aseta sijainti"
+        },
+        "stop": {
+            "description": "Pys\u00e4ytt\u00e4\u00e4 Home Assistantin.",
+            "name": "Pys\u00e4yt\u00e4"
+        },
+        "toggle": {
+            "description": "Yleinen palvelu mink\u00e4 tahansa verkkotunnuksen laitteiden kytkemiseen p\u00e4\u00e4lle/pois.",
+            "name": "Yleinen vaihtokytkin"
+        },
+        "turn_off": {
+            "description": "Yleinen palvelu laitteiden sammuttamiseen miss\u00e4 tahansa verkkotunnuksessa.",
+            "name": "Yleinen sammutus"
+        },
+        "turn_on": {
+            "description": "Yleinen palvelu, joka kytkee laitteet p\u00e4\u00e4lle miss\u00e4 tahansa verkkotunnuksessa.",
+            "name": "Yleinen p\u00e4\u00e4lle kytkeminen"
+        },
+        "update_entity": {
+            "description": "Pakottaa yhden tai useamman entiteetin p\u00e4ivitt\u00e4m\u00e4\u00e4n tietonsa.",
+            "name": "P\u00e4ivit\u00e4 entiteetti"
+        }
+    },
+    "system_health": {
+        "info": {
+            "arch": "CPU-arkkitehtuuri",
+            "config_dir": "M\u00e4\u00e4rityshakemisto",
+            "dev": "Kehitys",
+            "docker": "Docker",
+            "hassio": "Supervisor",
+            "installation_type": "Asennustyyppi",
+            "os_name": "K\u00e4ytt\u00f6j\u00e4rjestelm\u00e4perhe",
+            "os_version": "K\u00e4ytt\u00f6j\u00e4rjestelm\u00e4n versio",
+            "python_version": "Python-versio",
+            "timezone": "Aikavy\u00f6hyke",
+            "user": "K\u00e4ytt\u00e4j\u00e4",
+            "version": "Versio",
+            "virtualenv": "Virtuaalinen ymp\u00e4rist\u00f6"
+        }
+    }
+}

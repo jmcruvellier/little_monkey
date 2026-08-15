@@ -1,0 +1,11 @@
+{
+    "services": {
+        "send_raw_node_command": {
+            "fields": {
+                "parameters": {
+                    "description": "Un ditado de par\u00e1metros para enviar na cadea de consulta (por exemplo, para controlar bombillas de cores)."
+                }
+            }
+        }
+    }
+}

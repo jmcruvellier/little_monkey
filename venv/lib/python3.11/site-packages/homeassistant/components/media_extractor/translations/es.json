@@ -1,0 +1,18 @@
+{
+    "services": {
+        "play_media": {
+            "description": "Descarga el archivo de la URL indicada.",
+            "fields": {
+                "media_content_id": {
+                    "description": "El ID del contenido a reproducir. Dependiente de la plataforma.",
+                    "name": "ID de contenido multimedia"
+                },
+                "media_content_type": {
+                    "description": "El tipo de contenido a reproducir. Debe ser uno de los siguientes: MUSIC, TVSHOW, VIDEO, EPISODE, CHANNEL o PLAYLIST MUSIC.",
+                    "name": "Tipo de contenido multimedia"
+                }
+            },
+            "name": "Reproducir contenido multimedia"
+        }
+    }
+}

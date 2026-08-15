@@ -1,0 +1,53 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Skript",
+            "state": {
+                "off": "Av",
+                "on": "P\u00e5"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Automationer som k\u00f6rs"
+                },
+                "last_action": {
+                    "name": "Sista \u00e5tg\u00e4rden"
+                },
+                "last_triggered": {
+                    "name": "Senast utl\u00f6st"
+                },
+                "max": {
+                    "name": "Maximalt antal skript som k\u00f6rs"
+                },
+                "mode": {
+                    "name": "K\u00f6rl\u00e4ge",
+                    "state": {
+                        "parallel": "Parallell",
+                        "queued": "K\u00f6ad",
+                        "restart": "Starta om",
+                        "single": "Enkel"
+                    }
+                }
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Laddar om alla tillg\u00e4ngliga skript.",
+            "name": "Ladda om"
+        },
+        "toggle": {
+            "description": "V\u00e4xla ett skript. Startar det om det inte k\u00f6rs, stoppar det annars.",
+            "name": "V\u00e4xla"
+        },
+        "turn_off": {
+            "description": "Stoppar ett skript som k\u00f6rs.",
+            "name": "St\u00e4ng av"
+        },
+        "turn_on": {
+            "description": "Utf\u00f6r den sekvens av \u00e5tg\u00e4rder som definierats i ett skript.",
+            "name": "Starta"
+        }
+    },
+    "title": "Skript"
+}

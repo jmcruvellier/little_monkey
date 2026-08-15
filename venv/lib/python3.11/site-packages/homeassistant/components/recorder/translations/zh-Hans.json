@@ -1,0 +1,63 @@
+{
+    "issues": {
+        "maria_db_range_index_regression": {
+            "description": "\u65e7\u7248\u672c\u7684 MariaDB \u5728\u68c0\u7d22\u5386\u53f2\u6570\u636e\u6216\u6e05\u9664\u6570\u636e\u5e93\u65f6\u4f1a\u9047\u5230\u660e\u663e\u7684\u6027\u80fd\u4e0b\u964d\u3002\u8bf7\u66f4\u65b0\u5230 MariaDB \u7248\u672c {min_version} \u6216\u66f4\u9ad8\u7248\u672c\u5e76\u91cd\u65b0\u542f\u52a8 Home Assistant\u3002\u5982\u679c\u60a8\u4f7f\u7528\u7684\u662f MariaDB \u6838\u5fc3\u52a0\u8f7d\u9879\uff0c\u8bf7\u786e\u4fdd\u5c06\u5176\u66f4\u65b0\u5230\u6700\u65b0\u7248\u672c\u3002",
+            "title": "\u5c06 MariaDB \u66f4\u65b0\u5230 {min_version} \u6216\u66f4\u9ad8\u7248\u672c\u53ef\u89e3\u51b3\u91cd\u5927\u6027\u80fd\u95ee\u9898"
+        }
+    },
+    "services": {
+        "disable": {
+            "description": "\u505c\u6b62\u8bb0\u5f55\u4e8b\u4ef6\u548c\u72b6\u6001\u53d8\u5316\u3002",
+            "name": "\u7981\u7528"
+        },
+        "enable": {
+            "description": "\u5f00\u59cb\u8bb0\u5f55\u4e8b\u4ef6\u548c\u72b6\u6001\u53d8\u5316\u3002",
+            "name": "\u542f\u7528"
+        },
+        "purge": {
+            "description": "\u5f00\u59cb\u6e05\u9664\u4efb\u52a1 - \u6e05\u7406\u60a8\u7684\u6570\u636e\u5e93\u4e2d\u7684\u65e7\u6570\u636e\u3002",
+            "fields": {
+                "apply_filter": {
+                    "description": "\u9664\u4e86\u57fa\u4e8e\u65f6\u95f4\u7684\u6e05\u9664\u5916\uff0c\u8fd8\u5e94\u7528 `entity_id` \u548c `event_type` \u8fc7\u6ee4\u5668\u3002",
+                    "name": "\u5e94\u7528\u8fc7\u6ee4\u5668"
+                },
+                "keep_days": {
+                    "description": "\u5728\u6570\u636e\u5e93\u4e2d\u4fdd\u7559\u6570\u636e\u7684\u5929\u6570\u3002\u4ece\u4eca\u5929\u5f00\u59cb\u5012\u6570\u3002`7`\u7684\u503c\u610f\u5473\u7740\u8d85\u8fc7\u4e00\u5468\u7684\u6240\u6709\u5185\u5bb9\u90fd\u5c06\u88ab\u6e05\u9664\u3002",
+                    "name": "\u4fdd\u7559\u5929\u6570"
+                },
+                "repack": {
+                    "description": "\u5c1d\u8bd5\u901a\u8fc7\u91cd\u5199\u6574\u4e2a\u6570\u636e\u5e93\u6587\u4ef6\u6765\u8282\u7701\u78c1\u76d8\u7a7a\u95f4\u3002",
+                    "name": "\u91cd\u65b0\u6253\u5305"
+                }
+            },
+            "name": "\u6e05\u9664"
+        },
+        "purge_entities": {
+            "description": "\u542f\u52a8\u6e05\u9664\u4efb\u52a1\uff0c\u4ee5\u4ece\u60a8\u7684\u6570\u636e\u5e93\u4e2d\u5220\u9664\u4e0e\u7279\u5b9a\u5b9e\u4f53\u76f8\u5173\u7684\u6570\u636e\u3002",
+            "fields": {
+                "domains": {
+                    "description": "\u9700\u8981\u4ece\u8bb0\u5f55\u5668\u6570\u636e\u5e93\u4e2d\u5220\u9664\u5176\u6570\u636e\u7684\u57df\u5217\u8868\u3002",
+                    "name": "\u8981\u5220\u9664\u7684\u57df"
+                },
+                "entity_globs": {
+                    "description": "\u7528\u4e8e\u9009\u62e9\u8981\u4ece\u8bb0\u5f55\u5668\u6570\u636e\u5e93\u4e2d\u5220\u9664\u5176\u6570\u636e\u7684\u5b9e\u4f53\u7684\u5168\u5c40\u6a21\u5f0f\u5217\u8868\u3002",
+                    "name": "\u8981\u5220\u9664\u7684\u5b9e\u4f53\u5168\u5c40"
+                },
+                "keep_days": {
+                    "description": "\u4fdd\u7559\u7b26\u5408\u8fc7\u6ee4\u6761\u4ef6\u7684\u6570\u636e\u884c\u7684\u5929\u6570\u3002\u4ece\u4eca\u5929\u5f00\u59cb\u5012\u6570\u3002`7`\u7684\u503c\u610f\u5473\u7740\u8d85\u8fc7\u4e00\u5468\u7684\u6240\u6709\u5185\u5bb9\u90fd\u5c06\u88ab\u6e05\u9664\u3002\u9ed8\u8ba4\u76840\u5929\u5c06\u7acb\u5373\u5220\u9664\u6240\u6709\u5339\u914d\u7684\u884c\u3002",
+                    "name": "\u4fdd\u7559\u5929\u6570"
+                }
+            },
+            "name": "\u6e05\u9664\u5b9e\u4f53"
+        }
+    },
+    "system_health": {
+        "info": {
+            "current_recorder_run": "\u5f53\u524d\u7684\u8fd0\u884c\u5f00\u59cb\u65f6\u95f4",
+            "database_engine": "\u6570\u636e\u5e93\u5f15\u64ce",
+            "database_version": "\u6570\u636e\u5e93\u7248\u672c",
+            "estimated_db_size": "\u9884\u8ba1\u6570\u636e\u5e93\u5927\u5c0f (MiB)",
+            "oldest_recorder_run": "\u6700\u65e9\u7684\u8fd0\u884c\u5f00\u59cb\u65f6\u95f4"
+        }
+    }
+}

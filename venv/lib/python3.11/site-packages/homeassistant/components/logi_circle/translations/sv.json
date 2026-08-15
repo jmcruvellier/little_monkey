@@ -1,0 +1,99 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Konto har redan konfigurerats",
+            "external_error": "Undantag intr\u00e4ffade fr\u00e5n ett annat fl\u00f6de.",
+            "external_setup": "Logi Circle har konfigurerats fr\u00e5n ett annat fl\u00f6de.",
+            "missing_configuration": "Komponenten har inte konfigurerats. F\u00f6lj dokumentationen."
+        },
+        "error": {
+            "authorize_url_timeout": "Timeout vid generering av en auktoriserings-URL.",
+            "follow_link": "V\u00e4nligen f\u00f6lj l\u00e4nken och autentisera innan du trycker p\u00e5 Skicka.",
+            "invalid_auth": "Ogiltig autentisering"
+        },
+        "step": {
+            "auth": {
+                "description": "V\u00e4nligen f\u00f6lj l\u00e4nken nedan och **Godk\u00e4nn** \u00e5tkomst till ditt Logi Circle-konto kom sedan tillbaka och tryck p\u00e5 ** Skicka** nedan. \n\n [L\u00e4nk] ({authorization_url})",
+                "title": "Autentisera med Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Leverant\u00f6r"
+                },
+                "description": "V\u00e4lj vilken autentiseringsleverant\u00f6r du vill autentisera med Logi Circle.",
+                "title": "Verifieringsleverant\u00f6r"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "Senaste aktivitet"
+            },
+            "recording_mode": {
+                "name": "Inspelningsl\u00e4ge"
+            },
+            "streaming_mode": {
+                "name": "Str\u00f6mningsl\u00e4ge"
+            },
+            "wifi_signal_category": {
+                "name": "Wifi signalkategori"
+            },
+            "wifi_signal_strength": {
+                "name": "Wifi signalstyrka"
+            }
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Skapar en inspelning fr\u00e5n kamerans livestream.",
+            "fields": {
+                "duration": {
+                    "description": "Inspelningsl\u00e4ngd.",
+                    "name": "Varaktighet"
+                },
+                "entity_id": {
+                    "description": "Namn p\u00e5 entitet(er) som inspelningar ska skapas fr\u00e5n.",
+                    "name": "Entitet"
+                },
+                "filename": {
+                    "description": "Mall f\u00f6r ett filnamn. Variabeln \u00e4r entity_id.",
+                    "name": "Filnamn"
+                }
+            },
+            "name": "Inspelning livestream"
+        },
+        "livestream_snapshot": {
+            "description": "Tar en \u00f6gonblicksbild fr\u00e5n kamerans livestream. V\u00e4cker kameran fr\u00e5n vilol\u00e4ge om det beh\u00f6vs.",
+            "fields": {
+                "entity_id": {
+                    "description": "Namn p\u00e5 entitet(er) som \u00f6gonblicksbild ska skapas fr\u00e5n.",
+                    "name": "Entitet"
+                },
+                "filename": {
+                    "description": "Mall f\u00f6r ett filnamn. Variabeln \u00e4r entity_id.",
+                    "name": "Filnamn"
+                }
+            },
+            "name": "\u00d6gonblicksbild livestream"
+        },
+        "set_config": {
+            "description": "St\u00e4ller in en egenskap.",
+            "fields": {
+                "entity_id": {
+                    "description": "Namn p\u00e5 entitet(er) som driftl\u00e4get ska till\u00e4mpas p\u00e5.",
+                    "name": "Entitet"
+                },
+                "mode": {
+                    "description": "Driftl\u00e4ge. Till\u00e5tna v\u00e4rden: LED, RECORDING_MODE.",
+                    "name": "L\u00e4ge"
+                },
+                "value": {
+                    "description": "Driftv\u00e4rde.",
+                    "name": "V\u00e4rde"
+                }
+            },
+            "name": "St\u00e4ll in konfiguration"
+        }
+    }
+}

@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "authenticate": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5"
+                },
+                "description": "\u8bf7\u8f93\u5165\u60a8\u5728\u914d\u7f6e\u4e2d\u4e3a {name} \u8bbe\u7f6e\u7684 API \u4ee4\u724c\u3002"
+            },
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "host": "\u4e3b\u673a",
+                    "port": "\u7aef\u53e3"
+                },
+                "description": "\u8bf7\u8f93\u5165\u60a8\u7684\u8fde\u63a5\u8be6\u7ec6\u4fe1\u606f\u3002"
+            }
+        }
+    },
+    "services": {
+        "get_process_by_id": {
+            "fields": {
+                "bridge": {
+                    "description": "\u8981\u4e0e\u4e4b\u901a\u4fe1\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u6865\u670d\u52a1\u5668"
+                }
+            }
+        },
+        "get_processes_by_name": {
+            "fields": {
+                "bridge": {
+                    "description": "\u8981\u4e0e\u4e4b\u901a\u4fe1\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u6865\u670d\u52a1\u5668"
+                }
+            }
+        },
+        "open_path": {
+            "description": "\u4f7f\u7528\u9ed8\u8ba4\u5e94\u7528\u7a0b\u5e8f\u6253\u5f00\u670d\u52a1\u5668\u4e0a\u7684\u6587\u4ef6\u3002",
+            "fields": {
+                "bridge": {
+                    "description": "\u8981\u4e0e\u4e4b\u901a\u4fe1\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u6865\u670d\u52a1\u5668"
+                },
+                "path": {
+                    "description": "\u8981\u6253\u5f00\u7684\u8def\u5f84\u3002",
+                    "name": "\u8def\u5f84"
+                }
+            },
+            "name": "\u6253\u5f00\u8def\u5f84"
+        },
+        "open_url": {
+            "description": "\u4f7f\u7528\u9ed8\u8ba4\u5e94\u7528\u7a0b\u5e8f\u5728\u670d\u52a1\u5668\u4e0a\u6253\u5f00 URL\u3002",
+            "fields": {
+                "bridge": {
+                    "description": "\u8981\u4e0e\u4e4b\u901a\u4fe1\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u6865\u670d\u52a1\u5668"
+                },
+                "url": {
+                    "description": "\u8981\u6253\u5f00\u7684 URL\u3002",
+                    "name": "URL"
+                }
+            },
+            "name": "\u6253\u5f00 URL"
+        },
+        "send_keypress": {
+            "description": "\u53d1\u9001\u4e00\u4e2a\u952e\u76d8\u6309\u952e\u3002",
+            "fields": {
+                "bridge": {
+                    "description": "\u5411\u5176\u53d1\u9001\u547d\u4ee4\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u6865\u670d\u52a1\u5668"
+                },
+                "key": {
+                    "description": "\u8981\u6309\u4e0b\u7684\u952e\u3002\u53ef\u7528\u6309\u952e\u5217\u8868\uff1ahttp://robotjs.io/docs/syntax#keys \u3002",
+                    "name": "\u6309\u952e"
+                }
+            },
+            "name": "\u53d1\u9001\u952e\u76d8\u6309\u952e"
+        },
+        "send_text": {
+            "description": "\u5728\u670d\u52a1\u5668\u4e0a\u8f93\u5165\u6587\u672c\u3002",
+            "fields": {
+                "bridge": {
+                    "description": "\u5411\u5176\u53d1\u9001\u547d\u4ee4\u7684\u670d\u52a1\u5668\u3002",
+                    "name": "\u6865\u670d\u52a1\u5668"
+                },
+                "text": {
+                    "description": "\u8981\u8f93\u5165\u7684\u6587\u672c\u3002",
+                    "name": "\u6587\u672c"
+                }
+            },
+            "name": "\u53d1\u9001\u952e\u76d8\u6587\u672c"
+        }
+    }
+}

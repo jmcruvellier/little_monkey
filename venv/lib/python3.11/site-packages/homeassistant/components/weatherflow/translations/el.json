@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "sensor": {
+            "battery_voltage": {
+                "name": "\u03a4\u03ac\u03c3\u03b7 \u03bc\u03c0\u03b1\u03c4\u03b1\u03c1\u03af\u03b1\u03c2"
+            }
+        }
+    }
+}

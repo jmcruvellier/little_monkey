@@ -1,0 +1,20 @@
+{
+    "entity": {
+        "select": {
+            "pipeline": {
+                "name": "Assist-kommandok\u00f8",
+                "state": {
+                    "preferred": "Foretrukket"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Avsluttet talegjenkjenning",
+                "state": {
+                    "aggressive": "Aggressiv",
+                    "default": "Standard",
+                    "relaxed": "Avslappet"
+                }
+            }
+        }
+    }
+}

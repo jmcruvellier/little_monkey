@@ -1,0 +1,50 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "\u5355\u6b21\u56de\u590d\u9650\u5236\uff0c\u5355\u6b21\u4ea4\u4e92\u6240\u7528\u7684\u6700\u5927token\u6570\u3002",
+                    "model": "\u6a21\u578b",
+                    "prompt": "\u63d0\u793a\u8bcd\u6a21\u677f",
+                    "temperature": "\u968f\u673a\u6027\uff0c\u503c\u8d8a\u5927\u56de\u590d\u8d8a\u968f\u673a\u3002",
+                    "top_p": "\u8bdd\u9898\u65b0\u9c9c\u5ea6\uff0c\u503c\u8d8a\u5927\u8d8a\u6709\u53ef\u80fd\u6269\u5c55\u5230\u65b0\u8bdd\u9898\u3002"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_image": {
+            "description": "\u5c06\u63d0\u793a\u8bed\u8f6c\u4e3a\u56fe\u50cf",
+            "fields": {
+                "config_entry": {
+                    "description": "\u7528\u4e8e\u6b64\u670d\u52a1\u7684\u914d\u7f6e\u6761\u76ee",
+                    "name": "\u914d\u7f6e\u6761\u76ee"
+                },
+                "prompt": {
+                    "description": "\u8981\u8f6c\u6362\u4e3a\u56fe\u50cf\u7684\u6587\u672c",
+                    "example": "\u4e00\u5f20\u72d7\u7684\u7167\u7247",
+                    "name": "\u63d0\u793a\u8bed"
+                },
+                "size": {
+                    "description": "\u8981\u751f\u6210\u7684\u56fe\u50cf\u7684\u5927\u5c0f",
+                    "name": "\u5927\u5c0f"
+                }
+            },
+            "name": "\u751f\u6210\u56fe\u50cf"
+        }
+    }
+}

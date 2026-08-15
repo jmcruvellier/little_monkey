@@ -1,0 +1,18 @@
+{
+    "issues": {
+        "deprecation_warning_characteristic": {
+            "description": "Parametern `state_characteristic` i statistikintegrationen kommer att kr\u00e4vas.\n\nV\u00e4nligen l\u00e4gg till `state_characteristic:{characteristic}` till konfigurationen av sensor `{entity}`f\u00f6r att beh\u00e5lla nuvarande beteendet.\n\nL\u00e4s dokumentationen f\u00f6r statistikintegrationen f\u00f6r mer information: https://www.home-assistant.io/integrations/statistics/",
+            "title": "Obligatorisk \"state_characteristic\" antas f\u00f6r en statistikenhet"
+        },
+        "deprecation_warning_size": {
+            "description": "Parametern `sampling_size`i statistikintegrationen har som standard var satt till 20 hittills, vilket kommer \u00e4ndras.\n\nV\u00e4nligen kontrollera konfigurationen f\u00f6r sensor `{entity}` och l\u00e4gg till passande gr\u00e4nser, t.ex. `sampling_size: 20` f\u00f6r att beh\u00e5lla nuvarande beteende.\nKonfigurationen av statistikintegrationen kommer att bli mer flexibel med version 2022.12.0 och acceptera antingen `sampling_size`eller `max_age`, eller b\u00e4gge inst\u00e4llningarna. Detta meddelande f\u00f6rbereder din konfiguration d\u00e5 detta \u00e4r en breaking change.\n\nL\u00e4s dokumentationen f\u00f6r statistikintegrationen f\u00f6r mer information: https://www.home-assistant.io/integrations/statistics/",
+            "title": "Implicit \"sampling_size\" antas f\u00f6r en statistikentitet"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Laddar om statistiksensorer fr\u00e5n YAML-konfigurationen.",
+            "name": "Ladda om"
+        }
+    }
+}

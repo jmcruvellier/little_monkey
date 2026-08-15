@@ -1,0 +1,26 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "invalid_auth": "Virheellinen todennus",
+            "unknown": "Odottamaton virhe"
+        },
+        "step": {
+            "auth": {
+                "data": {
+                    "password": "Salasana",
+                    "username": "K\u00e4ytt\u00e4j\u00e4tunnus"
+                },
+                "description": "IoTawatt-laite vaatii todennuksen. Anna k\u00e4ytt\u00e4j\u00e4tunnus ja salasana ja napsauta L\u00e4het\u00e4-painiketta."
+            },
+            "user": {
+                "data": {
+                    "host": "Palvelin"
+                },
+                "data_description": {
+                    "host": "IoTaWatt -laitteen is\u00e4nt\u00e4nimi tai IP-osoite."
+                }
+            }
+        }
+    }
+}

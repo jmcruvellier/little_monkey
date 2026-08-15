@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado",
+            "cannot_connect": "No se pudo conectar",
+            "id_exists": "El ID de la puerta de enlace ya existe",
+            "timeout_connect": "Tiempo de espera agotado mientras se establec\u00eda la conexi\u00f3n"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Ruta o URL",
+                    "id": "ID",
+                    "name": "Nombre"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "Temperatura del suelo",
+                    "read_precision": "Leer precisi\u00f3n",
+                    "set_precision": "Establecer precisi\u00f3n",
+                    "temporary_override_mode": "Modo de anulaci\u00f3n temporal de la consigna"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "Restablece la puerta de enlace OpenTherm.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                }
+            },
+            "name": "Restablecer puerta de enlace"
+        },
+        "set_central_heating_ovrd": {
+            "description": "Establece la opci\u00f3n de anulaci\u00f3n de la calefacci\u00f3n central en la puerta de enlace. Al anular el punto de ajuste de control (a trav\u00e9s de una llamada de servicio set_control_setpoint con un valor distinto de 0), la puerta de enlace activa autom\u00e1ticamente la anulaci\u00f3n de la calefacci\u00f3n central para comenzar a calentar. Este servicio se puede usar para controlar el estado de anulaci\u00f3n de la calefacci\u00f3n central. Para devolver el control de la calefacci\u00f3n central al termostato, llama al servicio set_control_setpoint con el valor de temperatura 0. Solo lo necesitar\u00e1s si est\u00e1s escribiendo tu propio termostato software.\n.",
+            "fields": {
+                "ch_override": {
+                    "description": "El valor booleano deseado para la anulaci\u00f3n de la calefacci\u00f3n central.",
+                    "name": "Anulaci\u00f3n de la calefacci\u00f3n central"
+                },
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                }
+            },
+            "name": "Establecer anulaci\u00f3n de calefacci\u00f3n central"
+        },
+        "set_clock": {
+            "description": "Ajusta el reloj y el d\u00eda de la semana en el termostato conectado.",
+            "fields": {
+                "date": {
+                    "description": "Fecha opcional de la que se extraer\u00e1 el d\u00eda de la semana. Predeterminado a hoy.",
+                    "name": "Fecha"
+                },
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "time": {
+                    "description": "Hora opcional en formato 24h que se proporcionar\u00e1 al termostato. Por defecto es la hora actual.",
+                    "name": "Hora"
+                }
+            },
+            "name": "Ajustar reloj"
+        },
+        "set_control_setpoint": {
+            "description": "Establece el valor de consigna de control de la calefacci\u00f3n central en la pasarela. S\u00f3lo necesitar\u00e1s esto si est\u00e1s escribiendo tu propio termostato de software.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "temperature": {
+                    "description": "El punto de consigna de la calefacci\u00f3n central para establecer en la pasarela. Se aceptan valores entre 0 y 90, pero no todas las calderas admiten este rango. Un valor de 0 deshabilita la anulaci\u00f3n del punto de ajuste de calefacci\u00f3n central.\n.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Establecer consigna de control"
+        },
+        "set_gpio_mode": {
+            "description": "Cambia la funci\u00f3n de los pines GPIO de la pasarela.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "id": {
+                    "description": "El ID del pin GPIO.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Modo a configurar en el pin GPIO. Los valores del 0 al 6 se aceptan para ambos GPIO, el 7 solo se acepta para el GPIO \"B\". Consulta https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes para obtener una explicaci\u00f3n de los valores.\n.",
+                    "name": "Modo"
+                }
+            },
+            "name": "Establecer modo gpio"
+        },
+        "set_hot_water_ovrd": {
+            "description": "Establece la opci\u00f3n de activaci\u00f3n del agua caliente sanitaria en la pasarela.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Controla la opci\u00f3n de activaci\u00f3n del agua caliente sanitaria. Si la caldera se ha configurado para permitir que la unidad de ambiente controle cu\u00e1ndo mantener una peque\u00f1a cantidad de agua precalentada, este comando puede influir en eso. El valor debe ser 0 o 1 para habilitar la anulaci\u00f3n en estado apagado o encendido, o \"A\" para deshabilitar la anulaci\u00f3n.\n.",
+                    "name": "Anulaci\u00f3n de agua caliente sanitaria"
+                },
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                }
+            },
+            "name": "Establecer anulaci\u00f3n de agua caliente"
+        },
+        "set_hot_water_setpoint": {
+            "description": "Establece la consigna de agua caliente sanitaria en la pasarela.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "temperature": {
+                    "description": "El valor de consigna de agua caliente sanitaria a establecer en la pasarela. No todas las calderas admiten esta funci\u00f3n. Se aceptan valores entre 0 y 90, pero no todas las calderas admiten este rango. Comprueba los valores de los sensores slave_dhw_min_setp y slave_dhw_max_setp para ver el rango admitido en tu caldera.\n.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Ajustar punto de consigna de agua caliente"
+        },
+        "set_led_mode": {
+            "description": "Cambia la funci\u00f3n de los LED de la puerta de enlace.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "id": {
+                    "description": "El ID del LED.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "La funci\u00f3n a asignar al LED. Consulta https://www.home-assistant.io/integrations/opentherm_gw/#led-modes para obtener una explicaci\u00f3n de los valores.\n.",
+                    "name": "Modo"
+                }
+            },
+            "name": "Ajustar modo LED"
+        },
+        "set_max_modulation": {
+            "description": "Anula el nivel de modulaci\u00f3n relativo m\u00e1ximo. Solo necesitar\u00e1s esto si est\u00e1s escribiendo tu propio termostato software.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "level": {
+                    "description": "El nivel de modulaci\u00f3n que se proporcionar\u00e1 a la puerta de enlace. Proporciona un valor de -1 para borrar la anulaci\u00f3n y reenviar el valor del termostato nuevamente.\n.",
+                    "name": "Nivel"
+                }
+            },
+            "name": "Ajustar modulaci\u00f3n m\u00e1xima"
+        },
+        "set_outside_temperature": {
+            "description": "Proporciona una temperatura exterior al termostato. Si tu termostato no puede mostrar una temperatura exterior y no es compatible con OTC (Correcci\u00f3n de temperatura exterior), esto no tiene ning\u00fan efecto.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "temperature": {
+                    "description": "La temperatura a proporcionar al termostato. Se aceptar\u00e1n valores entre -40,0 y 64,0, pero no todos los termostatos pueden mostrar el rango completo. Cualquier valor por encima de 64,0 borrar\u00e1 un valor previamente configurado (sugerencia: 99)\n.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Ajustar la temperatura exterior"
+        },
+        "set_setback_temperature": {
+            "description": "Configura la temperatura de retorno que se utilizar\u00e1 con la funci\u00f3n GPIO de modo ausente.",
+            "fields": {
+                "gateway_id": {
+                    "description": "El gateway_id de OpenTherm Gateway.",
+                    "name": "ID de la puerta de enlace"
+                },
+                "temperature": {
+                    "description": "La temperatura de retorno para configurar en la puerta de enlace.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Ajustar temperatura de retorno"
+        }
+    }
+}

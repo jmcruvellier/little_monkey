@@ -1,0 +1,8 @@
+{
+    "services": {
+        "speedtest": {
+            "description": "\u7acb\u5373\u4f7f\u7528 Fast.com \u6267\u884c\u901f\u5ea6\u6d4b\u8bd5\u3002",
+            "name": "\u901f\u5ea6\u6d4b\u8bd5"
+        }
+    }
+}

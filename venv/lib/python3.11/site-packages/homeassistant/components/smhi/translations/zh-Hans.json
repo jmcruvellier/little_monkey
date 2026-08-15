@@ -1,0 +1,19 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "wrong_location": "\u4ec5\u9650\u745e\u5178\u7684\u4f4d\u7f6e"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "\u7eac\u5ea6",
+                    "longitude": "\u7ecf\u5ea6"
+                },
+                "title": "\u5728\u745e\u5178\u7684\u4f4d\u7f6e"
+            }
+        }
+    }
+}

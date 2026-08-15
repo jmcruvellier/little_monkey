@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "Lataa tiedoston latauspaikkaan.",
+            "fields": {
+                "filename": {
+                    "description": "M\u00e4\u00e4rit\u00e4 tiedostonimi.",
+                    "name": "Tiedoston nimi"
+                },
+                "overwrite": {
+                    "description": "Korvataanko tiedosto vai ei.",
+                    "name": "Ylikirjoita"
+                },
+                "subdir": {
+                    "description": "Lataa alihakemistoon.",
+                    "name": "Alihakemisto"
+                },
+                "url": {
+                    "description": "Ladattavan tiedoston URL-osoite.",
+                    "name": "URL-osoite"
+                }
+            },
+            "name": "Lataa tiedosto"
+        }
+    }
+}

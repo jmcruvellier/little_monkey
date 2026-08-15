@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "switch": {
+            "child_lock": {
+                "name": "Barnesikring"
+            }
+        }
+    }
+}

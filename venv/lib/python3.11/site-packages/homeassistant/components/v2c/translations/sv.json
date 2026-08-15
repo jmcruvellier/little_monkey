@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "V\u00e4rd"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "Laddar"
+            },
+            "connected": {
+                "name": "Ansluten"
+            },
+            "ready": {
+                "name": "Redo"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intensitet"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "Laddningsenergi"
+            },
+            "charge_power": {
+                "name": "Laddeffekt"
+            },
+            "charge_time": {
+                "name": "Laddningstid"
+            },
+            "fv_power": {
+                "name": "Solel effekt"
+            },
+            "house_power": {
+                "name": "Hus effekt"
+            }
+        },
+        "switch": {
+            "paused": {
+                "name": "Pausa sessionen"
+            }
+        }
+    }
+}

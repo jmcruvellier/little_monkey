@@ -1,0 +1,20 @@
+{
+    "config": {
+        "error": {
+            "connection_error": "Tidak dapat terhubung ke pengontrol.",
+            "duplicated_controller_id": "Nama pengontrol sudah digunakan.",
+            "duplicated_host_port": "Hos dan porta yang ditetapkan sudah dikonfigurasi."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "name": "Nama pengontrol"
+                },
+                "data_description": {
+                    "name": "Nama unik yang mengidentifikasi pengontrol Lutron Homeworks"
+                },
+                "description": "Tambah pengontrol Lutron Homeworks"
+            }
+        }
+    }
+}

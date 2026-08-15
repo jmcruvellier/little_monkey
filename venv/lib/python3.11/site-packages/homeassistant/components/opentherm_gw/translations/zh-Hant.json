@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "\u88dd\u7f6e\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210",
+            "cannot_connect": "\u9023\u7dda\u5931\u6557",
+            "id_exists": "\u9598\u9053\u5668 ID \u5df2\u5b58\u5728",
+            "timeout_connect": "\u5efa\u7acb\u9023\u7dda\u903e\u6642"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "\u8def\u5f91\u6216 URL",
+                    "id": "ID",
+                    "name": "\u540d\u7a31"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "\u6a13\u5c64\u6eab\u5ea6",
+                    "read_precision": "\u8b80\u53d6\u7cbe\u6e96\u5ea6",
+                    "set_precision": "\u8a2d\u5b9a\u7cbe\u6e96\u5ea6",
+                    "temporary_override_mode": "\u81e8\u6642 Setpoint \u8986\u84cb\u6a21\u5f0f"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "\u91cd\u7f6e OpenTherm \u9598\u9053\u5668\u3002",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                }
+            },
+            "name": "\u91cd\u7f6e\u9598\u9053\u5668"
+        },
+        "set_central_heating_ovrd": {
+            "description": "\u8a2d\u5b9a\u9598\u9053\u5668\u4e0a\u4e2d\u592e\u52a0\u71b1\u8986\u84cb\u9078\u9805\u3002\u7576\u8986\u84cb\u63a7\u5236\u8a2d\u5b9a\u9ede\uff08\u900f\u904eset_control_setpoint \u6578\u503c\u547c\u53eb\uff0c\u5176\u503c\u4e0d\u70ba0\uff09\u3002\u9598\u9053\u5668\u6703\u81ea\u52d5\u555f\u52d5\u4e2d\u592e\u52a0\u71b1\u8986\u84cb\u4ee5\u958b\u59cb\u52a0\u71b1\u3002\u7136\u5f8c\u53ef\u4ee5\u4f7f\u7528\u6b64\u670d\u52d9\u4f86\u63a7\u5236\u4e2d\u592e\u52a0\u71b1\u8986\u84cb\u72c0\u614b\u3002\u8981\u5c07\u4e2d\u592e\u52a0\u71b1\u7684\u63a7\u5236\u6b0a\u8fd4\u56de\u7d66\u6eab\u63a7\u5668\uff0c\u8acb\u4f7f\u7528\u6eab\u5ea6\u6578\u503c 0 \u547c\u53eb set_control_setpoint \u670d\u52d9\u3002\u5982\u679c\u60a8\u6b63\u5728\u7de8\u5beb\u81ea\u5df1\u7684\u8edf\u9ad4\u6eab\u63a7\u5668\uff0c\u5c07\u53ea\u9700\u8981\u9019\u500b\u3002",
+            "fields": {
+                "ch_override": {
+                    "description": "\u4e2d\u592e\u52a0\u71b1\u8986\u84cb\u6240\u9700\u5e03\u6797\u503c\u3002",
+                    "name": "\u4e2d\u592e\u52a0\u71b1\u8986\u84cb"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u4e2d\u592e\u52a0\u71b1\u8986\u84cb"
+        },
+        "set_clock": {
+            "description": "\u8a2d\u5b9a\u9023\u7dda\u6046\u6eab\u5668\u7684\u6642\u9418\u548c\u4e00\u5468\u7684\u65e5\u671f\u3002",
+            "fields": {
+                "date": {
+                    "description": "\u53ef\u9078\u65e5\u671f\uff0c\u5c07\u5f9e\u4e2d\u63d0\u53d6\u4e00\u5468\u4e2d\u7684\u67d0\u4e00\u5929\u3002\u9810\u8a2d\u503c\u70ba\u4eca\u5929\u3002",
+                    "name": "\u65e5\u671f"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "time": {
+                    "description": "\u53ef\u9078\u6642\u9593\uff0c\u4ee5 24 \u5c0f\u6642\u683c\u5f0f\u63d0\u4f9b\u7d66\u6046\u6eab\u5668\u3002\u3002\u9810\u8a2d\u70ba\u7576\u524d\u7684\u6642\u9593\u3002",
+                    "name": "\u6642\u9593"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u6642\u937e"
+        },
+        "set_control_setpoint": {
+            "description": "\u5728\u9598\u9053\u5668\u4e0a\u8a2d\u5b9a\u4e2d\u592e\u52a0\u71b1\u63a7\u5236\u8a2d\u5b9a\u9ede\u8986\u84cb\u3002\u5982\u679c\u60a8\u6b63\u5728\u7de8\u5beb\u81ea\u5df1\u7684\u8edf\u9ad4\u6eab\u63a7\u5668\uff0c\u5247\u53ea\u9700\u8981\u9019\u500b\u3002\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "temperature": {
+                    "description": "\u5728\u9598\u9053\u5668\u4e0a\u8a2d\u5b9a\u4e2d\u592e\u52a0\u71b1\u8a2d\u5b9a\u9ede\u3002\u6578\u503c\u4ecb\u65bc 0 \u5230 90 \u4e4b\u9593\u3001\u4f46\u4e26\u975e\u6240\u6709\u934b\u7210\u90fd\u652f\u6301\u6b64\u7bc4\u570d\u3002\u6578\u503c\u70ba 0 \u5247\u7981\u7528\u4e2d\u592e\u52a0\u71b1\u8a2d\u5b9a\u9ede\u8986\u84cb\u3002\n.",
+                    "name": "\u6eab\u5ea6"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u63a7\u5236\u8a2d\u5b9a\u9ede"
+        },
+        "set_gpio_mode": {
+            "description": "\u8b8a\u66f4\u9598\u9053\u5668 GPIO PIN \u529f\u80fd\u3002",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "id": {
+                    "description": "GPIO \u8173 ID\u3002",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "GPIO \u91dd\u8173\u8a2d\u5b9a\u6a21\u5f0f\u3002GPIO \"B\" \u63a5\u53d7 0 \u5230 7 \u7684\u6578\u503c\u3001\u5176\u4ed6 GPIO \u5247\u63a5\u53d7 0 \u5230 6 \u7684\u6578\u503c\u3002\u8acb\u53c3\u95b1 https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes \u4ee5\u53d6\u5f97\u6578\u503c\u89e3\u91cb\u3002\n.",
+                    "name": "\u6a21\u5f0f"
+                }
+            },
+            "name": "\u8a2d\u7f6e GPIO \u6a21\u5f0f"
+        },
+        "set_hot_water_ovrd": {
+            "description": "\u8a2d\u5b9a\u9598\u9053\u5668\u570b\u5167\u71b1\u6c34\u555f\u7528\u9078\u9805\u3002",
+            "fields": {
+                "dhw_override": {
+                    "description": "\u63a7\u5236\u5bb6\u7528\u71b1\u6c34\u555f\u7528\u9078\u9805\u3002\u5982\u679c\u934b\u7210\u5df2\u8a2d\u5b9a\u70ba\u4ee5\u623f\u9593\u8a2d\u5099\u63a7\u5236\u4f55\u6642\u4fdd\u6301\u5c11\u91cf\u6c34\u9810\u71b1\u3001\u5247\u6b64\u547d\u4ee4\u53ef\u80fd\u5f71\u97ff\u8a72\u72c0\u614b\u3002\u8a2d\u503c\u61c9\u70ba 0 \u6216 1\u3001\u4ee5\u5728\u95dc\u9589\u6216\u958b\u555f\u72c0\u614b\u4e0b\u555f\u7528\u8986\u84cb\uff0c\u6216\u8005\u70ba \u201cA\u201d \u4ee5\u7981\u7528\u8986\u84cb\u3002\n.",
+                    "name": "\u5bb6\u7528\u71b1\u6c34\u8986\u84cb"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u71b1\u6c34\u8986\u84cb"
+        },
+        "set_hot_water_setpoint": {
+            "description": "\u8a2d\u5b9a\u9598\u9053\u5668\u4e0a\u5bb6\u7528\u71b1\u6c34\u8a2d\u5b9a\u9ede\u3002",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "temperature": {
+                    "description": "\u5728\u9598\u9053\u5668\u4e0a\u8a2d\u5b9a\u5bb6\u7528\u71b1\u6c34\u8a2d\u5b9a\u9ede\u3002\u4e26\u975e\u6240\u6709\u934b\u7210\u90fd\u652f\u6301\u6b64\u529f\u80fd\u3002\u6578\u503c\u4ecb\u65bc 0 \u5230 90 \u4e4b\u9593\u3001\u4f46\u4e26\u975e\u6240\u6709\u934b\u7210\u90fd\u652f\u6301\u6b64\u7bc4\u570d\u3002\u8acb\u6aa2\u67e5 slave_dhw_min_setp \u548c slave_dhw_max_setp \u611f\u6e2c\u5668\u6578\u503c\u3001\u4ee5\u4e86\u89e3\u934b\u7210\u6240\u652f\u63f4\u7684\u7bc4\u570d\u3002\n.",
+                    "name": "\u6eab\u5ea6"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u71b1\u6c34\u8a2d\u5b9a\u9ede"
+        },
+        "set_led_mode": {
+            "description": "\u8b8a\u66f4\u9598\u9053\u5668 LED \u529f\u80fd\u3002",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "id": {
+                    "description": "LED ID\u3002",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "\u6307\u5b9a LED \u529f\u80fd\u3002\u8acb\u53c3\u95b1 https://www.home-assistant.io/integrations/opentherm_gw/#led-modes \u4ee5\u4ee5\u53d6\u5f97\u6578\u503c\u89e3\u91cb\u3002\n.",
+                    "name": "\u6a21\u5f0f"
+                }
+            },
+            "name": "\u8a2d\u5b9a LED \u6a21\u5f0f"
+        },
+        "set_max_modulation": {
+            "description": "\u8986\u84cb\u6700\u5927\u76f8\u5c0d\u8abf\u8b8a\u7b49\u7d1a\u3002\u5982\u679c\u60a8\u6b63\u5728\u7de8\u5beb\u81ea\u5df1\u7684\u8edf\u9ad4\u6eab\u63a7\u5668\u3001\u5247\u53ea\u9700\u9019\u500b\u3002",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "level": {
+                    "description": "\u63d0\u4f9b\u9598\u9053\u5668\u7684\u8abf\u8b8a\u7b49\u7d1a\u3002\u63d0\u4f9b -1 \u6578\u503c\u4ee5\u6e05\u9664\u8986\u84cb\u3001\u4e26\u518d\u5f9e\u6eab\u63a7\u5668\u8f49\u767c\u6578\u503c\u3002\n.",
+                    "name": "\u7b49\u7d1a"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u6700\u9ad8\u8abf\u8b8a"
+        },
+        "set_outside_temperature": {
+            "description": "\u70ba\u6eab\u63a7\u5668\u63d0\u4f9b\u6236\u5916\u6eab\u5ea6\u3002\u5982\u679c\u6eab\u63a7\u5668\u7121\u6cd5\u986f\u793a\u6236\u5916\u6eab\u5ea6\u3001\u4e14\u4e0d\u652f\u63f4 OTC\uff08\u6236\u5916\u6eab\u5ea6\u6821\u6b63\uff09\u3001\u5247\u7121\u6cd5\u4f7f\u7528\u504f\u79fb\u529f\u80fd\u3002\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "temperature": {
+                    "description": "\u63d0\u4f9b\u7d66\u6eab\u63a7\u5668\u7684\u6eab\u5ea6\u3002\u6578\u503c\u4ecb\u65bc -40.0 \u5230 64.0 \u4e4b\u9593\u3001\u4f46\u4e26\u975e\u6240\u6709\u6eab\u63a7\u5668\u90fd\u80fd\u986f\u793a\u5168\u90e8\u7bc4\u570d\u3002\u8d85\u904e 64. 0 \u7684\u4efb\u4f55\u6578\u503c\u90fd\u5c07\u6e05\u9664\u5148\u524d\u8a2d\u5b9a\u6578\u81f3\uff08\u5efa\u8b70\uff1a99\uff09\u3002\n.",
+                    "name": "\u6eab\u5ea6"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u6236\u5916\u6eab\u5ea6"
+        },
+        "set_setback_temperature": {
+            "description": "\u8a2d\u5b9a GPIO \u96e2\u5bb6\u6a21\u5f0f\u529f\u80fd\u6240\u4f7f\u7528\u4e4b\u56de\u9000\u6eab\u5ea6\u3002",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm \u9598\u9053\u5668  gateway_id\u3002",
+                    "name": "\u9598\u9053 ID"
+                },
+                "temperature": {
+                    "description": "\u9598\u9053\u5668\u4e0a\u8a2d\u5b9a\u7684\u56de\u9000\u6eab\u5ea6\u3002",
+                    "name": "\u6eab\u5ea6"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u56de\u9000\u6eab\u5ea6"
+        }
+    }
+}

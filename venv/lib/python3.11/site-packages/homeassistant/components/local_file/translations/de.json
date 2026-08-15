@@ -1,0 +1,18 @@
+{
+    "services": {
+        "update_file_path": {
+            "description": "Verwende diesen Dienst, um die von der Kamera angezeigte Datei zu \u00e4ndern.",
+            "fields": {
+                "entity_id": {
+                    "description": "Name der entity_id der zu aktualisierenden Kamera.",
+                    "name": "Entit\u00e4t"
+                },
+                "file_path": {
+                    "description": "Der vollst\u00e4ndige Pfad zur neuen Bilddatei, die angezeigt werden soll.",
+                    "name": "Dateipfad"
+                }
+            },
+            "name": "Aktualisiert den Dateipfad"
+        }
+    }
+}

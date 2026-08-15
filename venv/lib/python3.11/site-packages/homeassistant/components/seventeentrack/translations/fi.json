@@ -1,0 +1,40 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Palvelu on jo m\u00e4\u00e4ritetty"
+        },
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "invalid_auth": "Virheellinen todennus"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Salasana",
+                    "username": "K\u00e4ytt\u00e4j\u00e4tunnus"
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue_cannot_connect": {
+            "description": "17Trackin konfigurointi YAML:n avulla poistetaan, mutta YAML-konfiguraation tuonnissa tapahtui yhteysvirhe.\n\nAsioita, joita voit kokeilla:\nVarmista, ett\u00e4 kotiavustajasi p\u00e4\u00e4see verkkoon.\n\nK\u00e4ynnist\u00e4 sitten Home Assistant uudelleen ja yrit\u00e4 tuoda t\u00e4m\u00e4 integrointi uudelleen.\n\nVaihtoehtoisesti voit poistaa 17Track-konfiguraation kokonaan YAML-konfiguraatiostasi, k\u00e4ynnist\u00e4\u00e4 Home Assistantin uudelleen ja lis\u00e4t\u00e4 17Track-integraation manuaalisesti.",
+            "title": "17Trackin YAML-konfiguraation tuonti ei pysty muodostamaan yhteytt\u00e4 palvelimeen"
+        },
+        "deprecated_yaml_import_issue_invalid_credentials": {
+            "description": "17Trackin konfigurointi YAML:n avulla poistetaan, mutta olemassa olevan konfiguraation tuonnin yhteydess\u00e4 annettiin virheellisi\u00e4 tunnistetietoja.\nAsennusta ei jatketa.\n\nTarkista, ett\u00e4 17Trackin tunnistetiedot ovat oikein, ja k\u00e4ynnist\u00e4 Home Assistant uudelleen yritt\u00e4\u00e4ksesi tuontia uudelleen.\n\nVaihtoehtoisesti voit poistaa 17Track-konfiguraation kokonaan YAML-konfiguraatiostasi, k\u00e4ynnist\u00e4\u00e4 Home Assistantin uudelleen ja lis\u00e4t\u00e4 17Track-integraation manuaalisesti.",
+            "title": "17Trackin YAML-konfiguraation tuontipyynt\u00f6 ep\u00e4onnistui virheellisten valtuustietojen vuoksi."
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "show_archived": "Pit\u00e4isik\u00f6 arkistoituja paketteja varten luoda antureita",
+                    "show_delivered": "Pit\u00e4isik\u00f6 toimitetuille paketeille luoda anturit"
+                },
+                "description": "M\u00e4\u00e4rit\u00e4 yleiset asetukset"
+            }
+        }
+    }
+}

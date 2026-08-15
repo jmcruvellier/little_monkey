@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "link_local_address": "\u4e0d\u652f\u6301\u672c\u5730\u94fe\u8def\u5730\u5740",
+            "not_doorbird_device": "\u8be5\u8bbe\u5907\u4e0d\u662f DoorBird"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "{name} ({host})",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "name": "\u8bbe\u5907\u540d\u79f0",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "events": "\u4ee5\u9017\u53f7\u5206\u9694\u7684\u4e8b\u4ef6\u5217\u8868\u3002"
+                },
+                "data_description": {
+                    "events": "\u6dfb\u52a0\u60a8\u60f3\u8981\u8ddf\u8e2a\u7684\u4e8b\u4ef6\u540d\u79f0\uff08\u9017\u53f7\u5206\u9694\uff09\u3002\u5728\u6b64\u5904\u8f93\u5165\u5b83\u4eec\u540e\uff0c\u4f7f\u7528 DoorBird \u5e94\u7528\u7a0b\u5e8f\u5c06\u5b83\u4eec\u5206\u914d\u7ed9\u7279\u5b9a\u4e8b\u4ef6\u3002 \n\n\u793a\u4f8b\uff1asomebody_pressed_the_button, motion"
+                }
+            }
+        }
+    }
+}

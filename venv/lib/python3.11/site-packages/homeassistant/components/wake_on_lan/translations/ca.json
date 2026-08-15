@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "La configuraci\u00f3 de Wake on Lan mitjan\u00e7ant YAML s'ha mogut a una integraci\u00f3.\n\nLa configuraci\u00f3 YAML actual continuar\u00e0 funcionant durant les dues pr\u00f2ximes versions de Home Assistant.\n\nMigra la teva configuraci\u00f3 YAML a la nova integraci\u00f3, consulta la documentaci\u00f3 per saber com fer-ho.",
+            "title": "La configuraci\u00f3 YAML de Wake on Lan s'ha mogut"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Envia un 'paquet m\u00e0gic' per despertar un dispositiu que admeti 'Wake-On-LAN'.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "IP de difusi\u00f3 on enviar el paquet m\u00e0gic.",
+                    "name": "Adre\u00e7a de difusi\u00f3"
+                },
+                "broadcast_port": {
+                    "description": "Port on enviar el paquet m\u00e0gic.",
+                    "name": "Port de difusi\u00f3"
+                },
+                "mac": {
+                    "description": "Adre\u00e7a MAC del dispositiu a despertar.",
+                    "name": "Adre\u00e7a MAC"
+                }
+            },
+            "name": "Envia paquet m\u00e0gic"
+        }
+    }
+}

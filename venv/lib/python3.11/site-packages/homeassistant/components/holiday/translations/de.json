@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Bereits konfiguriert. Es ist nur eine einzige Konfiguration f\u00fcr die Kombination Land/Provinz m\u00f6glich."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Provinz"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Land"
+                }
+            }
+        }
+    },
+    "title": "Feiertag"
+}

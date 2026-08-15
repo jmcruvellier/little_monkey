@@ -1,0 +1,29 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "model": "\u578b\u53f7",
+                    "prompt": "\u63d0\u793a\u6a21\u677f",
+                    "temperature": "\u968f\u673a\u6027\uff0c\u503c\u8d8a\u5927\u56de\u590d\u8d8a\u968f\u673a\u3002",
+                    "top_k": "\u5176\u5b83\u9ad8\u5206tokens\u53ef\u80fd\u88ab\u9009\u4e2d\uff0c\u63d0\u9ad8\u751f\u6210\u7684\u8d28\u91cf\u3002",
+                    "top_p": "\u8bdd\u9898\u65b0\u9c9c\u5ea6"
+                }
+            }
+        }
+    }
+}

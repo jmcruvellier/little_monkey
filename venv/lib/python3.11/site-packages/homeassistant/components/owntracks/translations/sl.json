@@ -1,0 +1,16 @@
+{
+    "config": {
+        "abort": {
+            "cloud_not_connected": "Ni povezan z Home Assistant Cloud."
+        },
+        "create_entry": {
+            "default": "\n\n V sistemu Android odprite [aplikacijo OwnTracks]( {android_url} ), pojdite na Nastavitve > Povezava. Spremenite naslednje nastavitve:\n - Na\u010din: HTTP\n - Gostitelj: {webhook_url}\n - Identifikacija:\n - Uporabni\u0161ko ime: `' <Your name> '`\n - ID naprave: `` <Your device name> `` \n\n V sistemu iOS odprite [aplikacijo OwnTracks]( {ios_url} ), tapnite ikono (i) zgoraj levo > Nastavitve. Spremenite naslednje nastavitve:\n - Na\u010din: HTTP\n \u2013 URL: {webhook_url}\n - Vklopite preverjanje pristnosti\n - ID uporabnika: `' <Your name> '` \n\n {secret}\n\n Za ve\u010d informacij glejte [dokumentacijo]( {docs_url} )."
+        },
+        "step": {
+            "user": {
+                "description": "Ali ste prepri\u010dani, da \u017eelite nastaviti Owntracks?",
+                "title": "Nastavite OwnTracks"
+            }
+        }
+    }
+}

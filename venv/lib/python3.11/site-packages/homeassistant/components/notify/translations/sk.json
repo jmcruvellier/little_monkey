@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "Odo\u0161le notifika\u010dn\u00fa spr\u00e1vu vybran\u00fdm cie\u013eom.",
+            "fields": {
+                "data": {
+                    "description": "Niektor\u00e9 integr\u00e1cie poskytuj\u00fa roz\u0161\u00edren\u00e9 funkcie. Inform\u00e1cie o tom, ako pou\u017e\u00edva\u0165 _data_, n\u00e1jdete v dokument\u00e1cii k integr\u00e1cii.",
+                    "name": "\u00dadaje"
+                },
+                "message": {
+                    "description": "Telo spr\u00e1vy ozn\u00e1menia.",
+                    "name": "Spr\u00e1va"
+                },
+                "target": {
+                    "description": "Niektor\u00e9 integr\u00e1cie umo\u017e\u0148uj\u00fa ur\u010di\u0165 ciele, ktor\u00e9 dostan\u00fa ozn\u00e1menie. \u010eal\u0161ie inform\u00e1cie n\u00e1jdete v dokument\u00e1cii k integr\u00e1cii.",
+                    "name": "Cie\u013e"
+                },
+                "title": {
+                    "description": "N\u00e1zov ozn\u00e1menia.",
+                    "name": "N\u00e1zov"
+                }
+            },
+            "name": "Odosla\u0165 ozn\u00e1menie"
+        },
+        "persistent_notification": {
+            "description": "Odo\u0161le upozornenie, ktor\u00e9 je vidite\u013en\u00e9 na paneli **Upozornenia**.",
+            "fields": {
+                "data": {
+                    "description": "Niektor\u00e9 integr\u00e1cie poskytuj\u00fa roz\u0161\u00edren\u00e9 funkcie. Inform\u00e1cie o tom, ako pou\u017e\u00edva\u0165 _data_, n\u00e1jdete v dokument\u00e1cii k integr\u00e1cii.",
+                    "name": "\u00dadaje"
+                },
+                "message": {
+                    "description": "Telo spr\u00e1vy ozn\u00e1menia.",
+                    "name": "Spr\u00e1va"
+                },
+                "title": {
+                    "description": "N\u00e1zov ozn\u00e1menia.",
+                    "name": "N\u00e1zov"
+                }
+            },
+            "name": "Odoslanie trval\u00e9ho ozn\u00e1menia"
+        }
+    },
+    "title": "Upozornenie"
+}

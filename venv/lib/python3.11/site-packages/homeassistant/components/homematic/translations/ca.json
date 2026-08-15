@@ -1,0 +1,70 @@
+{
+    "services": {
+        "put_paramset": {
+            "fields": {
+                "address": {
+                    "description": "Adre\u00e7a del dispositiu Homematic.",
+                    "name": "Adre\u00e7a"
+                },
+                "interface": {
+                    "description": "Nom de les interf\u00edcies de la configuraci\u00f3.",
+                    "name": "Interf\u00edcie"
+                },
+                "paramset": {
+                    "description": "Diccionari de par\u00e0metres ('paramset').",
+                    "name": "Par\u00e0metre ('paramset`)"
+                },
+                "paramset_key": {
+                    "description": "Argument paramset_key per a putParamset.",
+                    "name": "Clau de par\u00e0metre ('paramset`)"
+                },
+                "rx_mode": {
+                    "description": "Mode de recepci\u00f3 utilitzat.",
+                    "name": "Mode RX"
+                }
+            },
+            "name": "Posa par\u00e0metre ('paramset')"
+        },
+        "reconnect": {
+            "description": "Es torna a connectar a tots els concentradors Homematic.",
+            "name": "Reconnecta"
+        },
+        "set_device_value": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "channel": {
+                    "name": "Canal"
+                },
+                "interface": {
+                    "name": "Interf\u00edcie"
+                },
+                "value": {
+                    "name": "Valor"
+                },
+                "value_type": {
+                    "description": "Tipus del nou valor.",
+                    "name": "Tipus de valor"
+                }
+            }
+        },
+        "set_install_mode": {
+            "fields": {
+                "mode": {
+                    "name": "Mode"
+                }
+            }
+        },
+        "set_variable_value": {
+            "fields": {
+                "entity_id": {
+                    "name": "Entitat"
+                },
+                "name": {
+                    "name": "Nom"
+                }
+            }
+        }
+    }
+}

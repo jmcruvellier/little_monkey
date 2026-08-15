@@ -1,0 +1,17 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "\u03a0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03b1",
+            "state": {
+                "off": "\u0391\u03bd\u03b5\u03bd\u03b5\u03c1\u03b3\u03cc",
+                "on": "\u0395\u03bd\u03b5\u03c1\u03b3\u03cc"
+            },
+            "state_attributes": {
+                "next_event": {
+                    "name": "\u0395\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf \u03c3\u03c5\u03bc\u03b2\u03ac\u03bd"
+                }
+            }
+        }
+    },
+    "title": "\u03a0\u03c1\u03cc\u03b3\u03c1\u03b1\u03bc\u03bc\u03b1"
+}

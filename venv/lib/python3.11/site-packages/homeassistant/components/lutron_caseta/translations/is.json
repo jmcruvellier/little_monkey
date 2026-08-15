@@ -1,0 +1,8 @@
+{
+    "device_automation": {
+        "trigger_subtype": {
+            "off": "Sl\u00f6kkt",
+            "on": "Kveikt"
+        }
+    }
+}

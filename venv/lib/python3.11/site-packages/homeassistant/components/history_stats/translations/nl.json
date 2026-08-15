@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Herlaadt historische statistieken sensoren van de YAML configuratie.",
+            "name": "Herladen"
+        }
+    }
+}

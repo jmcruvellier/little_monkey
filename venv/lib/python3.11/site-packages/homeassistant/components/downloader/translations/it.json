@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "Scarica un file nel percorso di download.",
+            "fields": {
+                "filename": {
+                    "description": "Determina il nome del file.",
+                    "name": "Nome del file"
+                },
+                "overwrite": {
+                    "description": "Se sovrascrivere o meno il file.",
+                    "name": "Sovrascrivi"
+                },
+                "subdir": {
+                    "description": "Scarica nella sottodirectory.",
+                    "name": "Sottodirectory"
+                },
+                "url": {
+                    "description": "L'URL del file da scaricare.",
+                    "name": "URL"
+                }
+            },
+            "name": "Scarica il file"
+        }
+    }
+}

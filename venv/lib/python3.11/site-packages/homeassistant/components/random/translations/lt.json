@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "\u012erenginio klas\u0117",
+                    "name": "Vardas"
+                },
+                "title": "Atsitiktinis dvejetainis jutiklis"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "\u012erenginio klas\u0117",
+                    "maximum": "Maksimalus",
+                    "minimum": "Minimumas",
+                    "name": "Vardas",
+                    "unit_of_measurement": "Matavimo vienetas"
+                },
+                "title": "Atsitiktinis jutiklis"
+            },
+            "user": {
+                "description": "\u0160is pagalbininkas leid\u017eia sukurti pagalbinink\u0105, kuris skleid\u017eia atsitiktin\u0119 reik\u0161m\u0119.",
+                "menu_options": {
+                    "binary_sensor": "Atsitiktinis dvejetainis jutiklis",
+                    "sensor": "Atsitiktinis jutiklis"
+                },
+                "title": "Atsitiktinis pagalbininkas"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "\u0160is pagalbininkas neturi joki\u0173 pasirinkim\u0173.",
+                "title": "Atsitiktinis dvejetainis jutiklis"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "\u012erenginio klas\u0117",
+                    "maximum": "Maksimalus",
+                    "minimum": "Minimumas",
+                    "unit_of_measurement": "Matavimo vienetas"
+                },
+                "title": "Atsitiktinis jutiklis"
+            }
+        }
+    }
+}

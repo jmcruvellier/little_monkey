@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Herlaadt generieke thermostaten vanuit de YAML configuratie.",
+            "name": "Herladen"
+        }
+    }
+}

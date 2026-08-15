@@ -1,0 +1,48 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "fingerprint": "c\u00f3digo de impress\u00e3o digital recebido"
+        }
+    },
+    "services": {
+        "dyn_text": {
+            "fields": {
+                "address": {
+                    "description": "Endere\u00e7o do m\u00f3dulo."
+                }
+            }
+        },
+        "led": {
+            "fields": {
+                "address": {
+                    "description": "Endere\u00e7o do m\u00f3dulo."
+                }
+            }
+        },
+        "lock_keys": {
+            "fields": {
+                "address": {
+                    "description": "Endere\u00e7o do m\u00f3dulo."
+                },
+                "time": {
+                    "name": "Hora"
+                }
+            }
+        },
+        "output_abs": {
+            "fields": {
+                "address": {
+                    "description": "Endere\u00e7o do m\u00f3dulo."
+                }
+            }
+        },
+        "pck": {
+            "fields": {
+                "address": {
+                    "description": "Endere\u00e7o do m\u00f3dulo.",
+                    "name": "Endere\u00e7o"
+                }
+            }
+        }
+    }
+}

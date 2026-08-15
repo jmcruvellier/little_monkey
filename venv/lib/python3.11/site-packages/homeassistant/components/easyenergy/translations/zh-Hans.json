@@ -1,0 +1,96 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "step": {
+            "user": {
+                "description": "\u60a8\u8981\u5f00\u59cb\u8bbe\u7f6e\u5417\uff1f"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "average_price": {
+                "name": "\u5e73\u5747 - \u4eca\u5929"
+            },
+            "current_hour_price": {
+                "name": "\u5f53\u524d\u65f6\u95f4"
+            },
+            "highest_price_time": {
+                "name": "\u6700\u9ad8\u4ef7\u65f6\u95f4\u2014\u2014\u4eca\u5929"
+            },
+            "hours_priced_equal_or_higher": {
+                "name": "\u5c0f\u65f6\u4ef7\u683c\u7b49\u4e8e\u6216\u9ad8\u4e8e\u5f53\u524d\u4ef7\u683c - \u4eca\u5929"
+            },
+            "hours_priced_equal_or_lower": {
+                "name": "\u5c0f\u65f6\u4ef7\u683c\u7b49\u4e8e\u6216\u4f4e\u4e8e\u5f53\u524d\u4ef7\u683c - \u4eca\u5929"
+            },
+            "lowest_price_time": {
+                "name": "\u6700\u4f4e\u4ef7\u65f6\u95f4-\u4eca\u5929"
+            },
+            "max_price": {
+                "name": "\u6700\u9ad8\u4ef7 - \u4eca\u5929"
+            },
+            "min_price": {
+                "name": "\u6700\u4f4e\u4ef7 - \u4eca\u5929"
+            },
+            "next_hour_price": {
+                "name": "\u4e0b\u4e00\u5c0f\u65f6"
+            },
+            "percentage_of_max": {
+                "name": "\u5f53\u524d\u6700\u9ad8\u4ef7\u683c\u7684\u767e\u5206\u6bd4 - \u4eca\u5929"
+            }
+        }
+    },
+    "services": {
+        "get_energy_return_prices": {
+            "fields": {
+                "end": {
+                    "description": "\u6307\u5b9a\u83b7\u53d6\u4ef7\u683c\u7684\u65e5\u671f\u548c\u65f6\u95f4\u3002\u5982\u679c\u7701\u7565\uff0c\u9ed8\u8ba4\u4e3a\u4eca\u5929\u3002",
+                    "name": "\u7ed3\u675f"
+                },
+                "start": {
+                    "description": "\u6307\u5b9a\u4ece\u4f55\u65f6\u5f00\u59cb\u68c0\u7d22\u4ef7\u683c\u3002\u5982\u679c\u7701\u7565\uff0c\u9ed8\u8ba4\u4e3a\u4eca\u5929\u3002",
+                    "name": "\u5f00\u59cb"
+                }
+            },
+            "name": "\u83b7\u53d6\u80fd\u6e90\u56de\u62a5\u4ef7\u683c"
+        },
+        "get_energy_usage_prices": {
+            "description": "\u4ece easyEnergy \u8bf7\u6c42\u4f7f\u7528\u80fd\u6e90\u4ef7\u683c\u3002",
+            "fields": {
+                "end": {
+                    "description": "\u6307\u5b9a\u83b7\u53d6\u4ef7\u683c\u7684\u65e5\u671f\u548c\u65f6\u95f4\u3002\u5982\u679c\u7701\u7565\uff0c\u9ed8\u8ba4\u4e3a\u4eca\u5929\u3002",
+                    "name": "\u7ed3\u675f"
+                },
+                "incl_vat": {
+                    "description": "\u4ef7\u683c\u4e2d\u5305\u542b\u6216\u4e0d\u542b\u589e\u503c\u7a0e\uff0c\u9ed8\u8ba4\u4e3a true\u3002",
+                    "name": "\u542b\u589e\u503c\u7a0e"
+                },
+                "start": {
+                    "description": "\u6307\u5b9a\u4ece\u4f55\u65f6\u5f00\u59cb\u68c0\u7d22\u4ef7\u683c\u3002\u5982\u679c\u7701\u7565\uff0c\u9ed8\u8ba4\u4e3a\u4eca\u5929\u3002",
+                    "name": "\u5f00\u59cb"
+                }
+            },
+            "name": "\u83b7\u53d6\u80fd\u6e90\u4f7f\u7528\u4ef7\u683c"
+        },
+        "get_gas_prices": {
+            "description": "\u5411 easyEnergy \u8bf7\u6c42\u5929\u7136\u6c14\u4ef7\u683c\u3002",
+            "fields": {
+                "end": {
+                    "description": "\u6307\u5b9a\u83b7\u53d6\u4ef7\u683c\u7684\u65e5\u671f\u548c\u65f6\u95f4\u3002\u5982\u679c\u7701\u7565\uff0c\u9ed8\u8ba4\u4e3a\u4eca\u5929\u3002",
+                    "name": "\u7ed3\u675f"
+                },
+                "incl_vat": {
+                    "description": "\u4ef7\u683c\u4e2d\u5305\u542b\u6216\u4e0d\u542b\u589e\u503c\u7a0e\uff0c\u9ed8\u8ba4\u4e3a true\u3002",
+                    "name": "\u542b\u589e\u503c\u7a0e"
+                },
+                "start": {
+                    "description": "\u6307\u5b9a\u4ece\u4f55\u65f6\u5f00\u59cb\u68c0\u7d22\u4ef7\u683c\u3002\u5982\u679c\u7701\u7565\uff0c\u9ed8\u8ba4\u4e3a\u4eca\u5929\u3002",
+                    "name": "\u5f00\u59cb"
+                }
+            }
+        }
+    }
+}

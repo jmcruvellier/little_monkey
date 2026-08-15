@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Mailbox platformu kald\u0131r\u0131l\u0131yor. L\u00fctfen bunu '{integration_domain}' \u00f6zel entegrasyonunun yazar\u0131na bildirin.",
+            "title": "Mailbox platformu kald\u0131r\u0131l\u0131yor"
+        }
+    },
+    "title": "Posta kutusu"
+}

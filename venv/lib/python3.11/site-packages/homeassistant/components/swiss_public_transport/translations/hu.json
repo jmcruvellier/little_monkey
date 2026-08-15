@@ -1,0 +1,46 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "A szolg\u00e1ltat\u00e1s m\u00e1r konfigur\u00e1lva van",
+            "bad_config": "A k\u00e9r\u00e9s sikertelen volt rossz konfigur\u00e1ci\u00f3 miatt: Ellen\u0151rizze a [menetrendet]({stationboard_url}) \u00e9rv\u00e9nyes \u00e1llom\u00e1sok\u00e9rt.",
+            "cannot_connect": "Nem lehet kapcsol\u00f3dni a szerverhez",
+            "unknown": "Ismeretlen hiba l\u00e9pett fel a python-opendata-transportban"
+        },
+        "error": {
+            "bad_config": "A k\u00e9r\u00e9s sikertelen volt rossz konfigur\u00e1ci\u00f3 miatt: Ellen\u0151rizze a [menetrendet]({stationboard_url}) oldalon, hogy \u00e9rv\u00e9nyesek-e az \u00e1llom\u00e1snevek",
+            "cannot_connect": "Nem lehet kapcsol\u00f3dni a szerverhez",
+            "unknown": "Ismeretlen hiba l\u00e9pett fel a python-opendata-transportban"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "from": "Indul\u00e1si \u00e1llom\u00e1s",
+                    "to": "V\u00e9g\u00e1llom\u00e1s"
+                },
+                "description": "Adja meg az indul\u00e1si \u00e9s \u00e9rkez\u00e9si \u00e1llom\u00e1st az \u00f6sszek\u00f6ttet\u00e9s\u00e9hez\n\nEllen\u0151rizze a [menetrendet]({stationboard_url}) az \u00e9rv\u00e9nyes \u00e1llom\u00e1sok\u00e9rt.",
+                "title": "Sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9s"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "departure": {
+                "name": "Indul\u00e1s"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue_bad_config": {
+            "description": "A sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9s YAML-ban t\u00f6rt\u00e9n\u0151 konfigur\u00e1l\u00e1sa megsz\u0171nik, de hib\u00e1s konfigur\u00e1ci\u00f3 ker\u00fclt import\u00e1l\u00e1sra a YAML konfigur\u00e1ci\u00f3j\u00e1ba.\n\nEllen\u0151rizze a [menetrend]({stationboard_url}) oldalon az \u00e9rv\u00e9nyes \u00e1llom\u00e1sokat.",
+            "title": "A sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9si YAML-konfigur\u00e1ci\u00f3 import\u00e1l\u00e1si k\u00e9relme hib\u00e1s konfigur\u00e1ci\u00f3 miatt meghi\u00fasult"
+        },
+        "deprecated_yaml_import_issue_cannot_connect": {
+            "description": "A sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9s YAML haszn\u00e1lat\u00e1val t\u00f6rt\u00e9n\u0151 konfigur\u00e1l\u00e1sa megsz\u0171nik, de hiba t\u00f6rt\u00e9nt a YAML konfigur\u00e1ci\u00f3d import\u00e1l\u00e1sa k\u00f6zben.\n\nGy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a home assistant el tudja \u00e9rni az [opendata szervert]({opendata_url}). Ha a szerver nem m\u0171k\u00f6dik, pr\u00f3b\u00e1lja meg k\u00e9s\u0151bb \u00fajra.",
+            "title": "A sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9si YAML-konfigur\u00e1ci\u00f3 import\u00e1l\u00e1sa nem tud csatlakozni a kiszolg\u00e1l\u00f3hoz"
+        },
+        "deprecated_yaml_import_issue_unknown": {
+            "description": "A sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9s YAML haszn\u00e1lat\u00e1val val\u00f3 konfigur\u00e1l\u00e1sa megsz\u0171ni, de ismeretlen hiba t\u00f6rt\u00e9nt a YAML-konfigur\u00e1ci\u00f3 import\u00e1l\u00e1sakor.\n\nEllen\u0151rizze a konfigur\u00e1ci\u00f3t, vagy tekintse meg az integr\u00e1ci\u00f3 dokument\u00e1ci\u00f3j\u00e1t.",
+            "title": "A sv\u00e1jci t\u00f6megk\u00f6zleked\u00e9si YAML-konfigur\u00e1ci\u00f3 import\u00e1l\u00e1sa sikertelen volt a python-opendata-transport \u00e1ltal okozott ismeretlen hiba miatt"
+        }
+    }
+}

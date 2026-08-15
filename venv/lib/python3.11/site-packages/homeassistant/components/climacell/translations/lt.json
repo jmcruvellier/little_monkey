@@ -1,0 +1,13 @@
+{
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "timestep": "Min. tarp \"NowCast\" prognozi\u0173"
+                },
+                "description": "Jei pasirinksite \u012fgalinti \u201enowcast\u201c prognoz\u0117s objekt\u0105, galite konfig\u016bruoti minu\u010di\u0173 skai\u010di\u0173 tarp kiekvienos prognoz\u0117s. Pateikt\u0173 prognozi\u0173 skai\u010dius priklauso nuo pasirinkt\u0173 minu\u010di\u0173 tarp prognozi\u0173 skai\u010diaus.",
+                "title": "Atnaujinkite ClimaCell parinktis"
+            }
+        }
+    }
+}

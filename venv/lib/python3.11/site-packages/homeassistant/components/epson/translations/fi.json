@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Laite on jo m\u00e4\u00e4ritetty"
+        },
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "powered_off": "Onko projektori p\u00e4\u00e4ll\u00e4? Projektori on kytkett\u00e4v\u00e4 p\u00e4\u00e4lle alustavaa konfigurointia varten."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Palvelin",
+                    "name": "Nimi"
+                },
+                "data_description": {
+                    "host": "Epson -projektorin is\u00e4nt\u00e4nimi tai IP-osoite."
+                }
+            }
+        }
+    },
+    "services": {
+        "select_cmode": {
+            "description": "Valitsee Epson-projektorin v\u00e4ritilan.",
+            "fields": {
+                "cmode": {
+                    "description": "CTilan nimi",
+                    "name": "V\u00e4ritila"
+                }
+            },
+            "name": "Valitse v\u00e4ritila"
+        }
+    }
+}

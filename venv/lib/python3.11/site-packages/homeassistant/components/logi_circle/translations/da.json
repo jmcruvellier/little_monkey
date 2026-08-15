@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Kontoen er allerede konfigureret",
+            "external_error": "Undtagelse skete fra et andet flow.",
+            "external_setup": "Logi Circle er konfigureret med succes fra et andet flow.",
+            "missing_configuration": "Komponenten er ikke konfigureret. F\u00f8lg venligst dokumentationen."
+        },
+        "error": {
+            "authorize_url_timeout": "Timeout ved generering af autoriserings-URL.",
+            "follow_link": "F\u00f8lg linket og godkend f\u00f8r du trykker p\u00e5 send.",
+            "invalid_auth": "Ugyldig godkendelse"
+        },
+        "step": {
+            "auth": {
+                "description": "F\u00f8lg linket nedenfor og **Accept\u00e9r** adgang til din Logi Circle-konto, og vend derefter tilbage og tryk p\u00e5 **Send** nedenfor. \n\n [Link]( {authorization_url} )",
+                "title": "Godkend med Logi Circle."
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Udbyder"
+                },
+                "description": "V\u00e6lg via hvilken godkendelsesudbyder du vil godkende med Logi Circle.",
+                "title": "Godkendelsesudbyder"
+            }
+        }
+    }
+}

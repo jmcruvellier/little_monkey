@@ -1,0 +1,130 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Urz\u0105dzenie jest ju\u017c skonfigurowane",
+            "reauth_successful": "Ponowne uwierzytelnienie powiod\u0142o si\u0119"
+        },
+        "error": {
+            "api_error": "Wyst\u0105pi\u0142 b\u0142\u0105d API",
+            "cannot_connect": "Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia, sprawd\u017a adres IP kamery.",
+            "invalid_auth": "Niepoprawne uwierzytelnienie",
+            "not_admin": "U\u017cytkownik musi by\u0107 administratorem, u\u017cytkownik \u201e{username}\u201d ma poziom autoryzacji \u201e{userlevel}\u201d",
+            "unknown": "Nieoczekiwany b\u0142\u0105d"
+        },
+        "flow_title": "{hostname} ({ip_address})",
+        "step": {
+            "reauth_confirm": {
+                "description": "Integracja Reolink wymaga ponownego uwierzytelnienia szczeg\u00f3\u0142\u00f3w po\u0142\u0105czenia",
+                "title": "Autoryzacja wygas\u0142a dla {name}"
+            },
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "password": "Has\u0142o",
+                    "port": "Port",
+                    "use_https": "W\u0142\u0105cz HTTPS",
+                    "username": "Nazwa u\u017cytkownika"
+                },
+                "description": "Zobacz [kroki rozwi\u0105zywania problem\u00f3w]({troubleshooting_link}), je\u015bli napotkasz problemy. {error}"
+            }
+        }
+    },
+    "entity": {
+        "light": {
+            "floodlight": {
+                "name": "Reflektor"
+            },
+            "ir_lights": {
+                "name": "\u015awiat\u0142a podczerwone w trybie nocnym"
+            },
+            "status_led": {
+                "name": "LED stanu"
+            }
+        },
+        "number": {
+            "image_brightness": {
+                "name": "Jasno\u015b\u0107 obrazu"
+            },
+            "image_contrast": {
+                "name": "Kontrast obrazu"
+            },
+            "image_hue": {
+                "name": "Odcie\u0144 obrazu"
+            },
+            "image_saturation": {
+                "name": "Nasycenie obrazu"
+            }
+        },
+        "select": {
+            "auto_quick_reply_message": {
+                "state": {
+                    "off": "wy\u0142\u0105czono"
+                }
+            },
+            "auto_track_method": {
+                "state": {
+                    "digital": "cyfrowe",
+                    "digitalfirst": "najpierw cyfrowe",
+                    "pantiltfirst": "najpierw pochylenie/przesuni\u0119cie"
+                }
+            },
+            "day_night_mode": {
+                "state": {
+                    "auto": "automatyczny",
+                    "blackwhite": "czarno-bia\u0142y",
+                    "color": "kolor"
+                }
+            },
+            "floodlight_mode": {
+                "state": {
+                    "auto": "automatyczny",
+                    "off": "wy\u0142\u0105czono",
+                    "schedule": "wg harmonogramu"
+                }
+            },
+            "status_led": {
+                "state": {
+                    "alwaysonatnight": "auto i zawsze w\u0142\u0105czona w nocy",
+                    "auto": "auto",
+                    "stayoff": "wy\u0142\u0105czona"
+                }
+            }
+        },
+        "siren": {
+            "siren": {
+                "name": "Syrena"
+            }
+        }
+    },
+    "issues": {
+        "enable_port": {
+            "description": "Nie uda\u0142o si\u0119 automatycznie w\u0142\u0105czy\u0107 port\u00f3w {ports} na {name}. U\u017cyj [klienta Reolink]({info_link}), aby w\u0142\u0105czy\u0107 je r\u0119cznie.",
+            "title": "Port Reolink nie jest w\u0142\u0105czony"
+        },
+        "firmware_update": {
+            "description": "\u201e{name}\u201d, model \u201e{model}\u201d i wersj\u0105 sprz\u0119tow\u0105 \u201e{hw_version}\u201d ma star\u0105 wersj\u0119 oprogramowania \u201e{current_firmware}\u201d, podczas gdy do prawid\u0142owego dzia\u0142ania integracji Reolink wymagana jest co najmniej wersja oprogramowania \u201e{required_firmware}\u201d. Najnowsze oprogramowanie sprz\u0119towe mo\u017cna pobra\u0107 z [Centrum pobierania Reolink]({download_link}).",
+            "title": "Wymagana jest aktualizacja oprogramowania Reolink"
+        },
+        "https_webhook": {
+            "description": "Produkty Reolink nie mog\u0105 przekazywa\u0107 zdarze\u0144 ruchu na adres HTTPS (SSL). Skonfiguruj (lokalny) adres HTTP w \u201eAdres URL Home Assistanta\u201d w [ustawieniach sieci]({network_link}). Bie\u017c\u0105cy (lokalny) adres to: `{base_url}', prawid\u0142owym adresem mo\u017ce by\u0107 na przyk\u0142ad 'http://192.168.1.10:8123', gdzie '192.168.1.10' to adres IP urz\u0105dzenia Home Assistant.",
+            "title": "Adres URL webhooka u\u017cywa protoko\u0142u HTTPS (SSL)"
+        },
+        "ssl": {
+            "description": "Globalny certyfikat SSL skonfigurowany w [configuration.yaml pod http]( {ssl_link} ), podczas gdy lokalny adres HTTP ` {base_url} ` jest skonfigurowany w \"URL Asystenta Domowego\" w [ustawieniach sieci] ( {network_link} ). Dlatego urz\u0105dzenie Reolink nie mo\u017ce dotrze\u0107 do Home Assistant, aby przekaza\u0107 swoje zdarzenia ruchu/AI. Upewnij si\u0119, \u017ce lokalny adres HTTP nie jest obj\u0119ty certyfikatem SSL, na przyk\u0142ad u\u017cywaj\u0105c [dodatku NGINX]( {nginx_link} ) zamiast globalnie wymuszanego certyfikatu SSL.",
+            "title": "Reolink niekompatybilny z globalnym certyfikatem SSL"
+        },
+        "webhook_url": {
+            "description": "Nie otrzymano pocz\u0105tkowego stanu ONVIF od {name}. Najprawdopodobniej kamera Reolink nie mo\u017ce po\u0142\u0105czy\u0107 si\u0119 z bie\u017c\u0105cym (lokalnym) adresem URL Home Assistanta `{base_url}`. Skonfiguruj (lokalny) adres HTTP w \u201eAdres URL Home Assistanta\u201d w [ustawieniach sieci]({network_link}). Na przyk\u0142ad `http://192.168.1.10:8123`, gdzie `192.168.1.10` to adres IP urz\u0105dzenia Home Assistant. Upewnij si\u0119 r\u00f3wnie\u017c, \u017ce kamera Reolink mo\u017ce po\u0142\u0105czy\u0107 si\u0119 z tym adresem URL.",
+            "title": "Adres URL webhooka Reolink jest nieosi\u0105galny"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "protocol": "Protok\u00f3\u0142"
+                }
+            }
+        }
+    }
+}

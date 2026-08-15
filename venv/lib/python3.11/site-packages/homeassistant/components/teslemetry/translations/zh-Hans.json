@@ -1,0 +1,83 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u672a\u77e5\u9519\u8bef"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "battery_power": {
+                "name": "\u7535\u6c60\u7535\u91cf"
+            },
+            "charge_state_battery_level": {
+                "name": "\u7535\u6c60\u7535\u91cf"
+            },
+            "charge_state_battery_range": {
+                "name": "\u7535\u6c60\u7eed\u822a\u91cc\u7a0b"
+            },
+            "charge_state_charge_energy_added": {
+                "name": "\u5df2\u52a0\u5145\u7535\u91cf"
+            },
+            "charge_state_charge_rate": {
+                "name": "\u5145\u7535\u7387"
+            },
+            "charge_state_charger_actual_current": {
+                "name": "\u5145\u7535\u5668\u7535\u6d41"
+            },
+            "charge_state_charger_power": {
+                "name": "\u5145\u7535\u5668\u529f\u7387"
+            },
+            "charge_state_charger_voltage": {
+                "name": "\u5145\u7535\u5668\u7535\u538b"
+            },
+            "charge_state_charging_state": {
+                "name": "\u6b63\u5728\u5145\u7535",
+                "state": {
+                    "charging": "\u6b63\u5728\u5145\u7535",
+                    "complete": "\u5b8c\u6210",
+                    "disconnected": "\u5df2\u65ad\u5f00\u8fde\u63a5",
+                    "no_power": "\u6ca1\u7535",
+                    "starting": "\u6b63\u5728\u542f\u52a8",
+                    "stopped": "\u5df2\u505c\u6b62"
+                }
+            },
+            "charge_state_conn_charge_cable": {
+                "name": "\u5145\u7535\u7ebf"
+            },
+            "charge_state_minutes_to_full_charge": {
+                "name": "\u5145\u6ee1\u7535\u65f6\u95f4"
+            },
+            "grid_services_power": {
+                "name": "\u7535\u7f51\u7535\u91cf"
+            },
+            "load_power": {
+                "name": "\u8d1f\u8f7d\u529f\u7387"
+            },
+            "percentage_charged": {
+                "name": "\u5df2\u5145\u7535\u767e\u5206\u6bd4"
+            },
+            "solar_power": {
+                "name": "\u592a\u9633\u80fd"
+            },
+            "total_pack_energy": {
+                "name": "\u603b\u7535\u6c60\u91cf"
+            },
+            "vehicle_state_odometer": {
+                "name": "\u91cc\u7a0b\u8868"
+            },
+            "vin": {
+                "name": "\u8f66\u8f86"
+            },
+            "wall_connector_fault_state": {
+                "name": "\u6545\u969c\u72b6\u6001\u7801"
+            },
+            "wall_connector_power": {
+                "name": "\u7535\u6e90"
+            },
+            "wall_connector_state": {
+                "name": "\u72b6\u6001\u7801"
+            }
+        }
+    }
+}

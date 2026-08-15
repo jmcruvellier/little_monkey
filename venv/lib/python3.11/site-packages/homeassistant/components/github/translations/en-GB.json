@@ -1,0 +1,7 @@
+{
+    "config": {
+        "progress": {
+            "wait_for_device": "1. Open {url} \n2.Paste the following key to authorise the integration: \n```\n{code}\n```\n"
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "services": {
+        "clear_zone_override": {
+            "fields": {
+                "entity_id": {
+                    "description": "entity_id de la zona.",
+                    "name": "Entitat"
+                }
+            }
+        },
+        "reset_system": {
+            "name": "Reinicia el sistema"
+        },
+        "set_system_mode": {
+            "fields": {
+                "mode": {
+                    "description": "Mode a configurar el sistema.",
+                    "name": "Mode"
+                }
+            }
+        },
+        "set_zone_override": {
+            "fields": {
+                "entity_id": {
+                    "name": "Entitat"
+                }
+            }
+        }
+    }
+}

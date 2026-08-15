@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "gateway_entry": {
+                "data": {
+                    "ip_address": "IP \u5730\u5740",
+                    "port": "\u7aef\u53e3"
+                },
+                "description": "\u8f93\u5165\u60a8\u7684 ScreenLogic Gateway \u4fe1\u606f\u3002",
+                "title": "ScreenLogic"
+            },
+            "gateway_select": {
+                "data": {
+                    "selected_gateway": "\u7f51\u5173"
+                },
+                "description": "\u53d1\u73b0\u4e86\u4ee5\u4e0b ScreenLogic \u7f51\u5173\u3002\u8bf7\u9009\u62e9\u4e00\u4e2a\u8fdb\u884c\u914d\u7f6e\uff0c\u6216\u9009\u62e9\u624b\u52a8\u914d\u7f6e ScreenLogic \u7f51\u5173\u3002",
+                "title": "ScreenLogic"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "scan_interval": "\u626b\u63cf\u4e4b\u95f4\u7684\u79d2\u6570"
+                },
+                "description": "\u6307\u5b9a{gateway_name}\u7684\u8bbe\u7f6e",
+                "title": "ScreenLogic"
+            }
+        }
+    },
+    "services": {
+        "set_color_mode": {
+            "fields": {
+                "config_entry": {
+                    "name": "\u914d\u7f6e\u9879"
+                }
+            }
+        },
+        "start_super_chlorination": {
+            "fields": {
+                "config_entry": {
+                    "name": "\u914d\u7f6e\u9879"
+                }
+            }
+        },
+        "stop_super_chlorination": {
+            "fields": {
+                "config_entry": {
+                    "name": "\u914d\u7f6e\u9879"
+                }
+            }
+        }
+    }
+}

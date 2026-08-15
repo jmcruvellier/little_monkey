@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "cannot_connect": "Kan geen verbinding maken",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "De hostnaam of IP-adres van je Balboa Spa Wifi apparaat. Bijvoorbeeld 192.168.1.58."
+                },
+                "description": "Verbinden met het Balboa Wi-Fi apparaat",
+                "title": "Maak verbinding met het Balboa Wi-Fi-apparaat"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "circ_pump": {
+                "name": "Circulatiepomp"
+            },
+            "filter_1": {
+                "name": "Filtercyclus 1"
+            },
+            "filter_2": {
+                "name": "Filtercyclus 2"
+            }
+        },
+        "climate": {
+            "balboa": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "ready": "Klaar",
+                            "ready_in_rest": "Gereed-in-ruststand",
+                            "rest": "Rust"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sync_time": "Houd de tijd van uw Balboa Spa Client gesynchroniseerd met Home Assistant"
+                }
+            }
+        }
+    }
+}

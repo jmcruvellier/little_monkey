@@ -1,0 +1,11 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "home": "Doma",
+                "not_home": "Odsoten"
+            }
+        }
+    },
+    "title": "Oseba"
+}

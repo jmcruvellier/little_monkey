@@ -1,0 +1,26 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Povezava ni uspela, poskusite znova"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Ime gostitelja ali naslov IP"
+                },
+                "description": "Izberite Roombo ali Braavo.",
+                "title": "Pove\u017eite se z napravo"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "continuous": "Nenehno",
+                    "delay": "Zamik"
+                }
+            }
+        }
+    }
+}

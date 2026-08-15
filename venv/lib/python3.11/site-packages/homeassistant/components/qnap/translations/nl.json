@@ -1,0 +1,16 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Wachtwoord",
+                    "port": "Poort",
+                    "username": "Gebruikersnaam"
+                },
+                "data_description": {
+                    "host": "De hostnaam of IP-adres van je QNAP apparaat."
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Loca\u021bia este deja configurat\u0103"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_auth": "Autentificare nevalid\u0103"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Cheie API",
+                    "destination": "Destina\u021bie",
+                    "name": "Nume",
+                    "origin": "Origine"
+                },
+                "description": "C\u00e2nd specifici originea \u0219i destina\u021bia, po\u021bi furniza una sau mai multe loca\u021bii desp\u0103r\u021bite prin caracterul pip\u0103 (\u201e|\u201d), sub forma unei adrese, a unor coordonate latitudine/longitudine sau a unui ID de loc Google. C\u00e2nd loca\u021bia este specificat\u0103 cu ID de loc Google, ID-ul trebuie prefa\u021bat cu `place_id:`."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "avoid": "Evit\u0103",
+                    "language": "Limb\u0103",
+                    "mode": "Mod de c\u0103l\u0103torie",
+                    "time": "Or\u0103",
+                    "time_type": "Tip de timp",
+                    "traffic_mode": "Mod de trafic",
+                    "transit_mode": "Modul de tranzit",
+                    "transit_routing_preference": "Preferin\u021be de rutare a tranzitului",
+                    "units": "Unit\u0103\u021bi"
+                },
+                "description": "Op\u021bional, po\u021bi specifica fie ora de plecare, fie ora de sosire. Dac\u0103 specifici ora de plecare, po\u021bi introduce `now`, un timestamp Unix sau o or\u0103 \u00een format 24 de ore, precum `18:00:00`. Dac\u0103 specifici ora de sosire, po\u021bi utiliza un timestamp Unix sau o or\u0103 \u00een format 24 de ore, precum `18:00:00`"
+            }
+        }
+    },
+    "title": "Durat\u0103 de c\u0103l\u0103torie Google Maps"
+}

@@ -1,0 +1,48 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Account is already configured",
+            "reauth_successful": "Re-authentication was successful"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "email": "Email",
+                    "password": "Password"
+                }
+            },
+            "user": {
+                "data": {
+                    "email": "Email",
+                    "password": "Password"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "alarm": {
+                "name": "Alarm"
+            },
+            "water_flow": {
+                "name": "Water flow"
+            }
+        },
+        "sensor": {
+            "air_temperature": {
+                "name": "Air temperature"
+            },
+            "free_chlorine": {
+                "name": "Free chlorine"
+            },
+            "water_temperature": {
+                "name": "Water temperature"
+            }
+        }
+    }
+}

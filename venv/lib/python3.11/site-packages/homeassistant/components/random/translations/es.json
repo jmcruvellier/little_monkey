@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Clase de dispositivo",
+                    "name": "Nombre"
+                },
+                "title": "Sensor binario aleatorio"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Clase de dispositivo",
+                    "maximum": "M\u00e1ximo",
+                    "minimum": "M\u00ednimo",
+                    "name": "Nombre",
+                    "unit_of_measurement": "Unidad de medida"
+                },
+                "title": "Sensor aleatorio"
+            },
+            "user": {
+                "description": "Este asistente te permite crear un asistente que emite un valor aleatorio.",
+                "menu_options": {
+                    "binary_sensor": "Sensor binario aleatorio",
+                    "sensor": "Sensor aleatorio"
+                },
+                "title": "Ayudante aleatorio"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Este ayudante no tiene ninguna opci\u00f3n.",
+                "title": "Sensor binario aleatorio"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Clase de dispositivo",
+                    "maximum": "M\u00e1ximo",
+                    "minimum": "M\u00ednimo",
+                    "unit_of_measurement": "Unidad de medida"
+                },
+                "title": "Sensor aleatorio"
+            }
+        }
+    }
+}

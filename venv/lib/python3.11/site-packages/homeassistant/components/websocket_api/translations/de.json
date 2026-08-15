@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Dienst {domain}.{service} hat den Dienst {child_domain}.{child_service} aufgerufen, der nicht gefunden wurde."
+        }
+    }
+}

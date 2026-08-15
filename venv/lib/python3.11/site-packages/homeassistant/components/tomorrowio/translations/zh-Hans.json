@@ -1,0 +1,96 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_api_key": "API \u5bc6\u94a5\u65e0\u6548",
+            "rate_limited": "\u76ee\u524d\u8bbf\u95ee\u901f\u7387\u53d7\u9650\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5\u3002",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "location": "\u5750\u6807",
+                    "name": "\u540d\u79f0"
+                },
+                "description": "\u8981\u83b7\u53d6 API \u5bc6\u94a5\uff0c\u8bf7\u5728 [Tomorrow.io](https://app.tomorrow.io/signup) \u4e0a\u6ce8\u518c\u3002"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "china_mep_primary_pollutant": {
+                "state": {
+                    "co": "\u4e00\u6c27\u5316\u78b3",
+                    "no2": "\u4e8c\u6c27\u5316\u6c2e",
+                    "o3": "\u81ed\u6c27",
+                    "pm10": "PM10",
+                    "pm25": "PM2.5",
+                    "so2": "\u4e8c\u6c27\u5316\u786b"
+                }
+            },
+            "health_concern": {
+                "state": {
+                    "good": "\u826f\u597d",
+                    "hazardous": "\u5371\u9669",
+                    "moderate": "\u4e2d",
+                    "unhealthy": "\u4e0d\u5065\u5eb7",
+                    "unhealthy_for_sensitive_groups": "\u4e0d\u5229\u4e8e\u654f\u611f\u4eba\u7fa4",
+                    "very_unhealthy": "\u975e\u5e38\u4e0d\u5229\u4e8e\u5065\u5eb7"
+                }
+            },
+            "pollen_index": {
+                "state": {
+                    "high": "\u9ad8",
+                    "low": "\u4f4e",
+                    "medium": "\u4e2d\u7b49",
+                    "none": "\u65e0",
+                    "very_high": "\u975e\u5e38\u9ad8",
+                    "very_low": "\u975e\u5e38\u4f4e"
+                }
+            },
+            "precipitation_type": {
+                "state": {
+                    "freezing_rain": "\u51bb\u96e8",
+                    "ice_pellets": "\u51b0\u96f9",
+                    "none": "\u65e0",
+                    "rain": "\u96e8",
+                    "snow": "\u96ea"
+                }
+            },
+            "primary_pollutant": {
+                "state": {
+                    "co": "\u4e00\u6c27\u5316\u78b3",
+                    "no2": "\u4e8c\u6c27\u5316\u6c2e",
+                    "o3": "\u81ed\u6c27",
+                    "pm10": "PM10",
+                    "pm25": "PM2.5",
+                    "so2": "\u4e8c\u6c27\u5316\u786b"
+                }
+            },
+            "uv_index": {
+                "state": {
+                    "extreme": "\u6781\u7aef",
+                    "high": "\u9ad8",
+                    "low": "\u4f4e",
+                    "moderate": "\u4e2d\u7b49",
+                    "very_high": "\u975e\u5e38\u9ad8"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "timestep": "NowCast \u9884\u62a5\u95f4\u9694\u5206\u949f"
+                },
+                "description": "\u5982\u679c\u60a8\u9009\u62e9\u542f\u7528\u201cnowcast\u201d\u9884\u62a5\u5b9e\u4f53\uff0c\u5219\u53ef\u4ee5\u914d\u7f6e\u6bcf\u6b21\u9884\u62a5\u4e4b\u95f4\u7684\u5206\u949f\u6570\u3002\u63d0\u4f9b\u7684\u9884\u6d4b\u6570\u91cf\u53d6\u51b3\u4e8e\u9884\u6d4b\u4e4b\u95f4\u9009\u62e9\u7684\u5206\u949f\u6570\u3002",
+                "title": "\u66f4\u65b0 Tomorrow.io \u9009\u9879"
+            }
+        }
+    }
+}

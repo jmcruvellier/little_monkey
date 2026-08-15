@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Service {domain}.{service} heeft service {child_domain}.{child_service} aangeroepen, maar die was niet gevonden."
+        }
+    }
+}

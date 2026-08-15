@@ -1,0 +1,53 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "invalid_auth": "Ongeldige authenticatie",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "2fa": {
+                "data": {
+                    "2fa": "Twee-factor code"
+                },
+                "title": "Tweestapsverificatie"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Wachtwoord"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "Wachtwoord",
+                    "username": "Gebruikersnaam"
+                },
+                "title": "Aanmelden met Ring-account"
+            }
+        }
+    },
+    "entity": {
+        "light": {
+            "light": {
+                "name": "Licht"
+            }
+        },
+        "siren": {
+            "siren": {
+                "name": "Sirene"
+            }
+        },
+        "switch": {
+            "siren": {
+                "name": "Sirene"
+            }
+        }
+    },
+    "services": {
+        "update": {
+            "description": "Werkt de data die we van je hebben bij voor al je Ring devices."
+        }
+    }
+}

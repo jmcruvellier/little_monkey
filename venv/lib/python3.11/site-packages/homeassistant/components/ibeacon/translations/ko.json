@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "bluetooth_not_available": "iBeacon Tracker\ub97c \uc0ac\uc6a9\ud558\ub824\uba74 \ud558\ub098 \uc774\uc0c1\uc758 Bluetooth \uc5b4\ub311\ud130 \ub610\ub294 \ub9ac\ubaa8\ucee8\uc744 \uad6c\uc131\ud574\uc57c \ud569\ub2c8\ub2e4.",
+            "single_instance_allowed": "\uc774\ubbf8 \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud558\ub098\uc758 \uc778\uc2a4\ud134\uc2a4\ub9cc \uad6c\uc131\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
+        },
+        "step": {
+            "user": {
+                "description": "iBeacon Tracker\ub97c \uc124\uc815\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "estimated_distance": {
+                "name": "\uc608\uc0c1 \uac70\ub9ac"
+            },
+            "power": {
+                "name": "\uc804\uc6d0"
+            },
+            "vendor": {
+                "name": "\uacf5\uae09\uc5c5\uccb4"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "min_rssi": "\ucd5c\uc18c RSSI"
+                },
+                "description": "RSSI \uac12\uc774 \ucd5c\uc18c RSSI\ubcf4\ub2e4 \ub0ae\uc740 iBeacon\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4. \ud1b5\ud569\uad6c\uc131\uc694\uc18c\uc5d0 \uc778\uc811\ud55c iBeacon\uc774 \ud45c\uc2dc\ub418\ub294 \uacbd\uc6b0, \uc774 \uac12\uc744 \ub298\ub9ac\ub294 \uac83\uc774 \ub3c4\uc6c0\uc774 \ub420 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
+            }
+        }
+    }
+}

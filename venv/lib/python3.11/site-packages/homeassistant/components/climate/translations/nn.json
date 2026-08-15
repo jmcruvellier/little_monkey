@@ -1,0 +1,10 @@
+{
+    "selector": {
+        "hvac_mode": {
+            "options": {
+                "off": "Av"
+            }
+        }
+    },
+    "title": "Klima"
+}

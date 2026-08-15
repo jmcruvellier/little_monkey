@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Already configured. Only a single configuration possible."
+        },
+        "error": {
+            "invalid_ip_address": "Invalid IPv4 address."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP Address"
+                },
+                "description": "Receive Voice over IP calls to interact with Assist."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "call_active": {
+                "name": "Call Active"
+            },
+            "call_in_progress": {
+                "name": "Call in progress"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assist pipeline",
+                "state": {
+                    "preferred": "Preferred"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Finished speaking detection",
+                "state": {
+                    "aggressive": "Aggressive",
+                    "default": "Default",
+                    "relaxed": "Relaxed"
+                }
+            }
+        },
+        "switch": {
+            "allow_call": {
+                "name": "Allow calls"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sip_port": "SIP port"
+                }
+            }
+        }
+    }
+}

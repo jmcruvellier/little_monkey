@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "calendar_name": "Nombre del calendario"
+                },
+                "description": "Por favor, elige un nombre para tu nuevo calendario."
+            }
+        }
+    },
+    "title": "Calendario local"
+}

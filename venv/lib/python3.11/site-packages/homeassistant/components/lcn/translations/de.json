@@ -1,0 +1,267 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "codelock": "Codeschloss Code erhalten",
+            "fingerprint": "Fingerabdruckcode empfangen",
+            "send_keys": "Erhaltene Schl\u00fcssel senden",
+            "transmitter": "Sendercode empfangen",
+            "transponder": "Transpondercode empfangen"
+        }
+    },
+    "services": {
+        "dyn_text": {
+            "description": "Sendet dynamischen Text an LCN-GTxD-Displays.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "row": {
+                    "description": "Textzeile.",
+                    "name": "Zeile"
+                },
+                "text": {
+                    "description": "Zu sendender Text (bis zu 60 Zeichen, kodiert als UTF-8).",
+                    "name": "Text"
+                }
+            },
+            "name": "Dynamischer Text"
+        },
+        "led": {
+            "description": "Legt den LED-Status fest.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "led": {
+                    "description": "LED.",
+                    "name": "LED"
+                },
+                "state": {
+                    "description": "LED-Zustand.",
+                    "name": "Zustand"
+                }
+            },
+            "name": "LED"
+        },
+        "lock_keys": {
+            "description": "Sperrt Schl\u00fcssel.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "state": {
+                    "description": "Schl\u00fcsselsperrzust\u00e4nde als String (1=ein, 2=aus, T=umschalten, -=keine \u00c4nderung).",
+                    "name": "Zustand"
+                },
+                "table": {
+                    "description": "Tisch mit Schl\u00fcsseln zum Sperren (muss A f\u00fcr Intervall sein).",
+                    "name": "Tabelle"
+                },
+                "time": {
+                    "description": "Sperrintervall.",
+                    "name": "Zeit"
+                },
+                "time_unit": {
+                    "description": "Zeiteinheit des Sperrintervalls.",
+                    "name": "Zeiteinheit"
+                }
+            },
+            "name": "Schl\u00fcssel sperren"
+        },
+        "lock_regulator": {
+            "description": "Sperrt einen Reglersollwert.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "setpoint": {
+                    "description": "Sollwertname.",
+                    "name": "Sollwert"
+                },
+                "state": {
+                    "description": "Neuer Sollzustand.",
+                    "name": "Zustand"
+                }
+            },
+            "name": "Regler sperren"
+        },
+        "output_abs": {
+            "description": "Legt die absolute Helligkeit des Ausgangsports in Prozent fest.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "brightness": {
+                    "description": "Absolute Helligkeit.",
+                    "name": "Helligkeit"
+                },
+                "output": {
+                    "description": "Ausgangs-Port.",
+                    "name": "Ausgabe"
+                },
+                "transition": {
+                    "description": "\u00dcbergangszeit.",
+                    "name": "\u00dcbergang"
+                }
+            },
+            "name": "Ausgabe der absoluten Helligkeit"
+        },
+        "output_rel": {
+            "description": "Legt die relative Helligkeit des Ausgangsports in Prozent fest.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "brightness": {
+                    "description": "Relative Helligkeit.",
+                    "name": "Helligkeit"
+                },
+                "output": {
+                    "description": "Ausgangs-Port.",
+                    "name": "Ausgabe"
+                }
+            },
+            "name": "Relative Helligkeit ausgeben"
+        },
+        "output_toggle": {
+            "description": "Schaltet den Ausgabeport um.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "output": {
+                    "description": "Ausgangs-Port.",
+                    "name": "Ausgabe"
+                },
+                "transition": {
+                    "description": "\u00dcbergangszeit.",
+                    "name": "\u00dcbergang"
+                }
+            },
+            "name": "Ausgabe umschalten"
+        },
+        "pck": {
+            "description": "Sendet einen beliebigen PCK-Befehl.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "pck": {
+                    "description": "PCK-Befehl (ohne Adressheader).",
+                    "name": "PCK"
+                }
+            },
+            "name": "PCK"
+        },
+        "relays": {
+            "description": "Legt den Relaisstatus fest.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "state": {
+                    "description": "Relaiszust\u00e4nde als String (1=ein, 2=aus, t=umschalten, -=keine \u00c4nderung).",
+                    "name": "Zustand"
+                }
+            },
+            "name": "Relais"
+        },
+        "send_keys": {
+            "description": "Sendet Schl\u00fcssel (die gebundene Befehle ausf\u00fchren).",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "keys": {
+                    "description": "Zu sendende Schl\u00fcssel.",
+                    "name": "Schl\u00fcssel"
+                },
+                "state": {
+                    "description": "Schl\u00fcsselstatus beim Senden (muss zum Zur\u00fcckstellen angeklickt werden).",
+                    "name": "Zustand"
+                },
+                "time": {
+                    "description": "Sendeverz\u00f6gerung.",
+                    "name": "Zeit"
+                },
+                "time_unit": {
+                    "description": "Zeiteinheit der Sendeverz\u00f6gerung.",
+                    "name": "Zeiteinheit"
+                }
+            },
+            "name": "Schl\u00fcssel senden"
+        },
+        "var_abs": {
+            "description": "Legt den absoluten Wert einer Variablen oder eines Sollwerts fest.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "unit_of_measurement": {
+                    "description": "Werteinheit.",
+                    "name": "Ma\u00dfeinheit"
+                },
+                "value": {
+                    "description": "Einzustellender Wert.",
+                    "name": "Wert"
+                },
+                "variable": {
+                    "description": "Variablen- oder Sollwertname.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Absolute Variable setzen"
+        },
+        "var_rel": {
+            "description": "Verschiebungswert einer Variablen, eines Sollwerts oder einer Schwelle.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "unit_of_measurement": {
+                    "description": "Werteinheit.",
+                    "name": "Ma\u00dfeinheit"
+                },
+                "value": {
+                    "description": "Wert verschieben.",
+                    "name": "Wert"
+                },
+                "value_reference": {
+                    "description": "Referenzwert f\u00fcr Sollwert und Schwelle.",
+                    "name": "Referenzwert"
+                },
+                "variable": {
+                    "description": "Variablen- oder Sollwertname.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Variable verschieben"
+        },
+        "var_reset": {
+            "description": "Setzt den Wert einer Variablen oder eines Sollwerts zur\u00fcck.",
+            "fields": {
+                "address": {
+                    "description": "Adresse des Moduls.",
+                    "name": "Adresse"
+                },
+                "variable": {
+                    "description": "Variablen- oder Sollwertname.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Variable zur\u00fccksetzen"
+        }
+    }
+}

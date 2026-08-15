@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "Installation",
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "air_quality_active": {
+                "name": "Luftqualit\u00e4t aktiv"
+            }
+        }
+    }
+}

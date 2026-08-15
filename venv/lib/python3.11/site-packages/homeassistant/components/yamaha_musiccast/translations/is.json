@@ -1,0 +1,11 @@
+{
+    "entity": {
+        "select": {
+            "zone_sleep": {
+                "state": {
+                    "off": "Sl\u00f6kkt"
+                }
+            }
+        }
+    }
+}

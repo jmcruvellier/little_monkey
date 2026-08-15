@@ -1,0 +1,27 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "title": "La configuration Wake on Lan YAML a \u00e9t\u00e9 d\u00e9plac\u00e9e"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Envoie un \u00ab\u00a0paquet magique\u00a0\u00bb pour r\u00e9veiller un appareil dot\u00e9 de capacit\u00e9s \u00ab\u00a0Wake-On-LAN\u00a0\u00bb.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "IP de diffusion o\u00f9 envoyer le paquet magique.",
+                    "name": "Adresse de diffusion"
+                },
+                "broadcast_port": {
+                    "description": "Port o\u00f9 envoyer le paquet magique.",
+                    "name": "Port de diffusion"
+                },
+                "mac": {
+                    "description": "Adresse MAC de l'appareil \u00e0 r\u00e9veiller.",
+                    "name": "Adresse MAC"
+                }
+            },
+            "name": "Envoyer un paquet magique"
+        }
+    }
+}

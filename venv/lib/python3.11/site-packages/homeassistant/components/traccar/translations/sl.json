@@ -1,0 +1,16 @@
+{
+    "config": {
+        "abort": {
+            "cloud_not_connected": "Ni povezan z Home Assistant Cloud."
+        },
+        "create_entry": {
+            "default": "\u010ce \u017eelite poslati dogodke v Home Assistant, boste morali nastaviti funkcijo \"webhook\" v traccar.\n\nUporabite naslednji URL: ' {webhook_url} '\n\nZa podrobnej\u0161e informacije glejte [dokumentacijo] ({docs_url})."
+        },
+        "step": {
+            "user": {
+                "description": "Ali ste prepri\u010dani, da \u017eelite nastaviti Traccar?",
+                "title": "Nastavite Traccar"
+            }
+        }
+    }
+}

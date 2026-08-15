@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "Downloadt een bestand naar de downloadlocatie.",
+            "fields": {
+                "filename": {
+                    "description": "Bepaal de bestandsnaam.",
+                    "name": "Bestandsnaam"
+                },
+                "overwrite": {
+                    "description": "Of het bestand overschreven moet worden of niet.",
+                    "name": "Overschrijven"
+                },
+                "subdir": {
+                    "description": "Downloaden naar submap.",
+                    "name": "Submap"
+                },
+                "url": {
+                    "description": "De URL van het te downloaden bestand.",
+                    "name": "URL"
+                }
+            },
+            "name": "Bestand downloaden"
+        }
+    }
+}

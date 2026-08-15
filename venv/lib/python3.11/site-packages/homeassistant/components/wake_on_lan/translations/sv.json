@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "Konfiguration av Wake on Lan med YAML har blivit flyttat till integrationer.\n\nDin existerande YAML.konfiguration kommer fungera i 2 versioner till.\n\nFlytta din YAML-konfiguration till integrationer enligt dokumentationen.",
+            "title": "Wake on Lan YAML-konfigurationen har blivit flyttad"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Skickar ett \"magiskt paket\" f\u00f6r att v\u00e4cka en enhet med \"Wake-On-LAN\"-funktioner.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "Broadcast IP dit det magiska paketet ska skickas.",
+                    "name": "S\u00e4ndningsadress"
+                },
+                "broadcast_port": {
+                    "description": "Port dit det magiska paketet ska skickas.",
+                    "name": "Port f\u00f6r s\u00e4ndning"
+                },
+                "mac": {
+                    "description": "MAC-adress f\u00f6r den enhet som ska v\u00e4ckas.",
+                    "name": "MAC-adress"
+                }
+            },
+            "name": "Skicka magiskt paket"
+        }
+    }
+}

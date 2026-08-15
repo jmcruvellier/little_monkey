@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado"
+        },
+        "error": {
+            "connection_failed": "Error de conexi\u00f3n. Por favor, comprueba que el host y el puerto son correctos."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Puerto"
+                },
+                "data_description": {
+                    "port": "Normalmente 7000 u 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "Termostato"
+            }
+        }
+    }
+}

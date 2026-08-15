@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9"
+        },
+        "error": {
+            "connection_failed": "Pripojenie zlyhalo. Skontrolujte, \u010di s\u00fa hostite\u013e a port spr\u00e1vne."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Hostite\u013e",
+                    "port": "Port"
+                },
+                "data_description": {
+                    "port": "Zvy\u010dajne 7000 alebo 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "Termostat"
+            }
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Ji\u017e nastaveno. Je mo\u017en\u00e9 jen jedin\u00e9 nastaven\u00ed."
+        },
+        "error": {
+            "invalid_ip_address": "Neplatn\u00e1 adresa IPv4."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP adresa"
+                },
+                "description": "P\u0159ij\u00edmejte hovory Voice over IP pro interakci s asistentem."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "call_active": {
+                "name": "Vol\u00e1n\u00ed aktivn\u00ed"
+            },
+            "call_in_progress": {
+                "name": "Prob\u00edh\u00e1 vol\u00e1n\u00ed"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Sekvence asistenta",
+                "state": {
+                    "preferred": "Preferov\u00e1no"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Detekce mluven\u00ed dokon\u010dena",
+                "state": {
+                    "aggressive": "Agresivn\u00ed",
+                    "default": "V\u00fdchoz\u00ed",
+                    "relaxed": "Uvoln\u011bn\u00e1"
+                }
+            }
+        },
+        "switch": {
+            "allow_call": {
+                "name": "Povolit vol\u00e1n\u00ed"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sip_port": "Port SIP"
+                }
+            }
+        }
+    }
+}

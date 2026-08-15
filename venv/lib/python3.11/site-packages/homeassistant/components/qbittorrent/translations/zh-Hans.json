@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "url": "URL",
+                    "username": "\u7528\u6237\u540d",
+                    "verify_ssl": "\u9a8c\u8bc1 SSL \u8bc1\u4e66"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "transmission_status": {
+                "state": {
+                    "idle": "\u7a7a\u95f2"
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "\u4f7f\u7528 YAML \u914d\u7f6e qBittorrent \u5373\u5c06\u88ab\u79fb\u9664\u3002 \n\n\u60a8\u73b0\u6709\u7684 YAML \u914d\u7f6e\u5df2\u81ea\u52a8\u5bfc\u5165\u5230 UI \u4e2d\u3002 \n\n\u4ece configuration.yaml \u6587\u4ef6\u4e2d\u5220\u9664 qBittorrent YAML \u914d\u7f6e\u5e76\u91cd\u65b0\u542f\u52a8 Home Assistant \u4ee5\u89e3\u51b3\u6b64\u95ee\u9898\u3002",
+            "title": "qBittorrent YAML \u914d\u7f6e\u5373\u5c06\u88ab\u79fb\u9664"
+        }
+    }
+}

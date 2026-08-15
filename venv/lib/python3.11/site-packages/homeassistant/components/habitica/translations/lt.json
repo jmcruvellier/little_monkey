@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paskyra jau sukonfig\u016bruota"
+        },
+        "error": {
+            "invalid_credentials": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API raktas",
+                    "api_user": "Habitica API vartotojo ID",
+                    "name": "Habitica vartotojo vardo nepaisymas. Bus naudojamas serviso skambu\u010diams",
+                    "url": "URL"
+                },
+                "description": "Prijunkite savo Habitica profil\u012f, kad gal\u0117tum\u0117te steb\u0117ti savo vartotojo profil\u012f ir u\u017eduotis. Atminkite, kad api_id ir api_key turi b\u016bti gauti i\u0161 https://habitica.com/user/settings/api"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Skambina Habitica API.",
+            "fields": {
+                "args": {
+                    "description": "Bet kokie papildomi JSON arba URL parametro argumentai. \u017dr. apidoc nurodyt\u0105 keli\u0105. Pavyzdyje naudojamas tas pats API galutinis ta\u0161kas.",
+                    "name": "Args"
+                },
+                "name": {
+                    "description": "Habitica vartotojo vardas skambinti.",
+                    "name": "Vardas"
+                },
+                "path": {
+                    "description": "Elementai i\u0161 API URL masyvo forma, kurio pabaigoje pridedamas metodas. Kreipkit\u0117s \u012f https://habitica.com/apidoc/. Pavyzdys naudoja https://habitica.com/apidoc/#api-Task-CreateUserTasks.",
+                    "name": "Kelias"
+                }
+            },
+            "name": "API pavadinimas"
+        }
+    }
+}

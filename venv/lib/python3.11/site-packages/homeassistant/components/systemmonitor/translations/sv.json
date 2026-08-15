@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Tj\u00e4nsten \u00e4r redan konfigurerad"
+        },
+        "step": {
+            "user": {
+                "description": "Tryck p\u00e5 skicka f\u00f6r initial installation. I den skapade konfigurationsposten trycker du p\u00e5 Konfigurera f\u00f6r att l\u00e4gga till sensorer f\u00f6r valda processer"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "process": "Processer att l\u00e4gga till som sensor(er)"
+                },
+                "data_description": {
+                    "process": "V\u00e4lj en p\u00e5g\u00e5ende process fr\u00e5n listan eller l\u00e4gg till ett eget v\u00e4rde. Flera val/egna v\u00e4rden st\u00f6ds"
+                },
+                "description": "Konfigurera en \u00f6vervakningssensor f\u00f6r en p\u00e5g\u00e5ende process"
+            }
+        }
+    }
+}

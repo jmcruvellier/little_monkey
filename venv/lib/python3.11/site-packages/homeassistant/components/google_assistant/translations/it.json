@@ -1,0 +1,21 @@
+{
+    "entity": {
+        "button": {
+            "sync_devices": {
+                "name": "Sincronizza i dispositivi"
+            }
+        }
+    },
+    "services": {
+        "request_sync": {
+            "description": "Invia un comando request_sync a Google.",
+            "fields": {
+                "agent_user_id": {
+                    "description": "Necessario solo per le automazioni. Id utente specifico di Home Assistant (non nome utente, ID in configurazione > utenti > sotto nome utente) da sincronizzare con Google Assistant. Non \u00e8 necessario quando si chiama questo servizio tramite il front-end di Home Assistant o l'API. Utilizzato negli script di automazione o in altri luoghi in cui context.user_id \u00e8 mancante.",
+                    "name": "ID utente agente"
+                }
+            },
+            "name": "Richiedi la sincronizzazione"
+        }
+    }
+}

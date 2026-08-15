@@ -1,0 +1,188 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "no_devices_found": "Tinkle nerasta joki\u0173 \u012frengini\u0173",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "cannot_connect": "Ry\u0161io klaida: {error}",
+            "invalid_auth": "Neteisingas autentifikavimas: {error}"
+        },
+        "flow_title": "{name} {model} ( {host} )",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "username": "Prisijungimos vardas"
+                },
+                "description": "\u012erenginiui reikalingas autentifikavimas. Toliau \u012fveskite savo TP-Link kredencialus.",
+                "title": "Autentifikuoti"
+            },
+            "discovery_confirm": {
+                "description": "Ar norite nustatyti {name} {model} ( {host} )?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "\u012erenginys"
+                }
+            },
+            "reauth": {
+                "description": "\u012erenginiui reikalingas autentifikavimas. Toliau \u012fveskite savo TP-Link kredencialus.",
+                "title": "Baig\u0117si {name} autentifikavimo galiojimas"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "username": "Prisijungimos vardas"
+                },
+                "description": "\u012erenginiui reikalingas autentifikavimas. Toliau \u012fveskite savo TP-Link kredencialus.",
+                "title": "Baig\u0117si {name} autentifikavimo galiojimas"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "J\u016bs\u0173 TP-Link \u012frenginio pagrindinio kompiuterio pavadinimas arba IP adresas."
+                },
+                "description": "Jei paliksite pagrindin\u012f kompiuter\u012f tu\u0161\u010di\u0105, aptikimas bus naudojamas \u012frenginiams rasti."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "username": "Prisijungimos vardas"
+                },
+                "description": "\u012erenginiui reikalingas autentifikavimas. Toliau \u012fveskite savo TP-Link kredencialus.",
+                "title": "Autentifikuoti"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_child": {
+                "name": "{device_name} dabartinis"
+            },
+            "current_consumption": {
+                "name": "Dabartinis suvartojimas"
+            },
+            "current_consumption_child": {
+                "name": "{device_name} dabartinis suvartojimas"
+            },
+            "today_consumption": {
+                "name": "\u0160iandieninis vartojimas"
+            },
+            "today_consumption_child": {
+                "name": "{device_name} \u0161iandienos suvartojimas"
+            },
+            "total_consumption": {
+                "name": "Bendras suvartojimas"
+            },
+            "total_consumption_child": {
+                "name": "{device_name} bendras suvartojimas"
+            },
+            "voltage_child": {
+                "name": "{device_name} \u012ftampa"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "Nustato atsitiktin\u012f efekt\u0105.",
+            "fields": {
+                "backgrounds": {
+                    "description": "HSV sek\u0173 s\u0105ra\u0161as (maks. 16).",
+                    "name": "Fonai"
+                },
+                "brightness": {
+                    "description": "Pradinis ry\u0161kumas.",
+                    "name": "Ry\u0161kumas"
+                },
+                "brightness_range": {
+                    "description": "Ry\u0161kumo diapazonas.",
+                    "name": "Ry\u0161kumo diapazonas"
+                },
+                "duration": {
+                    "description": "Trukm\u0117.",
+                    "name": "Trukm\u0117"
+                },
+                "fadeoff": {
+                    "description": "I\u0161nyksta.",
+                    "name": "I\u0161nyksta"
+                },
+                "hue_range": {
+                    "description": "Atspalvi\u0173 diapazonas.",
+                    "name": "Atspalvi\u0173 diapazonas"
+                },
+                "init_states": {
+                    "description": "Pradin\u0117 HSV seka.",
+                    "name": "Pradin\u0117s b\u016bsenos"
+                },
+                "random_seed": {
+                    "description": "Atsitiktin\u0117 s\u0117kla.",
+                    "name": "Atsitiktin\u0117 s\u0117kla"
+                },
+                "saturation_range": {
+                    "description": "Prisotinimo diapazonas.",
+                    "name": "Sodrumo diapazonas"
+                },
+                "segments": {
+                    "description": "Segment\u0173 s\u0105ra\u0161as (0 visiems).",
+                    "name": "Segmentai"
+                },
+                "transition": {
+                    "description": "Per\u0117jimas.",
+                    "name": "Per\u0117jimas"
+                },
+                "transition_range": {
+                    "description": "Per\u0117jimo diapazonas.",
+                    "name": "Per\u0117jimo diapazonas"
+                }
+            },
+            "name": "Atsitiktinis efektas"
+        },
+        "sequence_effect": {
+            "description": "Nustato sekos efekt\u0105.",
+            "fields": {
+                "brightness": {
+                    "description": "Pradinis ry\u0161kumas.",
+                    "name": "Ry\u0161kumas"
+                },
+                "direction": {
+                    "description": "Kryptis.",
+                    "name": "Kryptis"
+                },
+                "duration": {
+                    "description": "Trukm\u0117.",
+                    "name": "Trukm\u0117"
+                },
+                "repeat_times": {
+                    "description": "Pakartojimai (0 nuolatiniam).",
+                    "name": "Pakartojimai"
+                },
+                "segments": {
+                    "description": "Segment\u0173 s\u0105ra\u0161as (0 visiems).",
+                    "name": "Segmentai"
+                },
+                "sequence": {
+                    "description": "HSV sek\u0173 s\u0105ra\u0161as (maks. 16).",
+                    "name": "Seka"
+                },
+                "spread": {
+                    "description": "Plitimo greitis.",
+                    "name": "Plisti"
+                },
+                "transition": {
+                    "description": "Per\u0117jimas.",
+                    "name": "Per\u0117jimas"
+                }
+            },
+            "name": "Sekos efektas"
+        }
+    }
+}

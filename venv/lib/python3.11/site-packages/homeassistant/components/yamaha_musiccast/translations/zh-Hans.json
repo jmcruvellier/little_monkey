@@ -1,0 +1,60 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "yxc_control_url_missing": "ssdp \u63cf\u8ff0\u4e2d\u672a\u7ed9\u51fa\u63a7\u5236 URL\u3002"
+        },
+        "error": {
+            "no_musiccast_device": "\u8be5\u8bbe\u5907\u4f3c\u4e4e\u4e0d\u662f MusicCast \u8bbe\u5907\u3002"
+        },
+        "flow_title": "MusicCast: {name}",
+        "step": {
+            "confirm": {
+                "description": "\u60a8\u8981\u5f00\u59cb\u8bbe\u7f6e\u5417\uff1f"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                },
+                "description": "\u8bbe\u7f6e MusicCast \u4ee5\u4e0e Home Assistant \u96c6\u6210\u3002"
+            }
+        }
+    },
+    "entity": {
+        "select": {
+            "dimmer": {
+                "state": {
+                    "auto": "\u81ea\u52a8"
+                }
+            },
+            "zone_equalizer_mode": {
+                "state": {
+                    "auto": "\u81ea\u52a8",
+                    "bypass": "\u65c1\u8def",
+                    "manual": "\u624b\u52a8\u6a21\u5f0f"
+                }
+            },
+            "zone_sleep": {
+                "state": {
+                    "120_min": "120\u5206\u949f",
+                    "30_min": "30\u5206\u949f",
+                    "60_min": "60\u5206\u949f",
+                    "90_min": "90 \u5206\u949f",
+                    "off": "\u5173\u95ed"
+                }
+            },
+            "zone_surr_decoder_type": {
+                "state": {
+                    "toggle": "\u5207\u6362"
+                }
+            },
+            "zone_tone_control_mode": {
+                "state": {
+                    "auto": "\u81ea\u52a8",
+                    "bypass": "\u65c1\u8def",
+                    "manual": "\u624b\u52a8\u6a21\u5f0f"
+                }
+            }
+        }
+    }
+}

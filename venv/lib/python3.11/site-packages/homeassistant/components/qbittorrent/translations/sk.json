@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9"
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_auth": "Neplatn\u00e9 overenie"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Heslo",
+                    "url": "URL",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno",
+                    "verify_ssl": "Overi\u0165 SSL certifik\u00e1t"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "active_torrents": {
+                "name": "Akt\u00edvne torrenty"
+            },
+            "all_torrents": {
+                "name": "V\u0161etky torrenty"
+            },
+            "download_speed": {
+                "name": "R\u00fdchlos\u0165 s\u0165ahovania"
+            },
+            "inactive_torrents": {
+                "name": "Neakt\u00edvne torrenty"
+            },
+            "paused_torrents": {
+                "name": "Pozastaven\u00e9 torrenty"
+            },
+            "transmission_status": {
+                "name": "Stav",
+                "state": {
+                    "downloading": "S\u0165ahovanie",
+                    "idle": "Ne\u010dinn\u00e1",
+                    "seeding": "Posielanie",
+                    "up_down": "Up/Down"
+                }
+            },
+            "upload_speed": {
+                "name": "R\u00fdchlos\u0165 odosielania"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Konfigur\u00e1cia qBittorrent pomocou YAML sa odstra\u0148uje. \n\n Va\u0161a existuj\u00faca konfigur\u00e1cia YAML bola importovan\u00e1 do pou\u017e\u00edvate\u013esk\u00e9ho rozhrania automaticky. \n\n Odstr\u00e1\u0148te konfigur\u00e1ciu qBittorrent YAML zo s\u00faboru configuration.yaml a re\u0161tartujte Home Assistant, aby ste tento probl\u00e9m vyrie\u0161ili.",
+            "title": "Konfigur\u00e1cia qBittorrent YAML sa odstra\u0148uje"
+        }
+    }
+}

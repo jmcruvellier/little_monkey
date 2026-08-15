@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Slu\u017eba {domain}.{service} s n\u00e1zvom slu\u017eba {child_domain}. {child_service}, ktor\u00e1 sa nena\u0161la."
+        }
+    }
+}

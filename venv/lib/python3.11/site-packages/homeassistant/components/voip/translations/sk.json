@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "U\u017e je nakonfigurovan\u00fd. Mo\u017en\u00e1 je len jedna konfigur\u00e1cia."
+        },
+        "error": {
+            "invalid_ip_address": "Neplatn\u00e1 adresa IPv4."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP adresa"
+                },
+                "description": "Prij\u00edmajte hovory Voice over IP na interakciu so slu\u017ebou Assist."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "call_active": {
+                "name": "Hovor akt\u00edvne"
+            },
+            "call_in_progress": {
+                "name": "Prebieha hovor"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assist pipeline",
+                "state": {
+                    "preferred": "Preferovan\u00e9"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Ukon\u010den\u00e1 detekcia hovorenia",
+                "state": {
+                    "aggressive": "Agres\u00edvne",
+                    "default": "Predvolen\u00fd",
+                    "relaxed": "Uvo\u013enen\u00e9"
+                }
+            }
+        },
+        "switch": {
+            "allow_call": {
+                "name": "Povolenie hovorov"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sip_port": "SIP port"
+                }
+            }
+        }
+    }
+}

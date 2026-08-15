@@ -1,0 +1,71 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Konto har redan konfigurerats",
+            "already_in_progress": "Konfigurationsfl\u00f6det p\u00e5g\u00e5r redan",
+            "authorize_url_timeout": "Timeout vid generering av en auktoriserings-URL.",
+            "missing_configuration": "Komponenten har inte konfigurerats. F\u00f6lj dokumentationen.",
+            "missing_credentials": "Integrationen kr\u00e4ver autentiseringsuppgifter f\u00f6r programmet.",
+            "no_url_available": "Ingen webbadress tillg\u00e4nglig. F\u00f6r information om detta fel, [kolla hj\u00e4lpavsnittet]({docs_url})",
+            "oauth_error": "Mottog ogiltiga tokendata.",
+            "oauth_failed": "Fel vid h\u00e4mtning av \u00e5tkomsttoken.",
+            "oauth_timeout": "Timeout vid h\u00e4mtning av OAuth-token.",
+            "oauth_unauthorized": "OAuth-auktoriseringsfel vid h\u00e4mtning av \u00e5tkomsttoken.",
+            "reauth_successful": "\u00c5terautentisering lyckades",
+            "user_rejected_authorize": "Kontol\u00e4nkning avvisades: {error}"
+        },
+        "create_entry": {
+            "default": "Autentisering lyckades"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "V\u00e4lj autentiseringsmetod"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "cutting_blade_usage_time": {
+                "name": "Anv\u00e4ndningstid f\u00f6r sk\u00e4rblad"
+            },
+            "mode": {
+                "name": "L\u00e4ge",
+                "state": {
+                    "demo": "Demo",
+                    "home": "Hemma",
+                    "main_area": "Huvudomr\u00e5de",
+                    "secondary_area": "Sekund\u00e4rt omr\u00e5de"
+                }
+            },
+            "next_start_timestamp": {
+                "name": "N\u00e4sta start"
+            },
+            "number_of_charging_cycles": {
+                "name": "Antal laddningscykler"
+            },
+            "number_of_collisions": {
+                "name": "Antal kollisioner"
+            },
+            "total_charging_time": {
+                "name": "Total laddningstid"
+            },
+            "total_cutting_time": {
+                "name": "Total klipptid"
+            },
+            "total_drive_distance": {
+                "name": "Total k\u00f6rstr\u00e4cka"
+            },
+            "total_running_time": {
+                "name": "Total k\u00f6rtid"
+            },
+            "total_searching_time": {
+                "name": "Total s\u00f6ktid"
+            }
+        },
+        "switch": {
+            "enable_schedule": {
+                "name": "Aktivera schema"
+            }
+        }
+    }
+}

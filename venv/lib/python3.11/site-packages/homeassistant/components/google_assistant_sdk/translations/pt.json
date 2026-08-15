@@ -1,0 +1,46 @@
+{
+    "application_credentials": {
+        "description": "Siga as [instru\u00e7\u00f5es]( {more_info_url} ) para [tela de consentimento do OAuth]( {oauth_consent_url} ) para conceder ao Home Assistant acesso ao SDK do Google Assistant. Voc\u00ea tamb\u00e9m precisa criar credenciais de aplicativo vinculadas \u00e0 sua conta:\n 1. V\u00e1 para [Credenciais]( {oauth_creds_url} ) e clique em **Criar credenciais**.\n 1. Na lista suspensa, selecione **ID do cliente OAuth**.\n 1. Selecione **Aplicativo Web** para o Tipo de Aplicativo. \n\n"
+    },
+    "config": {
+        "abort": {
+            "already_configured": "Conta j\u00e1 configurada",
+            "already_in_progress": "O processo de configura\u00e7\u00e3o j\u00e1 est\u00e1 a decorrer",
+            "cannot_connect": "A liga\u00e7\u00e3o falhou",
+            "invalid_access_token": "Token de acesso inv\u00e1lido",
+            "missing_configuration": "O componente n\u00e3o est\u00e1 configurado. Por favor, siga a documenta\u00e7\u00e3o.",
+            "oauth_error": "Recebido token de autentica\u00e7\u00e3o inv\u00e1lido.",
+            "oauth_timeout": "Excedido o tempo limite para o OAuth token.",
+            "oauth_unauthorized": "Erro de autoriza\u00e7\u00e3o OAuth ao obter o token de acesso.",
+            "reauth_successful": "Reautentica\u00e7\u00e3o bem sucedida",
+            "timeout_connect": "Excedido o tempo limite para estabelecer liga\u00e7\u00e3o",
+            "unknown": "Erro inesperado"
+        },
+        "create_entry": {
+            "default": "Autenticado com sucesso"
+        },
+        "step": {
+            "auth": {
+                "title": "Vincular Conta do Google"
+            },
+            "pick_implementation": {
+                "title": "Escolha o m\u00e9todo de autentica\u00e7\u00e3o"
+            },
+            "reauth_confirm": {
+                "description": "A integra\u00e7\u00e3o do Google Assistant SDK precisa autenticar novamente sua conta",
+                "title": "A autentica\u00e7\u00e3o expirou para {name}"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "enable_conversation_agent": "Iniciar o agente de conversa\u00e7\u00e3o",
+                    "language_code": "C\u00f3digo do idioma"
+                },
+                "description": "Defina o idioma para intera\u00e7\u00f5es com o Google Assistant e se deseja ativar o agente de conversa\u00e7\u00e3o."
+            }
+        }
+    }
+}

@@ -1,0 +1,140 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u9519\u8bef\uff1a{error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_confirm": {
+                "description": "\u60a8\u8981\u8bbe\u7f6e{name} {model} ( {host} ) \u5417\uff1f"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "\u8bbe\u5907"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                },
+                "description": "\u5982\u679c\u5c06\u4e3b\u673a\u7559\u7a7a\uff0c\u5c06\u4f7f\u7528\u53d1\u73b0\u6765\u67e5\u627e\u8bbe\u5907\u3002"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_consumption": {
+                "name": "\u5f53\u524d\u6d88\u8017"
+            },
+            "today_consumption": {
+                "name": "\u4eca\u65e5\u6d88\u8017"
+            },
+            "total_consumption": {
+                "name": "\u603b\u6d88\u8017"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "\u8bbe\u7f6e\u968f\u673a\u6548\u679c\u3002",
+            "fields": {
+                "backgrounds": {
+                    "description": "HSV \u5e8f\u5217\u5217\u8868\uff08\u6700\u591a 16 \u4e2a\uff09\u3002",
+                    "name": "\u80cc\u666f"
+                },
+                "brightness": {
+                    "description": "\u521d\u59cb\u4eae\u5ea6\u3002",
+                    "name": "\u4eae\u5ea6"
+                },
+                "brightness_range": {
+                    "description": "\u4eae\u5ea6\u8303\u56f4\u3002",
+                    "name": "\u4eae\u5ea6\u8303\u56f4"
+                },
+                "duration": {
+                    "description": "\u6301\u7eed\u65f6\u95f4",
+                    "name": "\u6301\u7eed\u65f6\u95f4"
+                },
+                "fadeoff": {
+                    "description": "\u6de1\u51fa\u3002",
+                    "name": "\u6de1\u51fa"
+                },
+                "hue_range": {
+                    "description": "\u989c\u8272\u8303\u56f4\u3002",
+                    "name": "\u989c\u8272\u8303\u56f4"
+                },
+                "init_states": {
+                    "description": "\u521d\u59cb HSV \u5e8f\u5217\u3002",
+                    "name": "\u521d\u59cb\u72b6\u6001"
+                },
+                "random_seed": {
+                    "description": "\u968f\u673a\u79cd\u5b50\u3002",
+                    "name": "\u968f\u673a\u79cd\u5b50"
+                },
+                "saturation_range": {
+                    "description": "\u9971\u548c\u5ea6\u8303\u56f4\u3002",
+                    "name": "\u9971\u548c\u5ea6\u8303\u56f4"
+                },
+                "segments": {
+                    "description": "\u5206\u6bb5\u5217\u8868\uff080 \u8868\u793a\u5168\u90e8\uff09\u3002",
+                    "name": "\u5206\u6bb5"
+                },
+                "transition": {
+                    "description": "\u8fc7\u6e21\u3002",
+                    "name": "\u8fc7\u6e21"
+                },
+                "transition_range": {
+                    "description": "\u8fc7\u6e21\u8303\u56f4\u3002",
+                    "name": "\u8fc7\u6e21\u8303\u56f4"
+                }
+            },
+            "name": "\u968f\u673a\u6548\u679c"
+        },
+        "sequence_effect": {
+            "description": "\u8bbe\u7f6e\u706f\u5149\u5e8f\u5217\u6548\u679c\u3002",
+            "fields": {
+                "brightness": {
+                    "description": "\u521d\u59cb\u4eae\u5ea6\u3002",
+                    "name": "\u4eae\u5ea6"
+                },
+                "direction": {
+                    "description": "\u65b9\u5411\u3002",
+                    "name": "\u65b9\u5411"
+                },
+                "duration": {
+                    "description": "\u6301\u7eed\u65f6\u95f4",
+                    "name": "\u6301\u7eed\u65f6\u95f4"
+                },
+                "repeat_times": {
+                    "description": "\u91cd\u590d\u6b21\u6570\uff080 \u8868\u793a\u8fde\u7eed\u4e0d\u65ad\uff09\u3002",
+                    "name": "\u91cd\u590d\u6b21\u6570"
+                },
+                "segments": {
+                    "description": "\u5206\u6bb5\u5217\u8868\uff080 \u8868\u793a\u5168\u90e8\uff09\u3002",
+                    "name": "\u5206\u6bb5"
+                },
+                "sequence": {
+                    "description": "HSV \u5e8f\u5217\u5217\u8868\uff08\u6700\u591a 16 \u4e2a\uff09\u3002",
+                    "name": "\u989c\u8272\u5e8f\u5217"
+                },
+                "spread": {
+                    "description": "\u4f20\u64ad\u901f\u5ea6\u3002",
+                    "name": "\u4f20\u64ad"
+                },
+                "transition": {
+                    "description": "\u8fc7\u6e21\u3002",
+                    "name": "\u8fc7\u6e21"
+                }
+            },
+            "name": "\u706f\u5149\u5e8f\u5217\u6548\u679c"
+        }
+    }
+}

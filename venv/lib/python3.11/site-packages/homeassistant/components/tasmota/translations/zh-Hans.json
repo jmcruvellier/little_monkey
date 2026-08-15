@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "error": {
+            "invalid_discovery_topic": "\u53d1\u73b0\u4e3b\u9898\u524d\u7f00\u65e0\u6548\u3002"
+        },
+        "step": {
+            "config": {
+                "data": {
+                    "discovery_prefix": "\u53d1\u73b0\u4e3b\u9898\u524d\u7f00"
+                }
+            },
+            "confirm": {
+                "description": "\u60a8\u60f3\u8bbe\u7f6e Tasmota \u5417\uff1f"
+            }
+        }
+    },
+    "issues": {
+        "topic_duplicated": {
+            "description": "\u591a\u4e2a Tasmota \u8bbe\u5907\u6b63\u5728\u5171\u4eab\u4e3b\u9898{topic} \u3002 \n\n\u5b58\u5728\u6b64\u95ee\u9898\u7684 Tasmota \u8bbe\u5907\uff1a {offenders} \u3002",
+            "title": "\u591a\u4e2aTasmota\u8bbe\u5907\u6b63\u5728\u5171\u4eab\u540c\u4e00\u4e2a\u4e3b\u9898"
+        }
+    }
+}

@@ -1,0 +1,122 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_access_token": "\u8bbf\u95ee Token \u65e0\u6548",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "2fa": {
+                "data": {
+                    "2fa": "\u53cc\u91cd\u8ba4\u8bc1\u53e3\u4ee4"
+                },
+                "description": "\u8f93\u5165\u901a\u8fc7\u7535\u5b50\u90ae\u4ef6\u6216\u77ed\u4fe1\u53d1\u9001\u7684 PIN",
+                "title": "\u53cc\u91cd\u8ba4\u8bc1"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "title": "\u4f7f\u7528 Blink \u8d26\u53f7\u767b\u5f55"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "camera_armed": {
+                "name": "\u6444\u50cf\u5934\u5df2\u5e03\u9632"
+            }
+        },
+        "sensor": {
+            "wifi_rssi": {
+                "name": "Wi-Fi RSSI"
+            },
+            "wifi_strength": {
+                "name": "Wi-Fi \u4fe1\u53f7\u5f3a\u5ea6"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "simple_options": {
+                "data": {
+                    "scan_interval": "\u626b\u63cf\u95f4\u9694\uff08\u79d2\uff09"
+                },
+                "description": "\u914d\u7f6e Blink \u96c6\u6210",
+                "title": "Blink\u9009\u9879"
+            }
+        }
+    },
+    "services": {
+        "blink_update": {
+            "description": "\u5f3a\u5236\u5237\u65b0\u3002",
+            "fields": {
+                "device_id": {
+                    "name": "\u8bbe\u5907ID"
+                }
+            },
+            "name": "\u66f4\u65b0"
+        },
+        "save_recent_clips": {
+            "description": "\u5c06\u6240\u6709\u6700\u8fd1\u7684\u89c6\u9891\u526a\u8f91\u4fdd\u5b58\u5230\u672c\u5730\u76ee\u5f55\uff0c\u6587\u4ef6\u683c\u5f0f\u4e3a\u201c %Y% m %d_% H %M% S_ {name} .mp4\u201d\u3002",
+            "fields": {
+                "device_id": {
+                    "name": "\u8bbe\u5907ID"
+                },
+                "file_path": {
+                    "description": "\u53ef\u5199\u8def\u5f84\u7684\u76ee\u5f55\u540d\u79f0\uff08\u76ee\u5f55\u53ef\u80fd\u9700\u8981\u5305\u542b\u5728\u914d\u7f6e\u4e2d\u7684allowlist_external_dirs\u4e2d\uff09\u3002",
+                    "name": "\u8f93\u51fa\u76ee\u5f55"
+                },
+                "name": {
+                    "description": "\u7528\u4e8e\u6293\u53d6\u6700\u8fd1\u526a\u8f91\u7684\u6444\u50cf\u5934\u540d\u79f0\u3002",
+                    "name": "\u540d\u79f0"
+                }
+            },
+            "name": "\u4fdd\u5b58\u6700\u8fd1\u7684\u526a\u8f91"
+        },
+        "save_video": {
+            "description": "\u5c06\u6700\u540e\u5f55\u5236\u7684\u89c6\u9891\u526a\u8f91\u4fdd\u5b58\u5230\u672c\u5730\u6587\u4ef6\u3002",
+            "fields": {
+                "device_id": {
+                    "name": "\u8bbe\u5907ID"
+                },
+                "filename": {
+                    "description": "\u6587\u4ef6\u540d\u5230\u53ef\u5199\u8def\u5f84\uff08\u76ee\u5f55\u53ef\u80fd\u9700\u8981\u5305\u542b\u5728\u914d\u7f6e\u4e2d\u7684allowlist_external_dirs\u4e2d\uff09\u3002",
+                    "name": "\u6587\u4ef6\u540d"
+                },
+                "name": {
+                    "description": "\u8981\u4ece\u4e2d\u6293\u53d6\u89c6\u9891\u7684\u6444\u50cf\u5934\u7684\u540d\u79f0\u3002",
+                    "name": "\u540d\u79f0"
+                }
+            },
+            "name": "\u4fdd\u5b58\u89c6\u9891"
+        },
+        "send_pin": {
+            "description": "\u53d1\u9001\u65b0\u7684 PIN \u7801\u4ee5\u8fdb\u884c 2FA \u95ea\u70c1\u3002",
+            "fields": {
+                "device_id": {
+                    "name": "\u8bbe\u5907ID"
+                },
+                "pin": {
+                    "description": "\u4ece\u7728\u773c\u5904\u6536\u5230 PIN\u3002\u5982\u679c\u60a8\u53ea\u6536\u5230\u9a8c\u8bc1\u7535\u5b50\u90ae\u4ef6\uff0c\u8bf7\u7559\u7a7a\u3002",
+                    "name": "Pin"
+                }
+            },
+            "name": "\u53d1\u9001Pin"
+        },
+        "trigger_camera": {
+            "description": "\u8bf7\u6c42\u6444\u50cf\u5934\u62cd\u6444\u65b0\u56fe\u50cf\u3002",
+            "fields": {
+                "device_id": {
+                    "name": "\u8bbe\u5907ID"
+                }
+            },
+            "name": "\u89e6\u53d1\u6444\u50cf\u5934"
+        }
+    }
+}

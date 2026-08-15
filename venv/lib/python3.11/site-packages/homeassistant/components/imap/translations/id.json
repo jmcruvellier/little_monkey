@@ -1,0 +1,69 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Perangkat sudah dikonfigurasi",
+            "reauth_successful": "Autentikasi ulang berhasil"
+        },
+        "error": {
+            "cannot_connect": "Gagal terhubung",
+            "invalid_auth": "Autentikasi tidak valid",
+            "invalid_charset": "Set karakter yang ditentukan tidak didukung",
+            "invalid_folder": "Folder yang dipilih tidak valid",
+            "invalid_search": "Pencarian yang dipilih tidak valid",
+            "ssl_error": "Terjadi kesalahan SSL. Ubah daftar penyandian SSL dan coba lagi."
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Kata Sandi"
+                },
+                "description": "Kata sandi untuk {username} tidak valid.",
+                "title": "Autentikasi ulang integrasi untuk {name}"
+            },
+            "user": {
+                "data": {
+                    "charset": "Set karakter",
+                    "folder": "Folder",
+                    "password": "Kata Sandi",
+                    "port": "Port",
+                    "search": "Pencarian IMAP",
+                    "server": "Server",
+                    "ssl_cipher_list": "Daftar penyandian SSL (Lanjutan)",
+                    "username": "Nama Pengguna",
+                    "verify_ssl": "Verifikasi sertifikat SSL"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "already_configured": "Entri dengan folder dan opsi pencarian ini sudah ada.",
+            "cannot_connect": "Gagal terhubung",
+            "invalid_auth": "Autentikasi tidak valid",
+            "invalid_charset": "Set karakter yang ditentukan tidak didukung",
+            "invalid_folder": "Folder yang dipilih tidak valid",
+            "invalid_search": "Pencarian yang dipilih tidak valid",
+            "invalid_template": "Templat tidak valid"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "custom_event_data_template": "Templat untuk membuat data acara khusus",
+                    "enable_push": "Aktifkan Push-IMAP jika server mendukungnya. Nonaktifkan jika pembaruan Push-IMAP tidak dapat diandalkan",
+                    "folder": "Folder",
+                    "max_message_size": "Ukuran pesan maks (2048 < ukuran < 30000)",
+                    "search": "Pencarian IMAP"
+                }
+            }
+        }
+    },
+    "selector": {
+        "ssl_cipher_list": {
+            "options": {
+                "intermediate": "Penyandian menengah",
+                "modern": "Penyandian modern",
+                "python_default": "Pengaturan default"
+            }
+        }
+    }
+}

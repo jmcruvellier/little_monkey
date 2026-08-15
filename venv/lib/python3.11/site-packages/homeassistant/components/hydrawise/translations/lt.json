@@ -1,0 +1,48 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paslauga jau sukonfig\u016bruota"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "timeout_connect": "Baig\u0117si ry\u0161io u\u017emezgimo laikas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API raktas"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "watering": {
+                "name": "Laistymas"
+            }
+        },
+        "sensor": {
+            "next_cycle": {
+                "name": "Kitas ciklas"
+            },
+            "watering_time": {
+                "name": "Laistymo laikas"
+            }
+        },
+        "switch": {
+            "auto_watering": {
+                "name": "Automatinis laistymas"
+            },
+            "manual_watering": {
+                "name": "Rankinis laistymas"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue": {
+            "description": "\u201eHydrawise\u201c konfig\u016bravimas naudojant YAML pa\u0161alinamas, ta\u010diau importuojant YAML konfig\u016bracij\u0105 \u012fvyko {error_type} klaida. \n\n \u012esitikinkite, kad ry\u0161ys su \u201eHydrawise\u201c veikia, ir i\u0161 naujo paleiskite \u201eHome Assistant\u201c, kad pabandytum\u0117te dar kart\u0105, arba pa\u0161alinkite \u201eHydrawise YAML\u201c konfig\u016bracij\u0105 i\u0161 failo configuration.yaml ir toliau rankiniu b\u016bdu [nustatykite integracij\u0105] ( {url} ).",
+            "title": "Hydrawise YAML konfig\u016bracijos importavimas nepavyko"
+        }
+    }
+}

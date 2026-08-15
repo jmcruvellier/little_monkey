@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Perangkat sudah dikonfigurasi"
+        },
+        "error": {
+            "already_configured": "Perangkat sudah dikonfigurasi",
+            "cannot_connect": "Gagal terhubung"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Prefiks yang akan digunakan untuk sensor Solar-Log Anda"
+                },
+                "data_description": {
+                    "host": "Nama host atau alamat IP perangkat Solar-Log Anda."
+                },
+                "title": "Tentukan koneksi Solar-Log Anda"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "capacity": {
+                "name": "Kapasitas"
+            },
+            "consumption_yesterday": {
+                "name": "Konsumsi kemarin"
+            },
+            "efficiency": {
+                "name": "Efisiensi"
+            },
+            "power_available": {
+                "name": "Daya tersedia"
+            },
+            "power_dc": {
+                "name": "Daya DC"
+            },
+            "usage": {
+                "name": "Penggunaan"
+            },
+            "voltage_ac": {
+                "name": "Voltase AC"
+            },
+            "voltage_dc": {
+                "name": "Voltase DC"
+            }
+        }
+    }
+}

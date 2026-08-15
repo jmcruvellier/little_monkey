@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "\u751f\u6210\u8bbf\u95ee\u4ee4\u724c\u65f6\u51fa\u73b0\u672a\u77e5\u9519\u8bef",
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "missing_configuration": "\u8be5\u7ec4\u4ef6\u672a\u914d\u7f6e\u3002\u8bf7\u53c2\u9605\u6587\u6863\u3002"
+        },
+        "create_entry": {
+            "default": "\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "follow_link": "\u8bf7\u8bbf\u95ee\u94fe\u63a5\u8fdb\u884c\u8eab\u4efd\u9a8c\u8bc1\uff0c\u7136\u540e\u518d\u6309\u201c\u63d0\u4ea4\u201d",
+            "no_token": "\u672a\u901a\u8fc7 Ambiclimate \u9a8c\u8bc1"
+        },
+        "step": {
+            "auth": {
+                "description": "\u8bf7\u70b9\u51fb\u6b64 [\u94fe\u63a5]( {authorization_url} ) \u5e76**\u5141\u8bb8**\u8bbf\u95ee\u60a8\u7684 Ambiclimate \u8d26\u53f7\uff0c\u7136\u540e\u8fd4\u56de\u5e76\u6309\u4e0b\u9762\u7684 **\u63d0\u4ea4**\u3002\n \uff08\u786e\u4fdd\u6307\u5b9a\u7684\u56de\u8c03 URL \u4e3a{cb_url} \uff09",
+                "title": "\u9a8c\u8bc1 Ambicclimate"
+            }
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "\u53d1\u9001\u8212\u9002\u6a21\u5f0f\u7684\u53cd\u9988\u3002",
+            "fields": {
+                "name": {
+                    "description": "\u5e26\u6709\u8bbe\u5907\u540d\u79f0\u7684\u5b57\u7b26\u4e32\u3002",
+                    "name": "\u8bbe\u5907\u540d\u79f0"
+                },
+                "value": {
+                    "description": "\u53d1\u9001\u4ee5\u4e0b\u4efb\u610f\u8212\u9002\u503c\uff1atoo_hot\u3001too_warm\u3001bit_warm\u3001comfortable\u3001bit_cold\u3001too_cold\u3001freeze\n \u3002",
+                    "name": "\u8212\u9002\u5ea6"
+                }
+            },
+            "name": "\u53d1\u9001\u8212\u9002\u5ea6\u53cd\u9988"
+        },
+        "set_comfort_mode": {
+            "description": "\u5728\u7a7a\u8c03\u4e0a\u542f\u7528\u8212\u9002\u6a21\u5f0f\u3002",
+            "fields": {
+                "name": {
+                    "description": "\u5e26\u6709\u8bbe\u5907\u540d\u79f0\u7684\u5b57\u7b26\u4e32\u3002",
+                    "name": "\u8bbe\u5907\u540d\u79f0"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u8212\u9002\u6a21\u5f0f"
+        },
+        "set_temperature_mode": {
+            "description": "\u5728\u7a7a\u8c03\u4e0a\u542f\u7528\u6e29\u5ea6\u6a21\u5f0f\u3002",
+            "fields": {
+                "name": {
+                    "description": "\u5e26\u6709\u8bbe\u5907\u540d\u79f0\u7684\u5b57\u7b26\u4e32\u3002",
+                    "name": "\u8bbe\u5907\u540d\u79f0"
+                },
+                "value": {
+                    "description": "\u76ee\u6807\u503c\uff08\u6444\u6c0f\u5ea6\uff09\u3002",
+                    "name": "\u6e29\u5ea6"
+                }
+            },
+            "name": "\u8bbe\u5b9a\u6e29\u5ea6\u6a21\u5f0f"
+        }
+    }
+}

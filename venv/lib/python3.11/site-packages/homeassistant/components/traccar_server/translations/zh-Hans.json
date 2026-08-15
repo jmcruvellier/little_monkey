@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u914d\u7f6e"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u672a\u77e5\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "password": "\u5bc6\u7801",
+                    "port": "\u7aef\u53e3",
+                    "ssl": "\u4f7f\u7528SSL\u8bc1\u4e66",
+                    "username": "\u7528\u6237\u540d",
+                    "verify_ssl": "\u9a8c\u8bc1SSL\u8bc1\u4e66"
+                },
+                "data_description": {
+                    "host": "Traccar\u670d\u52a1\u5668\u7684\u4e3b\u673a\u540d\u6216IP\u5730\u5740",
+                    "username": "\u7528\u4e8e\u767b\u5f55Traccar\u670d\u52a1\u5668\u7684\u7528\u6237\u540d\uff08\u7535\u5b50\u90ae\u4ef6\uff09"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "custom_attributes": "\u5b9a\u5236\u5c5e\u6027",
+                    "events": "\u4e8b\u4ef6"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907",
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "step": {
+            "confirm": {
+                "description": "\u60a8\u60f3\u8bbe\u7f6e WeMo \u5417\uff1f"
+            }
+        }
+    },
+    "device_automation": {
+        "trigger_type": {
+            "long_press": "WeMo \u6309\u94ae\u5df2\u6309\u4e0b 2 \u79d2"
+        }
+    },
+    "options": {
+        "error": {
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        }
+    },
+    "services": {
+        "reset_filter_life": {
+            "description": "\u5c06 WeMo \u52a0\u6e7f\u5668\u7684\u6ee4\u7f51\u5bff\u547d\u91cd\u7f6e\u4e3a 100%\u3002",
+            "name": "\u91cd\u7f6e\u6ee4\u7f51\u5bff\u547d"
+        },
+        "set_humidity": {
+            "description": "\u8bbe\u7f6e WeMo \u52a0\u6e7f\u5668\u8bbe\u5907\u7684\u76ee\u6807\u6e7f\u5ea6\u3002",
+            "fields": {
+                "target_humidity": {
+                    "description": "\u76ee\u6807\u6e7f\u5ea6\u3002",
+                    "name": "\u76ee\u6807\u6e7f\u5ea6"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u6e7f\u5ea6"
+        }
+    }
+}

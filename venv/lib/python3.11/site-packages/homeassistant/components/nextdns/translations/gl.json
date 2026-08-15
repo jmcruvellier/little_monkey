@@ -1,0 +1,15 @@
+{
+    "entity": {
+        "switch": {
+            "block_dailymotion": {
+                "name": "Bloquear Dailymotion"
+            },
+            "logs": {
+                "name": "Rexistros"
+            },
+            "web3": {
+                "name": "Web3"
+            }
+        }
+    }
+}

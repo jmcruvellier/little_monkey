@@ -1,0 +1,17 @@
+{
+    "config": {
+        "abort": {
+            "cloud_not_connected": "Ikke forbundet til Home Assistant Cloud.",
+            "single_instance_allowed": "Allerede konfigureret. Kun en enkelt konfiguration mulig."
+        },
+        "create_entry": {
+            "default": "\n\nP\u00e5 Android skal du \u00e5bne [OwnTracks-appen]({android_url}), g\u00e5 til indstillinger -> forbindelse. \u00c6ndre f\u00f8lgende indstillinger:\n - Mode: Private HTTP\n - Host: (v\u00e6rt): {webhook_url}\n - Identifikation:\n   - Brugernavn: `'<Your name>'`\n   - Enheds-ID: `'<Your device name>'`\n\nP\u00e5 iOS skal du \u00e5bne [OwnTracks-appen]({ios_url}), trykke p\u00e5 (i)-ikonet \u00f8verst til venstre -> indstillinger. \u00c6ndre f\u00f8lgende indstillinger:\n - Mode: HTTP\n - URL: {webhook_url}\n - Sl\u00e5 autentificering til\n - UserID: `'<Your name>'`\n\n{secret}\n\nSe [dokumentationen]({docs_url}) for flere oplysninger."
+        },
+        "step": {
+            "user": {
+                "description": "Er du sikker p\u00e5 at du vil konfigurere OwnTracks?",
+                "title": "Konfigurer OwnTracks"
+            }
+        }
+    }
+}

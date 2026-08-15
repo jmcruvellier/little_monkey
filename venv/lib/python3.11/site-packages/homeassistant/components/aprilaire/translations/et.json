@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud"
+        },
+        "error": {
+            "connection_failed": "\u00dchendus nurjus. Kontrolli kas host ja port on \u00f5iged."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                },
+                "data_description": {
+                    "port": "Tavaliselt 7000 v\u00f5i 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "Termostaat"
+            }
+        }
+    }
+}

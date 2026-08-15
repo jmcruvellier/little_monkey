@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9"
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Hostite\u013e"
+                },
+                "data_description": {
+                    "host": "Hostite\u013esk\u00e9 meno alebo IP adresa v\u00e1\u0161ho V2C Trydan EVSE."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "Nab\u00edja sa"
+            },
+            "connected": {
+                "name": "Pripojen\u00e9"
+            },
+            "ready": {
+                "name": "Pripraven\u00e9"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intenzita"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "Energia nab\u00edjania"
+            },
+            "charge_power": {
+                "name": "Nab\u00edjac\u00ed v\u00fdkon"
+            },
+            "charge_time": {
+                "name": "\u010cas nab\u00edjania"
+            },
+            "fv_power": {
+                "name": "Fotovoltaick\u00e1 energia"
+            },
+            "house_power": {
+                "name": "V\u00fdkon domu"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "Dynamick\u00e1 modul\u00e1cia intenzity"
+            },
+            "locked": {
+                "name": "Uzamkn\u00fa\u0165 EVSE"
+            },
+            "pause_dynamic": {
+                "name": "Pozastavi\u0165 modul\u00e1ciu dynamick\u00e9ho riadenia"
+            },
+            "paused": {
+                "name": "Pozastavi\u0165 rel\u00e1ciu"
+            },
+            "timer": {
+                "name": "\u010casova\u010d nab\u00edjacej stanice"
+            }
+        }
+    }
+}

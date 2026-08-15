@@ -1,0 +1,165 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_communicate": "\u65e0\u6cd5\u901a\u8baf",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "error": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_communicate": "\u65e0\u6cd5\u901a\u8baf",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "other": "\u7a7a\u767d"
+        },
+        "step": {
+            "other": "\u7a7a\u767d",
+            "setup_network": {
+                "data": {
+                    "dsmr_version": "\u9009\u62e9 DSMR \u7248\u672c",
+                    "host": "\u4e3b\u673a",
+                    "port": "\u7aef\u53e3"
+                },
+                "title": "\u9009\u62e9\u8fde\u63a5\u5730\u5740"
+            },
+            "setup_serial": {
+                "data": {
+                    "dsmr_version": "\u9009\u62e9 DSMR \u7248\u672c",
+                    "port": "\u9009\u62e9\u8bbe\u5907"
+                },
+                "title": "\u8bbe\u5907"
+            },
+            "setup_serial_manual_path": {
+                "data": {
+                    "port": "USB \u8bbe\u5907\u8def\u5f84"
+                },
+                "title": "\u8def\u5f84"
+            },
+            "user": {
+                "data": {
+                    "type": "\u8fde\u63a5\u7c7b\u578b"
+                },
+                "title": "\u9009\u62e9\u8fde\u63a5\u7c7b\u578b"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_electricity_delivery": {
+                "name": "\u7535\u529b\u751f\u4ea7"
+            },
+            "current_electricity_usage": {
+                "name": "\u529f\u8017"
+            },
+            "electricity_active_tariff": {
+                "name": "\u6709\u6548\u8d44\u8d39",
+                "state": {
+                    "low": "\u4f4e",
+                    "normal": "\u6b63\u5e38"
+                }
+            },
+            "electricity_delivered_tariff_1": {
+                "name": "\u80fd\u6e90\u751f\u4ea7\uff08\u5173\u7a0e1\uff09"
+            },
+            "electricity_delivered_tariff_2": {
+                "name": "\u80fd\u6e90\u751f\u4ea7\uff08\u5173\u7a0e2\uff09"
+            },
+            "electricity_exported_total": {
+                "name": "\u80fd\u6e90\u4ea7\u91cf\uff08\u603b\u8ba1\uff09"
+            },
+            "electricity_imported_total": {
+                "name": "\u80fd\u6e90\u6d88\u8017\uff08\u603b\u8ba1\uff09"
+            },
+            "electricity_tariff": {
+                "state": {
+                    "low": "\u4f4e",
+                    "normal": "\u6b63\u5e38"
+                }
+            },
+            "electricity_used_tariff_1": {
+                "name": "\u80fd\u6e90\u6d88\u8017\uff08\u8d39\u73871\uff09"
+            },
+            "electricity_used_tariff_2": {
+                "name": "\u80fd\u6e90\u6d88\u8017\uff08\u8d39\u73872\uff09"
+            },
+            "gas_meter_reading": {
+                "name": "\u8017\u6c14\u91cf"
+            },
+            "instantaneous_active_power_l1_negative": {
+                "name": "\u53d1\u7535\u9636\u6bb5L1"
+            },
+            "instantaneous_active_power_l1_positive": {
+                "name": "L1\u9636\u6bb5\u529f\u8017"
+            },
+            "instantaneous_active_power_l2_negative": {
+                "name": "L2\u76f8\u751f\u4ea7\u529f\u7387"
+            },
+            "instantaneous_active_power_l2_positive": {
+                "name": "L2\u76f8\u6d88\u8017\u529f\u7387"
+            },
+            "instantaneous_active_power_l3_negative": {
+                "name": "L3\u76f8\u751f\u4ea7\u529f\u7387"
+            },
+            "instantaneous_active_power_l3_positive": {
+                "name": "L3\u76f8\u6d88\u8017\u529f\u7387"
+            },
+            "instantaneous_current_l1": {
+                "name": "L1\u76f8\u7535\u6d41"
+            },
+            "instantaneous_current_l2": {
+                "name": "L2\u76f8\u7535\u6d41"
+            },
+            "instantaneous_current_l3": {
+                "name": "L3\u76f8\u7535\u6d41"
+            },
+            "instantaneous_voltage_l1": {
+                "name": "L1\u76f8\u7535\u538b"
+            },
+            "instantaneous_voltage_l2": {
+                "name": "L2\u76f8\u7535\u538b"
+            },
+            "instantaneous_voltage_l3": {
+                "name": "L3\u76f8\u7535\u538b"
+            },
+            "long_power_failure_count": {
+                "name": "\u957f\u65f6\u505c\u7535\u8ba1\u6570"
+            },
+            "max_current_per_phase": {
+                "name": "\u6bcf\u76f8\u6700\u5927\u7535\u6d41"
+            },
+            "max_power_per_phase": {
+                "name": "\u6bcf\u76f8\u6700\u5927\u529f\u7387"
+            },
+            "short_power_failure_count": {
+                "name": "\u77ed\u65f6\u505c\u7535\u8ba1\u6570"
+            },
+            "voltage_sag_l1_count": {
+                "name": "\u7535\u538b\u8dcc\u843d\u9636\u6bb5 L1"
+            },
+            "voltage_sag_l2_count": {
+                "name": "\u7535\u538b\u8dcc\u843d\u9636\u6bb5 L2"
+            },
+            "voltage_sag_l3_count": {
+                "name": "\u7535\u538b\u8dcc\u843d\u9636\u6bb5 L3"
+            },
+            "voltage_swell_l1_count": {
+                "name": "\u7535\u538b\u9aa4\u5347\u9636\u6bb5 L1"
+            },
+            "voltage_swell_l2_count": {
+                "name": "\u7535\u538b\u9aa4\u5347\u9636\u6bb5 L2"
+            },
+            "voltage_swell_l3_count": {
+                "name": "\u7535\u538b\u9aa4\u5347\u9636\u6bb5 L3"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "time_between_update": "\u5b9e\u4f53\u66f4\u65b0\u4e4b\u95f4\u7684\u6700\u77ed\u65f6\u95f4 [s]"
+                },
+                "title": "DSMR \u9009\u9879"
+            }
+        }
+    }
+}

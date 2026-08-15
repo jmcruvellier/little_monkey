@@ -1,0 +1,93 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9"
+        },
+        "error": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9",
+            "cannot_connect": "Nepodarilo sa pripoji\u0165"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Hostite\u013e",
+                    "name": "Prefix, ktor\u00fd sa m\u00e1 pou\u017ei\u0165 pre va\u0161e senzory Solar-Log"
+                },
+                "data_description": {
+                    "host": "N\u00e1zov hostite\u013ea alebo IP adresa v\u00e1\u0161ho zariadenia Solar-Log."
+                },
+                "title": "Definujte svoje pripojenie Solar-Log"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "alternator_loss": {
+                "name": "Strata altern\u00e1tora"
+            },
+            "capacity": {
+                "name": "Kapacita"
+            },
+            "consumption_ac": {
+                "name": "Spotreba AC"
+            },
+            "consumption_day": {
+                "name": "Spotreba de\u0148"
+            },
+            "consumption_month": {
+                "name": "Spotreba mesiac"
+            },
+            "consumption_total": {
+                "name": "Spotreba celkov\u00e1"
+            },
+            "consumption_year": {
+                "name": "Rok spotreby"
+            },
+            "consumption_yesterday": {
+                "name": "Spotreba v\u010dera"
+            },
+            "efficiency": {
+                "name": "Efekt\u00edvnos\u0165"
+            },
+            "last_update": {
+                "name": "Posledn\u00e1 aktualiz\u00e1cia"
+            },
+            "power_ac": {
+                "name": "Nap\u00e1janie striedav\u00fdm pr\u00fadom"
+            },
+            "power_available": {
+                "name": "Nap\u00e1janie k dispoz\u00edcii"
+            },
+            "power_dc": {
+                "name": "Nap\u00e1janie jednosmern\u00fdm pr\u00fadom"
+            },
+            "total_power": {
+                "name": "In\u0161talovan\u00fd \u0161pi\u010dkov\u00fd v\u00fdkon"
+            },
+            "usage": {
+                "name": "Pou\u017eitie"
+            },
+            "voltage_ac": {
+                "name": "Nap\u00e4tie AC"
+            },
+            "voltage_dc": {
+                "name": "Nap\u00e4tie DC"
+            },
+            "yield_day": {
+                "name": "V\u00fdnosy de\u0148"
+            },
+            "yield_month": {
+                "name": "V\u00fdnosy mesiac"
+            },
+            "yield_total": {
+                "name": "V\u00fdnosy spolu"
+            },
+            "yield_year": {
+                "name": "V\u00fdnosy rok"
+            },
+            "yield_yesterday": {
+                "name": "V\u00fdnos v\u010dera"
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "issues": {
+        "deprecated_integration": {
+            "description": "{integration_title} poistetaan, koska `{mailbox}`-alusta poistetaan ja {integration_title} ei tue muita alustoja. Poista `{domain}` -m\u00e4\u00e4ritys configuration.yaml-tiedostosta ja k\u00e4ynnist\u00e4 Home Assistant uudelleen ongelman korjaamiseksi.",
+            "title": "{integration_title} poistetaan"
+        }
+    }
+}

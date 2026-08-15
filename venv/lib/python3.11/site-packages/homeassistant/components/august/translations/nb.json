@@ -1,0 +1,57 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Kontoen er allerede konfigurert",
+            "reauth_successful": "Autentisering p\u00e5 nytt var vellykket"
+        },
+        "error": {
+            "cannot_connect": "Tilkobling mislyktes",
+            "invalid_auth": "Ugyldig godkjenning",
+            "unknown": "Uventet feil"
+        },
+        "step": {
+            "reauth_validate": {
+                "data": {
+                    "brand": "Merke",
+                    "password": "Passord"
+                },
+                "description": "Skriv inn passordet for {username} .",
+                "title": "Godkjenn en August-konto p\u00e5 nytt"
+            },
+            "user_validate": {
+                "data": {
+                    "brand": "Merke",
+                    "login_method": "P\u00e5loggingsmetode",
+                    "password": "Passord",
+                    "username": "Brukernavn"
+                },
+                "description": "Hvis p\u00e5loggingsmetoden er 'e-post', er brukernavnet e-postadressen. Hvis p\u00e5loggingsmetoden er 'telefon', er brukernavn telefonnummeret i formatet '+ NNNNNNNNN'.",
+                "title": "Sett opp en augustkonto"
+            },
+            "validation": {
+                "data": {
+                    "code": "Bekreftelseskode"
+                },
+                "description": "Kontroller {login_method} ({username}) og fyll inn bekreftelseskoden nedenfor",
+                "title": "Totrinnsbekreftelse"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "image_capture": {
+                "name": "Ta bilde"
+            }
+        },
+        "button": {
+            "wake": {
+                "name": "V\u00e5kne"
+            }
+        },
+        "camera": {
+            "camera": {
+                "name": "Kamera"
+            }
+        }
+    }
+}

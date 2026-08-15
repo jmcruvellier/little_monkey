@@ -1,0 +1,16 @@
+{
+    "selector": {
+        "days": {
+            "options": {
+                "fri": "Freed",
+                "holiday": "Fak\u00e2nsjes",
+                "mon": "Moandei",
+                "sat": "Sneon",
+                "sun": "Snein",
+                "thu": "Tongersdei",
+                "tue": "Tiisdei",
+                "wed": "Woansdei"
+            }
+        }
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Warncell ID/N\u00e1zev je ji\u017e nastaven.",
+            "invalid_identifier": "Zadan\u00fd identifik\u00e1tor regionu je neplatn\u00fd."
+        },
+        "error": {
+            "invalid_identifier": "Zadan\u00fd identifik\u00e1tor regionu je neplatn\u00fd."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "Warncell ID nebo n\u00e1zev"
+                },
+                "description": "K identifikaci po\u017eadovan\u00e9ho regionu je vy\u017eadov\u00e1no Warncell ID nebo n\u00e1zev."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "\u00darove\u0148 varov\u00e1n\u00ed p\u0159edem",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Posledn\u00ed aktualizace"
+                    },
+                    "region_id": {
+                        "name": "ID oblasti"
+                    },
+                    "region_name": {
+                        "name": "N\u00e1zev oblasti"
+                    },
+                    "warning_count": {
+                        "name": "Po\u010det varov\u00e1n\u00ed"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Aktu\u00e1ln\u00ed \u00farove\u0148 varov\u00e1n\u00ed",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Posledn\u00ed aktualizace"
+                    },
+                    "region_id": {
+                        "name": "ID oblasti"
+                    },
+                    "region_name": {
+                        "name": "N\u00e1zev oblasti"
+                    },
+                    "warning_count": {
+                        "name": "Po\u010det varov\u00e1n\u00ed"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Nastaven\u00ed varov\u00e1n\u00ed p\u0159ed po\u010das\u00edm Deutscher Wetterdienst (DWD) pomoc\u00ed YAML se odeb\u00edr\u00e1.\n\nVa\u0161e st\u00e1vaj\u00edc\u00ed nastaven\u00ed YAML byla importov\u00e1na do u\u017eivatelsk\u00e9ho rozhran\u00ed automaticky.\n\nOdeberte nastaven\u00ed Deutscher Wetterdienst (DWD) Weather Warnings YAML ze souboru configuration.yaml a restartujte Home Assistanta, abyste tento probl\u00e9m vy\u0159e\u0161ili.",
+            "title": "Nastaven\u00ed Deutscher Wetterdienst (DWD) Weather Warnings YAML se odeb\u00edr\u00e1"
+        }
+    }
+}

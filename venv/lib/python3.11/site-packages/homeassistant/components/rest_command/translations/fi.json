@@ -1,0 +1,19 @@
+{
+    "exceptions": {
+        "client_error": {
+            "message": "Resurssia pyydett\u00e4ess\u00e4 tapahtui virhe"
+        },
+        "decoding_error": {
+            "message": "Palvelimelta saatua vastausta ei voitu purkaa {decoding_type}"
+        },
+        "timeout": {
+            "message": "Aikakatkaisu odotettaessa vastausta palvelimelta"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Lataa uudelleen RESTful-komentoja YAML-konfiguraatiosta.",
+            "name": "Uudelleenlataa"
+        }
+    }
+}

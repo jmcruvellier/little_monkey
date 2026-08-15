@@ -1,0 +1,53 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "clear-night": "Despexado, de noite",
+                "cloudy": "Nubrado",
+                "partlycloudy": "Parcialmente nubrado",
+                "sunny": "Soleado"
+            },
+            "state_attributes": {
+                "wind_speed": {
+                    "name": "Velocidade do vento"
+                },
+                "wind_speed_unit": {
+                    "name": "Unidade de velocidade do vento"
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_weather_forecast": {
+            "title": "A integraci\u00f3n {platform} utiliza predici\u00f3ns obsoletas"
+        },
+        "deprecated_weather_forecast_no_url": {
+            "title": "A integraci\u00f3n personalizada {platform} utiliza previsi\u00f3ns meteorol\u00f3xicas obsoletas"
+        },
+        "deprecated_weather_forecast_url": {
+            "title": "A integraci\u00f3n personalizada {platform} utiliza previsi\u00f3ns meteorol\u00f3xicas obsoletas"
+        }
+    },
+    "selector": {
+        "forecast_type": {
+            "options": {
+                "daily": "Diariamente",
+                "hourly": "Cada hora",
+                "twice_daily": "D\u00faas veces ao d\u00eda"
+            }
+        }
+    },
+    "services": {
+        "get_forecast": {
+            "description": "Obter a predici\u00f3n do tempo.",
+            "fields": {
+                "type": {
+                    "description": "Tipo de predici\u00f3n: diaria, horaria ou d\u00faas veces ao d\u00eda.",
+                    "name": "Tipo de predici\u00f3n"
+                }
+            },
+            "name": "Obter predici\u00f3n"
+        }
+    },
+    "title": "Clima"
+}

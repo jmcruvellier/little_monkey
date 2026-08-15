@@ -1,0 +1,157 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Sikertelen csatlakoz\u00e1s",
+            "invalid_access_token": "\u00c9rv\u00e9nytelen hozz\u00e1f\u00e9r\u00e9si token",
+            "subscription_required": "El\u0151fizet\u00e9s sz\u00fcks\u00e9ges, l\u00e1togasson el ide: {short_url}",
+            "unknown": "V\u00e1ratlan hiba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Hozz\u00e1f\u00e9r\u00e9si token"
+                },
+                "description": "Adjon meg egy hozz\u00e1f\u00e9r\u00e9si tokent innen {url}."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "driver_temp": {
+                "name": "Kl\u00edma",
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "camp": "T\u00e1bor \u00fczemm\u00f3d",
+                            "dog": "Kuty\u00e1s \u00fczemm\u00f3d",
+                            "keep": "Fenntart\u00f3 \u00fczemm\u00f3d",
+                            "off": "Norm\u00e1l"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "battery_power": {
+                "name": "Akkumul\u00e1tor teljes\u00edtm\u00e9ny"
+            },
+            "charge_state_battery_range": {
+                "name": "Akkumul\u00e1tor hat\u00f3t\u00e1vols\u00e1g"
+            },
+            "charge_state_charge_energy_added": {
+                "name": "T\u00f6lt\u00e9ssel hozz\u00e1adott energia"
+            },
+            "charge_state_charge_rate": {
+                "name": "T\u00f6lt\u00e9si sebess\u00e9g"
+            },
+            "charge_state_charger_actual_current": {
+                "name": "T\u00f6lt\u0151\u00e1ram"
+            },
+            "charge_state_charger_power": {
+                "name": "T\u00f6lt\u0151 teljes\u00edtm\u00e9ny"
+            },
+            "charge_state_charger_voltage": {
+                "name": "T\u00f6lt\u0151 fesz\u00fclts\u00e9g"
+            },
+            "charge_state_minutes_to_full_charge": {
+                "name": "Teljes t\u00f6lt\u00e9sig h\u00e1tral\u00e9v\u0151 id\u0151"
+            },
+            "charge_state_usable_battery_level": {
+                "name": "Akkumul\u00e1tor szint"
+            },
+            "climate_state_driver_temp_setting": {
+                "name": "Vezet\u0151 oldali h\u0151m\u00e9rs\u00e9klet be\u00e1ll\u00edt\u00e1sa"
+            },
+            "climate_state_inside_temp": {
+                "name": "Bels\u0151 h\u0151m\u00e9rs\u00e9klet"
+            },
+            "climate_state_outside_temp": {
+                "name": "K\u00fcls\u0151 h\u0151m\u00e9rs\u00e9klet"
+            },
+            "climate_state_passenger_temp_setting": {
+                "name": "Utas oldali h\u0151m\u00e9rs\u00e9klet be\u00e1ll\u00edt\u00e1sa"
+            },
+            "drive_state_active_route_destination": {
+                "name": "C\u00e9l \u00e1llom\u00e1s"
+            },
+            "drive_state_active_route_energy_at_arrival": {
+                "name": "\u00c9rkez\u00e9skor el\u00e9rhet\u0151 t\u00f6lt\u00f6tts\u00e9gi \u00e1llapot"
+            },
+            "drive_state_active_route_miles_to_arrival": {
+                "name": "T\u00e1vols\u00e1g az \u00e9rkez\u00e9sig"
+            },
+            "drive_state_active_route_minutes_to_arrival": {
+                "name": "\u00c9rkez\u00e9sig h\u00e1tral\u00e9v\u0151 id\u0151"
+            },
+            "drive_state_active_route_traffic_minutes_delay": {
+                "name": "Forgalmi k\u00e9s\u00e9s"
+            },
+            "drive_state_power": {
+                "name": "Teljes\u00edtm\u00e9ny"
+            },
+            "drive_state_shift_state": {
+                "name": "V\u00e1lt\u00f3\u00e1ll\u00e1s",
+                "state": {
+                    "d": "D - El\u0151remenet",
+                    "n": "N - \u00dcres",
+                    "p": "P - Parkol\u00f3",
+                    "r": "R - H\u00e1tramenet"
+                }
+            },
+            "drive_state_speed": {
+                "name": "Sebess\u00e9g"
+            },
+            "energy_left": {
+                "name": "Marad\u00e9k energia"
+            },
+            "generator_power": {
+                "name": "Gener\u00e1tor teljes\u00edtm\u00e9ny"
+            },
+            "grid_power": {
+                "name": "H\u00e1l\u00f3zati teljes\u00edtm\u00e9ny"
+            },
+            "grid_services_power": {
+                "name": "H\u00e1l\u00f3zati szolg\u00e1ltat\u00e1sok teljes\u00edtm\u00e9nye"
+            },
+            "load_power": {
+                "name": "Terhel\u00e9si teljes\u00edtm\u00e9ny"
+            },
+            "percentage_charged": {
+                "name": "Felt\u00f6lt\u00e9si sz\u00e1zal\u00e9k"
+            },
+            "solar_power": {
+                "name": "Napenergia"
+            },
+            "total_pack_energy": {
+                "name": "Teljes csomag energia"
+            },
+            "vehicle_state_odometer": {
+                "name": "Kilom\u00e9ter\u00f3ra"
+            },
+            "vehicle_state_tpms_pressure_fl": {
+                "name": "Abroncsnyom\u00e1s els\u0151 bal"
+            },
+            "vehicle_state_tpms_pressure_fr": {
+                "name": "Abroncsnyom\u00e1s els\u0151 jobb"
+            },
+            "vehicle_state_tpms_pressure_rl": {
+                "name": "Abroncsnyom\u00e1s h\u00e1ts\u00f3 bal"
+            },
+            "vehicle_state_tpms_pressure_rr": {
+                "name": "Abroncsnyom\u00e1s h\u00e1ts\u00f3 jobb"
+            },
+            "vin": {
+                "name": "J\u00e1rm\u0171"
+            },
+            "wall_connector_fault_state": {
+                "name": "Hiba\u00e1llapot k\u00f3d"
+            },
+            "wall_connector_power": {
+                "name": "\u00c1ramell\u00e1t\u00e1s"
+            },
+            "wall_connector_state": {
+                "name": "\u00c1llapot k\u00f3d"
+            }
+        }
+    }
+}

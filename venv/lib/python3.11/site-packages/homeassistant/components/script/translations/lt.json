@@ -1,0 +1,53 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Skriptas",
+            "state": {
+                "off": "I\u0161jungta",
+                "on": "\u012ejungta"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Veikian\u010dios automatikos"
+                },
+                "last_action": {
+                    "name": "Paskutinis veiksmas"
+                },
+                "last_triggered": {
+                    "name": "Paskutin\u012f kart\u0105 suaktyvinta"
+                },
+                "max": {
+                    "name": "Maksimalus paleisti scenarijus"
+                },
+                "mode": {
+                    "name": "Vykdymo re\u017eimas",
+                    "state": {
+                        "parallel": "Lygiagretus",
+                        "queued": "Eil\u0117je",
+                        "restart": "Perkrauti",
+                        "single": "Vienas"
+                    }
+                }
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "I\u0161 naujo \u012fkelia visus galimus scenarijus.",
+            "name": "\u012ekelti i\u0161 naujo"
+        },
+        "toggle": {
+            "description": "Perjungti scenarij\u0173. Paleid\u017eia, jei neveikia, kitaip sustabdo.",
+            "name": "Perjungti"
+        },
+        "turn_off": {
+            "description": "Sustabdo vykdom\u0105 scenarij\u0173.",
+            "name": "I\u0161jungti"
+        },
+        "turn_on": {
+            "description": "Vykdo veiksm\u0173 sek\u0105, apibr\u0117\u017et\u0105 scenarijuje.",
+            "name": "\u012ejungti"
+        }
+    },
+    "title": "Skriptas"
+}

@@ -1,0 +1,23 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "cannot_connect": "Kan geen verbinding maken",
+            "invalid_auth": "Ongeldige authenticatie",
+            "unknown": "Onverwachte fout"
+        },
+        "flow_title": "LOQED Touch Smartlock instellen",
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-sleutel",
+                    "api_token": "API-token",
+                    "name": "Naam van je slot in de LOQED app"
+                },
+                "description": "Login op {config_url} en: \n* Maak API-sleutel door te klikken op 'Create' \n* Kopieer het aangemaakte access token."
+            }
+        }
+    }
+}

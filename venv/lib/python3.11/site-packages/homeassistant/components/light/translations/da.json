@@ -1,0 +1,103 @@
+{
+    "device_automation": {
+        "action_type": {
+            "brightness_decrease": "Formindsk lysstyrken p\u00e5 {entity_name}",
+            "brightness_increase": "For\u00f8g lysstyrken p\u00e5 {entity_name}",
+            "flash": "Flash {entity_name}",
+            "toggle": "Skift {entity_name} til/fra",
+            "turn_off": "Sluk {entity_name}",
+            "turn_on": "T\u00e6nd for {entity_name}"
+        },
+        "condition_type": {
+            "is_off": "{entity_name} er fra",
+            "is_on": "{entity_name} er til"
+        },
+        "trigger_type": {
+            "changed_states": "{entity_name} t\u00e6ndte eller slukkede",
+            "turned_off": "{entity_name} slukkede",
+            "turned_on": "{entity_name} t\u00e6ndte"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "name": "Lys",
+            "state": {
+                "off": "Slukket",
+                "on": "T\u00e6ndt"
+            },
+            "state_attributes": {
+                "brightness": {
+                    "name": "Lysstyrke"
+                },
+                "color_mode": {
+                    "name": "Farvetilstand",
+                    "state": {
+                        "brightness": "Kun lysstyrke",
+                        "color_temp": "Farvetemperatur",
+                        "hs": "HS",
+                        "onoff": "T\u00e6ndt/Slukket",
+                        "rgb": "RGB",
+                        "rgbw": "RGBW",
+                        "rgbww": "RGBWW",
+                        "unknown": "Ukendt",
+                        "white": "Hvid",
+                        "xy": "XY"
+                    }
+                },
+                "color_temp": {
+                    "name": "Farvetemperatur (mireds)"
+                },
+                "color_temp_kelvin": {
+                    "name": "Farvetemperatur (Kelvin)"
+                },
+                "effect": {
+                    "name": "Effekt"
+                },
+                "effect_list": {
+                    "name": "Tilg\u00e6ngelige effekter"
+                },
+                "max_color_temp_kelvin": {
+                    "name": "H\u00f8jeste farvetemperatur (Kelvin)"
+                },
+                "max_mireds": {
+                    "name": "H\u00f8jeste farvetemperatur (mireds)"
+                },
+                "min_color_temp_kelvin": {
+                    "name": "Laveste farvetemperatur (Kelvin)"
+                },
+                "min_mireds": {
+                    "name": "Laveste farvetemperatur (mireds)"
+                },
+                "supported_color_modes": {
+                    "name": "Tilg\u00e6ngelige farvetilstande",
+                    "state": {
+                        "brightness": "Kun lysstyrke",
+                        "color_temp": "Farvetemperatur",
+                        "hs": "HS",
+                        "onoff": "T\u00e6ndt/Slukket",
+                        "rgb": "RGB",
+                        "rgbw": "RGBW",
+                        "rgbww": "RGBWW",
+                        "unknown": "Ukendt",
+                        "white": "Hvid",
+                        "xy": "XY"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "{platform}-platformen til {domain}-integrationen underst\u00f8tter ikke platformsops\u00e6tning.\n\nFjern den venligst fra din konfiguration, og genstart Home Assistant for at l\u00f8se dette problem.",
+            "title": "Platformsunderst\u00f8ttelsen er ikke underst\u00f8ttet"
+        }
+    },
+    "selector": {
+        "color_name": {
+            "options": {
+                "homeassistant": "Home Assistant"
+            }
+        }
+    },
+    "title": "Lys"
+}

@@ -1,0 +1,22 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Contul a fost configurat deja"
+        },
+        "error": {
+            "invalid_credentials": "Autentificare nevalid\u0103",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Cheie API",
+                    "api_user": "ID utilizator API Habitica",
+                    "name": "Suprascriere nume de utilizator Habitica. Se va folosi pentru apeluri de servicii",
+                    "url": "URL"
+                },
+                "description": "Conecteaz\u0103-\u021bi profilul Habitica pentru a permite monitorizarea profilelor \u0219i sarcinilor utilizatorului t\u0103u.Re\u021bine c\u0103 api_id \u0219i api_key trebuie ob\u021binute de la https://habitica.com/user/settings/api"
+            }
+        }
+    }
+}

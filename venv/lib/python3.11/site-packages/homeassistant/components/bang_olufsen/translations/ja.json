@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u3059\u3067\u306b\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u307e\u3059\u3002\u8a2d\u5b9a\u3067\u304d\u308b\u306e\u306f1\u3064\u3060\u3051\u3067\u3059\u3002",
+            "already_in_progress": "\u69cb\u6210\u30d5\u30ed\u30fc\u306f\u3059\u3067\u306b\u9032\u884c\u4e2d\u3067\u3059"
+        },
+        "error": {
+            "api_exception": "\u63a5\u7d9a\u306b\u5931\u6557\u3057\u307e\u3057\u305f",
+            "client_connector_error": "\u63a5\u7d9a\u306b\u5931\u6557\u3057\u307e\u3057\u305f",
+            "invalid_ip": "\u7121\u52b9\u306aIPv4\u30a2\u30c9\u30ec\u30b9",
+            "timeout_error": "\u63a5\u7d9a\u306b\u5931\u6557\u3057\u307e\u3057\u305f"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP\u30a2\u30c9\u30ec\u30b9",
+                    "model": "\u30e2\u30c7\u30eb"
+                },
+                "description": "Bang & Olufsen \u30c7\u30d0\u30a4\u30b9\u3092\u624b\u52d5\u3067\u8a2d\u5b9a\u3057\u307e\u3059\u3002"
+            },
+            "zeroconf_confirm": {
+                "description": "{model} - {serial_number} @ {host}\u306e\u69cb\u6210\u3092\u78ba\u8a8d\u3057\u307e\u3059\u3002",
+                "title": "Bang & Olufsen \u30c7\u30d0\u30a4\u30b9\u306e\u30bb\u30c3\u30c8\u30a2\u30c3\u30d7"
+            }
+        }
+    }
+}

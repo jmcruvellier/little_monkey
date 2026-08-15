@@ -1,0 +1,17 @@
+{
+    "config": {
+        "step": {
+            "provision": {
+                "data": {
+                    "password": "Wachtwoord",
+                    "ssid": "SSID"
+                }
+            },
+            "user": {
+                "data": {
+                    "address": "Apparaat"
+                }
+            }
+        }
+    }
+}

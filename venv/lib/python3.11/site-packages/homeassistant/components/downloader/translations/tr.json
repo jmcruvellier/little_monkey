@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "\u0130ndirme konumuna bir dosya indirir.",
+            "fields": {
+                "filename": {
+                    "description": "Dosya ad\u0131n\u0131 belirleyin.",
+                    "name": "Dosya ad\u0131"
+                },
+                "overwrite": {
+                    "description": "Dosyan\u0131n \u00fczerine yaz\u0131l\u0131p yaz\u0131lmayaca\u011f\u0131.",
+                    "name": "\u00dczerine Yaz"
+                },
+                "subdir": {
+                    "description": "Alt dizine indirin.",
+                    "name": "Alt dizin"
+                },
+                "url": {
+                    "description": "\u0130ndirilecek dosyan\u0131n URL'si.",
+                    "name": "URL"
+                }
+            },
+            "name": "Dosyay\u0131 indir"
+        }
+    }
+}

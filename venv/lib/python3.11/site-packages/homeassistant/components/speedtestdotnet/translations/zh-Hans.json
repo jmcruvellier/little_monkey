@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "step": {
+            "user": {
+                "description": "\u60a8\u8981\u5f00\u59cb\u8bbe\u7f6e\u5417\uff1f"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "download": {
+                "name": "\u4e0b\u8f7d"
+            },
+            "ping": {
+                "name": "Ping"
+            },
+            "upload": {
+                "name": "\u4e0a\u4f20"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "server_name": "\u9009\u62e9\u6d4b\u8bd5\u670d\u52a1\u5668"
+                }
+            }
+        }
+    }
+}

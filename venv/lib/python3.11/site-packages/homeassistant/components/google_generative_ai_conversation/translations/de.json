@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_auth": "Ung\u00fcltige Authentifizierung",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-Schl\u00fcssel"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Maximale Anzahl von Token, die als Antwort zur\u00fcckgegeben werden",
+                    "model": "Modell",
+                    "prompt": "Eingabeaufforderung Vorlage",
+                    "temperature": "Temperatur",
+                    "top_k": "Top K",
+                    "top_p": "Top P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Erzeugen von Inhalten aus einer Eingabeaufforderung, die aus Text und optional aus Bildern besteht",
+            "fields": {
+                "image_filename": {
+                    "description": "Bilder",
+                    "example": "/config/www/image.jpg",
+                    "name": "Dateiname des Bildes"
+                },
+                "prompt": {
+                    "description": "Die Eingabeaufforderung",
+                    "example": "Beschreibe, was du auf diesen Bildern siehst:",
+                    "name": "Eingabeaufforderung"
+                }
+            },
+            "name": "Inhalte generieren"
+        }
+    }
+}

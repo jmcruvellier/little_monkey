@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "invalid_auth": "Tuvastamine nurjus",
+            "unknown": "Ootamatu t\u00f5rge"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API v\u00f5ti"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Vastuseks tagastatavate fraaside maksimaalne arv",
+                    "model": "Mudel",
+                    "prompt": "K\u00fcsimuse mall",
+                    "temperature": "Temperatuur",
+                    "top_k": "\u00dclemine K",
+                    "top_p": "\u00dclemine P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Sisu loomine viibast mis koosneb tekstist ja soovi korral piltidest",
+            "fields": {
+                "image_filename": {
+                    "description": "Pildid",
+                    "example": "/config/www/image.jpg",
+                    "name": "Pildi failinimi"
+                },
+                "prompt": {
+                    "description": "Viip",
+                    "example": "Kirjelda mida n\u00e4ed nendel piltidel",
+                    "name": "Viip"
+                }
+            },
+            "name": "Loo sisu"
+        }
+    }
+}

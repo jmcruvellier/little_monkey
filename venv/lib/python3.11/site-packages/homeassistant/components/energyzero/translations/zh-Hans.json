@@ -1,0 +1,46 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "step": {
+            "user": {
+                "description": "\u60a8\u8981\u5f00\u59cb\u8bbe\u7f6e\u5417\uff1f"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "average_price": {
+                "name": "\u5e73\u5747 - \u4eca\u5929"
+            },
+            "current_hour_price": {
+                "name": "\u5f53\u524d\u65f6\u95f4"
+            },
+            "highest_price_time": {
+                "name": "\u6700\u9ad8\u4ef7\u65f6\u95f4 - \u4eca\u5929"
+            },
+            "hours_priced_equal_or_higher": {
+                "name": "\u5c0f\u65f6\u4ef7\u683c\u7b49\u4e8e\u6216\u9ad8\u4e8e\u5f53\u524d\u4ef7\u683c - \u4eca\u5929"
+            },
+            "hours_priced_equal_or_lower": {
+                "name": "\u5c0f\u65f6\u4ef7\u683c\u7b49\u4e8e\u6216\u4f4e\u4e8e\u5f53\u524d\u4ef7\u683c - \u4eca\u5929"
+            },
+            "lowest_price_time": {
+                "name": "\u6700\u4f4e\u4ef7\u65f6\u95f4-\u4eca\u5929"
+            },
+            "max_price": {
+                "name": "\u6700\u9ad8\u4ef7 - \u4eca\u5929"
+            },
+            "min_price": {
+                "name": "\u6700\u4f4e\u4ef7 - \u4eca\u5929"
+            },
+            "next_hour_price": {
+                "name": "\u4e0b\u4e00\u5c0f\u65f6"
+            },
+            "percentage_of_max": {
+                "name": "\u5f53\u524d\u6700\u9ad8\u4ef7\u683c\u7684\u767e\u5206\u6bd4 - \u4eca\u5929"
+            }
+        }
+    }
+}

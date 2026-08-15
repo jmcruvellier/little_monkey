@@ -1,0 +1,17 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "closed": "Zaprto",
+                "home": "Doma",
+                "not_home": "Odsoten",
+                "off": "Izklopljeno",
+                "ok": "V redu",
+                "on": "Vklopljeno",
+                "open": "Odprto",
+                "problem": "Vklopljeno"
+            }
+        }
+    },
+    "title": "Skupina"
+}

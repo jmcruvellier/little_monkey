@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "number": {
+            "motion_sense_timeout": {
+                "name": "Tempo de espera do sensor de movemento"
+            }
+        }
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "nightlight": {
+                "name": "Nakts"
+            }
+        },
+        "light": {
+            "ambilight": {
+                "name": "Ambilight"
+            },
+            "nightlight": {
+                "name": "Nakts"
+            }
+        }
+    }
+}

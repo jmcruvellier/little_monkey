@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "L\u1ed7i kh\u00f4ng x\u00e1c \u0111\u1ecbnh khi t\u1ea1o token truy c\u1eadp."
+        },
+        "create_entry": {
+            "default": "\u0110\u00e3 x\u00e1c th\u1ef1c th\u00e0nh c\u00f4ng"
+        },
+        "error": {
+            "follow_link": "Vui l\u00f2ng theo li\u00ean k\u1ebft v\u00e0 x\u00e1c th\u1ef1c tr\u01b0\u1edbc khi nh\u1ea5n G\u1eedi",
+            "no_token": "Ch\u01b0a \u0111\u01b0\u1ee3c x\u00e1c th\u1ef1c b\u1eb1ng Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Vui l\u00f2ng theo [li\u00ean k\u1ebft]({authorization_url}) v\u00e0 **Cho ph\u00e9p** truy c\u1eadp v\u00e0o t\u00e0i kho\u1ea3n Ambiclimate c\u1ee7a b\u1ea1n, sau \u0111\u00f3 quay l\u1ea1i v\u00e0 nh\u1ea5n **G\u1eedi** b\u00ean d\u01b0\u1edbi.\n(\u0110\u1ea3m b\u1ea3o URL g\u1ecdi l\u1ea1i \u0111\u01b0\u1ee3c ch\u1ec9 \u0111\u1ecbnh l\u00e0 {cb_url})",
+                "title": "X\u00e1c th\u1ef1c Ambiclimate"
+            }
+        }
+    }
+}

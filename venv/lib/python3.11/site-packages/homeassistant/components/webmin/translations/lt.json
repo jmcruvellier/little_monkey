@@ -1,0 +1,54 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "password": "Slapta\u017eodis",
+                    "port": "Prievadas",
+                    "ssl": "Naudoja SSL sertifikat\u0105",
+                    "username": "Prisijungimos vardas",
+                    "verify_ssl": "Patikrinkite SSL sertifikat\u0105"
+                },
+                "description": "\u012eveskite savo egzemplioriaus ry\u0161io informacij\u0105."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "load_15m": {
+                "name": "Apkrova (15 m)"
+            },
+            "load_1m": {
+                "name": "Apkrova (1m)"
+            },
+            "load_5m": {
+                "name": "Apkrova (5 m)"
+            },
+            "mem_free": {
+                "name": "Atmintis nemokamai"
+            },
+            "mem_total": {
+                "name": "Atmintis i\u0161 viso"
+            },
+            "swap_free": {
+                "name": "Keisti nemokamai"
+            },
+            "swap_total": {
+                "name": "Sukeisti i\u0161 viso"
+            }
+        }
+    }
+}

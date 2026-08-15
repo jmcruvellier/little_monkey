@@ -1,0 +1,46 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_auth": "Autenticaci\u00f3 inv\u00e0lida",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Clau API"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "model": "Model",
+                    "prompt": "Plantilla de sol\u00b7licitud",
+                    "temperature": "Temperatura",
+                    "top_k": "K superior",
+                    "top_p": "P superior"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "fields": {
+                "image_filename": {
+                    "description": "Imatges",
+                    "example": "/config/www/imatge.jpg",
+                    "name": "Nom de la imatge"
+                },
+                "prompt": {
+                    "description": "Instrucci\u00f3",
+                    "example": "Descriu el que veus a les imatges:",
+                    "name": "Instrucci\u00f3"
+                }
+            },
+            "name": "Genera contingut"
+        }
+    }
+}

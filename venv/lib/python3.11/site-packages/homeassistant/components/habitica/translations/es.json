@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "La cuenta ya est\u00e1 configurada"
+        },
+        "error": {
+            "invalid_credentials": "Autenticaci\u00f3n no v\u00e1lida",
+            "unknown": "Error inesperado"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Clave API",
+                    "api_user": "ID de usuario de la API de Habitica",
+                    "name": "Anular el nombre de usuario de Habitica. Se utilizar\u00e1 para llamadas de servicio.",
+                    "url": "URL"
+                },
+                "description": "Conecta tu perfil de Habitica para permitir la supervisi\u00f3n del perfil y las tareas de tu usuario. Ten en cuenta que api_id y api_key deben obtenerse de https://habitica.com/user/settings/api"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Llama a la API de Habitica.",
+            "fields": {
+                "args": {
+                    "description": "Cualquier argumento de par\u00e1metro JSON o URL adicional. Ver apidoc mencionado para la ruta. El ejemplo utiliza el mismo extremo de la API.",
+                    "name": "Args"
+                },
+                "name": {
+                    "description": "Nombre de usuario de Habitica para llamar.",
+                    "name": "Nombre"
+                },
+                "path": {
+                    "description": "Elementos de la URL de la API en forma de matriz con un m\u00e9todo adjunto al final. Consulta https://habitica.com/apidoc/. El ejemplo utiliza https://habitica.com/apidoc/#api-Task-CreateUserTasks.",
+                    "name": "Ruta"
+                }
+            },
+            "name": "Nombre de la API"
+        }
+    }
+}

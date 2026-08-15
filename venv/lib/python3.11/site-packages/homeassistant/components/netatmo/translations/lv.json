@@ -1,0 +1,12 @@
+{
+    "config": {
+        "abort": {
+            "reauth_successful": "Atk\u0101rtota autentifik\u0101cija veiksm\u012bga"
+        },
+        "step": {
+            "reauth_confirm": {
+                "title": "Atk\u0101rtoti autentific\u0113t integr\u0101ciju"
+            }
+        }
+    }
+}

@@ -1,0 +1,99 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\uacc4\uc815\uc774 \uc774\ubbf8 \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4",
+            "external_error": "\ub2e4\ub978 \uad6c\uc131 \ub2e8\uacc4\uc5d0\uc11c \uc608\uc678\uc0ac\ud56d\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.",
+            "external_setup": "Logi Circle\uc774 \ub2e4\ub978 \uad6c\uc131 \ub2e8\uacc4\uc5d0\uc11c \uc131\uacf5\uc801\uc73c\ub85c \uad6c\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.",
+            "missing_configuration": "\uad6c\uc131\uc694\uc18c\uac00 \uad6c\uc131\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4. \uc124\uba85\uc11c\ub97c \ucc38\uace0\ud574\uc8fc\uc138\uc694."
+        },
+        "error": {
+            "authorize_url_timeout": "\uc778\uc99d URL \uc0dd\uc131 \uc2dc\uac04\uc774 \ucd08\uacfc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.",
+            "follow_link": "\ud655\uc778\uc744 \ud074\ub9ad\ud558\uae30 \uc804\uc5d0 \ub9c1\ud06c\ub97c \ub530\ub77c \uc778\uc99d\uc744 \ubc1b\uc544\uc8fc\uc138\uc694",
+            "invalid_auth": "\uc778\uc99d\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4"
+        },
+        "step": {
+            "auth": {
+                "description": "\uc544\ub798 \ub9c1\ud06c\ub97c \ud074\ub9ad\ud558\uc5ec Logi Circle \uacc4\uc815\uc5d0 \ub300\ud574 **\ub3d9\uc758**\ud55c \ub2e4\uc74c, \ub2e4\uc2dc \ub3cc\uc544\uc640\uc11c \ud558\ub2e8\uc758 **\ud655\uc778**\uc744 \ud074\ub9ad\ud574\uc8fc\uc138\uc694.\n\n[\ub9c1\ud06c]({authorization_url})",
+                "title": "Logi Circle \uc778\uc99d\ud558\uae30"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "\uacf5\uae09\uc790"
+                },
+                "description": "Logi Circle \uc744 \uc778\uc99d\ud558\uae30 \uc704\ud55c \uc778\uc99d \uacf5\uae09\uc790\ub97c \uc120\ud0dd\ud574\uc8fc\uc138\uc694.",
+                "title": "\uc778\uc99d \uacf5\uae09\uc790"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "\ub9c8\uc9c0\ub9c9 \ud65c\ub3d9"
+            },
+            "recording_mode": {
+                "name": "\ub179\ud654 \ubaa8\ub4dc"
+            },
+            "streaming_mode": {
+                "name": "\uc2a4\ud2b8\ub9ac\ubc0d \ubaa8\ub4dc"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi \uc2e0\ud638 \ubc94\uc8fc"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi \uc2e0\ud638 \uac15\ub3c4"
+            }
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "\uce74\uba54\ub77c\uc758 \ub77c\uc774\ube0c \uc2a4\ud2b8\ub9bc\uc5d0\uc11c \ube44\ub514\uc624\ub97c \ub179\ud654\ud569\ub2c8\ub2e4.",
+            "fields": {
+                "duration": {
+                    "description": "\ub179\ud654 \uae30\uac04",
+                    "name": "\uc9c0\uc18d \uae30\uac04"
+                },
+                "entity_id": {
+                    "description": "\ub179\ud654\ub97c \uc0dd\uc131\ud560 \uad6c\uc131\uc694\uc18c\uc758 \uc774\ub984",
+                    "name": "\uad6c\uc131\uc694\uc18c"
+                },
+                "filename": {
+                    "description": "\ud30c\uc77c \uc774\ub984\uc758 \ud15c\ud50c\ub9bf. \ubcc0\uc218\ub294 entity_id",
+                    "name": "\ud30c\uc77c \uc774\ub984"
+                }
+            },
+            "name": "\uc2e4\uc2dc\uac04 \uc2a4\ud2b8\ub9ac\ubc0d \ub179\ud654"
+        },
+        "livestream_snapshot": {
+            "description": "\uce74\uba54\ub77c\uc758 \uc2e4\uc2dc\uac04 \uc2a4\ud2b8\ub9bc\uc5d0\uc11c \uc2a4\ub0c5\uc0f7\uc744 \ucc0d\uc2b5\ub2c8\ub2e4. \ud544\uc694\ud55c \uacbd\uc6b0 \uce74\uba54\ub77c\ub97c \uc808\uc804 \ubaa8\ub4dc\uc5d0\uc11c \uae68\uc6c1\ub2c8\ub2e4.",
+            "fields": {
+                "entity_id": {
+                    "description": "\uc2a4\ub0c5\uc0f7\uc744 \uc0dd\uc131\ud560 \uad6c\uc131\uc694\uc18c\uc758 \uc774\ub984",
+                    "name": "\uad6c\uc131\uc694\uc18c"
+                },
+                "filename": {
+                    "description": "\ud30c\uc77c \uc774\ub984\uc758 \ud15c\ud50c\ub9bf. \ubcc0\uc218\ub294 entity_id",
+                    "name": "\ud30c\uc77c \uc774\ub984"
+                }
+            },
+            "name": "\ub77c\uc774\ube0c\uc2a4\ud2b8\ub9bc \uc2a4\ub0c5\uc0f7"
+        },
+        "set_config": {
+            "description": "\uad6c\uc131 \uc18d\uc131\uc744 \uc124\uc815\ud569\ub2c8\ub2e4.",
+            "fields": {
+                "entity_id": {
+                    "description": "\uc791\ub3d9 \ubaa8\ub4dc\ub97c \uc801\uc6a9\ud560 \uad6c\uc131\uc694\uc18c\uc758 \uc774\ub984",
+                    "name": "\uad6c\uc131\uc694\uc18c"
+                },
+                "mode": {
+                    "description": "\uc791\ub3d9 \ubaa8\ub4dc. \ud5c8\uc6a9\ub418\ub294 \uac12: LED, RECORDING_MODE",
+                    "name": "\ubaa8\ub4dc"
+                },
+                "value": {
+                    "description": "\uc791\ub3d9 \uac12",
+                    "name": "\uac12"
+                }
+            },
+            "name": "\uad6c\uc131 \uc124\uc815"
+        }
+    }
+}

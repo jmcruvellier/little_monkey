@@ -1,0 +1,12 @@
+{
+    "services": {
+        "dismiss": {
+            "fields": {
+                "target": {
+                    "name": "\u0426\u0435\u043b"
+                }
+            },
+            "name": "\u041e\u0442\u0445\u0432\u044a\u0440\u043b\u044f\u043d\u0435"
+        }
+    }
+}

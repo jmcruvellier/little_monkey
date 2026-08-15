@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas"
+        },
+        "error": {
+            "connection_failed": "Nepavyko prisijungti. Patikrinkite, ar teisingi priegloba ir prievadas."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Prievadas"
+                },
+                "data_description": {
+                    "port": "Paprastai 7000 arba 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "Termostatas"
+            }
+        }
+    }
+}

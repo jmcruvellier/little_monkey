@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Kontoen er allerede konfigurert"
+        },
+        "step": {
+            "discovery_confirm": {
+                "data": {
+                    "password": "Passord"
+                },
+                "description": "Vil du sette opp {name} ( {host} )?"
+            },
+            "user": {
+                "data": {
+                    "host": "Vert",
+                    "password": "Passord"
+                }
+            }
+        }
+    },
+    "services": {
+        "load_url": {
+            "fields": {
+                "url": {
+                    "name": "URL"
+                }
+            }
+        }
+    }
+}

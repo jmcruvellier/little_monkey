@@ -1,0 +1,41 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5730\u70b9\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "destination": "\u76ee\u7684\u5730",
+                    "name": "\u540d\u79f0",
+                    "origin": "\u51fa\u53d1\u5730"
+                },
+                "description": "\u6307\u5b9a\u51fa\u53d1\u5730\u548c\u76ee\u7684\u5730\u65f6\uff0c\u60a8\u53ef\u4ee5\u4ee5\u5730\u5740\u3001\u7eac\u5ea6/\u7ecf\u5ea6\u5750\u6807\u6216 Google \u5730\u70b9 ID \u7684\u5f62\u5f0f\u63d0\u4f9b\u4e00\u4e2a\u6216\u591a\u4e2a\u7531\u7ad6\u7ebf\u5b57\u7b26\u5206\u9694\u7684\u4f4d\u7f6e\u3002\u4f7f\u7528 Google \u5730\u70b9 ID \u6307\u5b9a\u4f4d\u7f6e\u65f6\uff0c\u8be5 ID \u5fc5\u987b\u4ee5\u201cplace_id:\u201d\u4e3a\u524d\u7f00\u3002"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "avoid": "\u907f\u514d",
+                    "language": "\u8bed\u8a00",
+                    "mode": "\u51fa\u884c\u65b9\u5f0f",
+                    "time": "\u65f6\u95f4",
+                    "time_type": "\u65f6\u95f4\u7c7b\u578b",
+                    "traffic_mode": "\u4ea4\u901a\u65b9\u5f0f",
+                    "transit_mode": "\u4ea4\u901a\u65b9\u5f0f",
+                    "transit_routing_preference": "\u516c\u4ea4\u8def\u7ebf\u504f\u597d",
+                    "units": "\u5355\u4f4d"
+                },
+                "description": "\u60a8\u53ef\u4ee5\u9009\u62e9\u6307\u5b9a\u51fa\u53d1\u65f6\u95f4\u6216\u5230\u8fbe\u65f6\u95f4\u3002\u5982\u679c\u6307\u5b9a\u51fa\u53d1\u65f6\u95f4\uff0c\u60a8\u53ef\u4ee5\u8f93\u5165\u201cnow\u201d\u3001Unix \u65f6\u95f4\u6233\u6216 24 \u5c0f\u65f6\u65f6\u95f4\u5b57\u7b26\u4e32\uff0c\u5982\u201c08:00:00\u201d\u3002\u5982\u679c\u6307\u5b9a\u5230\u8fbe\u65f6\u95f4\uff0c\u60a8\u53ef\u4ee5\u4f7f\u7528 Unix \u65f6\u95f4\u6233\u6216 24 \u5c0f\u65f6\u65f6\u95f4\u5b57\u7b26\u4e32\uff0c\u5982\u201c08:00:00\u201d"
+            }
+        }
+    },
+    "title": "Google \u5730\u56fe\u65c5\u884c\u65f6\u95f4"
+}

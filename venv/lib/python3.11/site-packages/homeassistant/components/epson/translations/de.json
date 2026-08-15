@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "powered_off": "Ist der Projektor eingeschaltet? Du musst den Projektor f\u00fcr die Erstkonfiguration einschalten."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Name"
+                },
+                "data_description": {
+                    "host": "Der Hostname oder die IP-Adresse deines Epson-Projektors."
+                }
+            }
+        }
+    },
+    "services": {
+        "select_cmode": {
+            "description": "W\u00e4hlt den Farbmodus des Epson Projektors aus.",
+            "fields": {
+                "cmode": {
+                    "description": "Name des Cmode.",
+                    "name": "Farbmodus"
+                }
+            },
+            "name": "Farbmodus ausw\u00e4hlen"
+        }
+    }
+}

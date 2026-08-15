@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El servicio ya est\u00e1 configurado",
+            "reauth_successful": "La autenticaci\u00f3n se volvi\u00f3 a realizar correctamente"
+        },
+        "error": {
+            "cannot_connect": "No se pudo conectar",
+            "invalid_auth": "Autenticaci\u00f3n no v\u00e1lida"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "api_key": "Clave API"
+                },
+                "description": "Los tokens de la API Tailscale son v\u00e1lidos durante 90 d\u00edas. Puedes crear una nueva clave API de Tailscale en https://login.tailscale.com/admin/settings/authkeys."
+            },
+            "user": {
+                "data": {
+                    "api_key": "Clave API",
+                    "tailnet": "Tailnet"
+                },
+                "description": "Esta integraci\u00f3n supervisa tu red Tailscale, **NO** hace que tu instancia de Home Assistant sea accesible a trav\u00e9s de Tailscale VPN. \n\nPara autenticarse con Tailscale, deber\u00e1s crear una clave de API en {authkeys_url}. \n\nTailnet es el nombre de tu red Tailscale. Puedes encontrarlo en la esquina superior izquierda del Panel de administraci\u00f3n de Tailscale (junto al logotipo de Tailscale)."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "client": {
+                "name": "Cliente"
+            },
+            "client_supports_hair_pinning": {
+                "name": "Compatible con hairpinning"
+            },
+            "client_supports_ipv6": {
+                "name": "Compatible con IPv6"
+            },
+            "client_supports_pcp": {
+                "name": "Compatible con PCP"
+            },
+            "client_supports_pmp": {
+                "name": "Compatible con NAT-PMP"
+            },
+            "client_supports_udp": {
+                "name": "Compatible con UDP"
+            },
+            "client_supports_upnp": {
+                "name": "Compatible con UPnP"
+            }
+        },
+        "sensor": {
+            "expires": {
+                "name": "Expira"
+            },
+            "ip": {
+                "name": "Direcci\u00f3n IP"
+            },
+            "last_seen": {
+                "name": "Visto por \u00faltima vez"
+            }
+        }
+    }
+}

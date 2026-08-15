@@ -1,0 +1,46 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Der Dienst ist bereits konfiguriert",
+            "bad_config": "Anfrage aufgrund fehlerhafter Konfiguration fehlgeschlagen: \u00dcberpr\u00fcfe [Stationboard]({stationboard_url}) f\u00fcr g\u00fcltige Stationen",
+            "cannot_connect": "Verbindung zum Server nicht m\u00f6glich",
+            "unknown": "Ein unbekannter Fehler wurde von python-opendata-transport ausgel\u00f6st"
+        },
+        "error": {
+            "bad_config": "Anfrage aufgrund fehlerhafter Konfiguration fehlgeschlagen: \u00dcberpr\u00fcfe bei [Stationboard]({stationboard_url}), ob deine Stationsnamen g\u00fcltig sind",
+            "cannot_connect": "Verbindung zum Server nicht m\u00f6glich",
+            "unknown": "Ein unbekannter Fehler wurde von python-opendata-transport ausgel\u00f6st"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "from": "Startstation",
+                    "to": "Endstation"
+                },
+                "description": "Gib Start- und Endstation f\u00fcr deine Verbindung an \n\nSuche hier nach g\u00fcltigen Stationen: [Stationboard]({stationboard_url})",
+                "title": "\u00d6ffentliche Verkehrsmittel der Schweiz"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "departure": {
+                "name": "Abfahrt"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue_bad_config": {
+            "description": "Die Konfiguration der \u00f6ffentlichen Verkehrsmittel der Schweiz mit YAML wird entfernt, aber es wurde eine fehlerhafte Konfiguration in deine YAML-Konfiguration importiert.\n\nG\u00fcltige Stationen findest du hier: [Stationboard]({stationboard_url})",
+            "title": "Die Importanfrage f\u00fcr die YAML-Konfiguration der \u00f6ffentlichen Verkehrsmittel der Schweiz ist aufgrund einer fehlerhaften Konfiguration fehlgeschlagen"
+        },
+        "deprecated_yaml_import_issue_cannot_connect": {
+            "description": "Die Konfiguration der \u00f6ffentlichen Verkehrsmittel der Schweiz mit YAML wird entfernt, aber beim Importieren deiner YAML-Konfiguration ist ein Verbindungsfehler aufgetreten. \n\nStelle sicher, dass dein Heimassistent den [OpenData-Server]({opendata_url}) erreichen kann. Falls der Server ausgefallen ist, versuche es sp\u00e4ter erneut.",
+            "title": "Der YAML-Konfigurationsimport der \u00f6ffentlichen Verkehrsmittel der Schweiz kann keine Verbindung zum Server herstellen"
+        },
+        "deprecated_yaml_import_issue_unknown": {
+            "description": "Die Konfiguration der \u00f6ffentlichen Verkehrsmittel der Schweiz mit YAML wird entfernt, aber beim Importieren deiner YAML-Konfiguration ist ein unbekannter Fehler aufgetreten. \n\n\u00dcberpr\u00fcfe deine Konfiguration oder wirf einen Blick in die Dokumentation der Integration.",
+            "title": "Der Import der YAML-Konfiguration f\u00fcr \u00f6ffentliche Verkehrsmittel der Schweiz ist mit einem unbekannten Fehler fehlgeschlagen, der von python-opendata-transport ausgel\u00f6st wurde"
+        }
+    }
+}

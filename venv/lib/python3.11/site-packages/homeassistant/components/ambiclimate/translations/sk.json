@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Nezn\u00e1ma chyba pri generovan\u00ed pr\u00edstupov\u00e9ho tokenu.",
+            "already_configured": "\u00da\u010det je u\u017e nakonfigurovan\u00fd",
+            "missing_configuration": "Komponent nie je nakonfigurovan\u00fd. Postupujte pod\u013ea dokument\u00e1cie."
+        },
+        "create_entry": {
+            "default": "\u00daspe\u0161ne overen\u00e9"
+        },
+        "error": {
+            "follow_link": "Pred stla\u010den\u00edm Odosla\u0165 kliknite na odkaz a overte sa",
+            "no_token": "Neoveren\u00e9 pomocou Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Nasledujte tento [odkaz]({authorization_url}) a **Povoli\u0165** pr\u00edstup k v\u00e1\u0161mu \u00fa\u010dtu Ambiclimate, potom se vr\u00e1\u0165te a stla\u010dte **Odosla\u0165** ni\u017e\u0161ie. \n (Uistite sa, \u017ee zadan\u00e1 adresa URL sp\u00e4tn\u00e9ho volania je {cb_url})",
+                "title": "Overi\u0165 Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "V\u0161etky slu\u017eby Ambiclimate bud\u00fa ukon\u010den\u00e9 k 31. marcu 2024, preto\u017ee spolo\u010dnos\u0165 Ambi Labs ukon\u010d\u00ed svoju \u010dinnos\u0165 a integr\u00e1cia Ambiclimate bude z aplik\u00e1cie Home Assistant odstr\u00e1nen\u00e1.\n\nAk chcete tento probl\u00e9m vyrie\u0161i\u0165, odstr\u00e1\u0148te polo\u017eky integr\u00e1cie z nastavenia aplik\u00e1cie Home Assistant. [Kliknut\u00edm sem zobraz\u00edte existuj\u00face integra\u010dn\u00e9 polo\u017eky Logi Circle]({entries}).",
+            "title": "Integr\u00e1cia syst\u00e9mu Ambiclimate bola zru\u0161en\u00e1 a bude odstr\u00e1nen\u00e1"
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Odo\u0161le sp\u00e4tn\u00fa v\u00e4zbu pre komfortn\u00fd re\u017eim.",
+            "fields": {
+                "name": {
+                    "description": "Re\u0165azec s n\u00e1zvom zariadenia.",
+                    "name": "N\u00e1zov zariadenia"
+                },
+                "value": {
+                    "description": "Po\u0161lite ktor\u00fako\u013evek z nasleduj\u00facich hodn\u00f4t komfortu: too_hot, too_warm, bit_warm, comfort, bit_cold, too_cold, frost.",
+                    "name": "Hodnota pohodlia"
+                }
+            },
+            "name": "Odosla\u0165 sp\u00e4tn\u00fa v\u00e4zbu o pohodl\u00ed"
+        },
+        "set_comfort_mode": {
+            "description": "Zapne komfortn\u00fd re\u017eim klimatiz\u00e1cie.",
+            "fields": {
+                "name": {
+                    "description": "Re\u0165azec s n\u00e1zvom zariadenia.",
+                    "name": "N\u00e1zov zariadenia"
+                }
+            },
+            "name": "Nastavenie komfortn\u00e9ho re\u017eimu"
+        },
+        "set_temperature_mode": {
+            "description": "Zapne teplotn\u00fd re\u017eim na klimatiz\u00e1cii.",
+            "fields": {
+                "name": {
+                    "description": "Re\u0165azec s n\u00e1zvom zariadenia.",
+                    "name": "N\u00e1zov zariadenia"
+                },
+                "value": {
+                    "description": "Cie\u013eov\u00e1 hodnota v stup\u0148och celzia.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavte teplotn\u00fd re\u017eim"
+        }
+    }
+}

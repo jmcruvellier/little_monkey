@@ -1,0 +1,23 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paslauga jau sukonfig\u016bruota"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API raktas",
+                    "latitude": "Platuma",
+                    "longitude": "Ilguma",
+                    "station": "METAR stoties kodas"
+                },
+                "description": "Jei METAR stoties kodas nenurodytas, artimiausiai sto\u010diai surasti bus naudojama platuma ir ilguma. \u0160iuo metu API raktas gali b\u016bti bet koks. Rekomenduojama naudoti galiojant\u012f el. pa\u0161to adres\u0105.",
+                "title": "Prisijunkite prie Nacionalin\u0117s or\u0173 tarnybos"
+            }
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "selector": {
+        "weekday": {
+            "options": {
+                "fri": "F\u00f6studagur",
+                "mon": "M\u00e1nudagur",
+                "sat": "Laugardagur",
+                "sun": "Sunnudagur",
+                "thu": "Fimmtudagur",
+                "tue": "\u00deri\u00f0judagur",
+                "wed": "Mi\u00f0vikudagur"
+            }
+        }
+    }
+}

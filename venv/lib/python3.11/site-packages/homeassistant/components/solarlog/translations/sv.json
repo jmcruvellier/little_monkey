@@ -1,0 +1,90 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad",
+            "cannot_connect": "Det gick inte att ansluta."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "V\u00e4rd",
+                    "name": "Prefixet som ska anv\u00e4ndas f\u00f6r dina Solar-Log sensorer"
+                },
+                "title": "Definiera din Solar-Log-anslutning"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "alternator_loss": {
+                "name": "V\u00e4xelriktare f\u00f6rlust"
+            },
+            "capacity": {
+                "name": "Kapacitet"
+            },
+            "consumption_ac": {
+                "name": "F\u00f6rbrukning AC"
+            },
+            "consumption_day": {
+                "name": "F\u00f6rbrukning dag"
+            },
+            "consumption_month": {
+                "name": "F\u00f6rbrukning m\u00e5nad"
+            },
+            "consumption_total": {
+                "name": "F\u00f6rbrukning Total"
+            },
+            "consumption_year": {
+                "name": "F\u00f6rbrukning \u00e5r"
+            },
+            "consumption_yesterday": {
+                "name": "F\u00f6rbrukning ig\u00e5r"
+            },
+            "efficiency": {
+                "name": "Effektivitet"
+            },
+            "last_update": {
+                "name": "Senast uppdaterad"
+            },
+            "power_ac": {
+                "name": "Effekt AC"
+            },
+            "power_available": {
+                "name": "Effekt tillg\u00e4nglig"
+            },
+            "power_dc": {
+                "name": "Effekt DC"
+            },
+            "total_power": {
+                "name": "Installerad h\u00f6gsta effekt"
+            },
+            "usage": {
+                "name": "Anv\u00e4ndning"
+            },
+            "voltage_ac": {
+                "name": "Sp\u00e4nning AC"
+            },
+            "voltage_dc": {
+                "name": "Sp\u00e4nning DC"
+            },
+            "yield_day": {
+                "name": "Avkastning dag"
+            },
+            "yield_month": {
+                "name": "Avkastning m\u00e5nad"
+            },
+            "yield_total": {
+                "name": "Avkastning totalt"
+            },
+            "yield_year": {
+                "name": "Avkastning \u00e5r"
+            },
+            "yield_yesterday": {
+                "name": "Avkastning ig\u00e5r"
+            }
+        }
+    }
+}

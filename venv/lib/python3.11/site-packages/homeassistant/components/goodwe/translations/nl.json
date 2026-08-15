@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd",
+            "already_in_progress": "De configuratie is momenteel al bezig"
+        },
+        "error": {
+            "connection_error": "Kan geen verbinding maken"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP-adres"
+                },
+                "description": "Verbinden met omvormer",
+                "title": "GoodWe-omvormer"
+            }
+        }
+    },
+    "entity": {
+        "select": {
+            "operation_mode": {
+                "state": {
+                    "backup": "Back-upmodus",
+                    "eco": "Eco-modus",
+                    "eco_charge": "Eco-laadmodus",
+                    "eco_discharge": "Eco-ontladingsmodus",
+                    "general": "Algemene modus",
+                    "peak_shaving": "Peak-shaving-modus"
+                }
+            }
+        }
+    }
+}

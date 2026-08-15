@@ -1,0 +1,33 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Tj\u00e4nsten \u00e4r redan konfigurerad"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "county": "L\u00e4n"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "customers_out": {
+                "name": "Kunder avbrott"
+            },
+            "customers_served": {
+                "name": "Kunder som betj\u00e4nas"
+            },
+            "map_alert": {
+                "name": "Karta varning"
+            },
+            "outage_count": {
+                "name": "Antal avbrott"
+            },
+            "percent_customers_out": {
+                "name": "Procent kunder avbrott"
+            }
+        }
+    }
+}

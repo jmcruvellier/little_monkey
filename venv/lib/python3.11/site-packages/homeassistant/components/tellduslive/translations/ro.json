@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Serviciul este deja configurat",
+            "authorize_url_timeout": "Nu s-a generat URL-ul de autorizare \u00een timp util.",
+            "unknown": "Eroare nea\u0219teptat\u0103",
+            "unknown_authorize_url_generation": "Eroare necunoscut\u0103 la generarea URL-ului de autorizare."
+        },
+        "error": {
+            "invalid_auth": "Autentificare nevalid\u0103"
+        },
+        "step": {
+            "auth": {
+                "description": "Pentru a-\u021bi conecta contul TelldusLive:\n 1. Apas\u0103 pe linkul de mai jos\n 2. Autentific\u0103-te pe Telldus Live\n 3. Autorizeaz\u0103 **{app_name}** (Apas\u0103 **Yes**).\n 4. \u00centoarce-te aici \u0219i apas\u0103 **TRIMITE**.\n\n [Link cont TelldusLive]({auth_url})",
+                "title": "Autentific\u0103-te \u00een TelldusLive"
+            },
+            "user": {
+                "data": {
+                    "host": "Gazd\u0103 (host)"
+                },
+                "title": "Alege endpoint"
+            }
+        }
+    }
+}

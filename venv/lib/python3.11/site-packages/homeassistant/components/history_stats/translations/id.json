@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Memuat ulang sensor statistik riwayat dari konfigurasi YAML.",
+            "name": "Muat Ulang"
+        }
+    }
+}

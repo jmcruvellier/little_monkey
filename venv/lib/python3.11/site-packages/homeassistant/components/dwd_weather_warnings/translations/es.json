@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Warncell ID / nombre ya est\u00e1 configurado.",
+            "invalid_identifier": "El identificador de regi\u00f3n especificado no es v\u00e1lido."
+        },
+        "error": {
+            "invalid_identifier": "El identificador de regi\u00f3n especificado no es v\u00e1lido."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "Warncell ID o nombre"
+                },
+                "description": "Para identificar la regi\u00f3n deseada, se requiere el Warncell ID / nombre."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "Nivel de preaviso",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "\u00daltima actualizaci\u00f3n"
+                    },
+                    "region_id": {
+                        "name": "ID de regi\u00f3n"
+                    },
+                    "region_name": {
+                        "name": "Nombre de la regi\u00f3n"
+                    },
+                    "warning_count": {
+                        "name": "Recuento de advertencias"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Nivel de alerta actual",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "\u00daltima actualizaci\u00f3n"
+                    },
+                    "region_id": {
+                        "name": "ID de regi\u00f3n"
+                    },
+                    "region_name": {
+                        "name": "Nombre de la regi\u00f3n"
+                    },
+                    "warning_count": {
+                        "name": "Recuento de advertencias"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Se va a eliminar la configuraci\u00f3n de Deutscher Wetterdienst (DWD) Weather Warnings mediante YAML. \n\nTu configuraci\u00f3n YAML existente se ha importado a la IU autom\u00e1ticamente. \n\nElimina la configuraci\u00f3n YAML de Deutscher Wetterdienst (DWD) Weather Warnings de tu archivo configuration.yaml y reinicia Home Assistant para solucionar este problema.",
+            "title": "Se va a eliminar la configuraci\u00f3n YAML de Deutscher Wetterdienst (DWD) Weather Warnings"
+        }
+    }
+}

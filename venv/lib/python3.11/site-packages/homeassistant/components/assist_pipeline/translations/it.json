@@ -1,0 +1,25 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "assist_in_progress": {
+                "name": "Assist in corso"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assist pipeline",
+                "state": {
+                    "preferred": "Preferito"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Rilevamento vocale terminato",
+                "state": {
+                    "aggressive": "Aggressivo",
+                    "default": "Predefinito",
+                    "relaxed": "Rilassato"
+                }
+            }
+        }
+    }
+}

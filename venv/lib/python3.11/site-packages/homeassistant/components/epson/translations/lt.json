@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "powered_off": "Ar projektorius \u012fjungtas? Nor\u0117dami prad\u0117ti konfig\u016bruoti, turite \u012fjungti projektori\u0173."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Vardas"
+                },
+                "data_description": {
+                    "host": "Epson projektoriaus pagrindinio kompiuterio pavadinimas arba IP adresas."
+                }
+            }
+        }
+    },
+    "services": {
+        "select_cmode": {
+            "description": "Parenkamas Epson projektoriaus spalv\u0173 re\u017eimas.",
+            "fields": {
+                "cmode": {
+                    "description": "Cmode pavadinimas.",
+                    "name": "Spalv\u0173 re\u017eimas"
+                }
+            },
+            "name": "Pasirinkite spalv\u0173 re\u017eim\u0105"
+        }
+    }
+}

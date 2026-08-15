@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "sensor": {
+            "station": {
+                "name": "PM2.5 reporting station"
+            }
+        }
+    }
+}

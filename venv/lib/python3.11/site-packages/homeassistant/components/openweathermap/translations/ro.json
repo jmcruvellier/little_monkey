@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Loca\u021bia este deja configurat\u0103"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_api_key": "Cheie API nevalid\u0103"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Cheie API",
+                    "language": "Limb\u0103",
+                    "latitude": "Latitudine",
+                    "longitude": "Longitudine",
+                    "mode": "Mod",
+                    "name": "Nume"
+                },
+                "description": "Pentru a genera chei de API, mergi la https://openweathermap.org/appid"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "language": "Limb\u0103",
+                    "mode": "Mod"
+                }
+            }
+        }
+    }
+}

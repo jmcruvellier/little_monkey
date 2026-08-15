@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Postilaatikko poistetaan. Ilmoita siit\u00e4 '{integration_domain}'-integraation tekij\u00e4lle.",
+            "title": "Postilaatikko poistetaan"
+        }
+    },
+    "title": "Postilaatikko"
+}

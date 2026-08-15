@@ -1,0 +1,55 @@
+{
+    "config": {
+        "abort": {
+            "all_student_already_configured": "\u6240\u6709\u5b66\u751f\u5747\u5df2\u6dfb\u52a0\u3002",
+            "already_configured": "\u8be5\u5b66\u751f\u5df2\u88ab\u6dfb\u52a0\u3002",
+            "no_matching_entries": "\u672a\u627e\u5230\u5339\u914d\u7684\u6761\u76ee\uff0c\u8bf7\u4f7f\u7528\u5176\u4ed6\u8d26\u53f7\u6216\u5220\u9664\u8fc7\u65f6\u5b66\u751f\u7684\u96c6\u6210\u3002",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u9519\u8bef - \u8bf7\u68c0\u67e5\u60a8\u7684\u4e92\u8054\u7f51\u8fde\u63a5",
+            "expired_credentials": "\u8fc7\u671f\u51ed\u8bc1 - \u8bf7\u5728 Vulcan \u79fb\u52a8\u5e94\u7528\u7a0b\u5e8f\u6ce8\u518c\u9875\u9762\u4e0a\u521b\u5efa\u65b0\u51ed\u8bc1",
+            "expired_token": "\u4ee4\u724c\u5df2\u8fc7\u671f - \u8bf7\u751f\u6210\u65b0\u4ee4\u724c",
+            "invalid_pin": "PIN \u7801\u65e0\u6548",
+            "invalid_symbol": "\u7b26\u53f7\u65e0\u6548",
+            "invalid_token": "\u4ee4\u724c\u65e0\u6548",
+            "unknown": "\u51fa\u73b0\u672a\u77e5\u7684\u9519\u8bef"
+        },
+        "step": {
+            "add_next_config_entry": {
+                "data": {
+                    "use_saved_credentials": "\u4f7f\u7528\u4fdd\u5b58\u7684\u51ed\u636e"
+                },
+                "description": "\u6dfb\u52a0\u53e6\u4e00\u4e2a\u5b66\u751f\u3002"
+            },
+            "auth": {
+                "data": {
+                    "pin": "Pin",
+                    "region": "\u7b26\u53f7",
+                    "token": "\u4ee4\u724c"
+                },
+                "description": "\u4f7f\u7528\u79fb\u52a8\u5e94\u7528\u7a0b\u5e8f\u6ce8\u518c\u9875\u9762\u767b\u5f55\u60a8\u7684 Vulcan \u8d26\u53f7\u3002"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "pin": "Pin",
+                    "region": "\u7b26\u53f7",
+                    "token": "\u4ee4\u724c"
+                },
+                "description": "\u4f7f\u7528\u79fb\u52a8\u5e94\u7528\u7a0b\u5e8f\u6ce8\u518c\u9875\u9762\u767b\u5f55\u60a8\u7684 Vulcan \u8d26\u53f7\u3002"
+            },
+            "select_saved_credentials": {
+                "data": {
+                    "credentials": "\u767b\u5f55"
+                },
+                "description": "\u9009\u62e9\u4fdd\u5b58\u7684\u51ed\u636e\u3002"
+            },
+            "select_student": {
+                "data": {
+                    "student_name": "\u9009\u62e9\u5b66\u751f"
+                },
+                "description": "\u9009\u62e9\u5b66\u751f\uff0c\u60a8\u53ef\u4ee5\u901a\u8fc7\u518d\u6b21\u6dfb\u52a0\u96c6\u6210\u6765\u6dfb\u52a0\u66f4\u591a\u5b66\u751f\u3002"
+            }
+        }
+    }
+}

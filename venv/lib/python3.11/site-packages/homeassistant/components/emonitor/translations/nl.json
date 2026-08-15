@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "cannot_connect": "Kan geen verbinding maken",
+            "unknown": "Onverwachte fout"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "confirm": {
+                "description": "Wilt u {name} ({host}) instellen?",
+                "title": "SiteSage Emonitor instellen"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "De hostnaam of IP-adres van je SiteSage Emonitor apparaat."
+                }
+            }
+        }
+    }
+}

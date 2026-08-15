@@ -1,0 +1,126 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Der Dienst ist bereits konfiguriert",
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_host": "Ung\u00fcltiger Hostname oder IP-Adresse",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_host": "Ung\u00fcltiger Hostname oder IP-Adresse",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "Hostname oder IP-Adresse deines Vallox-Ger\u00e4ts."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "post_heater": {
+                "name": "Nachheizung"
+            }
+        },
+        "date": {
+            "filter_change_date": {
+                "name": "Datum des Filterwechsels"
+            }
+        },
+        "number": {
+            "supply_air_target_away": {
+                "name": "Zulufttemperatur (Abwesend)"
+            },
+            "supply_air_target_boost": {
+                "name": "Zulufttemperatur (Boost)"
+            },
+            "supply_air_target_home": {
+                "name": "Zulufttemperatur (Zuhause)"
+            }
+        },
+        "sensor": {
+            "cell_state": {
+                "name": "Zustand der Zelle"
+            },
+            "current_profile": {
+                "name": "Aktuelles Profil"
+            },
+            "efficiency": {
+                "name": "Wirkungsgrad"
+            },
+            "exhaust_air": {
+                "name": "Abluft"
+            },
+            "extract_air": {
+                "name": "Luft absaugen"
+            },
+            "extract_fan_speed": {
+                "name": "Geschwindigkeit des Abluftl\u00fcfters"
+            },
+            "fan_speed": {
+                "name": "L\u00fcftergeschwindigkeit"
+            },
+            "optional_air": {
+                "name": "Optionale Luft"
+            },
+            "outdoor_air": {
+                "name": "Au\u00dfenluft"
+            },
+            "remaining_time_for_filter": {
+                "name": "Verbleibende Zeit f\u00fcr den Filter"
+            },
+            "supply_air": {
+                "name": "Zuluft"
+            },
+            "supply_cell_air": {
+                "name": "Zuluft der Zelle"
+            },
+            "supply_fan_speed": {
+                "name": "Geschwindigkeit des Zuluftl\u00fcfters"
+            }
+        },
+        "switch": {
+            "bypass_locked": {
+                "name": "Bypass gesperrt"
+            }
+        }
+    },
+    "services": {
+        "set_profile_fan_speed_away": {
+            "description": "Legt die L\u00fcftergeschwindigkeit des Abwesenheitsprofils fest.",
+            "fields": {
+                "fan_speed": {
+                    "description": "L\u00fcftergeschwindigkeit.",
+                    "name": "L\u00fcftergeschwindigkeit"
+                }
+            },
+            "name": "Stelle die L\u00fcftergeschwindigkeit des Abwesenheitsprofils ein"
+        },
+        "set_profile_fan_speed_boost": {
+            "description": "Legt die L\u00fcftergeschwindigkeit des Boost-Profils fest.",
+            "fields": {
+                "fan_speed": {
+                    "description": "L\u00fcftergeschwindigkeit.",
+                    "name": "L\u00fcftergeschwindigkeit"
+                }
+            },
+            "name": "Stelle die L\u00fcftergeschwindigkeit des Boost-Profils ein"
+        },
+        "set_profile_fan_speed_home": {
+            "description": "Legt die L\u00fcftergeschwindigkeit des Home-Profils fest.",
+            "fields": {
+                "fan_speed": {
+                    "description": "L\u00fcftergeschwindigkeit.",
+                    "name": "L\u00fcftergeschwindigkeit"
+                }
+            },
+            "name": "Stelle die L\u00fcftergeschwindigkeit des Home-Profils ein"
+        }
+    }
+}

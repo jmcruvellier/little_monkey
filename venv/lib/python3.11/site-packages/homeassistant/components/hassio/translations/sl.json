@@ -1,0 +1,56 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "state": {
+                "name": "Delovanje"
+            }
+        },
+        "sensor": {
+            "cpu_percent": {
+                "name": "CPE odstotek"
+            },
+            "disk_free": {
+                "name": "Prosti disk"
+            },
+            "disk_total": {
+                "name": "Skupaj disk"
+            },
+            "disk_used": {
+                "name": "Uporabljen disk"
+            },
+            "memory_percent": {
+                "name": "Odstotek pomnilnika"
+            },
+            "version": {
+                "name": "Verzija"
+            },
+            "version_latest": {
+                "name": "Najnovej\u0161a razli\u010dica"
+            }
+        }
+    },
+    "issues": {
+        "issue_system_multiple_data_disks": {
+            "title": "Zaznanih ve\u010d podatkovnih diskov"
+        },
+        "unsupported_os": {
+            "description": "Sistem ni podprt, ker operacijski sistem, ki se uporablja, ni testiran ali vzdr\u017eevan za uporabo s Supervisorjem. Uporabite povezavo in preglejte kateri operacijski sistemi so podprti in kako to popraviti.",
+            "title": "Nepodprt sistem \u2013 operacijski sistem"
+        }
+    },
+    "system_health": {
+        "info": {
+            "disk_total": "Skupaj na disku",
+            "disk_used": "Uporabljen disk",
+            "docker_version": "Razli\u010dica Dockerja",
+            "healthy": "Zdravo",
+            "host_os": "Gostiteljski operacijski sistem",
+            "installed_addons": "Name\u0161\u010deni dodatki",
+            "supervisor_api": "API nadzornika",
+            "supervisor_version": "Razli\u010dica nadzornika",
+            "supported": "Podprto",
+            "update_channel": "Posodobi kanal",
+            "version_api": "API razli\u010dica"
+        }
+    }
+}

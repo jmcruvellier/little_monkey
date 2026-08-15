@@ -1,0 +1,19 @@
+{
+    "exceptions": {
+        "client_error": {
+            "message": "Ocorreu um erro ao solicitar o recurso"
+        },
+        "decoding_error": {
+            "message": "A resposta do servidor n\u00e3o p\u00f4de ser decodificada como {decoding_type}"
+        },
+        "timeout": {
+            "message": "Atingido o tempo limite enquanto aguarda resposta do servidor"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Recarrega comandos RESTful da configura\u00e7\u00e3o YAML.",
+            "name": "Recarregar"
+        }
+    }
+}

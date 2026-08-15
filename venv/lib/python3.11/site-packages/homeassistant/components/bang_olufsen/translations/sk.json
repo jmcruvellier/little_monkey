@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "U\u017e je nakonfigurovan\u00fd. Mo\u017en\u00e1 je len jedna konfigur\u00e1cia.",
+            "already_in_progress": "Konfigur\u00e1cia u\u017e prebieha"
+        },
+        "error": {
+            "api_exception": "Nepodarilo sa pripoji\u0165",
+            "client_connector_error": "Nepodarilo sa pripoji\u0165",
+            "invalid_ip": "Neplatn\u00e1 adresa IPv4",
+            "timeout_error": "Nepodarilo sa pripoji\u0165"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP adresa",
+                    "model": "Model"
+                },
+                "description": "Manu\u00e1lne nakonfigurujte svoje zariadenie Bang & Olufsen."
+            },
+            "zeroconf_confirm": {
+                "description": "Potvr\u010fte konfigur\u00e1ciu {model} - {serial_number} @ {host}.",
+                "title": "Nastavte zariadenie Bang & Olufsen"
+            }
+        }
+    }
+}

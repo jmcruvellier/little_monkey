@@ -1,0 +1,21 @@
+{
+    "config": {
+        "step": {
+            "email_code": {
+                "data": {
+                    "code": "Email code"
+                }
+            },
+            "region": {
+                "data": {
+                    "code": "Regio"
+                }
+            },
+            "user": {
+                "data": {
+                    "email": "Voer je permobil emailadres in"
+                }
+            }
+        }
+    }
+}

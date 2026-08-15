@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "Montavimas",
+                    "password": "Slapta\u017eodis",
+                    "username": "Prisijungimos vardas"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "air_quality_active": {
+                "name": "Oro kokyb\u0117 aktyvi"
+            }
+        }
+    }
+}

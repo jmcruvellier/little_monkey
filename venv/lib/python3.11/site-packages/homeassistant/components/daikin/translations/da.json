@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheden er allerede konfigureret",
+            "cannot_connect": "Forbindelse mislykkedes"
+        },
+        "error": {
+            "api_password": "Ugyldig godkendelse, brug enten API-n\u00f8gle eller adgangskode.",
+            "cannot_connect": "Forbindelse mislykkedes",
+            "invalid_auth": "Ugyldig godkendelse",
+            "unknown": "Uventet fejl"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-n\u00f8gle",
+                    "host": "V\u00e6rt",
+                    "password": "Adgangskode"
+                },
+                "description": "Indtast IP-adresse p\u00e5 din Daikin AC. \n\nBem\u00e6rk, at API-n\u00f8gle og Adgangskode kun bruges af henholdsvis BRP072Cxx og SKYFi-enheder.",
+                "title": "Konfigurer Daikin AC"
+            }
+        }
+    }
+}

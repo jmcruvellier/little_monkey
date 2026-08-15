@@ -1,0 +1,29 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "water_tank": {
+                "name": "Watertank leeg"
+            }
+        },
+        "number": {
+            "coffee_temp": {
+                "name": "Doeltemperatuur koffie"
+            },
+            "steam_temp": {
+                "name": "Stoomdoeltemperatuur"
+            }
+        },
+        "select": {
+            "prebrew_infusion_select": {
+                "state": {
+                    "disabled": "Uitgeschakeld"
+                }
+            }
+        },
+        "update": {
+            "gateway_firmware": {
+                "name": "Gateway-firmware"
+            }
+        }
+    }
+}

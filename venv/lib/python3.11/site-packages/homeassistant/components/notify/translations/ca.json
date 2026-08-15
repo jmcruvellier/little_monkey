@@ -1,0 +1,26 @@
+{
+    "services": {
+        "notify": {
+            "fields": {
+                "title": {
+                    "name": "T\u00edtol"
+                }
+            },
+            "name": "Envia una notificaci\u00f3"
+        },
+        "persistent_notification": {
+            "fields": {
+                "data": {
+                    "name": "Dades"
+                },
+                "message": {
+                    "name": "Missatge"
+                },
+                "title": {
+                    "name": "T\u00edtol"
+                }
+            }
+        }
+    },
+    "title": "Notificacions"
+}

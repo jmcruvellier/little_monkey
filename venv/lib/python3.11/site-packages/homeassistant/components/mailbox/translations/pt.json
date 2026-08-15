@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "A plataforma da caixa de correio est\u00e1 a ser removida. Comunique o facto ao autor da integra\u00e7\u00e3o personalizada '{integration_domain}'.",
+            "title": "A plataforma da caixa de correio est\u00e1 a ser removida"
+        }
+    },
+    "title": "Caixa de correio"
+}

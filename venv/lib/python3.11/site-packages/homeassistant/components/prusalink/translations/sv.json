@@ -1,0 +1,82 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "invalid_auth": "Ogiltig autentisering",
+            "not_supported": "Endast PrusaLink API v2 st\u00f6ds",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-nyckel",
+                    "host": "V\u00e4rd",
+                    "password": "L\u00f6senord",
+                    "username": "Anv\u00e4ndarnamn"
+                }
+            }
+        }
+    },
+    "entity": {
+        "button": {
+            "cancel_job": {
+                "name": "Avbryt arbetet"
+            },
+            "pause_job": {
+                "name": "Pausa arbetet"
+            },
+            "resume_job": {
+                "name": "\u00c5teruppta arbetet"
+            }
+        },
+        "camera": {
+            "job_preview": {
+                "name": "F\u00f6rhandsvisning"
+            }
+        },
+        "sensor": {
+            "filename": {
+                "name": "Filnamn"
+            },
+            "heatbed_target_temperature": {
+                "name": "V\u00e4rmeb\u00e4dd m\u00e5ltemperatur"
+            },
+            "heatbed_temperature": {
+                "name": "V\u00e4rmeb\u00e4dd temperatur"
+            },
+            "material": {
+                "name": "Material"
+            },
+            "nozzle_target_temperature": {
+                "name": "Munstycke m\u00e5ltemperatur"
+            },
+            "nozzle_temperature": {
+                "name": "Munstycke temperatur"
+            },
+            "print_finish": {
+                "name": "Utskriften \u00e4r f\u00e4rdig"
+            },
+            "print_speed": {
+                "name": "Skriv hastighet"
+            },
+            "print_start": {
+                "name": "Utskrift startas"
+            },
+            "printer_state": {
+                "state": {
+                    "cancelling": "Avbryter",
+                    "idle": "Inaktiv",
+                    "paused": "Pausad",
+                    "pausing": "Pausar",
+                    "printing": "Skriver ut"
+                }
+            },
+            "progress": {
+                "name": "Status"
+            },
+            "z_height": {
+                "name": "Z-h\u00f6jd"
+            }
+        }
+    }
+}

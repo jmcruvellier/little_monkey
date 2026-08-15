@@ -1,0 +1,7 @@
+{
+    "services": {
+        "reconnect": {
+            "description": "Recon\u00e9ctase a todos os Homematic Hubs."
+        }
+    }
+}

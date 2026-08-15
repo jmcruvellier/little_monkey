@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit",
+            "invalid_auth": "Neplatn\u00e9 ov\u011b\u0159en\u00ed",
+            "unknown": "Neo\u010dek\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Kl\u00ed\u010d API"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Maxim\u00e1ln\u00ed po\u010det token\u016f, kter\u00e9 se maj\u00ed vr\u00e1tit jako odpov\u011b\u010f",
+                    "model": "Model",
+                    "prompt": "\u0160ablona dotazu",
+                    "temperature": "Teplota",
+                    "top_k": "Top K",
+                    "top_p": "Top P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Vygeneruje obsah z dotazu sest\u00e1vaj\u00edc\u00ed z textu a voliteln\u011b obr\u00e1zk\u016f.",
+            "fields": {
+                "image_filename": {
+                    "description": "Obr\u00e1zky",
+                    "example": "/config/www/image.jpg",
+                    "name": "N\u00e1zev souboru obr\u00e1zku"
+                },
+                "prompt": {
+                    "description": "Dotaz",
+                    "example": "Popi\u0161te, co vid\u00edte na t\u011bchto obr\u00e1zc\u00edch",
+                    "name": "Dotaz"
+                }
+            },
+            "name": "Vygenerovat obsah"
+        }
+    }
+}

@@ -1,0 +1,22 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ier\u012bce jau ir konfigur\u0113ta"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "station": {
+                "name": "PM2.5 zi\u0146o\u0161anas stacija",
+                "state_attributes": {
+                    "lat": {
+                        "name": "Platums"
+                    },
+                    "long": {
+                        "name": "Garums"
+                    }
+                }
+            }
+        }
+    }
+}

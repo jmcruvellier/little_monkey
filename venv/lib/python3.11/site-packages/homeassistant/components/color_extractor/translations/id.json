@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Sudah dikonfigurasi. Hanya satu konfigurasi yang diizinkan."
+        },
+        "step": {
+            "user": {
+                "description": "Ingin memulai penyiapan?"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "title": "Konfigurasi YAML {integration_title} dalam proses penghapusan"
+        }
+    },
+    "services": {
+        "turn_on": {
+            "fields": {
+                "color_extract_path": {
+                    "name": "Jalur"
+                },
+                "color_extract_url": {
+                    "name": "URL"
+                }
+            },
+            "name": "Nyalakan"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "services": {
+        "download_file": {
+            "description": "Descarga un archivo a la ubicaci\u00f3n de descarga.",
+            "fields": {
+                "filename": {
+                    "description": "Determina el nombre del archivo.",
+                    "name": "Nombre de archivo"
+                },
+                "overwrite": {
+                    "description": "Si sobrescribir el archivo o no.",
+                    "name": "Sobrescribir"
+                },
+                "subdir": {
+                    "description": "Descargar en subdirectorio.",
+                    "name": "Subdirectorio"
+                },
+                "url": {
+                    "description": "La URL del archivo a descargar.",
+                    "name": "URL"
+                }
+            },
+            "name": "Descargar archivo"
+        }
+    }
+}

@@ -1,0 +1,92 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El compte ja est\u00e0 configurat",
+            "external_error": "S'ha produ\u00eft una excepci\u00f3 d'un altre flux de dades.",
+            "external_setup": "Logi Circle s'ha configurat correctament des d'un altre flux de dades.",
+            "missing_configuration": "El component no est\u00e0 configurat. Mira'n la documentaci\u00f3."
+        },
+        "error": {
+            "authorize_url_timeout": "Temps d'espera esgotat durant la generaci\u00f3 de l'URL d'autoritzaci\u00f3.",
+            "follow_link": "V\u00e9s a l'enlla\u00e7 i autentica't abans de pr\u00e9mer Envia",
+            "invalid_auth": "Autenticaci\u00f3 inv\u00e0lida"
+        },
+        "step": {
+            "auth": {
+                "description": "V\u00e9s a l'enlla\u00e7 de sota i **Accepta** l'acc\u00e9s al teu compte de Logi Circle, despr\u00e9s torna i prem **Envia** (tamb\u00e9 a sota).\n\n[Enlla\u00e7]({authorization_url})",
+                "title": "Autenticaci\u00f3 amb Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Prove\u00efdor"
+                },
+                "description": "Tria quin prove\u00efdor d'autenticaci\u00f3 vols utilitzar per autenticar-te amb Logi Circle.",
+                "title": "Prove\u00efdor d'autenticaci\u00f3"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "\u00daltima activitat"
+            },
+            "recording_mode": {
+                "name": "Mode de gravaci\u00f3"
+            },
+            "streaming_mode": {
+                "name": "Mode de transmissi\u00f3"
+            },
+            "wifi_signal_category": {
+                "name": "Categoria del senyal Wi-Fi"
+            },
+            "wifi_signal_strength": {
+                "name": "Pot\u00e8ncia del senyal Wi-Fi"
+            }
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Gravaci\u00f3 un v\u00eddeo de la reproducci\u00f3 en directe de la c\u00e0mera.",
+            "fields": {
+                "duration": {
+                    "description": "Durada de la gravaci\u00f3.",
+                    "name": "Durada"
+                },
+                "entity_id": {
+                    "name": "Entitat"
+                },
+                "filename": {
+                    "name": "Nom del fitxer"
+                }
+            }
+        },
+        "livestream_snapshot": {
+            "fields": {
+                "entity_id": {
+                    "name": "Entitat"
+                },
+                "filename": {
+                    "name": "Nom del fitxer"
+                }
+            }
+        },
+        "set_config": {
+            "description": "Estableix una propietat de configuraci\u00f3.",
+            "fields": {
+                "entity_id": {
+                    "description": "Nom(s) de les entitats a les quals aplicar el mode de funcionament.",
+                    "name": "Entitat"
+                },
+                "mode": {
+                    "description": "Mode operatiu. Valors permesos: LED, RECORDING_MODE.",
+                    "name": "Mode"
+                },
+                "value": {
+                    "description": "Valor d'operaci\u00f3.",
+                    "name": "Valor"
+                }
+            },
+            "name": "Estableix configuraci\u00f3"
+        }
+    }
+}

@@ -1,0 +1,146 @@
+{
+    "config": {
+        "error": {
+            "connection_error": "Es konnte keine Verbindung zum Controller hergestellt werden.",
+            "duplicated_controller_id": "Der Controllername wird bereits verwendet.",
+            "duplicated_host_port": "Der angegebene Host und Port ist bereits konfiguriert.",
+            "unknown_error": "Unerwarteter Fehler"
+        },
+        "step": {
+            "import_controller_name": {
+                "data": {
+                    "name": "Controllername"
+                },
+                "data_description": {
+                    "name": "Ein eindeutiger Name zur Identifizierung des Lutron Homeworks-Controllers"
+                },
+                "description": "Lutron Homeworks wird nicht mehr \u00fcber die Datei \u201econfiguration.yaml\u201c konfiguriert. \n\nBitte f\u00fclle das Formular aus, um die vorhandene Konfiguration in die Benutzeroberfl\u00e4che zu importieren."
+            },
+            "import_finish": {
+                "description": "Die vorhandene YAML-Konfiguration wurde erfolgreich importiert. \n\nDu kannst jetzt die \u201eHomeworks\u201c-Konfiguration aus deiner \u201econfiguration.yaml\u201c-Datei entfernen."
+            },
+            "reconfigure": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                },
+                "description": "\u00c4ndere die Verbindungseinstellungen eines Lutron Homeworks-Controllers"
+            },
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "Controllername",
+                    "port": "Port"
+                },
+                "data_description": {
+                    "name": "Ein eindeutiger Name zur Identifizierung des Lutron Homeworks-Controllers"
+                },
+                "description": "Hinzuf\u00fcgen eines Lutron Homeworks-Controllers"
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "duplicated_addr": "Die angegebene Adresse wird bereits verwendet",
+            "duplicated_number": "Die angegebene Nummer wird bereits verwendet",
+            "invalid_addr": "Ung\u00fcltige Adresse"
+        },
+        "step": {
+            "add_button": {
+                "data": {
+                    "led": "LED",
+                    "name": "Name",
+                    "number": "Nummer",
+                    "release_delay": "Verz\u00f6gerung des Loslassens"
+                },
+                "data_description": {
+                    "led": "Aktiviere diese Option, wenn die Schaltfl\u00e4che \u00fcber eine Szenenauswahlanzeige verf\u00fcgt",
+                    "number": "Tastennummer im Bereich von 1 bis 24",
+                    "release_delay": "Zeit zwischen Dr\u00fccken und Loslassen, auf 0 setzen, um nur zu dr\u00fccken"
+                },
+                "title": "Tastenfeld hinzuf\u00fcgen"
+            },
+            "add_keypad": {
+                "data": {
+                    "addr": "Adresse",
+                    "name": "Name"
+                },
+                "data_description": {
+                    "addr": "Adresse des Tastenfelds, muss als `[##:##:##:##]` formatiert werden"
+                },
+                "title": "Tastenfeld hinzuf\u00fcgen"
+            },
+            "add_light": {
+                "data": {
+                    "addr": "Adresse",
+                    "name": "Name",
+                    "rate": "\u00dcberblendgeschwindigkeit"
+                },
+                "data_description": {
+                    "addr": "Adresse des Tastenfelds, muss als \u201e[##:##:##:##]\u201d formatiert werden",
+                    "rate": "Zeit in Sekunden, die das Licht ben\u00f6tigt, um auf eine neue Helligkeitsstufe zu wechseln"
+                },
+                "title": "Licht hinzuf\u00fcgen"
+            },
+            "edit_button": {
+                "data": {
+                    "led": "LED",
+                    "release_delay": "Verz\u00f6gerung des Loslassens"
+                },
+                "data_description": {
+                    "led": "Aktiviere diese Option, wenn die Schaltfl\u00e4che \u00fcber eine Szenenauswahlanzeige verf\u00fcgt",
+                    "release_delay": "Zeit zwischen Dr\u00fccken und Loslassen, auf 0 setzen, um nur zu dr\u00fccken"
+                },
+                "title": "Taste konfigurieren"
+            },
+            "edit_keypad": {
+                "menu_options": {
+                    "add_button": "Taste hinzuf\u00fcgen",
+                    "remove_button": "Taste entfernen",
+                    "select_edit_button": "Taste konfigurieren"
+                }
+            },
+            "edit_light": {
+                "data": {
+                    "rate": "\u00dcberblendgeschwindigkeit"
+                },
+                "data_description": {
+                    "rate": "Zeit in Sekunden, die das Licht ben\u00f6tigt, um auf eine neue Helligkeitsstufe zu wechseln"
+                },
+                "description": "W\u00e4hle eine zu konfigurierende Leuchte aus",
+                "title": "Licht konfigurieren"
+            },
+            "init": {
+                "menu_options": {
+                    "add_keypad": "Tastenfeld hinzuf\u00fcgen",
+                    "add_light": "Licht hinzuf\u00fcgen",
+                    "remove_keypad": "Tastenfeld entfernen",
+                    "remove_light": "Licht entfernen",
+                    "select_edit_keypad": "Tastenfeld konfigurieren",
+                    "select_edit_light": "Licht konfigurieren"
+                }
+            },
+            "remove_button": {
+                "description": "Tasten zum Entfernen ausw\u00e4hlen",
+                "title": "Taste entfernen"
+            },
+            "remove_keypad": {
+                "description": "Zu entfernende Tastenfelder ausw\u00e4hlen",
+                "title": "Tastenfeld entfernen"
+            },
+            "remove_light": {
+                "description": "Zu entfernende Lichter ausw\u00e4hlen",
+                "title": "Licht entfernen"
+            },
+            "select_edit_button": {
+                "title": "Taste konfigurieren"
+            },
+            "select_edit_keypad": {
+                "title": "Tastenfeld konfigurieren"
+            },
+            "select_edit_light": {
+                "title": "Licht konfigurieren"
+            }
+        }
+    }
+}

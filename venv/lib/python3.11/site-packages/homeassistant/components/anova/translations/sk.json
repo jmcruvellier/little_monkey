@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "V sieti sa nena\u0161li \u017eiadne zariadenia"
+        },
+        "error": {
+            "invalid_auth": "Neplatn\u00e9 overenie",
+            "no_devices_found": "Nena\u0161li sa \u017eiadne zariadenia. Uistite sa, \u017ee m\u00e1te online aspo\u0148 jedno zariadenie Anova.",
+            "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "confirm": {
+                "description": "Chcete za\u010da\u0165 nastavova\u0165?"
+            },
+            "user": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "Email"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "cook_time": {
+                "name": "\u010cas varenia"
+            },
+            "cook_time_remaining": {
+                "name": "Zost\u00e1vaj\u00faci \u010das varenia"
+            },
+            "heater_temperature": {
+                "name": "Teplota ohrieva\u010da"
+            },
+            "mode": {
+                "name": "Re\u017eim"
+            },
+            "state": {
+                "name": "Stav"
+            },
+            "target_temperature": {
+                "name": "Cie\u013eov\u00e1 teplota"
+            },
+            "triac_temperature": {
+                "name": "Teplota triaku"
+            },
+            "water_temperature": {
+                "name": "Teplota vody"
+            }
+        }
+    }
+}

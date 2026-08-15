@@ -1,0 +1,49 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Bereits konfiguriert. Nur eine einzige Konfiguration m\u00f6glich."
+        },
+        "error": {
+            "cannot_connect": "Das Verzeichnis konnte nicht erreicht werden. Bitte \u00fcberpr\u00fcfe deine Einstellungen."
+        },
+        "step": {
+            "user": {
+                "description": "W\u00e4hle einen Speicherort aus, um zum Download-Shop zu gelangen. Das Setup pr\u00fcft, ob das Verzeichnis existiert."
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Die Konfiguration von {integration_title} mithilfe von YAML wird entfernt. \n\nDeine Konfiguration ist bereits importiert. \n\nEntferne die Konfiguration \u201e{domain}\u201c aus deiner \u201econfiguration.yaml\u201c-Datei und starte Home Assistant neu, um dieses Problem zu beheben.",
+            "title": "Die {integration_title} YAML-Konfiguration wird entfernt"
+        },
+        "import_failed": {
+            "description": "Der Import der {integration_title}-Integration ist fehlgeschlagen. \n\nWeitere Informationen findest du in den Protokollen.",
+            "title": "Der {integration_title} konnte nicht importiert werden"
+        }
+    },
+    "services": {
+        "download_file": {
+            "description": "L\u00e4dt eine Datei an den Download-Speicherort herunter.",
+            "fields": {
+                "filename": {
+                    "description": "Dateinamen festlegen.",
+                    "name": "Dateiname"
+                },
+                "overwrite": {
+                    "description": "Ob die Datei \u00fcberschrieben werden soll oder nicht.",
+                    "name": "\u00dcberschreiben"
+                },
+                "subdir": {
+                    "description": "In Unterverzeichnis herunterladen.",
+                    "name": "Unterverzeichnis"
+                },
+                "url": {
+                    "description": "Die URL der Datei, die heruntergeladen werden soll.",
+                    "name": "URL"
+                }
+            },
+            "name": "Datei herunterladen"
+        }
+    }
+}

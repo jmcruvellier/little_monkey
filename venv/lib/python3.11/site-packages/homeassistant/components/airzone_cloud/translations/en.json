@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "Installation",
+                    "password": "Password",
+                    "username": "Username"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "air_quality_active": {
+                "name": "Air Quality active"
+            }
+        }
+    }
+}

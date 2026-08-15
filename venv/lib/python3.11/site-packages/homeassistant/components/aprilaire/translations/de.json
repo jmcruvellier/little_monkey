@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert"
+        },
+        "error": {
+            "connection_failed": "Verbindung fehlgeschlagen. Bitte \u00fcberpr\u00fcfe, ob Host und Port korrekt sind."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                },
+                "data_description": {
+                    "port": "Normalerweise 7000 oder 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "Thermostat"
+            }
+        }
+    }
+}

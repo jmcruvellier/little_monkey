@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Cihaz zaten yap\u0131land\u0131r\u0131lm\u0131\u015f"
+        },
+        "error": {
+            "cannot_connect": "Ba\u011flanma hatas\u0131",
+            "unknown": "Beklenmeyen hata"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Sunucu"
+                },
+                "data_description": {
+                    "host": "V2C Trydan EVSE'nizin ana bilgisayar ad\u0131 veya IP adresi."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "\u015earj Oluyor"
+            },
+            "connected": {
+                "name": "Ba\u011fland\u0131"
+            },
+            "ready": {
+                "name": "Haz\u0131r"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Yo\u011funluk"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "\u015earj enerjisi"
+            },
+            "charge_power": {
+                "name": "\u015earj g\u00fcc\u00fc"
+            },
+            "charge_time": {
+                "name": "\u015earj s\u00fcresi"
+            },
+            "fv_power": {
+                "name": "Fotovoltaik g\u00fc\u00e7"
+            },
+            "house_power": {
+                "name": "Ev g\u00fcc\u00fc"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "Dinamik yo\u011funluk mod\u00fclasyonu"
+            },
+            "locked": {
+                "name": "EVSE'yi kilitle"
+            },
+            "pause_dynamic": {
+                "name": "Dinamik kontrol mod\u00fclasyonunu duraklat"
+            },
+            "paused": {
+                "name": "Oturumu duraklat"
+            },
+            "timer": {
+                "name": "\u015earj noktas\u0131 zamanlay\u0131c\u0131s\u0131"
+            }
+        }
+    }
+}

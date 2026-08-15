@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Avf\u00e4rdar en html5-avisering.",
+            "fields": {
+                "data": {
+                    "description": "Ut\u00f6kad information om avisering. St\u00f6der tagg.",
+                    "name": "Data"
+                },
+                "target": {
+                    "description": "En array med m\u00e5l.",
+                    "name": "M\u00e5l"
+                }
+            },
+            "name": "Avf\u00e4rda"
+        }
+    }
+}

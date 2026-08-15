@@ -1,0 +1,48 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Automatizare",
+            "state": {
+                "off": "Oprit\u0103",
+                "on": "Pornit\u0103"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Rulare automatiz\u0103ri"
+                },
+                "id": {
+                    "name": "ID"
+                },
+                "last_triggered": {
+                    "name": "Ultima declan\u0219are"
+                },
+                "max": {
+                    "name": "Num\u0103rul maxim de automatiz\u0103ri care ruleaz\u0103"
+                },
+                "mode": {
+                    "name": "Mod de rulare",
+                    "state": {
+                        "parallel": "Paralel",
+                        "queued": "Coad\u0103",
+                        "restart": "Repornire",
+                        "single": "Singur"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "service_not_found": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "Automatizarea \"{name}\" (`{entity_id}`) are o ac\u021biune care apeleaz\u0103 un serviciu necunoscut: `{service}`.\n\nAceast\u0103 eroare \u00eempiedic\u0103 automatizarea s\u0103 ruleze corect. Poate c\u0103 acest serviciu nu mai este disponibil, sau poate o gre\u0219eal\u0103 de scriere a cauzat-o.\n\nPentru a remedia aceast\u0103 eroare, [modific\u0103 automatizarea]({edit}) \u0219i elimin\u0103 ac\u021biunea care apeleaz\u0103 acest serviciu.\n\nApas\u0103 pe TRIMITE mai jos pentru a confirma c\u0103 ai reparat aceast\u0103 automatizare.",
+                        "title": "{name} utilizeaz\u0103 un serviciu necunoscut"
+                    }
+                }
+            },
+            "title": "{name} utilizeaz\u0103 un serviciu necunoscut"
+        }
+    },
+    "title": "Automatizare"
+}

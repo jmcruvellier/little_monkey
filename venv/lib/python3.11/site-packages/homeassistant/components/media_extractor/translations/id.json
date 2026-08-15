@@ -1,0 +1,18 @@
+{
+    "services": {
+        "play_media": {
+            "description": "Mengunduh file dari URL yang diberikan.",
+            "fields": {
+                "media_content_id": {
+                    "description": "ID konten yang akan diputar. Bergantung pada platform.",
+                    "name": "ID konten media"
+                },
+                "media_content_type": {
+                    "description": "Jenis konten yang akan diputar. Harus berupa MUSIC, TVSHOW, VIDEO, EPISODE, CHANNEL, atau PLAYLIST MUSIC.",
+                    "name": "Jenis konten media"
+                }
+            },
+            "name": "Putar media"
+        }
+    }
+}

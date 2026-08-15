@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "A {domain}.{service} szolg\u00e1ltat\u00e1s megh\u00edvta a {child_domain}.{child_service} szolg\u00e1ltat\u00e1st, amely nem tal\u00e1lhat\u00f3."
+        }
+    }
+}

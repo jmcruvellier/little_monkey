@@ -1,0 +1,48 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Tj\u00e4nsten \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "timeout_connect": "Timeout vid uppr\u00e4ttande av anslutning",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-nyckel"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "watering": {
+                "name": "Bevattning"
+            }
+        },
+        "sensor": {
+            "next_cycle": {
+                "name": "N\u00e4sta cykel"
+            },
+            "watering_time": {
+                "name": "Bevattningstid"
+            }
+        },
+        "switch": {
+            "auto_watering": {
+                "name": "Automatisk bevattning"
+            },
+            "manual_watering": {
+                "name": "Manuell bevattning"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue": {
+            "description": "Konfigurering av Hydrawise med YAML tas bort, men ett {error_type}-fel uppstod n\u00e4r YAML-konfigurationen importerades.\n\nSe till att anslutningen till Hydrawise fungerar och starta om Home Assistant f\u00f6r att f\u00f6rs\u00f6ka igen eller ta bort Hydrawise YAML-konfigurationen fr\u00e5n din configuration.yaml-fil och forts\u00e4tt att [konfigurera Hydrawise]({url}) manuellt.",
+            "title": "Importen av Hydrawises YAML-konfiguration misslyckades"
+        }
+    }
+}

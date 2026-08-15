@@ -1,0 +1,9 @@
+{
+    "config": {
+        "abort": {
+            "oauth_error": "Ongeldige tokengegevens ontvangen.",
+            "oauth_timeout": "Time-out bij het verkrijgen OAuth token.",
+            "oauth_unauthorized": "OAuth autorisatiefout tijdens het verkrijgen van een toegangstoken."
+        }
+    }
+}

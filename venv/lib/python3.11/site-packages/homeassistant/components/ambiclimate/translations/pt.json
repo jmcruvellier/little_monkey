@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Erro desconhecido ao gerar um token de acesso.",
+            "already_configured": "Conta j\u00e1 configurada",
+            "missing_configuration": "O componente n\u00e3o est\u00e1 configurado. Por favor, siga a documenta\u00e7\u00e3o."
+        },
+        "create_entry": {
+            "default": "Autenticado com sucesso"
+        },
+        "error": {
+            "follow_link": "Por favor, siga o link e autentique-se antes de clicar em Enviar",
+            "no_token": "N\u00e3o autenticado com Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Siga este [link]({authorization_url}) e **Autorize** o acesso \u00e0 sua conta Ambiclimate, depois volte e prima **Submeter** abaixo.\n(Certifique-se de que o URL de retorno de chamada especificado \u00e9 {cb_url})",
+                "title": "Autenticar o Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Todos os servi\u00e7os do Ambiclimate ser\u00e3o encerrados, a partir de 31 de mar\u00e7o de 2024, \u00e0 medida que a Ambi Labs encerra as opera\u00e7\u00f5es comerciais, e a integra\u00e7\u00e3o do Ambiclimate ser\u00e1 removida do Home Assistant.\n\nPara resolver este problema, remova as entradas de integra\u00e7\u00e3o da sua configura\u00e7\u00e3o do Home Assistant. [Clique aqui para ver as entradas de integra\u00e7\u00e3o Logi Circle existentes]({entries}).",
+            "title": "A integra\u00e7\u00e3o do Ambiclimate foi descontinuada e ser\u00e1 removida"
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "fields": {
+                "name": {
+                    "description": "Cadeia de caracteres com o nome do dispositivo.",
+                    "name": "Nome do dispositivo"
+                }
+            }
+        },
+        "set_comfort_mode": {
+            "fields": {
+                "name": {
+                    "description": "Cadeia de caracteres com o nome do dispositivo.",
+                    "name": "Nome do dispositivo"
+                }
+            }
+        },
+        "set_temperature_mode": {
+            "fields": {
+                "name": {
+                    "description": "Cadeia de caracteres com o nome do dispositivo.",
+                    "name": "Nome do dispositivo"
+                },
+                "value": {
+                    "description": "Valor-alvo em graus Celsius.",
+                    "name": "Temperatura"
+                }
+            }
+        }
+    }
+}

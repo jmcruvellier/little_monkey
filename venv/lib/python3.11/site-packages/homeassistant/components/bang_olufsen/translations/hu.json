@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "M\u00e1r konfigur\u00e1lva van. Csak egy konfigur\u00e1ci\u00f3 lehets\u00e9ges.",
+            "already_in_progress": "A konfigur\u00e1l\u00e1s m\u00e1r folyamatban van"
+        },
+        "error": {
+            "api_exception": "Sikertelen csatlakoz\u00e1s",
+            "client_connector_error": "Sikertelen csatlakoz\u00e1s",
+            "invalid_ip": "\u00c9rv\u00e9nytelen IPv4-c\u00edm",
+            "timeout_error": "Sikertelen csatlakoz\u00e1s"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP-c\u00edm",
+                    "model": "Modell"
+                },
+                "description": "Manu\u00e1lisan konfigur\u00e1lja a Bang & Olufsen eszk\u00f6zt."
+            },
+            "zeroconf_confirm": {
+                "description": "Ellen\u0151rizze a(z) {model}-{serial_number} @ {host} konfigur\u00e1ci\u00f3j\u00e1t.",
+                "title": "Bang & Olufsen eszk\u00f6z be\u00e1ll\u00edt\u00e1sa"
+            }
+        }
+    }
+}

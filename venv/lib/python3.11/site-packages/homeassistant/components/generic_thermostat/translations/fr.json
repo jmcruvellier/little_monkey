@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Recharge les thermostats g\u00e9n\u00e9riques \u00e0 partir de la configuration YAML.",
+            "name": "Recharger"
+        }
+    }
+}

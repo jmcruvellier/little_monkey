@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "invalid_host": "\u4e3b\u673a\u540d\u6216 IP \u5730\u5740\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_host": "\u4e3b\u673a\u540d\u6216 IP \u5730\u5740\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "confirm_discovery": {
+                "description": "\u5efa\u8bae\u5728\u8def\u7531\u5668\u4e0a\u4fdd\u7559 DHCP\u3002\u5982\u679c\u672a\u8bbe\u7f6e\uff0c\u8bbe\u5907\u53ef\u80fd\u4f1a\u53d8\u5f97\u4e0d\u53ef\u7528\uff0c\u76f4\u5230 Home Assistant \u68c0\u6d4b\u5230\u65b0\u7684 IP \u5730\u5740\u3002\u8bf7\u53c2\u9605\u8def\u7531\u5668\u7684\u7528\u6237\u624b\u518c\u3002"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "name": "\u540d\u79f0"
+                },
+                "description": "\u8bf7\u53c2\u9605\u6587\u6863\u4ee5\u786e\u4fdd\u6ee1\u8db3\u6240\u6709\u8981\u6c42\u3002"
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Urz\u0105dzenie jest ju\u017c skonfigurowane",
+            "no_devices_found": "Nie znaleziono urz\u0105dze\u0144 w sieci",
+            "reauth_successful": "Ponowne uwierzytelnienie powiod\u0142o si\u0119"
+        },
+        "error": {
+            "cannot_connect": "B\u0142\u0105d po\u0142\u0105czenia: {error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Has\u0142o",
+                    "username": "Nazwa u\u017cytkownika"
+                },
+                "description": "Urz\u0105dzenie wymaga uwierzytelnienia, wprowad\u017a poni\u017cej swoje dane uwierzytelniaj\u0105ce TP-Link."
+            },
+            "discovery_confirm": {
+                "description": "Czy chcesz skonfigurowa\u0107 {name} {model} ({host})?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "Urz\u0105dzenie"
+                }
+            },
+            "reauth": {
+                "description": "Urz\u0105dzenie wymaga uwierzytelnienia, wprowad\u017a poni\u017cej swoje dane uwierzytelniaj\u0105ce TP-Link.",
+                "title": "Autoryzacja wygas\u0142a dla {name}"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Has\u0142o",
+                    "username": "Nazwa u\u017cytkownika"
+                },
+                "description": "Urz\u0105dzenie wymaga uwierzytelnienia, wprowad\u017a poni\u017cej swoje dane uwierzytelniaj\u0105ce TP-Link.",
+                "title": "Autoryzacja wygas\u0142a dla {name}"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "description": "Je\u015bli nie podasz IP lub nazwy hosta, zostanie u\u017cyte wykrywanie do odnalezienia urz\u0105dze\u0144."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Has\u0142o",
+                    "username": "Nazwa u\u017cytkownika"
+                },
+                "description": "Urz\u0105dzenie wymaga uwierzytelnienia, wprowad\u017a poni\u017cej swoje dane uwierzytelniaj\u0105ce TP-Link."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "voltage_child": {
+                "name": "Napi\u0119cie {device_name}"
+            }
+        }
+    }
+}

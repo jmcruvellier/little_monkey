@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Amfitri\u00f3",
+                    "port": "Port"
+                },
+                "data_description": {
+                    "port": "Normalment 7000 o 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "Term\u00f2stat"
+            }
+        }
+    }
+}

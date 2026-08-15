@@ -1,0 +1,18 @@
+{
+    "issues": {
+        "deprecation_warning_characteristic": {
+            "description": "Le param\u00e8tre de configuration `state_characteristic` de l'int\u00e9gration des statistiques deviendra obligatoire. \n\nVeuillez ajouter `state_characteristic\u00a0: {characteristic}` \u00e0 la configuration du capteur `{entity}` pour conserver le comportement actuel. \n\nLisez la documentation de l'int\u00e9gration des statistiques pour plus de d\u00e9tails\u00a0: https://www.home-assistant.io/integrations/statistics/",
+            "title": "'state_characteristic' obligatoire pour une entit\u00e9 Statistics"
+        },
+        "deprecation_warning_size": {
+            "description": "Le param\u00e8tre de configuration \"sampling_size\" de l'int\u00e9gration des statistiques avait jusqu'\u00e0 pr\u00e9sent la valeur 20 par d\u00e9faut, ce qui va changer. \n\nVeuillez v\u00e9rifier la configuration du capteur `{entity}` et ajouter des limites adapt\u00e9es, par exemple, `sampling_size\u00a0: 20` pour conserver le comportement actuel. La configuration de l'int\u00e9gration des statistiques deviendra plus flexible avec la version 2022.12.0 et acceptera `sampling_size` ou `max_age`, ou les deux param\u00e8tres. La demande ci-dessus pr\u00e9pare votre configuration pour ce changement autrement cassant. \n\nLisez la documentation de l'int\u00e9gration des statistiques pour plus de d\u00e9tails\u00a0: https://www.home-assistant.io/integrations/statistics/",
+            "title": "'sampling_size' implicite pour une entit\u00e9 Statistics"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Recharge les capteurs de statistiques \u00e0 partir de la configuration YAML.",
+            "name": "Recharger"
+        }
+    }
+}

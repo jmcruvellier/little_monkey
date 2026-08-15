@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012esp\u0117jimo elemento ID / pavadinimas jau sukonfig\u016bruotas.",
+            "invalid_identifier": "Nurodytas regiono identifikatorius yra neteisingas."
+        },
+        "error": {
+            "invalid_identifier": "Nurodytas regiono identifikatorius yra neteisingas."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "Warncell ID arba pavadinimas"
+                },
+                "description": "Norint nustatyti norim\u0105 region\u0105, reikalingas warncell ID / pavadinimas."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "I\u0161ankstinio \u012fsp\u0117jimo lygis",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Paskutinis atnaujinimas"
+                    },
+                    "region_id": {
+                        "name": "Regiono ID"
+                    },
+                    "region_name": {
+                        "name": "Regiono pavadinimas"
+                    },
+                    "warning_count": {
+                        "name": "\u012esp\u0117jim\u0173 skai\u010dius"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Dabartinis \u012fsp\u0117jimo lygis",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Paskutinis atnaujinimas"
+                    },
+                    "region_id": {
+                        "name": "Regiono ID"
+                    },
+                    "region_name": {
+                        "name": "Regiono pavadinimas"
+                    },
+                    "warning_count": {
+                        "name": "\u012esp\u0117jim\u0173 skai\u010dius"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "\u201eDeutsche Wetterdienst\u201c (DWD) \u012fsp\u0117jim\u0173 apie or\u0105 konfig\u016bravimas naudojant YAML pa\u0161alinamas. \n\n J\u016bs\u0173 esama YAML konfig\u016bracija buvo automati\u0161kai importuota \u012f vartotojo s\u0105saj\u0105. \n\n Pa\u0161alinkite Deutscher Wetterdienst (DWD) Weather Warnings YAML konfig\u016bracij\u0105 i\u0161 savo configuration.yaml failo ir i\u0161 naujo paleiskite \u201eHome Assistant\u201c, kad i\u0161spr\u0119stum\u0117te \u0161i\u0105 problem\u0105.",
+            "title": "\u201eDeutscher Wetterdienst\u201c (DWD) \u201eWeather Warnings\u201c YAML konfig\u016bracija pa\u0161alinama"
+        }
+    }
+}

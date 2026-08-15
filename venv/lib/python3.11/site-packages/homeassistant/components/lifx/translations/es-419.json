@@ -1,0 +1,7 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "No se han encontrado dispositivos LIFX en la red."
+        }
+    }
+}

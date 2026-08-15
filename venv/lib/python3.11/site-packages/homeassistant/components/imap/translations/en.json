@@ -1,0 +1,69 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Device is already configured",
+            "reauth_successful": "Re-authentication was successful"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "invalid_charset": "The specified charset is not supported",
+            "invalid_folder": "The selected folder is invalid",
+            "invalid_search": "The selected search is invalid",
+            "ssl_error": "An SSL error occurred. Change SSL cipher list and try again."
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Password"
+                },
+                "description": "The password for {username} is invalid.",
+                "title": "Authentication expired for {name}"
+            },
+            "user": {
+                "data": {
+                    "charset": "Character set",
+                    "folder": "Folder",
+                    "password": "Password",
+                    "port": "Port",
+                    "search": "IMAP search",
+                    "server": "Server",
+                    "ssl_cipher_list": "SSL cipher list (Advanced)",
+                    "username": "Username",
+                    "verify_ssl": "Verify SSL certificate"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "already_configured": "An entry with these folder and search options already exists.",
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "invalid_charset": "The specified charset is not supported",
+            "invalid_folder": "The selected folder is invalid",
+            "invalid_search": "The selected search is invalid",
+            "invalid_template": "Invalid template"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "custom_event_data_template": "Template to create custom event data",
+                    "enable_push": "Enable Push-IMAP if the server supports it. Turn off if Push-IMAP updates are unreliable.",
+                    "folder": "Folder",
+                    "max_message_size": "Max message size (2048 < size < 30000)",
+                    "search": "IMAP search"
+                }
+            }
+        }
+    },
+    "selector": {
+        "ssl_cipher_list": {
+            "options": {
+                "intermediate": "Intermediate ciphers",
+                "modern": "Modern ciphers",
+                "python_default": "Default settings"
+            }
+        }
+    }
+}

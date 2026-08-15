@@ -1,0 +1,31 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Gostitelj"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "dsl_line_status": {
+                "state": {
+                    "unknown": "Neznano"
+                }
+            },
+            "dsl_training": {
+                "state": {
+                    "idle": "V pripravljenosti",
+                    "unknown": "Neznano"
+                }
+            },
+            "net_infra": {
+                "state": {
+                    "unknown": "Neznano"
+                }
+            }
+        }
+    }
+}

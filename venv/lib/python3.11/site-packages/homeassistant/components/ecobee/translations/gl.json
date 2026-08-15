@@ -1,0 +1,24 @@
+{
+    "services": {
+        "create_vacation": {
+            "fields": {
+                "end_date": {
+                    "description": "Data na que remata as vacaci\u00f3ns no formato AAAA-MM-DD (opcional, 14 d\u00edas a partir de agora se non se proporciona xunto con start_date, start_time e end_time).",
+                    "name": "Data de fin"
+                },
+                "end_time": {
+                    "description": "Hora na que remata as vacaci\u00f3ns, na hora local do term\u00f3stato, no formato de 24 horas \"HH:MM:SS\".",
+                    "name": "Hora de finalizaci\u00f3n"
+                },
+                "entity_id": {
+                    "description": "Term\u00f3stato 'Ecobee' no que crear as vacaci\u00f3ns.",
+                    "name": "Entidade"
+                },
+                "fan_min_on_time": {
+                    "description": "N\u00famero m\u00ednimo de minutos para executar o ventilador cada hora (0 a 60) durante as vacaci\u00f3ns.",
+                    "name": "Tempo m\u00ednimo de funcionamento do ventilador"
+                }
+            }
+        }
+    }
+}

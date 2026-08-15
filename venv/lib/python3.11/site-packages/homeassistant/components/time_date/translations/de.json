@@ -1,0 +1,84 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Der ausgew\u00e4hlte Zeit- und Datumssensor wurde bereits konfiguriert"
+        },
+        "error": {
+            "timezone_not_exist": "In der Home Assistant-Konfiguration ist keine Zeitzone festgelegt"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "display_options": "Sensortyp"
+                },
+                "description": "W\u00e4hlen Sie unten eine der Sensoroptionen aus"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "beat": {
+                "name": "Internetzeit"
+            },
+            "date": {
+                "name": "Datum"
+            },
+            "date_time": {
+                "name": "Datum und Uhrzeit"
+            },
+            "date_time_iso": {
+                "name": "Datum und Uhrzeit (ISO)"
+            },
+            "date_time_utc": {
+                "name": "Datum und Uhrzeit (UTC)"
+            },
+            "time": {
+                "name": "Zeit"
+            },
+            "time_date": {
+                "name": "Datum und Uhrzeit"
+            },
+            "time_utc": {
+                "name": "Zeit (UTC)"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_beat": {
+            "description": "Bitte entferne den Schl\u00fcssel \u201e{config_key}\u201c aus dem \u201e{display_options}\u201c f\u00fcr den Eintrag {integration} in der Datei configuration.yaml und starte Home Assistant neu, um dieses Problem zu beheben.",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "Bitte entferne den Schl\u00fcssel \u201e{config_key}\u201c aus dem Eintrag {integration} in deiner \u201econfiguration.yaml\u201c-Datei und starte Home Assistant neu, um dieses Problem zu beheben. Alle Fehler werden gemeldet, da \u201elazy_error_count\u201c akzeptiert, aber ignoriert wird.",
+                        "title": "Der \u201e{config_key}\u201c Zeit- und Datumssensor wird entfernt"
+                    }
+                }
+            },
+            "title": "Der \u201e{config_key}\u201c Zeit- und Datumssensor wird entfernt"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "display_options": "Sensortyp"
+                }
+            }
+        }
+    },
+    "selector": {
+        "display_options": {
+            "options": {
+                "beat": "Internetzeit",
+                "date": "Datum",
+                "date_time": "Datum und Uhrzeit",
+                "date_time_iso": "Datum und Uhrzeit (ISO)",
+                "date_time_utc": "Datum und Uhrzeit (UTC)",
+                "time": "Zeit",
+                "time_date": "Datum und Uhrzeit",
+                "time_utc": "Zeit (UTC)"
+            }
+        }
+    },
+    "title": "Datum und Uhrzeit"
+}

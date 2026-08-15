@@ -1,0 +1,52 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Slu\u017eba u\u017e je nakonfigurovan\u00e1",
+            "cannot_connect": "Nepodarilo sa pripoji\u0165"
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "no_integration_selected": "Mus\u00edte vybra\u0165 aspo\u0148 jednu integr\u00e1ciu, ktor\u00fa chcete sledova\u0165.",
+            "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "tracked_custom_integrations": "Vlastn\u00e9 integr\u00e1cie",
+                    "tracked_integrations": "Integr\u00e1cie"
+                },
+                "data_description": {
+                    "tracked_custom_integrations": "Vyberte vlastn\u00e9 integr\u00e1cie, ktor\u00e9 chcete sledova\u0165",
+                    "tracked_integrations": "Vyberte integr\u00e1cie, ktor\u00e9 chcete sledova\u0165"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "custom_integrations": {
+                "name": "{custom_integration_domain} (vlastn\u00e9)"
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165"
+        },
+        "error": {
+            "no_integration_selected": "Mus\u00edte vybra\u0165 aspo\u0148 jednu integr\u00e1ciu, ktor\u00fa chcete sledova\u0165."
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "tracked_custom_integrations": "Vlastn\u00e9 integr\u00e1cie",
+                    "tracked_integrations": "Integr\u00e1cie"
+                },
+                "data_description": {
+                    "tracked_custom_integrations": "Vyberte vlastn\u00e9 integr\u00e1cie, ktor\u00e9 chcete sledova\u0165",
+                    "tracked_integrations": "Vyberte integr\u00e1cie, ktor\u00e9 chcete sledova\u0165"
+                }
+            }
+        }
+    }
+}

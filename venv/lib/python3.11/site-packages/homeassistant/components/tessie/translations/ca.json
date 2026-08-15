@@ -1,0 +1,197 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_access_token": "Token d'acc\u00e9s inv\u00e0lid",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "access_token": "Token d'acc\u00e9s"
+                },
+                "description": "Introdueix el teu token d'acc\u00e9s de {url}.",
+                "title": "L'autenticaci\u00f3 de {name} ha caducat"
+            },
+            "user": {
+                "data": {
+                    "access_token": "Token d'acc\u00e9s"
+                },
+                "description": "Introdueix el teu token d'acc\u00e9s de {url}."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "state": {
+                "name": "Estat"
+            }
+        },
+        "button": {
+            "frunk": {
+                "name": "Obre maleter davanter"
+            },
+            "trunk": {
+                "name": "Obre/tanca maleter"
+            }
+        },
+        "climate": {
+            "primary": {
+                "name": "Climatitzaci\u00f3"
+            }
+        },
+        "device_tracker": {
+            "location": {
+                "name": "Ubicaci\u00f3"
+            }
+        },
+        "lock": {
+            "vehicle_state_locked": {
+                "name": "Pany"
+            },
+            "vehicle_state_speed_limit_mode_active": {
+                "name": "L\u00edmit de velocitat"
+            }
+        },
+        "media_player": {
+            "media": {
+                "name": "Reproductor multim\u00e8dia"
+            }
+        },
+        "select": {
+            "climate_state_seat_heater_left": {
+                "state": {
+                    "off": "OFF"
+                }
+            },
+            "climate_state_seat_heater_rear_center": {
+                "state": {
+                    "off": "OFF"
+                }
+            },
+            "climate_state_seat_heater_rear_left": {
+                "state": {
+                    "off": "OFF"
+                }
+            },
+            "climate_state_seat_heater_rear_right": {
+                "state": {
+                    "off": "OFF"
+                }
+            },
+            "climate_state_seat_heater_right": {
+                "state": {
+                    "off": "OFF"
+                }
+            },
+            "climate_state_seat_heater_third_row_left": {
+                "state": {
+                    "off": "OFF"
+                }
+            },
+            "climate_state_seat_heater_third_row_right": {
+                "state": {
+                    "off": "OFF"
+                }
+            }
+        },
+        "sensor": {
+            "charge_state-battery_range": {
+                "name": "Autonomia de la bateria"
+            },
+            "charge_state-charge_energy_added": {
+                "name": "Energia afegida"
+            },
+            "charge_state-charge_rate": {
+                "name": "Taxa de c\u00e0rrega"
+            },
+            "charge_state-charger_actual_current": {
+                "name": "Corrent del carregador"
+            },
+            "charge_state-charger_power": {
+                "name": "Pot\u00e8ncia del carregador"
+            },
+            "charge_state-charger_voltage": {
+                "name": "Tensi\u00f3 del carregador"
+            },
+            "charge_state-usable_battery_level": {
+                "name": "Nivell de bateria"
+            },
+            "charge_state_charging_state": {
+                "state": {
+                    "disconnected": "Desconnectat",
+                    "no_power": "Sense electricitat",
+                    "starting": "Iniciant",
+                    "stopped": "Aturat"
+                }
+            },
+            "charge_state_est_battery_range": {
+                "name": "Autonomia de la bateria estimada"
+            },
+            "charge_state_ideal_battery_range": {
+                "name": "Autonomia de la bateria ideal"
+            },
+            "climate_state-driver_temp_setting": {
+                "name": "Configuraci\u00f3 de temperatura del conductor"
+            },
+            "climate_state-inside_temp": {
+                "name": "Temperatura interior"
+            },
+            "climate_state-outside_temp": {
+                "name": "Temperatura exterior"
+            },
+            "climate_state-passenger_temp_setting": {
+                "name": "Configuraci\u00f3 de temperatura del copilot"
+            },
+            "drive_state-power": {
+                "name": "Pot\u00e8ncia"
+            },
+            "drive_state-shift_state": {
+                "name": "Estat del canvi de marxes",
+                "state": {
+                    "d": "Conducci\u00f3",
+                    "n": "Neutre",
+                    "p": "Aparcament",
+                    "r": "Marxa enrere"
+                }
+            },
+            "drive_state-speed": {
+                "name": "Velocitat"
+            },
+            "drive_state_active_route_minutes_to_arrival": {
+                "name": "Temps per arribar"
+            },
+            "drive_state_power": {
+                "name": "Pot\u00e8ncia"
+            },
+            "state": {
+                "name": "Estat",
+                "state": {
+                    "asleep": "Adormit",
+                    "offline": "Fora de l\u00ednia",
+                    "online": "En l\u00ednia"
+                }
+            },
+            "vehicle_state-odometer": {
+                "name": "Comptaquil\u00f2metres"
+            },
+            "vehicle_state-tpms_pressure_fl": {
+                "name": "Pressi\u00f3 del pneum\u00e0tic davanter esquerra"
+            },
+            "vehicle_state-tpms_pressure_fr": {
+                "name": "Pressi\u00f3 del pneum\u00e0tic davanter dret"
+            },
+            "vehicle_state-tpms_pressure_rl": {
+                "name": "Pressi\u00f3 del pneum\u00e0tic posterior esquerra"
+            },
+            "vehicle_state-tpms_pressure_rr": {
+                "name": "Pressi\u00f3 del pneum\u00e0tic posterior dret"
+            }
+        },
+        "update": {
+            "update": {
+                "name": "Actualitza"
+            }
+        }
+    }
+}

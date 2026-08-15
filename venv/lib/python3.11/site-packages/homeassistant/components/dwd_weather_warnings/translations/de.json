@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Warnzellen-ID / Name ist bereits konfiguriert.",
+            "invalid_identifier": "Die angegebene Regionskennung ist ung\u00fcltig."
+        },
+        "error": {
+            "invalid_identifier": "Die angegebene Regionskennung ist ung\u00fcltig."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "Warnzellen-ID oder Name"
+                },
+                "description": "Zur Identifizierung der gew\u00fcnschten Region wird die Warnzellen-ID / der Name ben\u00f6tigt."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "Vorwarnstufe",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Letzte Aktualisierung"
+                    },
+                    "region_id": {
+                        "name": "Region ID"
+                    },
+                    "region_name": {
+                        "name": "Name der Region"
+                    },
+                    "warning_count": {
+                        "name": "Anzahl der Warnungen"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Aktuelle Warnstufe",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Letzte Aktualisierung"
+                    },
+                    "region_id": {
+                        "name": "Region ID"
+                    },
+                    "region_name": {
+                        "name": "Name der Region"
+                    },
+                    "warning_count": {
+                        "name": "Anzahl der Warnungen"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Die Konfiguration von Wetterwarnungen des Deutschen Wetterdienstes (DWD) mit YAML wird entfernt. \n\nDeine vorhandene YAML-Konfiguration wurde automatisch in die Benutzeroberfl\u00e4che importiert. \n\nEntferne die YAML-Konfiguration f\u00fcr Wetterwarnungen des Deutschen Wetterdienstes (DWD) aus deiner configuration.yaml-Datei und starte Home Assistant neu, um dieses Problem zu beheben.",
+            "title": "Die YAML-Konfiguration f\u00fcr Wetterwarnungen des Deutschen Wetterdienstes (DWD) wird entfernt"
+        }
+    }
+}

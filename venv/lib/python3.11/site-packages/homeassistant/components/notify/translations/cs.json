@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "Ode\u0161le zpr\u00e1vu s upozorn\u011bn\u00edm na vybran\u00e9 c\u00edle.",
+            "fields": {
+                "data": {
+                    "description": "N\u011bkter\u00e9 integrace poskytuj\u00ed roz\u0161\u00ed\u0159enou funk\u010dnost. Informace o tom, jak pou\u017e\u00edvat pole \"data\", najdete v dokumentaci k integraci.",
+                    "name": "Data"
+                },
+                "message": {
+                    "description": "T\u011blo zpr\u00e1vy ozn\u00e1men\u00ed.",
+                    "name": "Zpr\u00e1va"
+                },
+                "target": {
+                    "description": "N\u011bkter\u00e9 integrace umo\u017e\u0148uj\u00ed ur\u010dit c\u00edle, kter\u00e9 obdr\u017e\u00ed ozn\u00e1men\u00ed. Dal\u0161\u00ed informace naleznete v dokumentaci k integraci.",
+                    "name": "C\u00edl"
+                },
+                "title": {
+                    "description": "N\u00e1zev ozn\u00e1men\u00ed.",
+                    "name": "N\u00e1zev"
+                }
+            },
+            "name": "Odeslat ozn\u00e1men\u00ed"
+        },
+        "persistent_notification": {
+            "description": "Ode\u0161le ozn\u00e1men\u00ed, kter\u00e9 je viditeln\u00e9 na panelu **Ozn\u00e1men\u00ed**.",
+            "fields": {
+                "data": {
+                    "description": "N\u011bkter\u00e9 integrace poskytuj\u00ed roz\u0161\u00ed\u0159enou funk\u010dnost. Informace o tom, jak pou\u017e\u00edvat pole \"data\", najdete v dokumentaci k integraci.",
+                    "name": "Data"
+                },
+                "message": {
+                    "description": "T\u011blo zpr\u00e1vy ozn\u00e1men\u00ed.",
+                    "name": "Zpr\u00e1va"
+                },
+                "title": {
+                    "description": "N\u00e1zev ozn\u00e1men\u00ed.",
+                    "name": "N\u00e1zev"
+                }
+            },
+            "name": "Odeslat trval\u00e9 ozn\u00e1men\u00ed"
+        }
+    },
+    "title": "Ozn\u00e1men\u00ed"
+}

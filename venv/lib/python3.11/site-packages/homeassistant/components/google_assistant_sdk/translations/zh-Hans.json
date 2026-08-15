@@ -1,0 +1,60 @@
+{
+    "application_credentials": {
+        "description": "\u6309\u7167 [OAuth \u540c\u610f\u5c4f\u5e55]( {more_info_url} ) \u7684 [instructions]( {oauth_consent_url} ) \u6388\u4e88 Home Assistant \u8bbf\u95ee\u60a8\u7684 Google Assistant SDK \u7684\u6743\u9650\u3002\u60a8\u8fd8\u9700\u8981\u521b\u5efa\u94fe\u63a5\u5230\u60a8\u8d26\u53f7\u7684\u5e94\u7528\u7a0b\u5e8f\u51ed\u636e\uff1a\n 1. \u8f6c\u5230 [Credentials]( {oauth_creds_url} ) \u5e76\u5355\u51fb **Create Credentials**\u3002\n 1. \u4ece\u4e0b\u62c9\u5217\u8868\u4e2d\u9009\u62e9 **OAuth \u5ba2\u6237\u7aef ID**\u3002\n 1. \u9009\u62e9 **Web \u5e94\u7528\u7a0b\u5e8f** \u4f5c\u4e3a\u5e94\u7528\u7a0b\u5e8f\u7c7b\u578b\u3002 \n\n"
+    },
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "already_in_progress": "\u914d\u7f6e\u6d41\u7a0b\u5df2\u5728\u8fdb\u884c\u4e2d",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_access_token": "\u8bbf\u95ee Token \u65e0\u6548",
+            "missing_configuration": "\u8be5\u7ec4\u4ef6\u672a\u914d\u7f6e\u3002\u8bf7\u53c2\u9605\u6587\u6863\u3002",
+            "oauth_error": "\u6536\u5230\u7684 token \u6570\u636e\u65e0\u6548\u3002",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f",
+            "timeout_connect": "\u5efa\u7acb\u8fde\u63a5\u8d85\u65f6",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "create_entry": {
+            "default": "\u8ba4\u8bc1\u6210\u529f"
+        },
+        "step": {
+            "auth": {
+                "title": "\u5173\u8054 Google \u8d26\u53f7"
+            },
+            "pick_implementation": {
+                "title": "\u8bf7\u9009\u62e9\u8ba4\u8bc1\u65b9\u6cd5"
+            },
+            "reauth_confirm": {
+                "description": "Google Assistant SDK \u96c6\u6210\u9700\u8981\u91cd\u65b0\u9a8c\u8bc1\u60a8\u7684\u8d26\u53f7",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "enable_conversation_agent": "\u542f\u7528\u5bf9\u8bdd\u4ee3\u7406",
+                    "language_code": "\u8bed\u8a00\u4ee3\u7801"
+                },
+                "description": "\u8bbe\u7f6e\u4e0e Google Assistant \u4ea4\u4e92\u7684\u8bed\u8a00\u4ee5\u53ca\u662f\u5426\u8981\u542f\u7528\u5bf9\u8bdd\u4ee3\u7406\u3002"
+            }
+        }
+    },
+    "services": {
+        "send_text_command": {
+            "description": "\u5c06\u547d\u4ee4\u4f5c\u4e3a\u6587\u672c\u67e5\u8be2\u53d1\u9001\u5230 Google Assistant\u3002",
+            "fields": {
+                "command": {
+                    "description": "\u53d1\u9001\u5230 Google Assistant \u7684\u547d\u4ee4\u3002",
+                    "name": "\u547d\u4ee4"
+                },
+                "media_player": {
+                    "description": "\u7528\u4e8e\u64ad\u653e\u54cd\u5e94\u7684\u5a92\u4f53\u64ad\u653e\u5668\u5b9e\u4f53\u7684\u540d\u79f0\u3002",
+                    "name": "\u5a92\u4f53\u64ad\u653e\u5668\u5b9e\u4f53"
+                }
+            },
+            "name": "\u53d1\u9001\u6587\u672c\u547d\u4ee4"
+        }
+    }
+}

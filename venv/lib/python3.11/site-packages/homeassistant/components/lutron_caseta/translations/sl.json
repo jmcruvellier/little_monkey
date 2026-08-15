@@ -1,0 +1,13 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Naprava je \u017ee konfigurirana"
+        }
+    },
+    "device_automation": {
+        "trigger_subtype": {
+            "off": "Izklopljeno",
+            "on": "Vklopljen"
+        }
+    }
+}

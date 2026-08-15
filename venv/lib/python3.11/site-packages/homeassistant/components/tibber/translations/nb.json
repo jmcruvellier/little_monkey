@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Tjenesten er allerede konfigurert"
+        },
+        "error": {
+            "cannot_connect": "Tilkobling mislyktes",
+            "invalid_access_token": "Ugyldig tilgangstoken",
+            "timeout": "Tidsavbrudd for tilkobling til Tibber"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Tilgangskode"
+                },
+                "description": "Fyll inn din tilgangstoken fra {url}"
+            }
+        }
+    }
+}

@@ -1,0 +1,184 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "codelock": "Codi de bloqueig rebut",
+            "fingerprint": "Codi d'empremta rebut",
+            "send_keys": "Claus d'enviament rebudes",
+            "transmitter": "Codi del transmissor rebut",
+            "transponder": "Codi del transponedor rebut"
+        }
+    },
+    "services": {
+        "dyn_text": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "row": {
+                    "description": "Fila de text.",
+                    "name": "Fila"
+                },
+                "text": {
+                    "description": "Text a enviar (fins a 60 car\u00e0cters codificats en UTF-8).",
+                    "name": "Text"
+                }
+            },
+            "name": "Text din\u00e0mic"
+        },
+        "led": {
+            "description": "Configura l'estat del LED.",
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "led": {
+                    "description": "LED.",
+                    "name": "LED"
+                },
+                "state": {
+                    "description": "Estat del LED.",
+                    "name": "Estat"
+                }
+            },
+            "name": "LED"
+        },
+        "lock_keys": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "state": {
+                    "name": "Estat"
+                },
+                "table": {
+                    "name": "Taula"
+                }
+            }
+        },
+        "lock_regulator": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "state": {
+                    "name": "Estat"
+                }
+            }
+        },
+        "output_abs": {
+            "fields": {
+                "brightness": {
+                    "description": "Lluminositat absoluta.",
+                    "name": "Lluminositat"
+                },
+                "transition": {
+                    "description": "Temps de transici\u00f3.",
+                    "name": "Transici\u00f3"
+                }
+            }
+        },
+        "output_rel": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "brightness": {
+                    "description": "Lluminositat relativa.",
+                    "name": "Lluminositat"
+                }
+            }
+        },
+        "output_toggle": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "transition": {
+                    "description": "Temps de transici\u00f3.",
+                    "name": "Transici\u00f3"
+                }
+            }
+        },
+        "pck": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "pck": {
+                    "name": "PCK"
+                }
+            },
+            "name": "PCK"
+        },
+        "relays": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "state": {
+                    "name": "Estat"
+                }
+            }
+        },
+        "send_keys": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "keys": {
+                    "name": "Claus"
+                },
+                "state": {
+                    "name": "Estat"
+                }
+            },
+            "name": "Enviar claus"
+        },
+        "var_abs": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "unit_of_measurement": {
+                    "name": "Unitat de mesura"
+                },
+                "value": {
+                    "description": "Valor a configurar.",
+                    "name": "Valor"
+                },
+                "variable": {
+                    "name": "Variable"
+                }
+            }
+        },
+        "var_rel": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "unit_of_measurement": {
+                    "name": "Unitat de mesura"
+                },
+                "value": {
+                    "name": "Valor"
+                },
+                "value_reference": {
+                    "name": "Valor de refer\u00e8ncia"
+                },
+                "variable": {
+                    "name": "Variable"
+                }
+            }
+        },
+        "var_reset": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "variable": {
+                    "name": "Variable"
+                }
+            }
+        }
+    }
+}

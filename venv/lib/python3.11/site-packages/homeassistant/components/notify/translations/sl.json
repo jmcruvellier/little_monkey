@@ -1,0 +1,12 @@
+{
+    "services": {
+        "notify": {
+            "fields": {
+                "target": {
+                    "name": "Cilj"
+                }
+            }
+        }
+    },
+    "title": "Obvesti"
+}

@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "Paigaldus",
+                    "password": "Salas\u00f5na",
+                    "username": "Kasutajanimi"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "air_quality_active": {
+                "name": "\u00d5hukvaliteedi juhtimine  aktiivne"
+            }
+        }
+    }
+}

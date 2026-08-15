@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Za\u0159\u00edzen\u00ed je ji\u017e nastaveno",
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit"
+        },
+        "error": {
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit",
+            "invalid_auth": "Neplatn\u00e9 ov\u011b\u0159en\u00ed"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "password": {
+                "data": {
+                    "password": "Heslo"
+                },
+                "data_description": {
+                    "password": "(8 znak\u016f, viz QR k\u00f3d pod n\u00e1dobou na odpad)"
+                },
+                "title": "Je vy\u017eadov\u00e1no heslo"
+            },
+            "user": {
+                "data": {
+                    "host": "Hostitel"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Chcete p\u0159idat ROMY Vacuum Cleaner {name} do Home Assistanta?"
+            }
+        }
+    },
+    "entity": {
+        "vacuum": {
+            "romy": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "auto": "Auto",
+                            "default": "V\u00fdchoz\u00ed",
+                            "high": "Vysok\u00e1",
+                            "intensive": "Intenzivn\u00ed",
+                            "normal": "Norm\u00e1ln\u00ed",
+                            "silent": "Tich\u00e1",
+                            "super_silent": "Super tich\u00e1"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

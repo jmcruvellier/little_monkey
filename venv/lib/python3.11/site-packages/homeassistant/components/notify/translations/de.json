@@ -1,0 +1,45 @@
+{
+    "services": {
+        "notify": {
+            "description": "Sendet eine Benachrichtigung an ausgew\u00e4hlte Ziele.",
+            "fields": {
+                "data": {
+                    "description": "Einige Integrationen bieten erweiterte Funktionalit\u00e4t. Informationen zur Verwendung von _data_ findest du in der Integrationsdokumentation.",
+                    "name": "Daten"
+                },
+                "message": {
+                    "description": "Nachrichtentext der Benachrichtigung.",
+                    "name": "Nachricht"
+                },
+                "target": {
+                    "description": "Bei einigen Integrationen kannst du die Ziele angeben, die die Benachrichtigung erhalten. Weitere Informationen findest du in der Integrationsdokumentation.",
+                    "name": "Ziel"
+                },
+                "title": {
+                    "description": "Titel f\u00fcr deine Benachrichtigung.",
+                    "name": "Titel"
+                }
+            },
+            "name": "Sende eine Benachrichtigung"
+        },
+        "persistent_notification": {
+            "description": "Sendet eine Benachrichtigung, die im Bereich **Benachrichtigungen** sichtbar ist.",
+            "fields": {
+                "data": {
+                    "description": "Einige Integrationen bieten erweiterte Funktionalit\u00e4t. Informationen zur Verwendung von _data_ findest du in der Integrationsdokumentation.",
+                    "name": "Daten"
+                },
+                "message": {
+                    "description": "Nachrichtentext der Benachrichtigung.",
+                    "name": "Nachricht"
+                },
+                "title": {
+                    "description": "Titel der Benachrichtigung.",
+                    "name": "Titel"
+                }
+            },
+            "name": "Eine dauerhafte Benachrichtigung senden"
+        }
+    },
+    "title": "Benachrichtigung"
+}

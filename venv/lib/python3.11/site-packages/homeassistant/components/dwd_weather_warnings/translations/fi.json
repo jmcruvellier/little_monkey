@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Varoituskennon tunnus/nimi on jo m\u00e4\u00e4ritetty.",
+            "invalid_identifier": "M\u00e4\u00e4ritetty alueen tunniste on virheellinen."
+        },
+        "error": {
+            "invalid_identifier": "M\u00e4\u00e4ritetty alueen tunniste on virheellinen."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "Warncellin tunnus tai nimi"
+                },
+                "description": "Halutun alueen tunnistamiseksi tarvitaan sotasolun tunnus/nimi."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "Ennakkovaroitustaso",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Viimeisin p\u00e4ivitys"
+                    },
+                    "region_id": {
+                        "name": "Aluetunnus"
+                    },
+                    "region_name": {
+                        "name": "Alueen nimi"
+                    },
+                    "warning_count": {
+                        "name": "Varoitusten m\u00e4\u00e4r\u00e4"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Nykyinen varoitustaso",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Viimeisin p\u00e4ivitys"
+                    },
+                    "region_id": {
+                        "name": "Aluetunnus"
+                    },
+                    "region_name": {
+                        "name": "Alueen nimi"
+                    },
+                    "warning_count": {
+                        "name": "Varoitusten m\u00e4\u00e4r\u00e4"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Deutscher Wetterdienstin (DWD) s\u00e4\u00e4varoitusten konfigurointi YAML:n avulla poistetaan.\n\nOlemassa oleva YAML-konfiguraatiosi on tuotu k\u00e4ytt\u00f6liittym\u00e4\u00e4n automaattisesti.\n\nPoista Deutscher Wetterdienst (DWD) Weather Warnings YAML-konfiguraatio configuration.yaml-tiedostosta ja k\u00e4ynnist\u00e4 Home Assistant uudelleen ongelman korjaamiseksi.",
+            "title": "Deutscher Wetterdienst (DWD) s\u00e4\u00e4varoitusten YAML-konfiguraatio poistetaan."
+        }
+    }
+}

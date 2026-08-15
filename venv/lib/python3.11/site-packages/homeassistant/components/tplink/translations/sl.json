@@ -1,0 +1,7 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "TP-Link naprav ni mogo\u010de najti v omre\u017eju."
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "bluetooth_not_available": "\u5fc5\u987b\u81f3\u5c11\u914d\u7f6e\u4e00\u4e2a\u84dd\u7259\u9002\u914d\u5668\u6216\u9065\u63a7\u5668\u624d\u80fd\u4f7f\u7528 iBeacon Tracker\u3002",
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "step": {
+            "user": {
+                "description": "\u60a8\u60f3\u8bbe\u7f6e iBeacon \u8ffd\u8e2a\u5668\u5417\uff1f"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "estimated_distance": {
+                "name": "\u9884\u8ba1\u8ddd\u79bb"
+            },
+            "power": {
+                "name": "\u7535\u6e90"
+            },
+            "vendor": {
+                "name": "\u4f9b\u5e94\u5546"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "min_rssi": "\u6700\u4f4e RSSI"
+                },
+                "description": "RSSI \u503c\u4f4e\u4e8e\u6700\u5c0f RSSI \u7684 iBeacons \u5c06\u88ab\u5ffd\u7565\u3002\u5982\u679c\u96c6\u6210\u770b\u5230\u76f8\u90bb\u7684 iBeacons\uff0c\u5219\u589e\u52a0\u6b64\u503c\u53ef\u80fd\u4f1a\u6709\u6240\u5e2e\u52a9\u3002"
+            }
+        }
+    }
+}

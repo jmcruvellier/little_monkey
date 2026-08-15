@@ -1,0 +1,139 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5e33\u865f\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210",
+            "reauth_successful": "\u91cd\u65b0\u8a8d\u8b49\u6210\u529f"
+        },
+        "error": {
+            "cannot_connect": "\u9023\u7dda\u5931\u6557",
+            "invalid_auth": "\u8eab\u4efd\u9a57\u8b49\u7121\u6548"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u78bc",
+                    "region": "ConnectedDrive \u5340\u57df",
+                    "username": "\u4f7f\u7528\u8005\u540d\u7a31"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging_status": {
+                "name": "\u5145\u96fb\u72c0\u614b"
+            },
+            "check_control_messages": {
+                "name": "\u6aa2\u67e5\u63a7\u5236\u8a0a\u606f"
+            },
+            "condition_based_services": {
+                "name": "\u72c0\u614b\u689d\u4ef6\u670d\u52d9"
+            },
+            "connection_status": {
+                "name": "\u9023\u7dda\u72c0\u614b"
+            },
+            "door_lock_state": {
+                "name": "\u8eca\u9580\u4e0a\u9396\u72c0\u614b"
+            },
+            "is_pre_entry_climatization_enabled": {
+                "name": "\u9032\u5165\u524d\u9810\u8a2d\u7a7a\u8abf\u6eab\u5ea6"
+            },
+            "lids": {
+                "name": "\u6cb9\u7bb1\u84cb"
+            },
+            "windows": {
+                "name": "\u8eca\u7a97"
+            }
+        },
+        "button": {
+            "activate_air_conditioning": {
+                "name": "\u958b\u555f\u7a7a\u8abf"
+            },
+            "find_vehicle": {
+                "name": "\u5c0b\u627e\u8eca\u8f1b"
+            },
+            "light_flash": {
+                "name": "\u9583\u71c8"
+            },
+            "refresh": {
+                "name": "\u7531\u96f2\u7aef\u66f4\u65b0"
+            },
+            "sound_horn": {
+                "name": "\u97f3\u6548\u5587\u53ed"
+            }
+        },
+        "lock": {
+            "lock": {
+                "name": "\u9580\u9396"
+            }
+        },
+        "number": {
+            "target_soc": {
+                "name": "\u8a2d\u5b9a SoC"
+            }
+        },
+        "select": {
+            "ac_limit": {
+                "name": "\u4ea4\u6d41\u5145\u96fb\u9650\u5236"
+            },
+            "charging_mode": {
+                "name": "\u5145\u96fb\u6a21\u5f0f"
+            }
+        },
+        "sensor": {
+            "ac_current_limit": {
+                "name": "\u4ea4\u6d41\u96fb\u6d41\u9650\u5236"
+            },
+            "charging_end_time": {
+                "name": "\u5145\u96fb\u7d50\u675f\u6642\u9593"
+            },
+            "charging_start_time": {
+                "name": "\u5145\u96fb\u958b\u59cb\u6642\u9593"
+            },
+            "charging_status": {
+                "name": "\u5145\u96fb\u72c0\u614b"
+            },
+            "charging_target": {
+                "name": "\u5145\u96fb\u76ee\u6a19"
+            },
+            "mileage": {
+                "name": "\u91cc\u7a0b"
+            },
+            "remaining_battery_percent": {
+                "name": "\u5269\u9918\u96fb\u91cf\u767e\u5206\u6bd4"
+            },
+            "remaining_fuel": {
+                "name": "\u5269\u9918\u6cb9\u91cf"
+            },
+            "remaining_fuel_percent": {
+                "name": "\u5269\u9918\u6cb9\u91cf\u767e\u5206\u6bd4"
+            },
+            "remaining_range_electric": {
+                "name": "\u5269\u9918\u822a\u7a0b\u96fb\u91cf"
+            },
+            "remaining_range_fuel": {
+                "name": "\u5269\u9918\u822a\u7a0b\u6cb9\u91cf"
+            },
+            "remaining_range_total": {
+                "name": "\u5269\u9918\u7e3d\u822a\u7a0b"
+            }
+        },
+        "switch": {
+            "charging": {
+                "name": "\u5145\u96fb\u4e2d"
+            },
+            "climate": {
+                "name": "\u7a7a\u8abf"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "account_options": {
+                "data": {
+                    "read_only": "\u552f\u8b80\uff08\u50c5\u652f\u63f4\u611f\u6e2c\u5668\u8207\u901a\u77e5\uff0c\u4e0d\n\u5305\u542b\u670d\u52d9\u8207\u9396\u5b9a\uff09"
+                }
+            }
+        }
+    }
+}

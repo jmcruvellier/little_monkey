@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "\u8bbe\u5907\u7c7b\u578b",
+                    "name": "\u540d\u79f0"
+                },
+                "title": "\u968f\u673a\u6570\u4e8c\u5143\u4f20\u611f\u5668"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "\u8bbe\u5907\u7c7b\u578b",
+                    "maximum": "\u6700\u5927\u503c",
+                    "minimum": "\u6700\u5c0f\u503c",
+                    "name": "\u540d\u79f0",
+                    "unit_of_measurement": "\u5355\u4f4d"
+                },
+                "title": "\u968f\u673a\u6570\u4f20\u611f\u5668"
+            },
+            "user": {
+                "description": "\u5e2e\u52a9\u4f60\u521b\u5efa\u4e00\u4e2a\u80fd\u4ea7\u751f\u968f\u673a\u6570\u503c\u7684\u4f20\u611f\u5668",
+                "menu_options": {
+                    "binary_sensor": "\u968f\u673a\u6570\u4e8c\u5143\u4f20\u611f\u5668",
+                    "sensor": "\u968f\u673a\u6570\u4f20\u611f\u5668"
+                },
+                "title": "\u6dfb\u52a0\u968f\u673a\u6570\u8f85\u52a9\u5143\u7d20"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "\u6b64\u8f85\u52a9\u7a0b\u5e8f\u6ca1\u6709\u4efb\u4f55\u9009\u9879\u3002",
+                "title": "\u4e8c\u8fdb\u5236\u968f\u673a\u6570\u4f20\u611f\u5668"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "\u8bbe\u5907\u7c7b\u578b",
+                    "maximum": "\u6700\u5927\u503c",
+                    "minimum": "\u6700\u5c0f\u503c",
+                    "unit_of_measurement": "\u6d4b\u91cf\u5355\u4f4d"
+                },
+                "title": "\u968f\u673a\u4f20\u611f\u5668"
+            }
+        }
+    }
+}

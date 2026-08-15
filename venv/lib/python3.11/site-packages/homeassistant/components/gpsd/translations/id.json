@@ -1,0 +1,30 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Layanan sudah dikonfigurasi",
+            "cannot_connect": "Gagal terhubung"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "mode": {
+                "state_attributes": {
+                    "latitude": {
+                        "name": "Lintang"
+                    },
+                    "longitude": {
+                        "name": "Bujur"
+                    }
+                }
+            }
+        }
+    }
+}

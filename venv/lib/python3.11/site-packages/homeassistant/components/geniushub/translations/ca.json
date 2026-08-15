@@ -1,0 +1,35 @@
+{
+    "services": {
+        "set_switch_override": {
+            "fields": {
+                "duration": {
+                    "name": "Durada"
+                }
+            }
+        },
+        "set_zone_mode": {
+            "fields": {
+                "entity_id": {
+                    "name": "Entitat"
+                },
+                "mode": {
+                    "name": "Mode"
+                }
+            }
+        },
+        "set_zone_override": {
+            "fields": {
+                "duration": {
+                    "name": "Durada"
+                },
+                "entity_id": {
+                    "name": "Entitat"
+                },
+                "temperature": {
+                    "description": "Temperatura objectiu.",
+                    "name": "Temperatura"
+                }
+            }
+        }
+    }
+}

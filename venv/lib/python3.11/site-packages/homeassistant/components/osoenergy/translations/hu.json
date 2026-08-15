@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Az eszk\u00f6z m\u00e1r konfigur\u00e1lva van",
+            "reauth_successful": "Az \u00fajrahiteles\u00edt\u00e9s sikeres volt."
+        },
+        "error": {
+            "cannot_connect": "Sikertelen csatlakoz\u00e1s",
+            "invalid_auth": "\u00c9rv\u00e9nytelen hiteles\u00edt\u00e9s",
+            "unknown": "V\u00e1ratlan hiba"
+        },
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_key": "API kulcs"
+                },
+                "description": "Hozzon l\u00e9tre \u00e9s adjon meg egy \u00faj 'el\u0151fizet\u00e9si kulcsot' fi\u00f3kj\u00e1hoz a 'https://portal.osoenergy.no/' c\u00edmen.",
+                "title": "OSO Energy hiteles\u00edt\u00e9s"
+            },
+            "user": {
+                "data": {
+                    "api_key": "API kulcs"
+                },
+                "description": "Adja meg a gener\u00e1lt 'el\u0151fizet\u00e9si kulcsot' fi\u00f3kj\u00e1hoz a 'https://portal.osoenergy.no/' c\u00edmen.",
+                "title": "OSO Energy hiteles\u00edt\u00e9s"
+            }
+        }
+    }
+}

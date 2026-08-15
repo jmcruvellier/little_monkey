@@ -1,0 +1,7 @@
+{
+    "issues": {
+        "removed_lazy_error_count": {
+            "title": "A clave de configuraci\u00f3n `{config_key}` est\u00e1 a ser eliminada"
+        }
+    }
+}

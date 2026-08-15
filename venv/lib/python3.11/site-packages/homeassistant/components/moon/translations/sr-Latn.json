@@ -1,0 +1,24 @@
+{
+    "entity": {
+        "sensor": {
+            "phase": {
+                "state": {
+                    "first_quarter": "Prva \u010detvrt",
+                    "full_moon": "Pun mesec",
+                    "last_quarter": "Poslednja \u010detvrt",
+                    "new_moon": "Mlad mesec",
+                    "waning_crescent": "Mese\u010dev srp u opadanju",
+                    "waning_gibbous": "Mese\u010deva grba u opadanju",
+                    "waxing_crescent": "Mese\u010dev srp u porastu",
+                    "waxing_gibbous": "Mese\u010deva grba u porastu"
+                }
+            }
+        }
+    },
+    "issues": {
+        "removed_yaml": {
+            "title": "Mese\u010deva YAML konfiguracija je uklonjena"
+        }
+    },
+    "title": "Mesec"
+}

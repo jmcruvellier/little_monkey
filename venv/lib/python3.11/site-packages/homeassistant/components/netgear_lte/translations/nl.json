@@ -1,0 +1,32 @@
+{
+    "services": {
+        "connect_lte": {
+            "fields": {
+                "host": {
+                    "name": "Host"
+                }
+            }
+        },
+        "delete_sms": {
+            "fields": {
+                "host": {
+                    "name": "Host"
+                }
+            }
+        },
+        "disconnect_lte": {
+            "fields": {
+                "host": {
+                    "name": "Host"
+                }
+            }
+        },
+        "set_option": {
+            "fields": {
+                "host": {
+                    "name": "Host"
+                }
+            }
+        }
+    }
+}

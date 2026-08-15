@@ -1,0 +1,62 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "invalid_pin": "\u63d0\u4f9b\u7684pin\u65e0\u6548",
+            "network_error": "\u53d1\u751f\u7f51\u7edc\u9519\u8bef",
+            "no_panel_online": "\u672a\u627e\u5230\u5728\u7ebf Elmax \u63a7\u5236\u9762\u677f\u3002",
+            "reauth_panel_disappeared": "\u7ed9\u5b9a\u7684\u9762\u677f\u4e0d\u518d\u4e0e\u6b64\u7528\u6237\u76f8\u5173\u8054\u3002\u8bf7\u4f7f\u7528\u4e0e\u6b64\u9762\u677f\u5173\u8054\u7684\u8d26\u53f7\u767b\u5f55\u3002",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "cloud": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8bf7\u4f7f\u7528\u60a8\u7684\u51ed\u636e\u767b\u5f55 Elmax \u4e91"
+            },
+            "direct": {
+                "data": {
+                    "panel_api_host": "\u9762\u677f API \u4e3b\u673a\u540d\u6216 IP",
+                    "panel_api_port": "\u9762\u677f API \u7aef\u53e3",
+                    "panel_pin": "\u9762\u677f PIN \u7801",
+                    "use_ssl": "\u4f7f\u7528 SSL"
+                }
+            },
+            "panels": {
+                "data": {
+                    "panel_id": "\u9762\u677fID",
+                    "panel_name": "\u9762\u677f\u540d\u79f0",
+                    "panel_pin": "PIN \u7801"
+                },
+                "description": "\u9009\u62e9\u60a8\u60f3\u8981\u901a\u8fc7\u6b64\u96c6\u6210\u63a7\u5236\u7684\u9762\u677f\u3002\u8bf7\u6ce8\u610f\uff0c\u9762\u677f\u5fc5\u987b\u6253\u5f00\u624d\u80fd\u8fdb\u884c\u914d\u7f6e\u3002"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "panel_pin": "\u9762\u677fPin\u7801",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8bf7\u91cd\u65b0\u4e0e\u9762\u677f\u8fdb\u884c\u8eab\u4efd\u9a8c\u8bc1\u3002"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8bf7\u4f7f\u7528\u60a8\u7684\u51ed\u636e\u767b\u5f55Elmax\u4e91"
+            },
+            "zeroconf_setup": {
+                "data": {
+                    "panel_pin": "\u9762\u677f PIN \u7801",
+                    "use_ssl": "\u4f7f\u7528 SSL"
+                }
+            }
+        }
+    }
+}

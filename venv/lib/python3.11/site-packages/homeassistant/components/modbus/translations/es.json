@@ -1,0 +1,90 @@
+{
+    "issues": {
+        "deprecated_close_comm_config": {
+            "description": "Por favor, elimina la clave `{config_key}` de la entrada {integration} en tu archivo `configuration.yaml` y reinicia Home Assistant para solucionar este problema. Se informar\u00e1 de todos los errores, ya que se acepta \"lazy_error_count\", pero se ignora.",
+            "title": "Se va a eliminar la clave de configuraci\u00f3n `{config_key}`."
+        },
+        "deprecated_retries": {
+            "description": "Por favor, elimina la clave `{config_key}` de la entrada {integration} en tu archivo configuration.yaml y reinicia Home Assistant para solucionar este problema. \n\nEl n\u00famero m\u00e1ximo de reintentos ahora est\u00e1 fijado en 3.",
+            "title": "Se va a eliminar la clave de configuraci\u00f3n `{config_key}`."
+        },
+        "deprecated_retry_on_empty": {
+            "description": "Por favor, elimina la clave `{config_key}` de la entrada {integration} del archivo configuration.yaml y reinicia Home Assistant para solucionar este problema.\n\nVolver a intentar si es vac\u00edo se aplica autom\u00e1ticamente, consulta [la documentaci\u00f3n]({url}) para conocer otros par\u00e1metros de gesti\u00f3n de errores.",
+            "title": "Se va a eliminar la clave de configuraci\u00f3n `{config_key}`."
+        },
+        "removed_lazy_error_count": {
+            "description": "Por favor, elimina la clave `{config_key}` de la entrada {integration} en tu archivo configuration.yaml y reinicia Home Assistant para solucionar este problema. Se informar\u00e1 de todos los errores, ya que se aceota lazy_error_count, pero se ignora.",
+            "title": "Se va a eliminar la clave de configuraci\u00f3n `{config_key}`."
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Recarga todas las entidades modbus.",
+            "name": "Recargar"
+        },
+        "restart": {
+            "description": "Reinicia el concentrador modbus (si est\u00e1 en marcha, lo para y, a continuaci\u00f3n, lo inicia).",
+            "fields": {
+                "hub": {
+                    "description": "Nombre del concentrador Modbus.",
+                    "name": "Concentrador"
+                }
+            },
+            "name": "Reiniciar"
+        },
+        "stop": {
+            "description": "Detiene el concentrador modbus.",
+            "fields": {
+                "hub": {
+                    "description": "Nombre del concentrador Modbus.",
+                    "name": "Concentrador"
+                }
+            },
+            "name": "Detener"
+        },
+        "write_coil": {
+            "description": "Escribe en una bobina modbus.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del registro a escribir.",
+                    "name": "Direcci\u00f3n"
+                },
+                "hub": {
+                    "description": "Nombre del concentrador Modbus.",
+                    "name": "Concentrador"
+                },
+                "slave": {
+                    "description": "Direcci\u00f3n de la unidad/esclavo modbus.",
+                    "name": "Esclavo"
+                },
+                "state": {
+                    "description": "Estado para escribir.",
+                    "name": "Estado"
+                }
+            },
+            "name": "Escribir bobina"
+        },
+        "write_register": {
+            "description": "Escribe en un registro de retenci\u00f3n modbus.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del registro de retenci\u00f3n en el que se va a escribir.",
+                    "name": "Direcci\u00f3n"
+                },
+                "hub": {
+                    "description": "Nombre del concentrador Modbus.",
+                    "name": "Concentrador"
+                },
+                "slave": {
+                    "description": "Direcci\u00f3n de la unidad/esclavo modbus.",
+                    "name": "Esclavo"
+                },
+                "value": {
+                    "description": "Valor (valor \u00fanico o matriz) para escribir.",
+                    "name": "Valor"
+                }
+            },
+            "name": "Escribir registro"
+        }
+    }
+}

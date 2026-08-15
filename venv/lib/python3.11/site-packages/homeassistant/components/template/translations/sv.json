@@ -1,0 +1,163 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "name": "Namn",
+                    "state": "Mall f\u00f6r tillst\u00e5nd",
+                    "state_template": "Mall f\u00f6r tillst\u00e5nd"
+                },
+                "title": "Mall f\u00f6r bin\u00e4r sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "name": "Namn",
+                    "state": "Mall f\u00f6r tillst\u00e5nd",
+                    "state_class": "Tillst\u00e5ndsklass",
+                    "state_template": "Mall f\u00f6r tillst\u00e5nd",
+                    "unit_of_measurement": "M\u00e5ttenhet"
+                },
+                "title": "Mallsensor"
+            },
+            "user": {
+                "description": "Den h\u00e4r hj\u00e4lparen l\u00e5ter dig skapa hj\u00e4lpentiteter som definierar deras tillst\u00e5nd med hj\u00e4lp av en mall.",
+                "menu_options": {
+                    "binary_sensor": "Mall f\u00f6r en bin\u00e4r sensor",
+                    "sensor": "Mall f\u00f6r en sensor"
+                },
+                "title": "Hj\u00e4lp f\u00f6r mallar"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "state": "Mall f\u00f6r tillst\u00e5nd",
+                    "state_template": "Mall f\u00f6r tillst\u00e5nd"
+                },
+                "title": "Mall f\u00f6r bin\u00e4r sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "state": "Mall f\u00f6r tillst\u00e5nd",
+                    "state_class": "Tillst\u00e5ndsklass",
+                    "state_template": "Mall f\u00f6r tillst\u00e5nd",
+                    "unit_of_measurement": "M\u00e5ttenhet"
+                },
+                "title": "Mallsensor"
+            }
+        }
+    },
+    "selector": {
+        "binary_sensor_device_class": {
+            "options": {
+                "battery": "Batteri",
+                "battery_charging": "Laddar",
+                "carbon_monoxide": "Kolmonoxid",
+                "cold": "Kallt",
+                "connectivity": "Uppkoppling",
+                "door": "D\u00f6rr",
+                "garage_door": "Garageport",
+                "gas": "Gas",
+                "heat": "V\u00e4rme",
+                "light": "Belysning",
+                "lock": "L\u00e5s",
+                "moisture": "Fukt",
+                "motion": "R\u00f6relse",
+                "moving": "F\u00f6rflyttar",
+                "none": "Ingen enhetsklass",
+                "occupancy": "N\u00e4rvaro",
+                "opening": "\u00d6ppning",
+                "plug": "Anslutning",
+                "power": "Str\u00f6m",
+                "presence": "N\u00e4rvaro",
+                "problem": "Problem",
+                "running": "Ig\u00e5ng",
+                "safety": "S\u00e4kerhet",
+                "smoke": "R\u00f6k",
+                "sound": "Ljud",
+                "update": "Uppdatering",
+                "vibration": "Vibration",
+                "window": "F\u00f6nster"
+            }
+        },
+        "sensor_device_class": {
+            "options": {
+                "apparent_power": "Skenbar effekt",
+                "aqi": "Luftkvalitetsindex",
+                "atmospheric_pressure": "Lufttryck",
+                "battery": "Batteri",
+                "carbon_dioxide": "Koldioxid",
+                "carbon_monoxide": "Kolmonoxid",
+                "current": "Str\u00f6m",
+                "data_rate": "Datahastighet",
+                "data_size": "Datastorlek",
+                "date": "Datum",
+                "distance": "Avst\u00e5nd",
+                "duration": "Varaktighet",
+                "energy": "Energi",
+                "energy_storage": "Lagrad energi",
+                "frequency": "Frekvens",
+                "gas": "Gas",
+                "humidity": "Luftfuktighet",
+                "illuminance": "Ljusstyrka",
+                "irradiance": "Str\u00e5lning",
+                "moisture": "Fukt",
+                "monetary": "Balans",
+                "nitrogen_dioxide": "Kv\u00e4vedioxid",
+                "nitrogen_monoxide": "Kv\u00e4veoxid",
+                "nitrous_oxide": "Lustgas",
+                "none": "Ingen enhetsklass",
+                "ozone": "Ozon",
+                "ph": "pH",
+                "pm1": "PM1",
+                "pm10": "PM10",
+                "pm25": "PM2.5",
+                "power": "Effekt",
+                "power_factor": "Effektfaktor",
+                "precipitation": "Nederb\u00f6rd",
+                "precipitation_intensity": "Nederb\u00f6rdsintensitet",
+                "pressure": "Tryck",
+                "reactive_power": "Reaktiv effekt",
+                "signal_strength": "Signalstyrka",
+                "sound_pressure": "Ljudtryck",
+                "speed": "Hastighet",
+                "sulphur_dioxide": "Svaveldioxid",
+                "temperature": "Temperatur",
+                "timestamp": "Tidsst\u00e4mpel",
+                "volatile_organic_compounds": "VOC",
+                "volatile_organic_compounds_parts": "VOC",
+                "voltage": "Sp\u00e4nning",
+                "volume": "Volym",
+                "volume_storage": "Lagrad volym",
+                "water": "Vatten",
+                "weight": "Vikt",
+                "wind_speed": "Vindhastighet"
+            }
+        },
+        "sensor_state_class": {
+            "options": {
+                "measurement": "M\u00e5tt",
+                "none": "Ingen tillst\u00e5ndsklass",
+                "total": "Totalt",
+                "total_increasing": "Totalt \u00f6kande"
+            }
+        },
+        "sensor_unit_of_measurement": {
+            "options": {
+                "none": "Ingen m\u00e5ttenhet"
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Laddar om mallentiteter fr\u00e5n YAML-konfigurationen.",
+            "name": "Ladda om"
+        }
+    }
+}

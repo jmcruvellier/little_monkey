@@ -1,0 +1,15 @@
+{
+    "issues": {
+        "deprecated_beat": {
+            "description": "Hapus kunci `{config_key}` dari `{display_options}` untuk entri {integration} di file configuration.yaml Anda dan mulai ulang Home Assistant untuk memperbaiki masalah ini.",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Sensor Waktu & Tanggal `{config_key}` dalam proses penghapusan"
+                    }
+                }
+            },
+            "title": "Sensor Waktu & Tanggal `{config_key}` dalam proses penghapusan"
+        }
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "heating_type": "Vrsta ogrevanja"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_connect": "\u65e0\u6cd5\u8fde\u63a5\u5230 Eight Sleep \u4e91\u7aef\uff1a{error}"
+        },
+        "error": {
+            "cannot_connect": "\u65e0\u6cd5\u8fde\u63a5\u5230 Eight Sleep \u4e91\u7aef\uff1a{error}"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "services": {
+        "heat_set": {
+            "description": "\u8bbe\u7f6e Eight Sleep \u7684\u5236\u70ed/\u5236\u51b7\u7ea7\u522b\u3002",
+            "fields": {
+                "duration": {
+                    "description": "\u4ee5\u79d2\u4e3a\u5355\u4f4d\u52a0\u70ed/\u51b7\u5374\u81f3\u76ee\u6807\u6c34\u5e73\u7684\u6301\u7eed\u65f6\u95f4\u3002",
+                    "name": "\u6301\u7eed\u65f6\u95f4"
+                },
+                "target": {
+                    "description": "\u76ee\u6807\u5236\u51b7/\u5236\u70ed\u6c34\u5e73\uff0c\u8303\u56f4\u662f -100 \u5230 100\u3002",
+                    "name": "\u76ee\u6807"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u51b7\u70ed"
+        }
+    }
+}

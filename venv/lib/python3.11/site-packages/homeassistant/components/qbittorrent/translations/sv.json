@@ -1,0 +1,43 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "invalid_auth": "Ogiltig autentisering"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "L\u00f6senord",
+                    "url": "URL",
+                    "username": "Anv\u00e4ndarnamn",
+                    "verify_ssl": "Verifiera SSL-certifikat"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "transmission_status": {
+                "name": "Status",
+                "state": {
+                    "downloading": "Laddar ner",
+                    "idle": "Inaktiv",
+                    "seeding": "Seedar",
+                    "up_down": "Upp/ner"
+                }
+            },
+            "upload_speed": {
+                "name": "Uppladdningshastighet"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Konfiguration av qBittorrent med YAML tas bort.\n\nDin nuvarande YAML-konfiguration har blivit importerad till UI automatiskt.\n\nTa bort qBittorrents YAML-konfiguration fr\u00e5n din configuration.yaml och starta om Home Assistant f\u00f6r att fixa detta problem.",
+            "title": "YAML-konfiguration av qBittorrent kommer tas bort"
+        }
+    }
+}

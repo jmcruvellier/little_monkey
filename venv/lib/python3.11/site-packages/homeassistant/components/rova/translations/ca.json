@@ -1,0 +1,10 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El servei ja est\u00e0 configurat"
+        },
+        "error": {
+            "already_configured": "El servei ja est\u00e0 configurat"
+        }
+    }
+}

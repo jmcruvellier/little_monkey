@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ji\u017e nastaveno. Je mo\u017en\u00e9 jen jedin\u00e9 nastaven\u00ed.",
+            "already_in_progress": "Nastaven\u00ed ji\u017e prob\u00edh\u00e1"
+        },
+        "error": {
+            "api_exception": "Nepoda\u0159ilo se p\u0159ipojit",
+            "client_connector_error": "Nepoda\u0159ilo se p\u0159ipojit",
+            "invalid_ip": "Neplatn\u00e1 adresa IPv4.",
+            "timeout_error": "Nepoda\u0159ilo se p\u0159ipojit"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP adresa",
+                    "model": "Model"
+                },
+                "description": "Ru\u010dn\u011b nastavte sv\u00e9 za\u0159\u00edzen\u00ed Bang & Olufsen."
+            },
+            "zeroconf_confirm": {
+                "description": "Potvr\u010fte nastaven\u00ed {model} - {serial_number} na {host}.",
+                "title": "Nastavit za\u0159\u00edzen\u00ed Bang & Olufsen"
+            }
+        }
+    }
+}

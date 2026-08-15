@@ -1,0 +1,81 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat",
+            "reauth_successful": "Re-autenticaci\u00f3 realitzada correctament"
+        },
+        "error": {
+            "invalid_auth": "Autenticaci\u00f3 inv\u00e0lida",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "2fa": {
+                "data": {
+                    "2fa": "Codi de dos factors"
+                },
+                "title": "Autenticaci\u00f3 de dos factors"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Contrasenya"
+                },
+                "description": "La integraci\u00f3 Ring ha de tornar a autenticar-se amb el teu compte {username}",
+                "title": "L'autenticaci\u00f3 de {name} ha caducat"
+            },
+            "user": {
+                "data": {
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                },
+                "title": "Inici de sessi\u00f3 amb un compte de Ring"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "ding": {
+                "name": "Ding"
+            }
+        },
+        "light": {
+            "light": {
+                "name": "Llum"
+            }
+        },
+        "sensor": {
+            "last_activity": {
+                "name": "\u00daltima activitat"
+            },
+            "last_ding": {
+                "name": "\u00daltima trucada"
+            },
+            "last_motion": {
+                "name": "\u00daltima detecci\u00f3 de moviment"
+            },
+            "volume": {
+                "name": "Volum"
+            },
+            "wifi_signal_category": {
+                "name": "Categoria del senyal Wi-Fi"
+            },
+            "wifi_signal_strength": {
+                "name": "Pot\u00e8ncia del senyal Wi-Fi"
+            }
+        },
+        "siren": {
+            "siren": {
+                "name": "Sirena"
+            }
+        },
+        "switch": {
+            "siren": {
+                "name": "Sirena"
+            }
+        }
+    },
+    "services": {
+        "update": {
+            "name": "Actualitza"
+        }
+    }
+}

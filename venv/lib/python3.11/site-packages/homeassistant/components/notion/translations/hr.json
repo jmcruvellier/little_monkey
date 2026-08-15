@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Lozinka",
+                    "username": "Korisni\u010dko ime/adresa e-po\u0161te"
+                },
+                "title": "Ispunite svoje podatke"
+            }
+        }
+    }
+}

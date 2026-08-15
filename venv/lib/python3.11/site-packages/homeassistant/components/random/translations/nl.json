@@ -1,0 +1,33 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Apparaatklasse",
+                    "name": "Naam"
+                }
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Apparaatklasse",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "Naam",
+                    "unit_of_measurement": "Eenheid"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "sensor": {
+                "data": {
+                    "device_class": "Apparaatklasse",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "Eenheid"
+                }
+            }
+        }
+    }
+}

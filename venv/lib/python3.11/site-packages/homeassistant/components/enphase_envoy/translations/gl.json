@@ -1,0 +1,61 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data_description": {
+                    "host": "O nome do host ou o enderezo IP da t\u00faa pasarela Enphase Envoy."
+                }
+            }
+        }
+    },
+    "entity": {
+        "number": {
+            "cutoff_battery_level": {
+                "name": "Nivel de corte da bater\u00eda"
+            },
+            "reserve_soc": {
+                "name": "Nivel de reserva da bater\u00eda"
+            },
+            "restore_battery_level": {
+                "name": "Restaurar o nivel de bater\u00eda"
+            }
+        },
+        "select": {
+            "relay_mode": {
+                "state": {
+                    "battery": "Nivel de bater\u00eda"
+                }
+            },
+            "storage_mode": {
+                "name": "Modo de almacenamento",
+                "state": {
+                    "backup": "Copia de seguridade completa",
+                    "savings": "Modo aforro",
+                    "self_consumption": "Autoconsumo"
+                }
+            }
+        },
+        "sensor": {
+            "max_capacity": {
+                "name": "Capacidade da bater\u00eda"
+            },
+            "reserve_energy": {
+                "name": "Reserva de enerx\u00eda da bater\u00eda"
+            },
+            "reserve_soc": {
+                "name": "Nivel de reserva da bater\u00eda"
+            },
+            "seven_days_consumption": {
+                "name": "Consumo de enerx\u00eda nos \u00faltimos sete d\u00edas"
+            },
+            "seven_days_production": {
+                "name": "Producci\u00f3n de enerx\u00eda nos \u00faltimos sete d\u00edas"
+            }
+        },
+        "switch": {
+            "charge_from_grid": {
+                "name": "Carga desde a rede"
+            }
+        }
+    }
+}

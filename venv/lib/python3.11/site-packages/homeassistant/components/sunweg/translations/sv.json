@@ -1,0 +1,24 @@
+{
+    "config": {
+        "abort": {
+            "no_plants": "Inga v\u00e4xter har hittats p\u00e5 detta konto"
+        },
+        "error": {
+            "invalid_auth": "Ogiltig autentisering"
+        },
+        "step": {
+            "plant": {
+                "data": {
+                    "plant_id": "V\u00e4xt"
+                },
+                "title": "V\u00e4lj din v\u00e4xt"
+            },
+            "user": {
+                "data": {
+                    "password": "L\u00f6senord",
+                    "username": "Anv\u00e4ndarnamn"
+                }
+            }
+        }
+    }
+}

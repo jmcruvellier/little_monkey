@@ -1,0 +1,49 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52a1\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "single_instance_allowed": "\u8be5\u96c6\u6210\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86\uff0c\u4e14\u53ea\u80fd\u914d\u7f6e\u4e00\u6b21\u3002\u82e5\u8981\u91cd\u65b0\u914d\u7f6e\uff0c\u8bf7\u5148\u5220\u9664\u65e7\u96c6\u6210\u3002"
+        },
+        "step": {
+            "user": {
+                "description": "\u60a8\u60f3\u8bbe\u7f6e\u4f0a\u65af\u5170\u7948\u7977\u65f6\u95f4\u5417\uff1f",
+                "title": "\u8bbe\u7f6e\u4f0a\u65af\u5170\u7948\u7977\u65f6\u95f4"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "asr": {
+                "name": "\u812f\u793c"
+            },
+            "dhuhr": {
+                "name": "\u664c\u793c"
+            },
+            "fajr": {
+                "name": "\u6668\u793c"
+            },
+            "isha": {
+                "name": "\u5bb5\u793c"
+            },
+            "maghrib": {
+                "name": "\u660f\u793c"
+            },
+            "midnight": {
+                "name": "\u5348\u591c\u65f6\u95f4"
+            },
+            "sunrise": {
+                "name": "\u65e5\u51fa\u65f6\u95f4"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "calculation_method": "\u7948\u7977\u8ba1\u7b97\u65b9\u6cd5"
+                }
+            }
+        }
+    },
+    "title": "\u4f0a\u65af\u5170\u7948\u7977\u65f6\u95f4"
+}

@@ -1,0 +1,44 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u7801"
+                },
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "title": "\u914d\u7f6e Life360 \u8d26\u53f7"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "driving": "\u5c06\u9a7e\u9a76\u663e\u793a\u4e3a\u72b6\u6001",
+                    "driving_speed": "\u9a7e\u9a76\u901f\u5ea6",
+                    "limit_gps_acc": "\u9650\u5236 GPS \u7cbe\u5ea6",
+                    "max_gps_accuracy": "\u6700\u5927 GPS \u7cbe\u5ea6\uff08\u7c73\uff09",
+                    "set_drive_speed": "\u8bbe\u7f6e\u9a7e\u9a76\u901f\u5ea6\u9608\u503c"
+                },
+                "title": "\u8d26\u53f7\u9009\u9879"
+            }
+        }
+    }
+}

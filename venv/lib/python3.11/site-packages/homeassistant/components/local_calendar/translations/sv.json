@@ -1,0 +1,13 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "calendar_name": "Kalendernamn"
+                },
+                "description": "V\u00e4nligen v\u00e4lj ett namn f\u00f6r din nya kalender"
+            }
+        }
+    },
+    "title": "Lokal kalender"
+}

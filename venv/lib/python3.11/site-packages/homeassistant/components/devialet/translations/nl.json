@@ -1,0 +1,15 @@
+{
+    "config": {
+        "step": {
+            "confirm": {
+                "description": "Wil je Devialet apparaat {device} instellen?"
+            },
+            "user": {
+                "data": {
+                    "host": "Hostnaam"
+                },
+                "description": "Geef de hostnaam of IP adres van het Devialet apparaat."
+            }
+        }
+    }
+}

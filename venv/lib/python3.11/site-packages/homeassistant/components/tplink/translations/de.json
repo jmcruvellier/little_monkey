@@ -1,0 +1,188 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert",
+            "no_devices_found": "Keine Ger\u00e4te im Netzwerk gefunden",
+            "reauth_successful": "Die erneute Authentifizierung war erfolgreich"
+        },
+        "error": {
+            "cannot_connect": "Verbindungsfehler: {error}",
+            "invalid_auth": "Ung\u00fcltige Authentifizierung: {error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "description": "Das Ger\u00e4t erfordert eine Authentifizierung. Bitte gib unten deine TP-Link-Anmeldeinformationen ein.",
+                "title": "Authentifizieren"
+            },
+            "discovery_confirm": {
+                "description": "M\u00f6chtest du {name} {model} ({host}) einrichten?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "Ger\u00e4t"
+                }
+            },
+            "reauth": {
+                "description": "Das Ger\u00e4t erfordert eine Authentifizierung. Bitte gib unten deine TP-Link-Anmeldeinformationen ein.",
+                "title": "Die Authentifizierung ist abgelaufen f\u00fcr {name}"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "description": "Das Ger\u00e4t erfordert eine Authentifizierung. Bitte gib unten deine TP-Link-Anmeldeinformationen ein.",
+                "title": "Die Authentifizierung ist abgelaufen f\u00fcr {name}"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "Hostname oder IP-Adresse deines TP-Link-Ger\u00e4ts."
+                },
+                "description": "Wenn du den Host leer l\u00e4sst, wird die Erkennung verwendet, um Ger\u00e4te zu finden."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "description": "Das Ger\u00e4t erfordert eine Authentifizierung. Bitte gib unten deine TP-Link-Anmeldeinformationen ein.",
+                "title": "Authentifizieren"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_child": {
+                "name": "{device_name} Strom"
+            },
+            "current_consumption": {
+                "name": "Derzeitiger Verbrauch"
+            },
+            "current_consumption_child": {
+                "name": "{device_name} Stromverbrauch"
+            },
+            "today_consumption": {
+                "name": "Heutiger Verbrauch"
+            },
+            "today_consumption_child": {
+                "name": "{device_name} heutiger Verbrauch"
+            },
+            "total_consumption": {
+                "name": "Gesamtverbrauch"
+            },
+            "total_consumption_child": {
+                "name": "{device_name} Gesamtverbrauch"
+            },
+            "voltage_child": {
+                "name": "{device_name} Spannung"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "Legt einen zuf\u00e4lligen Effekt fest.",
+            "fields": {
+                "backgrounds": {
+                    "description": "Liste der HSV-Sequenzen (maximal 16).",
+                    "name": "Hintergr\u00fcnde"
+                },
+                "brightness": {
+                    "description": "Anf\u00e4ngliche Helligkeit.",
+                    "name": "Helligkeit"
+                },
+                "brightness_range": {
+                    "description": "Bereich der Helligkeit.",
+                    "name": "Helligkeitsbereich"
+                },
+                "duration": {
+                    "description": "Dauer.",
+                    "name": "Dauer"
+                },
+                "fadeoff": {
+                    "description": "Verblassen.",
+                    "name": "Verblassen"
+                },
+                "hue_range": {
+                    "description": "Farbtonbereich.",
+                    "name": "Farbtonbereich"
+                },
+                "init_states": {
+                    "description": "Urspr\u00fcngliche HSV-Sequenz.",
+                    "name": "Ausgangszust\u00e4nde"
+                },
+                "random_seed": {
+                    "description": "Zuf\u00e4lliger Seed.",
+                    "name": "Zuf\u00e4lliger Seed"
+                },
+                "saturation_range": {
+                    "description": "Bereich der S\u00e4ttigung.",
+                    "name": "S\u00e4ttigungsbereich"
+                },
+                "segments": {
+                    "description": "Liste der Segmente (0 f\u00fcr alle).",
+                    "name": "Segmente"
+                },
+                "transition": {
+                    "description": "\u00dcbergang.",
+                    "name": "\u00dcbergang"
+                },
+                "transition_range": {
+                    "description": "Bereich des \u00dcbergangs.",
+                    "name": "\u00dcbergangsbereich"
+                }
+            },
+            "name": "Zuf\u00e4lliger Effekt"
+        },
+        "sequence_effect": {
+            "description": "Legt einen Sequenzeffekt fest.",
+            "fields": {
+                "brightness": {
+                    "description": "Anf\u00e4ngliche Helligkeit.",
+                    "name": "Helligkeit"
+                },
+                "direction": {
+                    "description": "Richtung.",
+                    "name": "Richtung"
+                },
+                "duration": {
+                    "description": "Dauer.",
+                    "name": "Dauer"
+                },
+                "repeat_times": {
+                    "description": "Wiederholungen (0 f\u00fcr kontinuierlich).",
+                    "name": "Wiederholungen"
+                },
+                "segments": {
+                    "description": "Liste der Segmente (0 f\u00fcr alle).",
+                    "name": "Segmente"
+                },
+                "sequence": {
+                    "description": "Liste der HSV-Sequenzen (maximal 16).",
+                    "name": "Sequenz"
+                },
+                "spread": {
+                    "description": "Ausbreitungsgeschwindigkeit.",
+                    "name": "Ausbreitung"
+                },
+                "transition": {
+                    "description": "\u00dcbergang.",
+                    "name": "\u00dcbergang"
+                }
+            },
+            "name": "Sequenzeffekt"
+        }
+    }
+}

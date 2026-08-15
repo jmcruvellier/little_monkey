@@ -1,0 +1,12 @@
+{
+    "services": {
+        "complete_task": {
+            "description": "Completes a task that was previously created.",
+            "fields": {
+                "id": {
+                    "description": "Identifier that was defined when creating the task."
+                }
+            }
+        }
+    }
+}

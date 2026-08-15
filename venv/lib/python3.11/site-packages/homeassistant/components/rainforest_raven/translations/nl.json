@@ -1,0 +1,13 @@
+{
+    "entity": {
+        "sensor": {
+            "signal_strength": {
+                "state_attributes": {
+                    "channel": {
+                        "name": "Kanaal"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,10 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enhet er allerede konfigurert"
+        },
+        "error": {
+            "cannot_connect": "Tilkobling mislyktes"
+        }
+    }
+}

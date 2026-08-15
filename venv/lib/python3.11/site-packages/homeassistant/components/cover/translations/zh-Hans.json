@@ -1,0 +1,140 @@
+{
+    "device_automation": {
+        "action_type": {
+            "close": "\u5173\u95ed {entity_name}",
+            "close_tilt": "\u65cb\u95ed {entity_name}",
+            "open": "\u6253\u5f00 {entity_name}",
+            "open_tilt": "\u65cb\u5f00 {entity_name}",
+            "set_position": "\u8bbe\u7f6e {entity_name} \u7684\u4f4d\u7f6e",
+            "set_tilt_position": "\u8bbe\u7f6e {entity_name} \u7684\u503e\u659c\u4f4d\u7f6e",
+            "stop": "\u505c\u6b62 {entity_name}"
+        },
+        "condition_type": {
+            "is_closed": "{entity_name} \u5df2\u5173\u95ed",
+            "is_closing": "{entity_name} \u6b63\u5728\u5173\u95ed",
+            "is_open": "{entity_name} \u5df2\u6253\u5f00",
+            "is_opening": "{entity_name} \u6b63\u5728\u6253\u5f00",
+            "is_position": "{entity_name} \u5f53\u524d\u4f4d\u7f6e\u4e3a",
+            "is_tilt_position": "{entity_name} \u5f53\u524d\u503e\u659c\u4f4d\u7f6e\u4e3a"
+        },
+        "trigger_type": {
+            "closed": "{entity_name} \u5df2\u5173\u95ed",
+            "closing": "{entity_name} \u6b63\u5728\u5173\u95ed",
+            "opened": "{entity_name} \u5df2\u6253\u5f00",
+            "opening": "{entity_name} \u6b63\u5728\u6253\u5f00",
+            "position": "{entity_name} \u7684\u4f4d\u7f6e\u53d8\u5316",
+            "tilt_position": "{entity_name} \u7684\u503e\u659c\u4f4d\u7f6e\u53d8\u5316"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "name": "\u7a97\u5e18",
+            "state": {
+                "closed": "\u5df2\u5173\u95ed",
+                "closing": "\u6b63\u5728\u5173\u95ed",
+                "open": "\u5df2\u6253\u5f00",
+                "opening": "\u6b63\u5728\u6253\u5f00",
+                "stopped": "\u5df2\u505c\u6b62"
+            },
+            "state_attributes": {
+                "current_position": {
+                    "name": "\u4f4d\u7f6e"
+                },
+                "current_tilt_position": {
+                    "name": "\u503e\u659c\u4f4d\u7f6e"
+                }
+            }
+        },
+        "awning": {
+            "name": "\u5929\u7bf7"
+        },
+        "blind": {
+            "name": "\u767e\u53f6\u5e18"
+        },
+        "curtain": {
+            "name": "\u7a97\u5e18"
+        },
+        "damper": {
+            "name": "\u98ce\u95e8"
+        },
+        "door": {
+            "name": "\u95e8"
+        },
+        "garage": {
+            "name": "\u8f66\u5e93\u95e8"
+        },
+        "gate": {
+            "name": "\u5927\u95e8"
+        },
+        "shade": {
+            "name": "\u5377\u5e18"
+        },
+        "shutter": {
+            "name": "\u767e\u53f6\u7a97"
+        },
+        "window": {
+            "name": "\u7a97\u6237"
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "\u7528\u4e8e {domain} \u96c6\u6210\u7684 {platform} \u5e73\u53f0\u4e0d\u518d\u652f\u6301\u901a\u8fc7 YAML \u914d\u7f6e\u3002\n\n\u8bf7\u5c06\u5176\u4ece\u914d\u7f6e\u6587\u4ef6\u4e2d\u5220\u9664\uff0c\u7136\u540e\u91cd\u65b0\u542f\u52a8 Home Assistant \u4ee5\u89e3\u51b3\u6b64\u95ee\u9898\u3002",
+            "title": "\u5e73\u53f0\u4e0d\u652f\u6301"
+        }
+    },
+    "services": {
+        "close_cover": {
+            "description": "\u5408\u4e0a\u76d6\u5b50\u3002",
+            "name": "\u5173\u95ed"
+        },
+        "close_cover_tilt": {
+            "description": "\u5c06\u5377\u5e18\u53f6\u7247\u5173\u95ed\u3002",
+            "name": "\u65cb\u95ed\u5377\u5e18"
+        },
+        "open_cover": {
+            "description": "\u6253\u5f00\u76d6\u5b50\u3002",
+            "name": "\u6253\u5f00"
+        },
+        "open_cover_tilt": {
+            "description": "\u5c06\u5377\u5e18\u53f6\u7247\u6253\u5f00\u3002",
+            "name": "\u65cb\u5f00\u5377\u5e18"
+        },
+        "set_cover_position": {
+            "description": "\u5c06\u76d6\u5b50\u79fb\u52a8\u5230\u7279\u5b9a\u4f4d\u7f6e\u3002",
+            "fields": {
+                "position": {
+                    "description": "\u76ee\u6807\u4f4d\u7f6e\u3002",
+                    "name": "\u4f4d\u7f6e"
+                }
+            },
+            "name": "\u8bbe\u5b9a\u4f4d\u7f6e"
+        },
+        "set_cover_tilt_position": {
+            "description": "\u8c03\u6574\u5377\u5e18\u53f6\u7247\u503e\u659c\u5230\u7279\u5b9a\u4f4d\u7f6e\u3002",
+            "fields": {
+                "tilt_position": {
+                    "description": "\u76ee\u6807\u503e\u659c\u4f4d\u7f6e\u3002",
+                    "name": "\u503e\u659c\u4f4d\u7f6e"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u503e\u659c\u4f4d\u7f6e"
+        },
+        "stop_cover": {
+            "description": "\u505c\u6b62\u76d6\u5b50\u8fd0\u52a8\u3002",
+            "name": "\u505c\u6b62"
+        },
+        "stop_cover_tilt": {
+            "description": "\u505c\u6b62\u5377\u5e18\u53f6\u7247\u503e\u659c\u52a8\u4f5c\u3002",
+            "name": "\u505c\u6b62\u503e\u659c\u52a8\u4f5c"
+        },
+        "toggle": {
+            "description": "\u6253\u5f00/\u5173\u95ed\u76d6\u5b50\u3002",
+            "name": "\u5207\u6362"
+        },
+        "toggle_cover_tilt": {
+            "description": "\u65cb\u5f00/\u65cb\u95ed\u5377\u5e18\u3002",
+            "name": "\u5207\u6362\u503e\u659c"
+        }
+    },
+    "title": "\u7a97\u5e18"
+}

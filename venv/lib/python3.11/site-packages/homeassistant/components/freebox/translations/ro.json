@@ -1,0 +1,24 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispozitivul a fost configurat deja"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "register_failed": "A e\u0219uat \u00eenregistrarea, \u00eencearc\u0103 din nou",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "step": {
+            "link": {
+                "description": "Apas\u0103 pe \u201eTrimite\u201d, apoi apas\u0103 pe s\u0103geata din dreapta de pe router pentru a \u00eenregistra Freebox \u00een Home Assistant.\n\n![Amplasamentul butonului pe router](/static/images/config_freebox.png)",
+                "title": "Folose\u0219te router Freebox"
+            },
+            "user": {
+                "data": {
+                    "host": "Gazd\u0103 (host)",
+                    "port": "Port"
+                }
+            }
+        }
+    }
+}

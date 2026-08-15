@@ -1,0 +1,32 @@
+{
+    "entity": {
+        "select": {
+            "dimmer": {
+                "state": {
+                    "auto": "Samodejno"
+                }
+            },
+            "zone_equalizer_mode": {
+                "state": {
+                    "auto": "Samodejno"
+                }
+            },
+            "zone_sleep": {
+                "state": {
+                    "off": "Izklopljeno"
+                }
+            },
+            "zone_surr_decoder_type": {
+                "state": {
+                    "auto": "Samodejno",
+                    "toggle": "Preklopi"
+                }
+            },
+            "zone_tone_control_mode": {
+                "state": {
+                    "auto": "Samodejno"
+                }
+            }
+        }
+    }
+}

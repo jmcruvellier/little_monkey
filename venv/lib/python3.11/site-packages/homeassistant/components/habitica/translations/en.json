@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Account is already configured"
+        },
+        "error": {
+            "invalid_credentials": "Invalid authentication",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API key",
+                    "api_user": "Habitica\u2019s API user ID",
+                    "name": "Override for Habitica\u2019s username. Will be used for service calls",
+                    "url": "URL"
+                },
+                "description": "Connect your Habitica profile to allow monitoring of your user's profile and tasks. Note that api_id and api_key must be gotten from https://habitica.com/user/settings/api"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Calls Habitica API.",
+            "fields": {
+                "args": {
+                    "description": "Any additional JSON or URL parameter arguments. See apidoc mentioned for path. Example uses same API endpoint.",
+                    "name": "Args"
+                },
+                "name": {
+                    "description": "Habitica's username to call for.",
+                    "name": "Name"
+                },
+                "path": {
+                    "description": "Items from API URL in form of an array with method attached at the end. Consult https://habitica.com/apidoc/. Example uses https://habitica.com/apidoc/#api-Task-CreateUserTasks.",
+                    "name": "Path"
+                }
+            },
+            "name": "API name"
+        }
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "ID/nom del Warncell ja configurat.",
+            "invalid_identifier": "L'identificador de regi\u00f3 especificat \u00e9s inv\u00e0lid."
+        },
+        "error": {
+            "invalid_identifier": "L'identificador de regi\u00f3 especificat \u00e9s inv\u00e0lid."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "ID o nom del Warncell"
+                },
+                "description": "Per identificar la regi\u00f3 desitjada, cal l'ID/nom del warncell"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "Nivell d'alerta avan\u00e7at",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "\u00daltima actualitzaci\u00f3"
+                    },
+                    "region_id": {
+                        "name": "ID de regi\u00f3"
+                    },
+                    "region_name": {
+                        "name": "Nom de la regi\u00f3"
+                    },
+                    "warning_count": {
+                        "name": "Nombre d'alertes"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Nivell d'alerta actual",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "\u00daltima actualitzaci\u00f3"
+                    },
+                    "region_id": {
+                        "name": "ID de regi\u00f3"
+                    },
+                    "region_name": {
+                        "name": "Nom de la regi\u00f3"
+                    },
+                    "warning_count": {
+                        "name": "Nombre d'alertes"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "La configuraci\u00f3 d'alertes meteorol\u00f2giques de Deutscher Wetterdienst (DWD) mitjan\u00e7ant YAML s'eliminar\u00e0 de Home Assistant.\n\nLa configuraci\u00f3 YAML existent s'ha importat autom\u00e0ticament a la interf\u00edcie d'usuari.\n\nElimina la configuraci\u00f3 YAML de Deutscher Wetterdienst (DWD) del fitxer configuration.yaml i reinicia Home Assistant per solucionar aquest problema.",
+            "title": "La configuraci\u00f3 YAML d'alertes meteorol\u00f2giques de Deutscher Wetterdienst (DWD) est\u00e0 sent eliminada"
+        }
+    }
+}

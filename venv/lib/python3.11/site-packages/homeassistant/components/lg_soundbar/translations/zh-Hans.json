@@ -1,0 +1,18 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "no_data": "\u8bbe\u5907\u672a\u8fd4\u56de\u6761\u76ee\u6240\u9700\u7684\u4efb\u4f55\u6570\u636e\u3002"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                }
+            }
+        }
+    }
+}

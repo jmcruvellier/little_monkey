@@ -1,0 +1,37 @@
+{
+    "exceptions": {
+        "service_not_found": {
+            "message": "Servizo {domain}.{service} non encontrado."
+        }
+    },
+    "issues": {
+        "storage_corruption": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "O almacenamento `{storage_key}` non puido ser analizado e foi renomeado a `{corrupt_path}` para permitir que Home Assistant contin\u00fae.\n\nPode que se crease automaticamente un `{storage_key}` predeterminado.\n\nSe fixeches edici\u00f3ns manuais ao arquivo de almacenamento, arranxa calquera erro de sintaxe en `{corrupt_path}`, restaura o arquivo ao cami\u00f1o orixinal `{original_path}` e reinicia Home Assistant. De non ser as\u00ed, restaura o sistema desde unha copia de seguridade.\n\nFai clic en ENVIAR abaixo para confirmar que reparaches o arquivo ou restauraches desde unha copia de seguridade.\n\nO erro exacto foi: {error}",
+                        "title": "Detectouse corrupci\u00f3n no almacenamento para `{storage_key}`"
+                    }
+                }
+            },
+            "title": "Detectouse corrupci\u00f3n no almacenamento para `{storage_key}`"
+        }
+    },
+    "services": {
+        "reload_config_entry": {
+            "fields": {
+                "entry_id": {
+                    "name": "Configurar ID da entrada"
+                }
+            }
+        },
+        "restart": {
+            "fields": {
+                "safe_mode": {
+                    "description": "Desactivar integraci\u00f3ns e tarxetas personalizadas.",
+                    "name": "Modo seguro"
+                }
+            }
+        }
+    }
+}

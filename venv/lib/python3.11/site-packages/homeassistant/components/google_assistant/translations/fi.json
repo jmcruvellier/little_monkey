@@ -1,0 +1,21 @@
+{
+    "entity": {
+        "button": {
+            "sync_devices": {
+                "name": "Synkronoi laitteet"
+            }
+        }
+    },
+    "services": {
+        "request_sync": {
+            "description": "L\u00e4hett\u00e4\u00e4 request_sync-komennon Googlelle.",
+            "fields": {
+                "agent_user_id": {
+                    "description": "Tarvitaan vain automaatioita varten. Erityinen Home Assistant -k\u00e4ytt\u00e4j\u00e4tunnus (ei k\u00e4ytt\u00e4j\u00e4tunnus, tunnus asetuksissa > k\u00e4ytt\u00e4j\u00e4t > k\u00e4ytt\u00e4j\u00e4tunnuksen alla) synkronointia varten Google Assistantin kanssa. Ei tarvita, kun kutsut t\u00e4t\u00e4 palvelua Home Assistantin etusivun tai API:n kautta. K\u00e4ytet\u00e4\u00e4n automaatioskriptiss\u00e4 tai muussa paikassa, jossa context.user_id puuttuu.",
+                    "name": "Agentin k\u00e4ytt\u00e4j\u00e4tunnus"
+                }
+            },
+            "name": "Pyyd\u00e4 synkronointia"
+        }
+    }
+}

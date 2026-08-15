@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "sensor": {
+            "water_usage_yesterday": {
+                "name": "Vannforbruk i g\u00e5r"
+            }
+        }
+    }
+}

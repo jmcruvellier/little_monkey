@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52d9\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210",
+            "reauth_successful": "\u91cd\u65b0\u8a8d\u8b49\u6210\u529f"
+        },
+        "error": {
+            "cannot_connect": "\u9023\u7dda\u5931\u6557",
+            "invalid_api_key": "API \u91d1\u9470\u7121\u6548"
+        },
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_token": "\u500b\u4eba API \u91d1\u9470"
+                },
+                "description": "\u91cd\u65b0\u8a8d\u8b49 WeatherFlow"
+            },
+            "user": {
+                "data": {
+                    "api_token": "\u500b\u4eba API \u91d1\u9470"
+                },
+                "description": "\u8a2d\u5b9a WeatherFlow \u9810\u5831\u7ad9"
+            }
+        }
+    }
+}

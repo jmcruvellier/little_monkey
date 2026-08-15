@@ -1,0 +1,19 @@
+{
+    "selector": {
+        "binary_sensor_device_class": {
+            "options": {
+                "light": "Luz"
+            }
+        },
+        "sensor_device_class": {
+            "options": {
+                "volume_flow_rate": "Caudal volum\u00e9trico"
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "name": "Recarregar"
+        }
+    }
+}

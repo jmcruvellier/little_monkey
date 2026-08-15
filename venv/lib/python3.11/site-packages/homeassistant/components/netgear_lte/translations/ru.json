@@ -1,0 +1,42 @@
+{
+    "entity": {
+        "sensor": {
+            "cell_id": {
+                "name": "Cell ID"
+            },
+            "sms": {
+                "name": "SMS"
+            }
+        }
+    },
+    "services": {
+        "connect_lte": {
+            "fields": {
+                "host": {
+                    "name": "\u0425\u043e\u0441\u0442"
+                }
+            }
+        },
+        "delete_sms": {
+            "fields": {
+                "host": {
+                    "name": "\u0425\u043e\u0441\u0442"
+                }
+            }
+        },
+        "disconnect_lte": {
+            "fields": {
+                "host": {
+                    "name": "\u0425\u043e\u0441\u0442"
+                }
+            }
+        },
+        "set_option": {
+            "fields": {
+                "host": {
+                    "name": "\u0425\u043e\u0441\u0442"
+                }
+            }
+        }
+    }
+}

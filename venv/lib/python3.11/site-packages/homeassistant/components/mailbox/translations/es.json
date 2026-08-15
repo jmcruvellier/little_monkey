@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Se va a eliminar la plataforma mailbox. Por favor, informa de ello al autor de la integraci\u00f3n personalizada '{integration_domain}'.",
+            "title": "Se va a eliminar la plataforma mailbox"
+        }
+    },
+    "title": "Buz\u00f3n"
+}

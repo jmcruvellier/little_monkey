@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API raktas"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Did\u017eiausias tokens skai\u010dius, kur\u012f reikia gr\u0105\u017einti atsakant",
+                    "model": "Modelis",
+                    "prompt": "Raginimo \u0161ablonas",
+                    "temperature": "Temperat\u016bra",
+                    "top_k": "Vir\u0161utin\u0117 K",
+                    "top_p": "Vir\u0161utin\u0117 P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Generuokite turin\u012f i\u0161 raginimo, kur\u012f sudaro tekstas ir pasirinktinai vaizdai",
+            "fields": {
+                "image_filename": {
+                    "description": "Vaizdai",
+                    "example": "/config/www/image.jpg",
+                    "name": "Vaizdo failo pavadinimas"
+                },
+                "prompt": {
+                    "description": "Raginimas",
+                    "example": "Apib\u016bdinkite, k\u0105 matote \u0161iuose paveiksl\u0117liuose",
+                    "name": "Raginimas"
+                }
+            },
+            "name": "Sukurti turin\u012f"
+        }
+    }
+}

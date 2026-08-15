@@ -1,0 +1,15 @@
+{
+    "selector": {
+        "binary_sensor_device_class": {
+            "options": {
+                "motion": "Movemento"
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Recarga as entidades de modelo da configuraci\u00f3n YAML.",
+            "name": "Recargar"
+        }
+    }
+}

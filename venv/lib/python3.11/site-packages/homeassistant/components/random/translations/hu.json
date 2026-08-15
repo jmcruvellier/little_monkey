@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Eszk\u00f6zoszt\u00e1ly",
+                    "name": "Elnevez\u00e9s"
+                },
+                "title": "V\u00e9letlenszer\u0171 bin\u00e1ris \u00e9rz\u00e9kel\u0151"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Eszk\u00f6zoszt\u00e1ly",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "Elnevez\u00e9s",
+                    "unit_of_measurement": "M\u00e9rt\u00e9kegys\u00e9g"
+                },
+                "title": "V\u00e9letlenszer\u0171 \u00e9rz\u00e9kel\u0151"
+            },
+            "user": {
+                "description": "Ez a seg\u00edt\u0151 lehet\u0151v\u00e9 teszi egy v\u00e9letlenszer\u0171 \u00e9rt\u00e9ket kibocs\u00e1t\u00f3 seg\u00e9d l\u00e9trehoz\u00e1s\u00e1t.",
+                "menu_options": {
+                    "binary_sensor": "V\u00e9letlenszer\u0171 bin\u00e1ris \u00e9rz\u00e9kel\u0151",
+                    "sensor": "V\u00e9letlenszer\u0171 \u00e9rz\u00e9kel\u0151"
+                },
+                "title": "V\u00e9letlenszer\u0171 seg\u00edt\u0151"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Ennek a seg\u00edt\u0151nek nincsek opci\u00f3i.",
+                "title": "V\u00e9letlenszer\u0171 bin\u00e1ris \u00e9rz\u00e9kel\u0151"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Eszk\u00f6zoszt\u00e1ly",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "M\u00e9rt\u00e9kegys\u00e9g"
+                },
+                "title": "V\u00e9letlenszer\u0171 \u00e9rz\u00e9kel\u0151"
+            }
+        }
+    }
+}

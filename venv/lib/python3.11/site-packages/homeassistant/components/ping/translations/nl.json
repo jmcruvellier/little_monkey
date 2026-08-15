@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "count": "Ping aantal",
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "De hostnaam of IP-adres van het apparaat dat je wilt pingen."
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "count": "Ping aantal",
+                    "host": "Host"
+                }
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "name": "Herladen"
+        }
+    }
+}

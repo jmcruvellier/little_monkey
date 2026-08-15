@@ -1,0 +1,31 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "already_in_progress": "\u914d\u7f6e\u6d41\u7a0b\u5df2\u5728\u8fdb\u884c\u4e2d",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "{name} ({host})",
+        "step": {
+            "device_name": {
+                "data": {
+                    "name": "\u540d\u79f0"
+                }
+            },
+            "discovery_confirm": {
+                "description": "\u60a8\u8981\u8bbe\u7f6e{name} ( {host} ) \u5417\uff1f"
+            },
+            "user": {
+                "data": {
+                    "ip_address": "IP \u5730\u5740"
+                }
+            }
+        }
+    }
+}

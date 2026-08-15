@@ -1,0 +1,12 @@
+{
+    "config": {
+        "create_entry": {
+            "default": "Nor\u0117dami u\u017ebaigti integravimo nustatym\u0105, naudokite Ecowitt program\u0117l\u0119 (telefone) arba nar\u0161ykl\u0117je pasiekite Ecowitt WebUI stoties IP adresu. \n\n Pasirinkite savo stot\u012f - > Meniu Kiti - > DIY \u012fk\u0117limo serveriai. Spustel\u0117kite kit\u0105 ir pasirinkite \u201eTinkintas\u201c \n\n - Serverio IP: ` {server} `\n \u2013 Kelias: \u201e {path} \u201c.\n \u2013 Prievadas: \u201e {port} \u201c. \n\n Spustel\u0117kite \u201eI\u0161saugoti\u201c."
+        },
+        "step": {
+            "user": {
+                "description": "Ar tikrai norite nustatyti \u201eEcowitt\u201c?"
+            }
+        }
+    }
+}

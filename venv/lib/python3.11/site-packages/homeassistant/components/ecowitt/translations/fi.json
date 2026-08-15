@@ -1,0 +1,12 @@
+{
+    "config": {
+        "create_entry": {
+            "default": "Viimeistell\u00e4ksesi integraation m\u00e4\u00e4ritt\u00e4misen, k\u00e4yt\u00e4 Ecowitt-sovellusta (puhelimessa) tai Ecowitt WebUI:t\u00e4 selaimessa aseman IP-osoitteessa.\n\nValitse asemasi -> Valikko Muut -> DIY Upload Servers. Paina Seuraava ja valitse 'Mukautettu'.\n\n- Palvelimen IP: `{server}`\n- Polku: `{path}`\n- Portti: `{port}`\n\nNapsauta 'Tallenna'."
+        },
+        "step": {
+            "user": {
+                "description": "Oletko varma, ett\u00e4 haluat m\u00e4\u00e4ritt\u00e4\u00e4 Ecowittin?"
+            }
+        }
+    }
+}

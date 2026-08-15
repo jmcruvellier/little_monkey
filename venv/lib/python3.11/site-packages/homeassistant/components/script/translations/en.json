@@ -1,0 +1,53 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Script",
+            "state": {
+                "off": "Off",
+                "on": "On"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Running automations"
+                },
+                "last_action": {
+                    "name": "Last action"
+                },
+                "last_triggered": {
+                    "name": "Last triggered"
+                },
+                "max": {
+                    "name": "Max running scripts"
+                },
+                "mode": {
+                    "name": "Run mode",
+                    "state": {
+                        "parallel": "Parallel",
+                        "queued": "Queued",
+                        "restart": "Restart",
+                        "single": "Single"
+                    }
+                }
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Reloads all the available scripts.",
+            "name": "Reload"
+        },
+        "toggle": {
+            "description": "Toggle a script. Starts it, if isn't running, stops it otherwise.",
+            "name": "Toggle"
+        },
+        "turn_off": {
+            "description": "Stops a running script.",
+            "name": "Turn off"
+        },
+        "turn_on": {
+            "description": "Runs the sequence of actions defined in a script.",
+            "name": "Turn on"
+        }
+    },
+    "title": "Script"
+}

@@ -1,0 +1,74 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "\u4f7f\u7528 YAML \u914d\u7f6e Bose SoundTouch \u5373\u5c06\u88ab\u79fb\u9664\u3002 \n\n\u60a8\u73b0\u6709\u7684 YAML \u914d\u7f6e\u5df2\u81ea\u52a8\u5bfc\u5165\u5230 UI \u4e2d\u3002 \n\n\u4ece configuration.yaml \u6587\u4ef6\u4e2d\u5220\u9664 Bose SoundTouch YAML \u914d\u7f6e\u5e76\u91cd\u65b0\u542f\u52a8 Home Assistant \u4ee5\u89e3\u51b3\u6b64\u95ee\u9898\u3002",
+            "title": "Bose SoundTouch YAML \u914d\u7f6e\u5373\u5c06\u88ab\u79fb\u9664"
+        }
+    },
+    "services": {
+        "add_zone_slave": {
+            "fields": {
+                "master": {
+                    "name": "\u4e3b\u63a7"
+                },
+                "slaves": {
+                    "description": "\u8981\u6dfb\u52a0\u5230\u73b0\u6709\u533a\u57df\u7684\u4ece\u5c5e\u5b9e\u4f53\u7684\u540d\u79f0\u3002",
+                    "name": "\u5974\u96b6"
+                }
+            },
+            "name": "\u6dfb\u52a0\u533a\u57df\u4ece\u7ad9"
+        },
+        "create_zone": {
+            "description": "\u521b\u5efa SoundTouch \u591a\u623f\u95f4\u533a\u57df\u3002",
+            "fields": {
+                "master": {
+                    "description": "\u5c06\u534f\u8c03\u591a\u623f\u95f4\u533a\u57df\u7684\u4e3b\u5b9e\u4f53\u7684\u540d\u79f0\u3002\u5e73\u53f0\u76f8\u5173\u3002",
+                    "name": "\u4e3b\u63a7"
+                },
+                "slaves": {
+                    "description": "\u8981\u6dfb\u52a0\u5230\u65b0\u533a\u57df\u7684\u4ece\u5c5e\u5b9e\u4f53\u7684\u540d\u79f0\u3002",
+                    "name": "\u5974\u96b6"
+                }
+            },
+            "name": "\u521b\u5efa\u533a\u57df"
+        },
+        "play_everywhere": {
+            "description": "\u53ef\u5728\u6240\u6709 Bose SoundTouch \u8bbe\u5907\u4e0a\u64ad\u653e\u3002",
+            "fields": {
+                "master": {
+                    "description": "\u5c06\u534f\u8c03\u5206\u7ec4\u7684\u4e3b\u5b9e\u4f53\u7684\u540d\u79f0\u3002\u5e73\u53f0\u76f8\u5173\u3002\u8fd9\u662f\u521b\u5efa\u5305\u542b\u6240\u6709\u8bbe\u5907\u7684\u591a\u623f\u95f4\u533a\u57df\u7684\u5feb\u6377\u65b9\u5f0f\u3002",
+                    "name": "\u638c\u63e1"
+                }
+            },
+            "name": "\u5230\u5904\u73a9"
+        },
+        "remove_zone_slave": {
+            "description": "\u4ece SoundTouch \u591a\u623f\u95f4\u533a\u57df\u4e2d\u5220\u9664\u4ece\u5c5e\u8bbe\u5907\u3002",
+            "fields": {
+                "master": {
+                    "name": "\u638c\u63e1"
+                },
+                "slaves": {
+                    "description": "\u8981\u4ece\u73b0\u6709\u533a\u57df\u4e2d\u5220\u9664\u7684\u4ece\u5c5e\u5b9e\u4f53\u7684\u540d\u79f0\u3002",
+                    "name": "\u5974\u96b6"
+                }
+            },
+            "name": "\u5220\u9664\u533a\u57df\u4ece\u5c5e"
+        }
+    }
+}

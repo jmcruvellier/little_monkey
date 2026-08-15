@@ -1,0 +1,50 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "services": {
+        "set_lock_state": {
+            "description": "\u8bbe\u7f6e\u9501\u5b9a\u72b6\u6001\u3002",
+            "fields": {
+                "flap_id": {
+                    "description": "\u7528\u4e8e\u9501\u5b9a/\u89e3\u9501\u7684\u895f\u7ffc ID\u3002",
+                    "name": "\u895f\u7ffc\u5185\u5f84"
+                },
+                "lock_state": {
+                    "description": "\u65b0\u7684\u9501\u5b9a\u72b6\u6001\u3002",
+                    "name": "\u9501\u5b9a\u72b6\u6001"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u9501\u5b9a\u72b6\u6001"
+        },
+        "set_pet_location": {
+            "description": "\u8bbe\u7f6e\u5ba0\u7269\u4f4d\u7f6e\u3002",
+            "fields": {
+                "location": {
+                    "description": "\u5ba0\u7269\u4f4d\u7f6e\uff08\u5185\u90e8\u6216\u5916\u90e8\uff09\u3002",
+                    "name": "\u5750\u6807"
+                },
+                "pet_name": {
+                    "description": "\u5ba0\u7269\u7684\u540d\u5b57\u3002",
+                    "name": "\u7231\u79f0"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u5ba0\u7269\u4f4d\u7f6e"
+        }
+    }
+}

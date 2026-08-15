@@ -1,0 +1,40 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52d9\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210"
+        },
+        "error": {
+            "cannot_connect": "\u9023\u7dda\u5931\u6557",
+            "invalid_auth": "\u8eab\u4efd\u9a57\u8b49\u7121\u6548"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u78bc",
+                    "username": "\u4f7f\u7528\u8005\u540d\u7a31"
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue_cannot_connect": {
+            "description": "\u4f7f\u7528 YAML \u8a2d\u5b9a\u7684 17Track \u5373\u5c07\u79fb\u9664\uff0c\u4f46\u5728\u532f\u5165 YAML \u8a2d\u5b9a\u6642\u51fa\u73fe\u9023\u7dda\u932f\u8aa4\u3002\n\n\u53ef\u4ee5\u5617\u8a66\u4ee5\u4e0b\u64cd\u4f5c\uff1a\n\u78ba\u5b9a Home Assistant \u53ef\u4ee5\u6b63\u5e38\u9023\u7dda\u81f3\u7db2\u9801\u3002\n\n\u91cd\u555f Home Assistant \u4ee5\u518d\u6b21\u5617\u8a66\u532f\u5165\u6574\u5408\u3002\n\n\u6216\u8005\u7531YAML \u8a2d\u5b9a\u4e2d\u5b8c\u5168\u79fb\u9664 17Track \u8a2d\u5b9a\u3001\u91cd\u555f Home Assistant\uff0c\u4e26\u624b\u52d5\u65b0\u589e 17Track \u6574\u5408\u3002",
+            "title": "17Track YAML \u8a2d\u5b9a\u532f\u5165\u7121\u6cd5\u9023\u7dda\u81f3\u4f3a\u670d\u5668"
+        },
+        "deprecated_yaml_import_issue_invalid_credentials": {
+            "description": "\u4f7f\u7528 YAML \u8a2d\u5b9a\u7684 17Track \u6574\u5408\u5df2\u9032\u884c\u79fb\u9664\u3001\u4f46\u65bc\u532f\u5165\u73fe\u6709\u8a2d\u5b9a\u6642\u767c\u73fe\u4f7f\u7528\u7121\u6548\u6191\u8b49\u3002\n\u8a2d\u5b9a\u5c07\u7121\u6cd5\u7e7c\u7e8c\u3002\n\n\u8acb\u78ba\u8a8d 17Track \u6191\u8b49\u662f\u5426\u6b63\u78ba\u3001\u4e26\u91cd\u65b0\u555f\u52d5 Home Assistant \u4ee5\u91cd\u65b0\u5617\u8a66\u532f\u5165\u3002\n\n\u6216\u8005\uff0c\u4e5f\u53ef\u4ee5\u5b8c\u5168\u7531 YAML \u8a2d\u5b9a\u4e2d\u79fb\u9664 17Track\u3001\u91cd\u65b0\u555f\u52d5 Home Assistant\uff0c\u4e26\u624b\u52d5\u65b0\u589e 17Track \u6574\u5408\u3002",
+            "title": "\u7531\u65bc\u7121\u6548\u6191\u8b49\u300117Track YAML \u8a2d\u5b9a\u532f\u5165\u8acb\u6c42\u5931\u6557"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "show_archived": "\u662f\u5426\u91dd\u5c0d\u5df2\u5c01\u5b58\u5305\u88f9\u5efa\u7acb\u611f\u6e2c\u5668",
+                    "show_delivered": "\u662f\u5426\u91dd\u5c0d\u5df2\u905e\u9001\u5305\u88f9\u5efa\u7acb\u611f\u6e2c\u5668"
+                },
+                "description": "\u8a2d\u5b9a\u4e00\u822c\u8a2d\u5b9a"
+            }
+        }
+    }
+}

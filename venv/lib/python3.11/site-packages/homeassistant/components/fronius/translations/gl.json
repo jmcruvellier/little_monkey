@@ -1,0 +1,14 @@
+{
+    "entity": {
+        "sensor": {
+            "led_color": {
+                "name": "Cor do LED"
+            },
+            "meter_location_description": {
+                "state": {
+                    "external_battery": "Bater\u00eda externa"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210\u3001\u50c5\u80fd\u8a2d\u5b9a\u4e00\u7d44\u88dd\u7f6e\u3002",
+            "already_in_progress": "\u8a2d\u5b9a\u5df2\u7d93\u9032\u884c\u4e2d"
+        },
+        "error": {
+            "api_exception": "\u9023\u7dda\u5931\u6557",
+            "client_connector_error": "\u9023\u7dda\u5931\u6557",
+            "invalid_ip": "IPv4 \u4f4d\u5740\u7121\u6548",
+            "timeout_error": "\u9023\u7dda\u5931\u6557"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP \u4f4d\u5740",
+                    "model": "\u578b\u865f"
+                },
+                "description": "\u624b\u52d5\u8a2d\u5b9a Bang & Olufsen \u88dd\u7f6e\u3002"
+            },
+            "zeroconf_confirm": {
+                "description": "\u78ba\u8a8d {model}-{serial_number} @ {host} \u8a2d\u5b9a\u3002",
+                "title": "\u8a2d\u5b9a Bang & Olufsen \u88dd\u7f6e"
+            }
+        }
+    }
+}

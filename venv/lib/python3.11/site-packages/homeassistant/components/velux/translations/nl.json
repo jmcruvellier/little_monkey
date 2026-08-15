@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reboot_gateway": {
+            "description": "Herstart de KLF200 Gateway.",
+            "name": "Gateway herstarten"
+        }
+    }
+}

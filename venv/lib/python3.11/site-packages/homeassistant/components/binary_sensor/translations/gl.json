@@ -1,0 +1,93 @@
+{
+    "device_class": {
+        "motion": "movemento"
+    },
+    "entity_component": {
+        "battery": {
+            "state": {
+                "off": "Normal",
+                "on": "Baixo"
+            }
+        },
+        "battery_charging": {
+            "state": {
+                "off": "Non est\u00e1 a cargar",
+                "on": "Cargando"
+            }
+        },
+        "carbon_monoxide": {
+            "state": {
+                "off": "Non detectado",
+                "on": "Detectado"
+            }
+        },
+        "cold": {
+            "state": {
+                "off": "Normal",
+                "on": "Fr\u00edo"
+            }
+        },
+        "gas": {
+            "state": {
+                "off": "Non detectado",
+                "on": "Detectado"
+            }
+        },
+        "heat": {
+            "state": {
+                "off": "Normal",
+                "on": "Quente"
+            }
+        },
+        "light": {
+            "state": {
+                "off": "Sen luz",
+                "on": "Luz detectada"
+            }
+        },
+        "moisture": {
+            "state": {
+                "off": "Seco",
+                "on": "Mollado"
+            }
+        },
+        "motion": {
+            "name": "Movemento",
+            "state": {
+                "off": "Non detectado",
+                "on": "Detectado"
+            }
+        },
+        "moving": {
+            "state": {
+                "off": "Non est\u00e1 a moverse",
+                "on": "Movendo"
+            }
+        },
+        "occupancy": {
+            "state": {
+                "off": "Non detectado",
+                "on": "Detectado"
+            }
+        },
+        "power": {
+            "name": "Enerx\u00eda",
+            "state": {
+                "off": "Non detectado",
+                "on": "Detectado"
+            }
+        },
+        "presence": {
+            "state": {
+                "off": "Ausente",
+                "on": "En casa"
+            }
+        },
+        "problem": {
+            "state": {
+                "off": "OK",
+                "on": "Problema"
+            }
+        }
+    }
+}

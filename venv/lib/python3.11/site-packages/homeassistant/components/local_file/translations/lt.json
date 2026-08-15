@@ -1,0 +1,18 @@
+{
+    "services": {
+        "update_file_path": {
+            "description": "Naudokite \u0161i\u0105 paslaug\u0105 nor\u0117dami pakeisti fotoaparato rodom\u0105 fail\u0105.",
+            "fields": {
+                "entity_id": {
+                    "description": "Atnaujintinos kameros entity_id pavadinimas.",
+                    "name": "Subjektas"
+                },
+                "file_path": {
+                    "description": "Visas kelias iki naujo vaizdo failo, kuris bus rodomas.",
+                    "name": "Bylos kelias"
+                }
+            },
+            "name": "Atnaujina failo keli\u0105"
+        }
+    }
+}

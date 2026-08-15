@@ -1,0 +1,21 @@
+{
+    "entity": {
+        "button": {
+            "sync_devices": {
+                "name": "Cihazlar\u0131 senkronize edin"
+            }
+        }
+    },
+    "services": {
+        "request_sync": {
+            "description": "Google'a bir request_sync komutu g\u00f6nderir.",
+            "fields": {
+                "agent_user_id": {
+                    "description": "Yaln\u0131zca otomasyonlar i\u00e7in gereklidir. Google Asistan ile senkronize etmek i\u00e7in belirli Ev Asistan\u0131 kullan\u0131c\u0131 kimli\u011fi (kullan\u0131c\u0131 ad\u0131 de\u011fil, yap\u0131land\u0131rma > kullan\u0131c\u0131lar > kullan\u0131c\u0131 ad\u0131 alt\u0131ndaki kimlik). Bu hizmeti Home Assistant \u00f6n ucu veya API arac\u0131l\u0131\u011f\u0131yla \u00e7a\u011f\u0131rd\u0131\u011f\u0131n\u0131zda gerekmez. Otomasyon komut dosyas\u0131nda veya context.user_id'nin eksik oldu\u011fu di\u011fer yerlerde kullan\u0131l\u0131r.",
+                    "name": "Arac\u0131 kullan\u0131c\u0131 kimli\u011fi"
+                }
+            },
+            "name": "Senkronizasyon iste"
+        }
+    }
+}

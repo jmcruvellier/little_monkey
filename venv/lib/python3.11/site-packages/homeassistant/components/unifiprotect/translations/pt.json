@@ -1,0 +1,71 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispositivo j\u00e1 configurado"
+        },
+        "error": {
+            "cannot_connect": "A liga\u00e7\u00e3o falhou",
+            "cloud_user": "Os utilizadores da Ubiquiti Cloud n\u00e3o s\u00e3o suportados. Por favor utilize um utilizador local.",
+            "invalid_auth": "Autentica\u00e7\u00e3o inv\u00e1lida"
+        },
+        "flow_title": "{name} ({ip_address})",
+        "step": {
+            "discovery_confirm": {
+                "data": {
+                    "password": "Palavra-passe",
+                    "username": "Nome de Utilizador"
+                },
+                "description": "Voc\u00ea deseja configurar {name} ( {ip_address} )? Voc\u00ea precisar\u00e1 de um usu\u00e1rio local criado em seu console UniFi OS para fazer login. Os usu\u00e1rios do Ubiquiti Cloud n\u00e3o funcionar\u00e3o. Para mais informa\u00e7\u00f5es: {local_user_documentation_url}"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Palavra-passe",
+                    "port": "Porta",
+                    "username": "Nome de Utilizador"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "Anfitri\u00e3o",
+                    "password": "Palavra-passe",
+                    "port": "Porta",
+                    "username": "Nome de Utilizador",
+                    "verify_ssl": "Verificar o certificado SSL"
+                }
+            }
+        }
+    },
+    "issues": {
+        "cloud_user": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "A partir de 22 de julho de 2024, a Ubiquiti exigir\u00e1 que todos os utilizadores da nuvem se inscrevam na autentica\u00e7\u00e3o multifactor (MFA), o que \u00e9 incompat\u00edvel com o Home Assistant.\n\nSeria melhor migrar para o uso de um [local user]({learn_more}) o mais r\u00e1pido poss\u00edvel para manter a integra\u00e7\u00e3o a funcionar.\n\nConfirmar esta repara\u00e7\u00e3o ir\u00e1 acionar um fluxo de reautentica\u00e7\u00e3o para introduzir as credenciais de autentica\u00e7\u00e3o necess\u00e1rias.",
+                        "title": "Os utilizadores da Ubiquiti Cloud n\u00e3o s\u00e3o suportados"
+                    }
+                }
+            },
+            "title": "Os utilizadores da Ubiquiti Cloud n\u00e3o s\u00e3o suportados"
+        },
+        "deprecated_service_set_doorbell_message": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "O servi\u00e7o `unifiprotect.set_doorbell_message` est\u00e1 obsoleto em favor da nova entidade de texto de campainha adicionada a cada dispositivo de campainha. Ele ser\u00e1 removido em v2023.3.0. Atualize para usar o servi\u00e7o [`text.set_value`]( {link} ).",
+                        "title": "set_doorbell_message est\u00e1 obsoleto"
+                    }
+                }
+            },
+            "title": "set_doorbell_message est\u00e1 obsoleto"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_media": "N\u00famero m\u00e1ximo de eventos a serem carregados para o Media Browser (aumenta o uso de RAM)"
+                }
+            }
+        }
+    }
+}

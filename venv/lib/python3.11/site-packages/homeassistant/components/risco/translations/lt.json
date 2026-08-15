@@ -1,0 +1,83 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "cloud": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "pin": "PIN kodas",
+                    "username": "Prisijungimos vardas"
+                }
+            },
+            "local": {
+                "data": {
+                    "host": "Host",
+                    "pin": "PIN kodas",
+                    "port": "Prievadas"
+                }
+            },
+            "user": {
+                "menu_options": {
+                    "cloud": "\u201eRisco Cloud\u201c (rekomenduojama)",
+                    "local": "Vietinis \"Risco\" skydelis (i\u0161pl\u0117stinis)"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "alarmed": {
+                "name": "Aliarmas"
+            },
+            "armed": {
+                "name": "U\u017erakinta"
+            }
+        },
+        "switch": {
+            "bypassed": {
+                "name": "Aplenktas"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "ha_to_risco": {
+                "data": {
+                    "armed_away": "Apsaugotas toli",
+                    "armed_custom_bypass": "Apsaugotas pritaikytas aplinkkelis",
+                    "armed_home": "Apsaugoti Namai",
+                    "armed_night": "Apsaugota Naktis"
+                },
+                "description": "Pasirinkite, koki\u0105 b\u016bsen\u0105 nustatyti \u201eRisco\u201c \u017eadintuvui, kai \u012fjungiate \u201eHome Assistant\u201c \u017eadintuvo apsaug\u0105",
+                "title": "Priskirkite nam\u0173 asistento b\u016bsenas \u012f Risco b\u016bsena"
+            },
+            "init": {
+                "data": {
+                    "code_arm_required": "Norint \u012fjungti apsaug\u0105, reikalingas PIN kodas",
+                    "code_disarm_required": "Norint i\u0161jungti apsaug\u0105, reikalingas PIN kodas",
+                    "scan_interval": "Kaip da\u017enai apklausti Risco (sekund\u0117mis)"
+                },
+                "title": "Konfig\u016bruoti parinktis"
+            },
+            "risco_to_ha": {
+                "data": {
+                    "A": "Grup\u0117 A",
+                    "B": "Grup\u0117 B",
+                    "C": "Grup\u0117 C",
+                    "D": "Grup\u0117 D",
+                    "arm": "Apsaugotas (I\u0160VYK\u0118S)",
+                    "partial_arm": "I\u0161 dalies apsaugotas (LIKTI)"
+                },
+                "description": "Pasirinkite, koki\u0105 b\u016bsen\u0105 prane\u0161 j\u016bs\u0173 nam\u0173 asistento aliarmas kiekvienai \u201eRisco\u201c prane\u0161tai b\u016bsenai",
+                "title": "Priskirkite \u201eRisco\u201c valstijas \u012f \u201eHome Assistant\u201c valstijas"
+            }
+        }
+    }
+}

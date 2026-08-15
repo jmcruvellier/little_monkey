@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Platsen \u00e4r redan konfigurerad"
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "invalid_api_key": "Ogiltig API-nyckel"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-nyckel",
+                    "language": "Spr\u00e5k",
+                    "latitude": "Latitud",
+                    "longitude": "Longitud",
+                    "mode": "L\u00e4ge",
+                    "name": "Namn"
+                },
+                "description": "F\u00f6r att generera API-nyckel g\u00e5 till https://openweathermap.org/appid"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "language": "Spr\u00e5k",
+                    "mode": "L\u00e4ge"
+                }
+            }
+        }
+    }
+}

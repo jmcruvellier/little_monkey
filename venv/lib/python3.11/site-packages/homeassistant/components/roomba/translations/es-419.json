@@ -1,0 +1,26 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "No se pudo conectar, intente nuevamente"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Nombre de host o direcci\u00f3n IP"
+                },
+                "description": "Seleccione un Roomba o Braava.",
+                "title": "Conectarse al dispositivo"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "continuous": "Continuo",
+                    "delay": "Retraso"
+                }
+            }
+        }
+    }
+}

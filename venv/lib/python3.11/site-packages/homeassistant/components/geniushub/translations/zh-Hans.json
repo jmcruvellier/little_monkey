@@ -1,0 +1,46 @@
+{
+    "services": {
+        "set_switch_override": {
+            "description": "\u5728\u7ed9\u5b9a\u7684\u6301\u7eed\u65f6\u95f4\u5185\u8986\u76d6\u5f00\u5173\u3002",
+            "fields": {
+                "duration": {
+                    "description": "\u8986\u76d6\u7684\u6301\u7eed\u65f6\u95f4\u3002\u53ef\u9009\uff0c\u9ed8\u8ba41\u5c0f\u65f6\uff0c\u6700\u957f24\u5c0f\u65f6\u3002",
+                    "name": "\u6301\u7eed\u65f6\u95f4"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u5f00\u5173\u8986\u76d6"
+        },
+        "set_zone_mode": {
+            "description": "\u5c06\u533a\u57df\u8bbe\u7f6e\u4e3a\u64cd\u4f5c\u6a21\u5f0f\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u8be5\u533a\u57df\u7684 entity_id\u3002",
+                    "name": "\u5b9e\u4f53"
+                },
+                "mode": {
+                    "description": "\u5176\u4e2d\u4e4b\u4e00\uff1aoff\u3001timer \u6216 footprint\u3002",
+                    "name": "\u6a21\u5f0f"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u533a\u57df\u6a21\u5f0f"
+        },
+        "set_zone_override": {
+            "description": "\u5728\u7ed9\u5b9a\u6301\u7eed\u65f6\u95f4\u5185\u8986\u76d6\u533a\u57df\u7684\u8bbe\u5b9a\u70b9\u3002",
+            "fields": {
+                "duration": {
+                    "description": "\u8986\u76d6\u7684\u6301\u7eed\u65f6\u95f4\u3002\u53ef\u9009\uff0c\u9ed8\u8ba41\u5c0f\u65f6\uff0c\u6700\u957f24\u5c0f\u65f6\u3002",
+                    "name": "\u6301\u7eed\u65f6\u95f4"
+                },
+                "entity_id": {
+                    "description": "\u8be5\u533a\u57df\u7684 entity_id\u3002",
+                    "name": "\u5b9e\u4f53"
+                },
+                "temperature": {
+                    "description": "\u76ee\u6807\u6e29\u5ea6\u3002",
+                    "name": "\u6e29\u5ea6"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u533a\u57df\u8986\u76d6"
+        }
+    }
+}

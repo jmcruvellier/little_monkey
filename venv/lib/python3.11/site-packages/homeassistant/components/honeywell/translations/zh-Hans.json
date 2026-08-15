@@ -1,0 +1,45 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u7801"
+                },
+                "description": "\u970d\u5c3c\u97e6\u5c14\u96c6\u6210\u9700\u8981\u91cd\u65b0\u9a8c\u8bc1\u60a8\u7684\u8d26\u53f7",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8bf7\u8f93\u5165\u7528\u4e8e\u767b\u5f55 mytotalconnectcomfort.com \u7684\u51ed\u636e\u3002"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "\u5ba4\u5916\u6e7f\u5ea6"
+            },
+            "outdoor_temperature": {
+                "name": "\u5ba4\u5916\u6e29\u5ea6"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "\u8fdc\u79bb\u51c9\u723d\u6e29\u5ea6",
+                    "away_heat_temperature": "\u8fdc\u79bb\u70ed\u6e29\u5ea6"
+                },
+                "description": "\u5176\u4ed6\u970d\u5c3c\u97e6\u5c14\u914d\u7f6e\u9009\u9879\u3002\u6e29\u5ea6\u8bbe\u7f6e\u4e3a\u534e\u6c0f\u5ea6\u3002"
+            }
+        }
+    }
+}

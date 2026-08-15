@@ -1,0 +1,75 @@
+{
+    "issues": {
+        "deprecated_close_comm_config": {
+            "title": "S'est\u00e0 eliminant la clau de configuraci\u00f3 `{config_key}`"
+        },
+        "deprecated_retry_on_empty": {
+            "description": "Elimina la clau `{config_key}` de l'entrada {integration} del teu fitxer configuration.yaml i reinicia Home Assistant per solucionar aquest problema. \n\nEl reintent si est\u00e0 buit s'aplica autom\u00e0ticament, consulta [la documentaci\u00f3]({url}) per a m\u00e9s par\u00e0metres de gesti\u00f3 d'errors.",
+            "title": "S'est\u00e0 eliminant la clau de configuraci\u00f3 `{config_key}`"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Recarrega totes les entitats modbus.",
+            "name": "Torna a carregar"
+        },
+        "restart": {
+            "fields": {
+                "hub": {
+                    "description": "Nom del concentrador Modbus.",
+                    "name": "Concentrador"
+                }
+            },
+            "name": "Reinicia"
+        },
+        "stop": {
+            "description": "Atura el concentrador modbus.",
+            "fields": {
+                "hub": {
+                    "description": "Nom del concentrador Modbus.",
+                    "name": "Concentrador"
+                }
+            },
+            "name": "Atura"
+        },
+        "write_coil": {
+            "fields": {
+                "address": {
+                    "description": "Adre\u00e7a del registre on escriure.",
+                    "name": "Adre\u00e7a"
+                },
+                "hub": {
+                    "description": "Nom del concentrador Modbus.",
+                    "name": "Concentrador"
+                },
+                "slave": {
+                    "description": "Adre\u00e7a de la unitat/esclau modbus.",
+                    "name": "Esclau"
+                },
+                "state": {
+                    "description": "Estat a escriure.",
+                    "name": "Estat"
+                }
+            }
+        },
+        "write_register": {
+            "fields": {
+                "address": {
+                    "name": "Adre\u00e7a"
+                },
+                "hub": {
+                    "description": "Nom del concentrador Modbus.",
+                    "name": "Concentrador"
+                },
+                "slave": {
+                    "description": "Adre\u00e7a de la unitat/esclau modbus.",
+                    "name": "Esclau"
+                },
+                "value": {
+                    "description": "Valor a escriure (\u00fanic o matriu/'array')",
+                    "name": "Valor"
+                }
+            }
+        }
+    }
+}

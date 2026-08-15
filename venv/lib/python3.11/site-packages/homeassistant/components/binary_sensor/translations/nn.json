@@ -1,0 +1,32 @@
+{
+    "device_class": {
+        "occupancy": "Bruk"
+    },
+    "entity_component": {
+        "gas": {
+            "state": {
+                "on": "Oppdaga"
+            }
+        },
+        "light": {
+            "name": "Lys",
+            "state": {
+                "off": "Ingen lys"
+            }
+        },
+        "occupancy": {
+            "name": "Bruk",
+            "state": {
+                "off": "Klarert",
+                "on": "Oppdaga"
+            }
+        },
+        "presence": {
+            "state": {
+                "off": "Borte",
+                "on": "Heime"
+            }
+        }
+    },
+    "title": "Bin\u00e6rsensor"
+}

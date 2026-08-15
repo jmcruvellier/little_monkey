@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Classe de dispositiu",
+                    "name": "Nom"
+                },
+                "title": "Sensor binari aleatori"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Classe de dispositiu",
+                    "maximum": "M\u00e0xim",
+                    "minimum": "M\u00ednim",
+                    "name": "Nom",
+                    "unit_of_measurement": "Unitat de mesura"
+                },
+                "title": "Sensor aleatori"
+            },
+            "user": {
+                "description": "Et permet crear un ajudant que emet un valor aleatori.",
+                "menu_options": {
+                    "binary_sensor": "Sensor binari aleatori",
+                    "sensor": "Sensor aleatori"
+                },
+                "title": "Ajudant aleatori"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Aquest ajudant no t\u00e9 cap opci\u00f3.",
+                "title": "Sensor binari aleatori"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Classe de dispositiu",
+                    "maximum": "M\u00e0xim",
+                    "minimum": "M\u00ednim",
+                    "unit_of_measurement": "Unitat de mesura"
+                },
+                "title": "Sensor aleatori"
+            }
+        }
+    }
+}

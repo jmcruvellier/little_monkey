@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9",
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "id_exists": "ID br\u00e1ny u\u017e existuje",
+            "timeout_connect": "\u010casov\u00fd limit na nadviazanie spojenia"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Cesta alebo URL",
+                    "id": "ID",
+                    "name": "N\u00e1zov"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "Teplota podlahy",
+                    "read_precision": "Po\u017eiadavka na presnos\u0165",
+                    "set_precision": "Nastavi\u0165 presnos\u0165",
+                    "temporary_override_mode": "Re\u017eim do\u010dasn\u00e9ho prekro\u010denia nastavenej hodnoty"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "Resetuje br\u00e1nu OpenTherm.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                }
+            },
+            "name": "Resetova\u0165 gateway"
+        },
+        "set_central_heating_ovrd": {
+            "description": "Nastav\u00ed mo\u017enos\u0165 prechodu na \u00fastredn\u00e9 k\u00farenie na br\u00e1ne. Pri nadraden\u00ed riadiacej po\u017eadovanej hodnoty (prostredn\u00edctvom volania slu\u017eby set_control_setpoint s inou hodnotou ako 0) br\u00e1na automaticky povol\u00ed nadradenie centr\u00e1lneho vykurovania na spustenie vykurovania. T\u00e1to slu\u017eba sa potom m\u00f4\u017ee pou\u017ei\u0165 na kontrolu stavu nadradenia centr\u00e1lneho vykurovania. Ak chcete vr\u00e1ti\u0165 riadenie \u00fastredn\u00e9ho k\u00farenia termostatu, zavolajte slu\u017ebu set_control_setpoint s hodnotou teploty 0. T\u00fato slu\u017ebu budete potrebova\u0165 len vtedy, ak si p\u00ed\u0161ete vlastn\u00fd softv\u00e9rov\u00fd termostat.",
+            "fields": {
+                "ch_override": {
+                    "description": "Po\u017eadovan\u00e1 logick\u00e1 hodnota pre zru\u0161enie centr\u00e1lneho vykurovania.",
+                    "name": "Ovl\u00e1danie centr\u00e1lneho vykurovania"
+                },
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                }
+            },
+            "name": "Nastavenie ovl\u00e1dania \u00fastredn\u00e9ho k\u00farenia"
+        },
+        "set_clock": {
+            "description": "Nastav\u00ed hodiny a de\u0148 v t\u00fd\u017edni na pripojenom termostate.",
+            "fields": {
+                "date": {
+                    "description": "Nepovinn\u00fd d\u00e1tum, z ktor\u00e9ho sa vyberie de\u0148 v t\u00fd\u017edni. Predvolen\u00e9 nastavenie je dnes.",
+                    "name": "D\u00e1tum"
+                },
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "time": {
+                    "description": "Volite\u013en\u00fd \u010das v 24-hodinovom form\u00e1te, ktor\u00fd sa poskytne termostatu. Predvolen\u00e9 nastavenie je aktu\u00e1lny \u010das.",
+                    "name": "\u010cas"
+                }
+            },
+            "name": "Nastavenie hod\u00edn"
+        },
+        "set_control_setpoint": {
+            "description": "Nastavuje predvo\u013ebu nastavenej hodnoty centr\u00e1lneho vykurovania na br\u00e1ne. Toto budete potrebova\u0165 len v pr\u00edpade, \u017ee si p\u00ed\u0161ete vlastn\u00fd softv\u00e9r termostatu.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Nastaven\u00e1 hodnota \u00fastredn\u00e9ho k\u00farenia, ktor\u00e1 sa m\u00e1 nastavi\u0165 na br\u00e1ne. Akceptovan\u00e9 s\u00fa hodnoty od 0 do 90, ale nie v\u0161etky kotly podporuj\u00fa tento rozsah. Hodnota 0 deaktivuje predvo\u013ebu nastavenej hodnoty centr\u00e1lneho vykurovania.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavenie po\u017eadovanej hodnoty regul\u00e1cie"
+        },
+        "set_gpio_mode": {
+            "description": "Men\u00ed funkciu GPIO pinov br\u00e1ny.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "id": {
+                    "description": "ID GPIO pinu.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Re\u017eim, ktor\u00fd sa m\u00e1 nastavi\u0165 na pine GPIO. Hodnoty 0 a\u017e 6 s\u00fa akceptovan\u00e9 pre oba GPIO, 7 je akceptovan\u00e1 len pre GPIO \"B\". Vysvetlenie hodn\u00f4t n\u00e1jdete na str\u00e1nke https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes.",
+                    "name": "Re\u017eim"
+                }
+            },
+            "name": "Nastavenie re\u017eimu gpio"
+        },
+        "set_hot_water_ovrd": {
+            "description": "Nastavuje mo\u017enos\u0165 aktiv\u00e1cie teplej vody pre dom\u00e1cnos\u0165 na br\u00e1ne.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Ovl\u00e1danie mo\u017enosti zapnutia teplej vody pre dom\u00e1cnos\u0165. Ak bol kotol nakonfigurovan\u00fd tak, aby izbov\u00e1 jednotka mohla kontrolova\u0165, kedy sa m\u00e1 udr\u017eiava\u0165 mal\u00e9 mno\u017estvo predohriatej vody, tento pr\u00edkaz to m\u00f4\u017ee ovplyvni\u0165. Hodnota by mala by\u0165 0 alebo 1, aby sa povolilo predbiehanie vo vypnutom alebo zapnutom stave, alebo \"A\", aby sa zak\u00e1zalo predbiehanie.",
+                    "name": "Prep\u00ednanie teplej vody pre dom\u00e1cnos\u0165"
+                },
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                }
+            },
+            "name": "Nastavenie ovl\u00e1dania hor\u00facej vody"
+        },
+        "set_hot_water_setpoint": {
+            "description": "Nastav\u00ed nastaven\u00fa hodnotu teplej vody pre dom\u00e1cnos\u0165 na br\u00e1ne.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Nastaven\u00e1 hodnota teplej vody pre dom\u00e1cnos\u0165, ktor\u00e1 sa m\u00e1 nastavi\u0165 na br\u00e1ne. T\u00fato funkciu nepodporuj\u00fa v\u0161etky kotly. Akceptovan\u00e9 s\u00fa hodnoty od 0 do 90, ale nie v\u0161etky kotly tento rozsah podporuj\u00fa. Skontrolujte hodnoty sn\u00edma\u010dov slave_dhw_min_setp a slave_dhw_max_setp, aby ste zistili podporovan\u00fd rozsah na va\u0161om kotle.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavenie nastavenej hodnoty teplej vody"
+        },
+        "set_led_mode": {
+            "description": "Men\u00ed funkciu LED di\u00f3d br\u00e1ny.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "id": {
+                    "description": "ID LED di\u00f3dy.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Funkcia, ktor\u00e1 sa m\u00e1 priradi\u0165 LED di\u00f3de. Vysvetlenie hodn\u00f4t n\u00e1jdete na str\u00e1nke https://www.home-assistant.io/integrations/opentherm_gw/#led-modes.",
+                    "name": "Re\u017eim"
+                }
+            },
+            "name": "Nastavenie re\u017eimu LED"
+        },
+        "set_max_modulation": {
+            "description": "Prep\u00ed\u0161e maxim\u00e1lnu relat\u00edvnu \u00farove\u0148 modul\u00e1cie. Budete ho potrebova\u0165 len vtedy, ak p\u00ed\u0161ete vlastn\u00fd softv\u00e9rov\u00fd termostat.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "level": {
+                    "description": "\u00darove\u0148 modul\u00e1cie, ktor\u00e1 sa m\u00e1 poskytn\u00fa\u0165 br\u00e1ne. Zadan\u00edm hodnoty -1 zru\u0161\u00edte prepisovanie a znovu odovzd\u00e1te hodnotu z termostatu.",
+                    "name": "\u00darove\u0148"
+                }
+            },
+            "name": "Nastavenie maxim\u00e1lnej modul\u00e1cie"
+        },
+        "set_outside_temperature": {
+            "description": "Poskytuje termostatu vonkaj\u0161iu teplotu. Ak v\u00e1\u0161 termostat nedok\u00e1\u017ee zobrazi\u0165 vonkaj\u0161iu teplotu a nepodporuje funkciu OTC (korekcia vonkaj\u0161ej teploty), t\u00e1to funkcia nem\u00e1 \u017eiadny \u00fa\u010dinok.\n.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Teplota, ktor\u00e1 sa m\u00e1 poskytn\u00fa\u0165 termostatu. Akceptovan\u00e9 s\u00fa hodnoty od -40,0 do 64,0, ale nie v\u0161etky termostaty dok\u00e1\u017eu zobrazi\u0165 cel\u00fd rozsah. Ka\u017ed\u00e1 hodnota nad 64,0 vyma\u017ee predt\u00fdm nakonfigurovan\u00fa hodnotu (n\u00e1vrh: 99).",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavenie vonkaj\u0161ej teploty"
+        },
+        "set_setback_temperature": {
+            "description": "Konfiguruje teplotu sp\u00e4tn\u00e9ho chodu, ktor\u00e1 sa m\u00e1 pou\u017e\u00edva\u0165 s funkciou re\u017eimu GPIO nepr\u00edtomnosti.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Gateway_id br\u00e1ny OpenTherm.",
+                    "name": "ID br\u00e1ny"
+                },
+                "temperature": {
+                    "description": "Teplota spiato\u010dky, ktor\u00e1 sa m\u00e1 nakonfigurova\u0165 na br\u00e1ne.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavenie teploty spiato\u010dky"
+        }
+    }
+}

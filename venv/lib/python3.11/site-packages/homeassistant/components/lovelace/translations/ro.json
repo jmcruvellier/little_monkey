@@ -1,0 +1,10 @@
+{
+    "system_health": {
+        "info": {
+            "dashboards": "Panouri de bord",
+            "mode": "Mod",
+            "resources": "Resurse",
+            "views": "Perspective"
+        }
+    }
+}

@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "already_in_progress": "\u914d\u7f6e\u6d41\u7a0b\u5df2\u5728\u8fdb\u884c\u4e2d"
+        },
+        "error": {
+            "connection_error": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP \u5730\u5740"
+                },
+                "description": "\u8fde\u63a5\u9006\u53d8\u5668",
+                "title": "GoodWe \u9006\u53d8\u5668"
+            }
+        }
+    },
+    "entity": {
+        "select": {
+            "operation_mode": {
+                "state": {
+                    "backup": "\u5907\u4efd\u6a21\u5f0f",
+                    "eco": "\u8282\u80fd\u6a21\u5f0f",
+                    "eco_charge": "\u8282\u80fd\u5145\u7535\u6a21\u5f0f",
+                    "eco_discharge": "\u8282\u80fd\u653e\u7535\u6a21\u5f0f",
+                    "general": "\u666e\u901a\u6a21\u5f0f",
+                    "off_grid": "\u79bb\u7f51\u6a21\u5f0f",
+                    "peak_shaving": "\u8c03\u5cf0\u6a21\u5f0f"
+                }
+            }
+        }
+    }
+}

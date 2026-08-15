@@ -1,0 +1,17 @@
+{
+    "config": {
+        "abort": {
+            "cloud_not_connected": "Ei yhdistetty Home Assistant Cloudiin",
+            "single_instance_allowed": "Jo m\u00e4\u00e4ritetty. Vain yksi konfiguraatio mahdollinen."
+        },
+        "create_entry": {
+            "default": "\n\nAvaa [OwnTracks-sovellus]({android_url}) Androidissa ja siirry kohtaan Asetukset > Yhteys. Muuta seuraavia asetuksia:\n - Mode: HTTP\n - Host: {webhook_url}\n - Identification:\n   - K\u00e4ytt\u00e4j\u00e4tunnus: `'(nimesi)'``\n   - Laitteen tunnus: `'(Laitteesi nimi)'`\n\nAvaa [OwnTracks-sovellus]({ios_url}) iOS:ss\u00e4, napauta vasemmassa yl\u00e4kulmassa olevaa (i)-kuvaketta > Asetukset. Muuta seuraavia asetuksia:\n - Mode: HTTP\n - URL: {webhook_url}\n - Ota todennus k\u00e4ytt\u00f6\u00f6n\n - K\u00e4ytt\u00e4j\u00e4tunnus: `'(nimesi)'``\n\n{secret}\n\nKatso lis\u00e4tietoja [dokumentaatiosta]({docs_url})."
+        },
+        "step": {
+            "user": {
+                "description": "Oletko varma, ett\u00e4 haluat m\u00e4\u00e4ritt\u00e4\u00e4 OwnTracksin?",
+                "title": "M\u00e4\u00e4rit\u00e4 OwnTracks"
+            }
+        }
+    }
+}

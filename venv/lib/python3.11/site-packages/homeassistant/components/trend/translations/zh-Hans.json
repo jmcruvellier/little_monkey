@@ -1,0 +1,18 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "name": "\u540d\u79f0"
+                },
+                "title": "\u8d8b\u52bf\u8f85\u52a9\u5143\u7d20"
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "\u4ece YAML \u914d\u7f6e\u91cd\u65b0\u52a0\u8f7d\u8d8b\u52bf\u4f20\u611f\u5668\u3002",
+            "name": "\u91cd\u65b0\u52a0\u8f7d"
+        }
+    }
+}

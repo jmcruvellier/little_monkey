@@ -1,0 +1,7 @@
+{
+    "config": {
+        "abort": {
+            "reauth_successful": "Autentisering p\u00e5 nytt var vellykket"
+        }
+    }
+}

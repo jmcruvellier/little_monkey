@@ -1,0 +1,35 @@
+{
+    "config": {
+        "abort": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "tracked_custom_integrations": "\u5b9a\u5236\u96c6\u6210"
+                },
+                "data_description": {
+                    "tracked_custom_integrations": "\u9009\u62e9\u4f60\u60f3\u8ddf\u8e2a\u7684\u5b9a\u5236\u96c6\u6210",
+                    "tracked_integrations": "\u9009\u62e9\u4f60\u60f3\u8ddf\u8e2a\u7684\u96c6\u6210"
+                }
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "tracked_custom_integrations": "\u5b9a\u5236\u96c6\u6210",
+                    "tracked_integrations": "\u96c6\u6210"
+                },
+                "data_description": {
+                    "tracked_custom_integrations": "\u9009\u62e9\u4f60\u60f3\u8ddf\u8e2a\u7684\u5b9a\u5236\u96c6\u6210",
+                    "tracked_integrations": "\u9009\u62e9\u4f60\u60f3\u8ddf\u8e2a\u7684\u96c6\u6210"
+                }
+            }
+        }
+    }
+}

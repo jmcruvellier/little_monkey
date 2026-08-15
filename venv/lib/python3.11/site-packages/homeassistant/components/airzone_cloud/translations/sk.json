@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9"
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "In\u0161tal\u00e1cia",
+                    "password": "Heslo",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "air_quality_active": {
+                "name": "Kvalita ovzdu\u0161ia akt\u00edvna"
+            }
+        }
+    }
+}

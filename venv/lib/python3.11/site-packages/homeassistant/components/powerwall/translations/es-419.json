@@ -1,0 +1,15 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El powerwall ya est\u00e1 configurado"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "Direcci\u00f3n IP"
+                },
+                "title": "Conectar el powerwall"
+            }
+        }
+    }
+}

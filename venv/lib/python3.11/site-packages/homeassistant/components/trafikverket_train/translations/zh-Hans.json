@@ -1,0 +1,112 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "incorrect_api_key": "\u6240\u9009\u8d26\u53f7\u7684 API \u5bc6\u94a5\u65e0\u6548",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "invalid_station": "\u627e\u4e0d\u5230\u5177\u6709\u6307\u5b9a\u540d\u79f0\u7684\u8f66\u7ad9",
+            "invalid_time": "\u63d0\u4f9b\u7684\u65f6\u95f4\u65e0\u6548",
+            "more_stations": "\u627e\u5230\u591a\u4e2a\u5177\u6709\u6307\u5b9a\u540d\u79f0\u7684\u8f66\u7ad9"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5"
+                }
+            },
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "from": "\u59cb\u53d1\u7ad9",
+                    "time": "\u65f6\u95f4\uff08\u53ef\u9009\uff09",
+                    "to": "\u5230\u8fbe\u7ad9",
+                    "weekday": "\u661f\u671f"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "actual_time": {
+                "name": "\u5b9e\u9645\u65f6\u95f4"
+            },
+            "cancelled": {
+                "name": "\u53d6\u6d88"
+            },
+            "delayed_time": {
+                "name": "\u5ef6\u8bef\u65f6\u95f4"
+            },
+            "departure_state": {
+                "name": "\u79bb\u5f00\u72b6\u6001",
+                "state": {
+                    "canceled": "\u53d6\u6d88",
+                    "delayed": "\u5ef6\u8fdf",
+                    "on_time": "\u51c6\u65f6"
+                }
+            },
+            "departure_time": {
+                "name": "\u51fa\u53d1\u65f6\u95f4",
+                "state_attributes": {
+                    "actual_time": {
+                        "name": "\u5b9e\u9645\u65f6\u95f4"
+                    },
+                    "canceled": {
+                        "name": "\u53d6\u6d88"
+                    },
+                    "departure_state": {
+                        "name": "\u51fa\u53d1\u72b6\u6001",
+                        "state": {
+                            "canceled": "\u53d6\u6d88",
+                            "delayed": "\u5ef6\u8fdf",
+                            "on_time": "\u51c6\u65f6"
+                        }
+                    },
+                    "deviations": {
+                        "name": "\u504f\u5dee"
+                    },
+                    "estimated_time": {
+                        "name": "\u9884\u8ba1\u65f6\u95f4"
+                    },
+                    "number_of_minutes_delayed": {
+                        "name": "\u5ef6\u8fdf\u5206\u949f\u6570"
+                    },
+                    "other_information": {
+                        "name": "\u5176\u4ed6\u4fe1\u606f"
+                    },
+                    "planned_time": {
+                        "name": "\u9884\u8ba1\u65f6\u95f4"
+                    }
+                }
+            },
+            "deviation": {
+                "name": "\u504f\u5dee"
+            },
+            "estimated_time": {
+                "name": "\u9884\u8ba1\u65f6\u95f4"
+            },
+            "other_info": {
+                "name": "\u5176\u4ed6\u4fe1\u606f"
+            },
+            "planned_time": {
+                "name": "\u8ba1\u5212\u65f6\u95f4"
+            }
+        }
+    },
+    "selector": {
+        "weekday": {
+            "options": {
+                "fri": "\u661f\u671f\u4e94",
+                "mon": "\u661f\u671f\u4e00",
+                "sat": "\u661f\u671f\u516d",
+                "sun": "\u661f\u671f\u5929",
+                "thu": "\u661f\u671f\u56db",
+                "tue": "\u661f\u671f\u4e8c",
+                "wed": "\u661f\u671f\u4e09"
+            }
+        }
+    }
+}

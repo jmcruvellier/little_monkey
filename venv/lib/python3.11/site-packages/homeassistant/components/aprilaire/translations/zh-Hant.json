@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u88dd\u7f6e\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210"
+        },
+        "error": {
+            "connection_failed": "\u9023\u7dda\u5931\u6557\u3002\u8acb\u6aa2\u67e5\u4e3b\u6a5f\u7aef\u8207\u901a\u8a0a\u57e0\u8a2d\u5b9a\u6b63\u78ba\u3002"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u6a5f\u7aef",
+                    "port": "\u901a\u8a0a\u57e0"
+                },
+                "data_description": {
+                    "port": "\u901a\u5e38\u70ba 7000 \u6216 8000"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "thermostat": {
+                "name": "\u6eab\u63a7\u5668"
+            }
+        }
+    }
+}

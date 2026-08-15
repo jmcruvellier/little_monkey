@@ -1,0 +1,18 @@
+{
+    "services": {
+        "play_media": {
+            "description": "F\u00e1jl let\u00f6lt\u00e9se a megadott URL-r\u0151l.",
+            "fields": {
+                "media_content_id": {
+                    "description": "A lej\u00e1tszand\u00f3 tartalom azonos\u00edt\u00f3ja. Platformf\u00fcgg\u0151.",
+                    "name": "M\u00e9diatartalom azonos\u00edt\u00f3"
+                },
+                "media_content_type": {
+                    "description": "A lej\u00e1tszand\u00f3 tartalom t\u00edpusa. A MUSIC, TVSHOW, VIDEO, EPISODE, CHANNEL vagy PLAYLIST MUSIC valamelyik\u00e9nek kell lennie.",
+                    "name": "M\u00e9dia tartalom t\u00edpusa"
+                }
+            },
+            "name": "M\u00e9dia lej\u00e1tsz\u00e1sa"
+        }
+    }
+}

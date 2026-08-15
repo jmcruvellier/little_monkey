@@ -1,0 +1,170 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dienst is al geconfigureerd"
+        },
+        "error": {
+            "invalid_key": "Ongeldige API-sleutel",
+            "no_devices": "Geen apparaten gevonden in account"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-sleutel",
+                    "app_key": "Applicatiesleutel"
+                },
+                "title": "Vul uw gegevens in"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_1": {
+                "name": "Batterij 1"
+            },
+            "battery_10": {
+                "name": "Batterij 10"
+            },
+            "battery_2": {
+                "name": "Batterij 2"
+            },
+            "battery_3": {
+                "name": "Batterij 3"
+            },
+            "battery_4": {
+                "name": "Batterij 4"
+            },
+            "battery_5": {
+                "name": "Batterij 5"
+            },
+            "battery_6": {
+                "name": "Batterij 6"
+            },
+            "battery_7": {
+                "name": "Batterij 7"
+            },
+            "battery_8": {
+                "name": "Batterij 8"
+            },
+            "battery_9": {
+                "name": "Batterij 9"
+            }
+        },
+        "sensor": {
+            "feels_like": {
+                "name": "Voelt als"
+            },
+            "humidity_1": {
+                "name": "Luchtvochtigheid 1"
+            },
+            "humidity_10": {
+                "name": "Luchtvochtigheid 10"
+            },
+            "humidity_2": {
+                "name": "Luchtvochtigheid 2"
+            },
+            "humidity_3": {
+                "name": "Luchtvochtigheid 3"
+            },
+            "humidity_4": {
+                "name": "Luchtvochtigheid 4"
+            },
+            "humidity_5": {
+                "name": "Luchtvochtigheid 5"
+            },
+            "humidity_6": {
+                "name": "Luchtvochtigheid 6"
+            },
+            "humidity_7": {
+                "name": "Luchtvochtigheid 7"
+            },
+            "humidity_8": {
+                "name": "Luchtvochtigheid 8"
+            },
+            "humidity_9": {
+                "name": "Luchtvochtigheid 9"
+            },
+            "inside_temperature": {
+                "name": "Binnentemperatuur"
+            },
+            "soil_humidity_4": {
+                "name": "Bodemvochtigheid 4"
+            },
+            "soil_humidity_5": {
+                "name": "Bodemvochtigheid 5"
+            },
+            "soil_humidity_6": {
+                "name": "Bodemvochtigheid 6"
+            },
+            "soil_humidity_7": {
+                "name": "Bodemvochtigheid 7"
+            },
+            "soil_humidity_8": {
+                "name": "Bodemvochtigheid 8"
+            },
+            "soil_humidity_9": {
+                "name": "Bodemvochtigheid 9"
+            },
+            "soil_temperature_1": {
+                "name": "Bodemtemperatuur 1"
+            },
+            "soil_temperature_10": {
+                "name": "Bodemtemperatuur 10"
+            },
+            "soil_temperature_2": {
+                "name": "Bodemtemperatuur 2"
+            },
+            "soil_temperature_3": {
+                "name": "Bodemtemperatuur 3"
+            },
+            "soil_temperature_4": {
+                "name": "Bodemtemperatuur 4"
+            },
+            "soil_temperature_5": {
+                "name": "Bodemtemperatuur 5"
+            },
+            "soil_temperature_6": {
+                "name": "Bodemtemperatuur 6"
+            },
+            "soil_temperature_7": {
+                "name": "Bodemtemperatuur 7"
+            },
+            "soil_temperature_8": {
+                "name": "Bodemtemperatuur 8"
+            },
+            "soil_temperature_9": {
+                "name": "Bodemtemperatuur 9"
+            },
+            "temperature_1": {
+                "name": "Temperatuur 1"
+            },
+            "temperature_10": {
+                "name": "Temperatuur 10"
+            },
+            "temperature_2": {
+                "name": "Temperatuur 2"
+            },
+            "temperature_3": {
+                "name": "Temperatuur 3"
+            },
+            "temperature_4": {
+                "name": "Temperatuur 4"
+            },
+            "temperature_5": {
+                "name": "Temperatuur 5"
+            },
+            "temperature_6": {
+                "name": "Temperatuur 6"
+            },
+            "temperature_7": {
+                "name": "Temperatuur 7"
+            },
+            "temperature_8": {
+                "name": "Temperatuur 8"
+            },
+            "temperature_9": {
+                "name": "Temperatuur 9"
+            }
+        }
+    }
+}

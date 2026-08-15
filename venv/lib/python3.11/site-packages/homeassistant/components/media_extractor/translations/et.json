@@ -1,0 +1,18 @@
+{
+    "services": {
+        "play_media": {
+            "description": "Laeb faili antud URL-ilt alla.",
+            "fields": {
+                "media_content_id": {
+                    "description": "Esitatava sisu ID. Platvormist s\u00f5ltuv.",
+                    "name": "Meediumisisu ID"
+                },
+                "media_content_type": {
+                    "description": "Esitatava sisu t\u00fc\u00fcp. Peab olema \u00fcks MUUSIKA, TELESHOW, VIDEO, EPISOOD, KANAL v\u00f5i ESITUSLOENDI MUUSIKA.",
+                    "name": "Meediumisisu t\u00fc\u00fcp"
+                }
+            },
+            "name": "Esita sisu"
+        }
+    }
+}

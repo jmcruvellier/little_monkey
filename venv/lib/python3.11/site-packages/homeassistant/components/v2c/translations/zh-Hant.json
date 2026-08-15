@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u88dd\u7f6e\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210"
+        },
+        "error": {
+            "cannot_connect": "\u9023\u7dda\u5931\u6557",
+            "unknown": "\u672a\u9810\u671f\u932f\u8aa4"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u6a5f\u7aef"
+                },
+                "data_description": {
+                    "host": "V2C Trydan EVSE \u4e4b\u4e3b\u6a5f\u540d\u7a31\u6216 IP \u4f4d\u5740\u3002"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "\u5145\u96fb\u4e2d"
+            },
+            "connected": {
+                "name": "\u5df2\u9023\u7dda"
+            },
+            "ready": {
+                "name": "\u5c31\u7dd2"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "\u5f37\u5ea6"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "\u5145\u96fb\u80fd\u6e90"
+            },
+            "charge_power": {
+                "name": "\u5145\u96fb\u529f\u7387"
+            },
+            "charge_time": {
+                "name": "\u5145\u96fb\u6642\u9593"
+            },
+            "fv_power": {
+                "name": "\u592a\u967d\u80fd\u767c\u96fb"
+            },
+            "house_power": {
+                "name": "\u5bb6\u7528\u96fb\u6e90"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "\u52d5\u614b\u5f37\u5ea6\u8abf\u8b8a"
+            },
+            "locked": {
+                "name": "\u9396\u5b9a EVSE"
+            },
+            "pause_dynamic": {
+                "name": "\u66ab\u505c\u52d5\u614b\u63a7\u5236\u8abf\u8b8a"
+            },
+            "paused": {
+                "name": "\u66ab\u505c\u968e\u6bb5"
+            },
+            "timer": {
+                "name": "\u5145\u96fb\u9ede\u8a08\u6642\u5668"
+            }
+        }
+    }
+}

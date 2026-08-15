@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9",
+            "cannot_connect": "Nepodarilo sa pripoji\u0165"
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_auth": "Neplatn\u00e9 overenie"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "password": {
+                "data": {
+                    "password": "Heslo"
+                },
+                "data_description": {
+                    "password": "(8 znakov, pozri QR k\u00f3d pod smetn\u00fdm ko\u0161om)."
+                },
+                "title": "Vy\u017eaduje sa heslo"
+            },
+            "user": {
+                "data": {
+                    "host": "Hostite\u013e"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Chcete prida\u0165 vys\u00e1va\u010d ROMY {name} do Home Assistant?"
+            }
+        }
+    },
+    "entity": {
+        "vacuum": {
+            "romy": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "auto": "Auto",
+                            "default": "Predvolen\u00fd",
+                            "high": "Vysok\u00fd",
+                            "intensive": "Intenz\u00edvny",
+                            "normal": "Norm\u00e1lny",
+                            "silent": "Tich\u00fd",
+                            "super_silent": "Super tich\u00fd"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

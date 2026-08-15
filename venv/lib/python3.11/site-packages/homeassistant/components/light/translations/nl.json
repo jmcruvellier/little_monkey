@@ -1,0 +1,325 @@
+{
+    "device_automation": {
+        "action_type": {
+            "brightness_decrease": "Verlaag de helderheid van {entity_name}",
+            "brightness_increase": "Verhoog de helderheid van {entity_name}",
+            "flash": "Flash {entity_name}",
+            "toggle": "Zet {entity_name} aan/uit",
+            "turn_off": "{entity_name} uitzetten",
+            "turn_on": "{entity_name} aanzetten"
+        },
+        "condition_type": {
+            "is_off": "{entity_name} is uitgeschakeld",
+            "is_on": "{entity_name} is ingeschakeld"
+        },
+        "trigger_type": {
+            "changed_states": "{entity_name} aan- of uitgezet",
+            "turned_off": "{entity_name} uitgezet",
+            "turned_on": "{entity_name} aangezet"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "name": "Licht",
+            "state": {
+                "off": "Uit",
+                "on": "Aan"
+            },
+            "state_attributes": {
+                "brightness": {
+                    "name": "Helderheid"
+                },
+                "color_mode": {
+                    "name": "Kleurmodus",
+                    "state": {
+                        "brightness": "Alleen helderheid",
+                        "color_temp": "Kleurtemperatuur",
+                        "hs": "HS",
+                        "onoff": "Aan/uit",
+                        "rgb": "RGB",
+                        "rgbw": "RGBW",
+                        "rgbww": "RGBWW",
+                        "unknown": "Onbekend",
+                        "white": "Wit",
+                        "xy": "XY"
+                    }
+                },
+                "color_temp_kelvin": {
+                    "name": "Kleurtemperatuur (Kelvin)"
+                },
+                "effect": {
+                    "name": "Effect"
+                },
+                "effect_list": {
+                    "name": "Beschikbare effecten"
+                },
+                "supported_color_modes": {
+                    "name": "Beschikbare kleurmodi",
+                    "state": {
+                        "brightness": "Alleen helderheid",
+                        "color_temp": "Kleurtemperatuur",
+                        "hs": "HS",
+                        "onoff": "Aan/uit",
+                        "rgb": "RGB",
+                        "rgbw": "RGBW",
+                        "rgbww": "RGBWW",
+                        "unknown": "Onbekend",
+                        "white": "Wit",
+                        "xy": "XY"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "Platform {platform} van de {domain} integratie heeft geen platformondersteuning.\n\nVerwijder dit uit je configuratie en herstart Home Assistant om dit issue op te lossen.",
+            "title": "Platformondersteuning is niet ondersteund"
+        }
+    },
+    "selector": {
+        "color_name": {
+            "options": {
+                "bisque": "Bisque",
+                "blanchedalmond": "Geblancheerde amandel",
+                "blue": "Blauw",
+                "blueviolet": "Blauwviolet",
+                "brown": "Bruin",
+                "burlywood": "Knoestig hout",
+                "cadetblue": "Cadet blauw",
+                "chartreuse": "Chartreuse",
+                "chocolate": "Chocolade",
+                "coral": "Koraal",
+                "cornflowerblue": "Korenblauw",
+                "cornsilk": "Ma\u00efszijde",
+                "crimson": "Karmozijnrood",
+                "cyan": "Cyaan",
+                "darkblue": "Donkerblauw",
+                "darkcyan": "Donker cyaan",
+                "darkgoldenrod": "Donker guldenroede",
+                "darkgray": "Donkergrijs",
+                "darkgreen": "Donkergroen",
+                "darkgrey": "Donkergrijs",
+                "darkkhaki": "Donker kaki",
+                "darkmagenta": "Donker magenta",
+                "darkolivegreen": "Donkerolijfgroen",
+                "darkorange": "Donkeroranje",
+                "darkorchid": "Donker orchidee",
+                "darkred": "Donkerrood",
+                "darksalmon": "Donker zalm",
+                "darkseagreen": "Donkerzeegroen",
+                "darkslateblue": "Donker leiblauw",
+                "darkslategray": "Donker leigrijs",
+                "lightcoral": "Licht koraal",
+                "lightcyan": "Licht cyaan",
+                "lightgoldenrodyellow": "Licht guldenroede geel",
+                "lightgray": "Lichtgrijs",
+                "lightgreen": "Lichtgroen",
+                "lightgrey": "Lichtgrijs",
+                "lightpink": "Lichtroze",
+                "lightsalmon": "Licht zalm",
+                "lightseagreen": "Lichtzeegroen",
+                "lightskyblue": "Licht hemelsblauw",
+                "lightslategray": "Lichtgrijs",
+                "lightslategrey": "Licht leigrijs",
+                "lightsteelblue": "Licht staalblauw",
+                "lightyellow": "Lichtgeel",
+                "lime": "Limoen",
+                "limegreen": "Limoengroen",
+                "linen": "Linnen",
+                "magenta": "Magenta",
+                "maroon": "Kastanjebruin",
+                "mediumaquamarine": "Medium aquamarijn",
+                "mediumblue": "Medium blauw",
+                "mediumorchid": "Medium orchidee",
+                "mediumpurple": "Medium paars",
+                "mediumseagreen": "Medium zeegroen",
+                "mediumslateblue": "Medium leisteen blauw",
+                "mediumspringgreen": "Medium lentegroen",
+                "mediumturquoise": "Medium turkoois",
+                "mediumvioletred": "Medium violet rood",
+                "midnightblue": "Middernacht blauw",
+                "mintcream": "Munt cr\u00e8me",
+                "powderblue": "Poederblauw",
+                "purple": "Paars",
+                "red": "Rood",
+                "rosybrown": "Rooskleurig bruin",
+                "royalblue": "Koningsblauw",
+                "saddlebrown": "Zadelbruin",
+                "salmon": "Zalm",
+                "sandybrown": "Zandbruin",
+                "seagreen": "Zeegroen",
+                "seashell": "Zeeschelp",
+                "sienna": "Sienna",
+                "silver": "Zilver",
+                "skyblue": "Hemelsblauw",
+                "slateblue": "Leisteen blauw",
+                "slategray": "Leigrijs",
+                "slategrey": "Leigrijs",
+                "snow": "Sneeuw",
+                "springgreen": "Lentegroen",
+                "steelblue": "Staalblauw",
+                "tan": "Bruin",
+                "teal": "Taling",
+                "thistle": "Distel",
+                "tomato": "Tomaat",
+                "turquoise": "Turkoois",
+                "violet": "Paars",
+                "wheat": "Tarwe",
+                "white": "Wit",
+                "whitesmoke": "Witte rook",
+                "yellow": "Geel",
+                "yellowgreen": "Geelgroen"
+            }
+        }
+    },
+    "services": {
+        "toggle": {
+            "description": "Schakelt een of meerdere lampen om, van aan naar uit, of, van uit naar aan, op basis van hun huidige status.",
+            "fields": {
+                "brightness": {
+                    "description": "Getal dat de helderheid aangeeft, waarbij 0 het licht uitdoet, 1 de minimale helderheid is en 255 de maximale helderheid is.",
+                    "name": "Helderheidswaarde"
+                },
+                "brightness_pct": {
+                    "description": "Getal dat het percentage van volledige helderheid aangeeft, waarbij 0 het licht uitschakelt, 1 de minimale helderheid is en 100 de maximale helderheid is.",
+                    "name": "Helderheid"
+                },
+                "color_name": {
+                    "description": "Een menselijk leesbare kleurnaam.",
+                    "name": "Kleur naam"
+                },
+                "color_temp": {
+                    "description": "Kleurtemperatuur in mireds.",
+                    "name": "Kleurtemperatuur"
+                },
+                "effect": {
+                    "description": "Lichteffect.",
+                    "name": "Effect"
+                },
+                "flash": {
+                    "description": "Of de lamp moet knipperen.",
+                    "name": "Knipperen"
+                },
+                "hs_color": {
+                    "description": "Kleur in tint/verzadiging-formaat. Een lijst van twee gehele getallen. Tint is 0-360 en verzadiging is 0-100.",
+                    "name": "Tint/verzadiging kleur"
+                },
+                "kelvin": {
+                    "description": "Kleurtemperatuur in Kelvin.",
+                    "name": "Kleurtemperatuur"
+                },
+                "profile": {
+                    "description": "Naam van een te gebruiken lichtprofiel.",
+                    "name": "Profiel"
+                },
+                "rgb_color": {
+                    "description": "De kleur in RGB-formaat. Een lijst met drie gehele getallen tussen 0 en 255 die de waarden rood, groen en blauw vertegenwoordigen.",
+                    "name": "Kleur"
+                },
+                "transition": {
+                    "description": "Duur die nodig is om naar de volgende status te gaan.",
+                    "name": "Overgang"
+                },
+                "white": {
+                    "description": "Zet het licht op de witte modus.",
+                    "name": "Wit"
+                },
+                "xy_color": {
+                    "description": "Kleur in XY-formaat. Een lijst van twee decimale getallen tussen 0 en 1.",
+                    "name": "XY-kleur"
+                }
+            },
+            "name": "Omschakelen"
+        },
+        "turn_off": {
+            "description": "Zet een of meerdere lampen uit.",
+            "fields": {
+                "flash": {
+                    "description": "Of de lamp moet knipperen.",
+                    "name": "Knipperen"
+                },
+                "transition": {
+                    "description": "Duur die nodig is om naar de volgende status te gaan.",
+                    "name": "Overgang"
+                }
+            },
+            "name": "Uitzetten"
+        },
+        "turn_on": {
+            "description": "Zet een of meerdere lampen aan en pas de eigenschappen van het licht aan, zelfs als ze al aan zijn.",
+            "fields": {
+                "brightness": {
+                    "description": "Getal dat de helderheid aangeeft, waarbij 0 het licht uitdoet, 1 de minimale helderheid is en 255 de maximale helderheid is.",
+                    "name": "Helderheidswaarde"
+                },
+                "brightness_pct": {
+                    "description": "Getal dat het percentage van volledige helderheid aangeeft, waarbij 0 het licht uitschakelt, 1 de minimale helderheid is en 100 de maximale helderheid is.",
+                    "name": "Helderheid"
+                },
+                "brightness_step": {
+                    "description": "Wijzig de helderheid met een hoeveelheid.",
+                    "name": "Helderheidsstapwaarde"
+                },
+                "brightness_step_pct": {
+                    "description": "Wijzig de helderheid met een percentage.",
+                    "name": "Helderheidsstap"
+                },
+                "color_name": {
+                    "description": "Een menselijk leesbare kleurnaam.",
+                    "name": "Kleur naam"
+                },
+                "color_temp": {
+                    "description": "Kleurtemperatuur in mireds.",
+                    "name": "Kleurtemperatuur"
+                },
+                "effect": {
+                    "description": "Lichteffect.",
+                    "name": "Effect"
+                },
+                "flash": {
+                    "description": "Of de lamp moet knipperen.",
+                    "name": "Knipperen"
+                },
+                "hs_color": {
+                    "description": "Kleur in tint/verzadiging-formaat. Een lijst van twee gehele getallen. Tint is 0-360 en verzadiging is 0-100.",
+                    "name": "Tint/verzadiging kleur"
+                },
+                "kelvin": {
+                    "description": "Kleurtemperatuur in Kelvin.",
+                    "name": "Kleurtemperatuur"
+                },
+                "profile": {
+                    "description": "Naam van een te gebruiken lichtprofiel.",
+                    "name": "Profiel"
+                },
+                "rgb_color": {
+                    "description": "De kleur in RGB-formaat. Een lijst met drie gehele getallen tussen 0 en 255 die de waarden rood, groen en blauw vertegenwoordigen.",
+                    "name": "Kleur"
+                },
+                "rgbw_color": {
+                    "description": "De kleur in RGBW-formaat. Een lijst met vier gehele getallen tussen 0 en 255 die de waarden rood, groen, blauw en wit vertegenwoordigen.",
+                    "name": "RGBW-kleur"
+                },
+                "rgbww_color": {
+                    "description": "De kleur in RGBWW-formaat. Een lijst met vijf gehele getallen tussen 0 en 255 die de waarden rood, groen, blauw, koud wit en warm wit vertegenwoordigen.",
+                    "name": "RGBWW-kleur"
+                },
+                "transition": {
+                    "description": "Duur die nodig is om naar de volgende status te gaan.",
+                    "name": "Overgang"
+                },
+                "white": {
+                    "description": "Zet het licht op de witte modus.",
+                    "name": "Wit"
+                },
+                "xy_color": {
+                    "description": "Kleur in XY-formaat. Een lijst van twee decimale getallen tussen 0 en 1.",
+                    "name": "XY-kleur"
+                }
+            },
+            "name": "Aanzetten"
+        }
+    },
+    "title": "Licht"
+}

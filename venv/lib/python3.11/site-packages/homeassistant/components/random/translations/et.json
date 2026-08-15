@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Seadme klass",
+                    "name": "Nimi"
+                },
+                "title": "Juhuslik binaarne andur"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Seadme klass",
+                    "maximum": "Maksimaalne",
+                    "minimum": "Minimaalne",
+                    "name": "Nimi",
+                    "unit_of_measurement": "M\u00f5\u00f5t\u00fchik"
+                },
+                "title": "Juhuslik andur"
+            },
+            "user": {
+                "description": "See abimees v\u00f5imaldab luua abistaja mis v\u00e4ljastab juhusliku v\u00e4\u00e4rtuse.",
+                "menu_options": {
+                    "binary_sensor": "Juhuslik binaarne andur",
+                    "sensor": "Juhuslik andur"
+                },
+                "title": "Juhuslik abimees"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Sellel abimehel pole valikuid.",
+                "title": "Juhuslik binaarne andur"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Seadme klass",
+                    "maximum": "Maksimaalne",
+                    "minimum": "Minimaalne",
+                    "unit_of_measurement": "M\u00f5\u00f5t\u00fchik"
+                },
+                "title": "Juhuslik andur"
+            }
+        }
+    }
+}

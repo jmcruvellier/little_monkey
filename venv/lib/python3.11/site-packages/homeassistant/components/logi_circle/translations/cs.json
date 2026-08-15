@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u00da\u010det je ji\u017e nastaven",
+            "external_error": "Do\u0161lo k v\u00fdjimce z jin\u00e9ho toku.",
+            "external_setup": "Logi Circle \u00fasp\u011b\u0161n\u011b nastaveno jin\u00fdm zp\u016fsobem.",
+            "missing_configuration": "Komponenta nen\u00ed nastavena. Postupujte podle dokumentace."
+        },
+        "error": {
+            "authorize_url_timeout": "\u010casov\u00fd limit ov\u011b\u0159ovac\u00ed URL vypr\u0161el.",
+            "follow_link": "Postupujte podle odkazu a prove\u010fte ov\u011b\u0159en\u00ed p\u0159ed klepnut\u00edm na tla\u010d\u00edtko Odeslat.",
+            "invalid_auth": "Neplatn\u00e9 ov\u011b\u0159en\u00ed"
+        },
+        "step": {
+            "auth": {
+                "description": "Postupujte podle n\u00ed\u017ee uveden\u00e9ho odkazu a **P\u0159ijm\u011bte** p\u0159\u00edstup k \u00fa\u010dtu Logi Circle, pot\u00e9 se vra\u0165te zp\u011bt a klepn\u011bte na tla\u010d\u00edtko Odeslat. \n\n[Odkaz]({authorization_url})",
+                "title": "Ov\u011b\u0159it pomoc\u00ed Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Poskytovatel"
+                },
+                "description": "Vyberte, p\u0159es kter\u00e9ho poskytovatele ov\u011b\u0159ov\u00e1n\u00ed se chcete pomoc\u00ed Logi Circle ov\u011b\u0159it.",
+                "title": "Poskytovatel ov\u011b\u0159en\u00ed"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "Posledn\u00ed aktivita"
+            },
+            "recording_mode": {
+                "name": "Re\u017eim nahr\u00e1v\u00e1n\u00ed"
+            },
+            "streaming_mode": {
+                "name": "Re\u017eim streamov\u00e1n\u00ed"
+            },
+            "wifi_signal_category": {
+                "name": "Kategorie sign\u00e1lu Wi-Fi"
+            },
+            "wifi_signal_strength": {
+                "name": "S\u00edla sign\u00e1lu Wi-Fi"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Spole\u010dnost Logitech p\u0159estala p\u0159ij\u00edmat \u017e\u00e1dosti o p\u0159\u00edstup k rozhran\u00ed Logi Circle API v kv\u011btnu 2022 a integrace Logi Circle bude z Home Assistanta odebr\u00e1na.\n\nChcete-li tento probl\u00e9m vy\u0159e\u0161it, odeberte polo\u017eky integrace z nastaven\u00ed Home Assistanta. [Klepnut\u00edm sem zobraz\u00edte sv\u00e9 st\u00e1vaj\u00edc\u00ed polo\u017eky integrace Logi Circle] ({entries}).",
+            "title": "Integrace Logi Circle byla ukon\u010dena a bude odebr\u00e1na"
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Po\u0159\u00edd\u00ed videoz\u00e1znam z \u017eiv\u00e9ho p\u0159enosu kamery.",
+            "fields": {
+                "duration": {
+                    "description": "D\u00e9lka z\u00e1znamu.",
+                    "name": "D\u00e9lka"
+                },
+                "entity_id": {
+                    "description": "N\u00e1zvy entit, ze kter\u00fdch se maj\u00ed vytv\u00e1\u0159et nahr\u00e1vky.",
+                    "name": "Entita"
+                },
+                "filename": {
+                    "description": "\u0160ablona n\u00e1zvu souboru. Prom\u011bnn\u00e1 je entity_id.",
+                    "name": "N\u00e1zev souboru"
+                }
+            },
+            "name": "Z\u00e1znam \u017eiv\u00e9ho p\u0159enosu"
+        },
+        "livestream_snapshot": {
+            "description": "Po\u0159\u00edd\u00ed sn\u00edmek z \u017eiv\u00e9ho p\u0159enosu kamery. V p\u0159\u00edpad\u011b pot\u0159eby probud\u00ed kameru z re\u017eimu sp\u00e1nku.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zvy entit, ze kter\u00fdch se maj\u00ed vytv\u00e1\u0159et sn\u00edmky.",
+                    "name": "Entita"
+                },
+                "filename": {
+                    "description": "\u0160ablona n\u00e1zvu souboru. Prom\u011bnn\u00e1 je entity_id.",
+                    "name": "N\u00e1zev souboru"
+                }
+            },
+            "name": "Sn\u00edmek \u017eiv\u00e9ho p\u0159enosu"
+        },
+        "set_config": {
+            "description": "Nastav\u00ed vlastnost konfigurace.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zvy entit, na kter\u00e9 se m\u00e1 pou\u017e\u00edt provozn\u00ed re\u017eim.",
+                    "name": "Entita"
+                },
+                "mode": {
+                    "description": "Provozn\u00ed re\u017eim. P\u0159\u00edpustn\u00e9 hodnoty: LED, RECORDING_MODE.",
+                    "name": "Re\u017eim"
+                },
+                "value": {
+                    "description": "Provozn\u00ed hodnota.",
+                    "name": "Hodnota"
+                }
+            },
+            "name": "Nastavit konfiguraci"
+        }
+    }
+}

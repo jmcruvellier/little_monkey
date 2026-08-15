@@ -1,0 +1,53 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Skrip",
+            "state": {
+                "off": "Mati",
+                "on": "Nyala"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Menjalankan otomasi"
+                },
+                "last_action": {
+                    "name": "Tindakan terakhir"
+                },
+                "last_triggered": {
+                    "name": "Terpicu terakhir"
+                },
+                "max": {
+                    "name": "Jumlah maksimal skrip yang berjalan"
+                },
+                "mode": {
+                    "name": "Mode operasi",
+                    "state": {
+                        "parallel": "Paralel",
+                        "queued": "Diantrekan",
+                        "restart": "Mulai ulang",
+                        "single": "Tunggal"
+                    }
+                }
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Memuat ulang semua skrip yang tersedia.",
+            "name": "Muat Ulang"
+        },
+        "toggle": {
+            "description": "Mengalihkan skrip. Memulai, jika tidak berjalan, menghentikannya jika tidak.",
+            "name": "Alihkan"
+        },
+        "turn_off": {
+            "description": "Menghentikan skrip yang sedang berjalan.",
+            "name": "Matikan"
+        },
+        "turn_on": {
+            "description": "Menjalankan urutan aksi yang ditentukan dalam skrip.",
+            "name": "Nyalakan"
+        }
+    },
+    "title": "Skrip"
+}

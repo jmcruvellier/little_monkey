@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert",
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "id_exists": "Gateway-ID ist bereits vorhanden",
+            "timeout_connect": "Zeit\u00fcberschreitung beim Verbindungsaufbau"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Pfad oder URL",
+                    "id": "ID",
+                    "name": "Name"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "Boden-Temperatur",
+                    "read_precision": "Pr\u00e4zision abfragen",
+                    "set_precision": "Pr\u00e4zision einstellen",
+                    "temporary_override_mode": "Tempor\u00e4rer Sollwert\u00fcbersteuerungsmodus"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "Setzt das OpenTherm Gateway zur\u00fcck.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                }
+            },
+            "name": "Gateway zur\u00fccksetzen"
+        },
+        "set_central_heating_ovrd": {
+            "description": "Legt die Option zur \u00dcberbr\u00fcckung der Zentralheizung am Gateway fest. Beim \u00dcberschreiben des Steuerungssollwerts (\u00fcber einen set_control_setpoint-Dienstaufruf mit einem anderen Wert als 0) aktiviert das Gateway automatisch die \u00dcbersteuerung der Zentralheizung, um den Heizvorgang zu starten. Dieser Dienst kann dann zur Steuerung des \u00dcberbr\u00fcckungsstatus der Zentralheizung verwendet werden. Um die Steuerung der Zentralheizung wieder dem Thermostat zu \u00fcberlassen, rufe den Dienst set_control_setpoint mit dem Temperaturwert 0 auf. Du ben\u00f6tigst dies nur, wenn du deinen eigenen Software-Thermostat schreibst.",
+            "fields": {
+                "ch_override": {
+                    "description": "Der gew\u00fcnschte boolesche Wert f\u00fcr die Zentralheizungs\u00fcbersteuerung.",
+                    "name": "\u00dcbersteuerung der Zentralheizung"
+                },
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                }
+            },
+            "name": "\u00dcbersteuerung der Zentralheizung einstellen"
+        },
+        "set_clock": {
+            "description": "Stellt die Uhr und den Wochentag am angeschlossenen Thermostat ein.",
+            "fields": {
+                "date": {
+                    "description": "Optionales Datum, aus dem der Wochentag extrahiert wird. Der Standardwert ist heute.",
+                    "name": "Datum"
+                },
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "time": {
+                    "description": "Optionale Zeit im 24-Stunden-Format, die dem Thermostat bereitgestellt wird. Standardm\u00e4\u00dfig wird die aktuelle Zeit verwendet.",
+                    "name": "Zeit"
+                }
+            },
+            "name": "Uhr einstellen"
+        },
+        "set_control_setpoint": {
+            "description": "Legt die \u00dcbersteuerung des Zentralheizungs-Sollwerts am Gateway fest. Du ben\u00f6tigst dies nur, wenn du deinen eigenen Software-Thermostat schreibst.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "temperature": {
+                    "description": "Der am Gateway einzustellende Zentralheizungssollwert. Es werden Werte zwischen 0 und 90 akzeptiert, aber nicht alle Kessel unterst\u00fctzen diesen Bereich. Ein Wert von 0 deaktiviert die \u00dcbersteuerung des Zentralheizungssollwerts.",
+                    "name": "Temperatur"
+                }
+            },
+            "name": "Regelsollwert einstellen"
+        },
+        "set_gpio_mode": {
+            "description": "\u00c4ndert die Funktion der GPIO-Pins des Gateways.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "id": {
+                    "description": "Die ID des GPIO-Pins.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Modus, der f\u00fcr den GPIO-Pin eingestellt werden soll. Die Werte 0 bis 6 werden f\u00fcr beide GPIOs akzeptiert, 7 wird nur f\u00fcr GPIO \u201eB\u201c akzeptiert. Siehe https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes f\u00fcr eine Erl\u00e4uterung der Werte.",
+                    "name": "Modus"
+                }
+            },
+            "name": "Lege den GPIO-Modus fest"
+        },
+        "set_hot_water_ovrd": {
+            "description": "Legt die Option zur Aktivierung der Warmwasserbereitung am Gateway fest.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Steuere die Option zur Aktivierung der Warmwasserbereitung. Wenn der Heizkessel so konfiguriert wurde, dass das Raumger\u00e4t steuert, wann eine kleine Menge Wasser vorgew\u00e4rmt gehalten werden soll, kann dieser Befehl Einfluss darauf haben. Der Wert sollte 0 oder 1 sein, um die \u00dcberschreibung im Aus- oder Ein-Zustand zu aktivieren, oder \u201eA\u201c, um die \u00dcberschreibung zu deaktivieren.",
+                    "name": "\u00dcberbr\u00fcckung der Warmwasserbereitung"
+                },
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                }
+            },
+            "name": "Warmwasser\u00fcberbr\u00fcckung einstellen"
+        },
+        "set_hot_water_setpoint": {
+            "description": "Legt den Warmwasser-Sollwert am Gateway fest.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "temperature": {
+                    "description": "Der am Gateway einzustellende Warmwassersollwert. Nicht alle Heizkessel unterst\u00fctzen diese Funktion. Es werden Werte zwischen 0 und 90 akzeptiert, aber nicht alle Kessel unterst\u00fctzen diesen Bereich. \u00dcberpr\u00fcfe die Werte der Sensoren \u201eslave_dhw_min_setp\u201c und \u201eslave_dhw_max_setp\u201c, um den unterst\u00fctzten Bereich deines Heizkessels zu ermitteln.",
+                    "name": "Temperatur"
+                }
+            },
+            "name": "Warmwasser-Sollwert einstellen"
+        },
+        "set_led_mode": {
+            "description": "\u00c4ndert die Funktion der LEDs des Gateways.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "id": {
+                    "description": "Die ID der LED.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Die der LED zuzuweisende Funktion. Eine Erl\u00e4uterung der Werte findest du unter https://www.home-assistant.io/integrations/opentherm_gw/#led-modes.",
+                    "name": "Modus"
+                }
+            },
+            "name": "LED-Modus einstellen"
+        },
+        "set_max_modulation": {
+            "description": "\u00dcberschreibt den maximalen relativen Modulationspegel. Du ben\u00f6tigst dies nur, wenn du deinen eigenen Software-Thermostat schreibst.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "level": {
+                    "description": "Der Modulationspegel, der dem Gateway bereitgestellt werden soll. Gib einen Wert von -1 an, um die \u00dcberschreibung zu l\u00f6schen und den Wert vom Thermostat erneut weiterzuleiten.",
+                    "name": "Level"
+                }
+            },
+            "name": "Maximale Modulation einstellen"
+        },
+        "set_outside_temperature": {
+            "description": "Stellt dem Thermostat eine Au\u00dfentemperatur zur Verf\u00fcgung. Wenn dein Thermostat keine Au\u00dfentemperatur anzeigen kann und OTC (Outside Temperature Correction) nicht unterst\u00fctzt, hat dies keine Auswirkung.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "temperature": {
+                    "description": "Die dem Thermostat bereitzustellende Temperatur. Werte zwischen -40,0 und 64,0 werden akzeptiert, aber nicht alle Thermostate k\u00f6nnen den gesamten Bereich anzeigen. Jeder Wert \u00fcber 64,0 l\u00f6scht einen zuvor konfigurierten Wert (Vorschlag: 99).",
+                    "name": "Temperatur"
+                }
+            },
+            "name": "Au\u00dfentemperatur einstellen"
+        },
+        "set_setback_temperature": {
+            "description": "Konfiguriert die Absenktemperatur, die mit der GPIO-Abwesenheitsmodusfunktion verwendet werden soll.",
+            "fields": {
+                "gateway_id": {
+                    "description": "Die gateway_id des OpenTherm-Gateways.",
+                    "name": "Gateway-ID"
+                },
+                "temperature": {
+                    "description": "Die am Gateway zu konfigurierende Absenkungstemperatur.",
+                    "name": "Temperatur"
+                }
+            },
+            "name": "Absenktemperatur einstellen"
+        }
+    }
+}

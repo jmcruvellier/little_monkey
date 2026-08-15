@@ -1,0 +1,13 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Ja configurat. Nom\u00e9s \u00e9s possible una sola configuraci\u00f3."
+        }
+    },
+    "services": {
+        "speedtest": {
+            "description": "Executa immediatament un test de velocitat amb Fast.com.",
+            "name": "Test de velocitat"
+        }
+    }
+}

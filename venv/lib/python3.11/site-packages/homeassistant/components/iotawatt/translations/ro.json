@@ -1,0 +1,23 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_auth": "Autentificare nevalid\u0103",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "step": {
+            "auth": {
+                "data": {
+                    "password": "Parola",
+                    "username": "Utilizator"
+                },
+                "description": "Dispozitivul IoTawatt necesit\u0103 autentificare. Te rug\u0103m s\u0103 introduci numele de utilizator \u0219i parola \u0219i s\u0103 ape\u0219i pe butonul Trimite."
+            },
+            "user": {
+                "data": {
+                    "host": "Gazd\u0103 (host)"
+                }
+            }
+        }
+    }
+}

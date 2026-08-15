@@ -1,0 +1,24 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "name": "\u540d\u79f0"
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "\u4f7f\u7528 YAML \u914d\u7f6e myStrom \u7684\u64cd\u4f5c\u5373\u5c06\u88ab\u79fb\u9664\u3002\n\n\u73b0\u6709 YAML \u914d\u7f6e\u5df2\u81ea\u52a8\u5bfc\u5165\u5230 UI \u4e2d\u3002\n\n\u4ece configuration.yaml \u6587\u4ef6\u4e2d\u5220\u9664 myStrom YAML \u914d\u7f6e\uff0c\u7136\u540e\u91cd\u65b0\u542f\u52a8 Home Assistant \u4ee5\u89e3\u51b3\u6b64\u95ee\u9898\u3002",
+            "title": "myStrom YAML \u914d\u7f6e\u5373\u5c06\u88ab\u79fb\u9664"
+        }
+    }
+}

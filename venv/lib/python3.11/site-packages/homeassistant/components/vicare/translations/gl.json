@@ -1,0 +1,30 @@
+{
+    "config": {
+        "step": {
+            "reauth_confirm": {
+                "description": "Por favor, verifica as credenciais."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ess_state": {
+                "state": {
+                    "discharge": "Descargando"
+                }
+            }
+        }
+    },
+    "services": {
+        "set_vicare_mode": {
+            "description": "Establece un modo ViCare.",
+            "fields": {
+                "vicare_mode": {
+                    "description": "Modo ViCare.",
+                    "name": "Modo ViCare"
+                }
+            },
+            "name": "Establecer modo ViCare"
+        }
+    }
+}

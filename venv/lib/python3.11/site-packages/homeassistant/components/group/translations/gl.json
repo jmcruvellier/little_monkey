@@ -1,0 +1,21 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "home": "En casa",
+                "not_home": "Ausente"
+            }
+        }
+    },
+    "selector": {
+        "type": {
+            "options": {
+                "last": "M\u00e1is recentemente actualizado",
+                "max": "M\u00e1ximo",
+                "mean": "Media aritm\u00e9tica",
+                "range": "Rango estat\u00edstico",
+                "sum": "Suma"
+            }
+        }
+    }
+}

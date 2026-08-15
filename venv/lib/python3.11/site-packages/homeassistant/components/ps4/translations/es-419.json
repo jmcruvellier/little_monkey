@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "credential_error": "Error al obtener las credenciales.",
+            "no_devices_found": "No se encontraron dispositivos PlayStation 4 en la red.",
+            "port_987_bind_error": "No se pudo vincular al puerto 987. Consulte la [documentaci\u00f3n](https://www.home-assistant.io/components/ps4/) para obtener informaci\u00f3n adicional.",
+            "port_997_bind_error": "No se pudo vincular al puerto 997. Consulte la [documentaci\u00f3n](https://www.home-assistant.io/components/ps4/) para obtener informaci\u00f3n adicional."
+        },
+        "error": {
+            "credential_timeout": "Servicio de credenciales agotado. Presione enviar para reiniciar.",
+            "login_failed": "No se ha podido emparejar con PlayStation 4. Verifique que el PIN sea correcto.",
+            "no_ipaddress": "Ingrese la direcci\u00f3n IP de la PlayStation 4 que desea configurar."
+        },
+        "step": {
+            "creds": {
+                "description": "Credenciales necesarias. Presione 'Enviar' y luego en la aplicaci\u00f3n de la segunda pantalla de PS4, actualice los dispositivos y seleccione el dispositivo 'Home-Assistant' para continuar."
+            },
+            "link": {
+                "data": {
+                    "code": "PIN",
+                    "ip_address": "Direcci\u00f3n IP",
+                    "name": "Nombre",
+                    "region": "Regi\u00f3n"
+                }
+            },
+            "mode": {
+                "data": {
+                    "ip_address": "Direcci\u00f3n IP (dejar en blanco si se utiliza el descubrimiento autom\u00e1tico).",
+                    "mode": "Modo de configuraci\u00f3n"
+                }
+            }
+        }
+    }
+}

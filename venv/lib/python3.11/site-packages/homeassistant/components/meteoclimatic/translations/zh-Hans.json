@@ -1,0 +1,21 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "error": {
+            "not_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "code": "\u6c14\u8c61\u7ad9\u4ee3\u7801"
+                },
+                "data_description": {
+                    "code": "\u683c\u5f0f\u7c7b\u4f3c ESCAT4300000043206B"
+                }
+            }
+        }
+    }
+}

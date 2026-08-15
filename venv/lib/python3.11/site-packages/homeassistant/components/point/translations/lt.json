@@ -1,0 +1,31 @@
+{
+    "config": {
+        "abort": {
+            "already_setup": "Jau sukonfig\u016bruota. Galima tik viena konfig\u016bracija.",
+            "authorize_url_timeout": "Baig\u0117si skirtasis laikas generuojant \u012fgaliojimo URL.",
+            "external_setup": "Ta\u0161kas s\u0117kmingai sukonfig\u016bruotas i\u0161 kito srauto.",
+            "no_flows": "Komponentas nesukonfig\u016bruotas. Pra\u0161ome vadovautis dokumentacija.",
+            "unknown_authorize_url_generation": "Ne\u017einoma klaida generuojant autorizavimo URL."
+        },
+        "create_entry": {
+            "default": "S\u0117kmingai autentifikuota"
+        },
+        "error": {
+            "follow_link": "Sekite nuorod\u0105 ir patvirtinkite savo tapatyb\u0119 prie\u0161 paspausdami Pateikti",
+            "no_token": "Neteisingas prieigos raktas"
+        },
+        "step": {
+            "auth": {
+                "description": "Spustel\u0117kite toliau pateikt\u0105 nuorod\u0105 ir **Priimkite** prieig\u0105 prie savo Minut paskyros, tada gr\u012f\u017ekite ir toliau paspauskite **Pateikti**. \n\n [Nuoroda]( {authorization_url} )",
+                "title": "Autentifikuoti ta\u0161k\u0105"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Teik\u0117jas"
+                },
+                "description": "Ar norite prad\u0117ti s\u0105rank\u0105?",
+                "title": "Pasirinkite autentifikavimo metod\u0105"
+            }
+        }
+    }
+}

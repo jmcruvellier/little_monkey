@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5e33\u865f\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210"
+        },
+        "error": {
+            "invalid_credentials": "\u8eab\u4efd\u9a57\u8b49\u7121\u6548",
+            "unknown": "\u672a\u9810\u671f\u932f\u8aa4"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u91d1\u9470",
+                    "api_user": "Habitica \u4e4b API \u4f7f\u7528\u8005 ID",
+                    "name": "\u8986\u5beb Habitica \u4f7f\u7528\u8005\u540d\u7a31\u3001\u7528\u4ee5\u670d\u52d9\u547c\u53eb",
+                    "url": "\u7db2\u5740"
+                },
+                "description": "\u9023\u7dda\u81f3 Habitica \u8a2d\u5b9a\u6a94\u4ee5\u4f9b\u76e3\u63a7\u500b\u4eba\u8a2d\u5b9a\u8207\u4efb\u52d9\u3002\u6ce8\u610f\uff1a\u5fc5\u9808\u7531 https://habitica.com/user/settings/api \u53d6\u5f97 api_id \u8207 api_key"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "\u547c\u53eb Habitica API\u3002",
+            "fields": {
+                "args": {
+                    "description": "\u4efb\u4f55\u5176\u4ed6 JSON \u6216 URL \u53c3\u6578\u3002\u8acb\u53c3\u95b1\u8def\u5f91\u4e2d\u63d0\u5230\u7684 apidoc\u3002\u7bc4\u4f8b\u4f7f\u7528\u76f8\u540c\u7684 API \u7bc0\u9ede\u3002",
+                    "name": "\u53c3\u6578"
+                },
+                "name": {
+                    "description": "\u8981\u547c\u53eb\u7684 Habitica \u4f7f\u7528\u8005\u540d\u7a31\u3002",
+                    "name": "\u540d\u7a31"
+                },
+                "path": {
+                    "description": "\u4f86\u81ea API \u7db2\u5740\u9805\u76ee\u3001\u4ee5\u9644\u52a0\u5728\u7d50\u5c3e\u65b9\u5f0f\u7684\u683c\u5f0f\u9663\u5217\u3002\u8acb\u53c3\u95b1 https://habitica.com/apidoc/. Example uses https://habitica.com/apidoc/#api-Task-CreateUserTasks.",
+                    "name": "\u8def\u5f91"
+                }
+            },
+            "name": "API \u540d\u7a31"
+        }
+    }
+}

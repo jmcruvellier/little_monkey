@@ -1,0 +1,27 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "codelock": "code lock code ontvangen",
+            "fingerprint": "vingerafdruk code ontvangen",
+            "send_keys": "stuur sleutels ontvangen",
+            "transmitter": "zendercode ontvangen",
+            "transponder": "transpondercode ontvangen"
+        }
+    },
+    "services": {
+        "output_abs": {
+            "fields": {
+                "brightness": {
+                    "name": "Helderheid"
+                }
+            }
+        },
+        "output_rel": {
+            "fields": {
+                "brightness": {
+                    "name": "Helderheid"
+                }
+            }
+        }
+    }
+}

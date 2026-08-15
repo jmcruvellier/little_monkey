@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Us\u0142uga {domain}.{service} wywo\u0142a\u0142a us\u0142ug\u0119 {child_domain}.{child_service}, kt\u00f3ra nie zosta\u0142a znaleziona."
+        }
+    }
+}

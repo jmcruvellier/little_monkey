@@ -1,0 +1,9 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u914d\u7f6e",
+            "no_devices_found": "\u7f51\u7edc\u4e0a\u672a\u53d1\u73b0\u8bbe\u5907",
+            "not_supported": "\u8bbe\u5907\u4e0d\u652f\u6301"
+        }
+    }
+}

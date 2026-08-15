@@ -1,0 +1,33 @@
+{
+    "config": {
+        "abort": {
+            "authorize_url_timeout": "\u751f\u6210\u6388\u6743 URL \u8d85\u65f6\u3002",
+            "missing_configuration": "Spotify \u96c6\u6210\u672a\u914d\u7f6e \u3002\u8bf7\u9075\u5faa\u6587\u6863\u914d\u7f6e\u3002",
+            "no_url_available": "\u6ca1\u6709\u53ef\u7528\u7684 URL\u3002\u6709\u5173\u6b64\u9519\u8bef\u7684\u4fe1\u606f\uff0c\u8bf7[\u68c0\u67e5\u5e2e\u52a9\u90e8\u5206]({docs_url})",
+            "reauth_account_mismatch": "\u5df2\u9a8c\u8bc1\u7684 Spotify \u8d26\u53f7\u4e0e\u9700\u8981\u91cd\u65b0\u9a8c\u8bc1\u7684\u8d26\u53f7\u4e0d\u5339\u914d\u3002"
+        },
+        "create_entry": {
+            "default": "\u5df2\u6210\u529f\u901a\u8fc7 Spotify \u8fdb\u884c\u8eab\u4efd\u9a8c\u8bc1\u3002"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "\u8bf7\u9009\u62e9\u8ba4\u8bc1\u65b9\u6cd5"
+            },
+            "reauth_confirm": {
+                "description": "Spotify \u96c6\u6210\u9700\u8981\u91cd\u65b0\u9a8c\u8bc1\u8d26\u53f7\uff1a {account}",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            }
+        }
+    },
+    "issues": {
+        "removed_yaml": {
+            "description": "\u4f7f\u7528 YAML \u914d\u7f6e Spotify \u5df2\u88ab\u5220\u9664\u3002 \n\n Home Assistant \u4e0d\u4f7f\u7528\u60a8\u73b0\u6709\u7684 YAML \u914d\u7f6e\u3002 \n\n\u4ece configuration.yaml \u6587\u4ef6\u4e2d\u5220\u9664 YAML \u914d\u7f6e\u5e76\u91cd\u65b0\u542f\u52a8 Home Assistant \u4ee5\u89e3\u51b3\u6b64\u95ee\u9898\u3002",
+            "title": "Spotify YAML \u914d\u7f6e\u5df2\u88ab\u5220\u9664"
+        }
+    },
+    "system_health": {
+        "info": {
+            "api_endpoint_reachable": "\u53ef\u8bbf\u95ee Spotify API"
+        }
+    }
+}

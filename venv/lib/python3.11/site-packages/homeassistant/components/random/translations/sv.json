@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "name": "Namn"
+                },
+                "title": "Slumpm\u00e4ssig bin\u00e4r sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "Namn",
+                    "unit_of_measurement": "M\u00e5ttenhet"
+                },
+                "title": "Slumpm\u00e4ssig sensor"
+            },
+            "user": {
+                "description": "Denna hj\u00e4lpare l\u00e5ter dig skapa en hj\u00e4lpare som genererar ett slumpm\u00e4ssigt v\u00e4rde.",
+                "menu_options": {
+                    "binary_sensor": "Slumpm\u00e4ssig bin\u00e4r sensor",
+                    "sensor": "Slumpm\u00e4ssig sensor"
+                },
+                "title": "Slumpm\u00e4ssig hj\u00e4lpare"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Denna hj\u00e4lpare har inga alternativ att konfigurera.",
+                "title": "Slumpm\u00e4ssig bin\u00e4r sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Enhetsklass",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "M\u00e5ttenhet"
+                },
+                "title": "Slumpm\u00e4ssig sensor"
+            }
+        }
+    }
+}

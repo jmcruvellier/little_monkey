@@ -1,0 +1,18 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "\u0397\u03bc\u03b5\u03c1\u03bf\u03bc\u03b7\u03bd\u03af\u03b1/\u038f\u03c1\u03b1"
+        }
+    },
+    "services": {
+        "set_value": {
+            "fields": {
+                "datetime": {
+                    "name": "\u0397\u03bc\u03b5\u03c1\u03bf\u03bc\u03b7\u03bd\u03af\u03b1 & \u03ce\u03c1\u03b1"
+                }
+            },
+            "name": "\u039f\u03c1\u03b9\u03c3\u03bc\u03cc\u03c2 \u03b7\u03bc\u03b5\u03c1\u03bf\u03bc\u03b7\u03bd\u03af\u03b1\u03c2/\u03ce\u03c1\u03b1\u03c2"
+        }
+    },
+    "title": "\u0397\u03bc\u03b5\u03c1\u03bf\u03bc\u03b7\u03bd\u03af\u03b1/\u038f\u03c1\u03b1"
+}

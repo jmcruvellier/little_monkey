@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "no_devices_found": "Nem tal\u00e1lhat\u00f3 eszk\u00f6z a h\u00e1l\u00f3zaton"
+        },
+        "error": {
+            "invalid_auth": "\u00c9rv\u00e9nytelen hiteles\u00edt\u00e9s",
+            "no_devices_found": "Nem tal\u00e1lhat\u00f3 eszk\u00f6z. Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy legal\u00e1bb egy Anova eszk\u00f6z online van.",
+            "unknown": "V\u00e1ratlan hiba"
+        },
+        "step": {
+            "confirm": {
+                "description": "El szeretn\u00e9 kezdeni a be\u00e1ll\u00edt\u00e1st?"
+            },
+            "user": {
+                "data": {
+                    "password": "Jelsz\u00f3",
+                    "username": "E-mail"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "cook_time": {
+                "name": "F\u0151z\u00e9si id\u0151"
+            },
+            "cook_time_remaining": {
+                "name": "H\u00e1tral\u00e9v\u0151 f\u0151z\u00e9si id\u0151"
+            },
+            "heater_temperature": {
+                "name": "Felf\u0171t\u00e9s h\u0151m\u00e9rs\u00e9klete"
+            },
+            "mode": {
+                "name": "M\u00f3d"
+            },
+            "state": {
+                "name": "\u00c1llapot"
+            },
+            "target_temperature": {
+                "name": "C\u00e9lh\u0151m\u00e9rs\u00e9klet"
+            },
+            "triac_temperature": {
+                "name": "Triac h\u0151m\u00e9rs\u00e9klet"
+            },
+            "water_temperature": {
+                "name": "V\u00edzh\u0151m\u00e9rs\u00e9klet"
+            }
+        }
+    }
+}

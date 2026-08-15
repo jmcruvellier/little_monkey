@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u30a2\u30ab\u30a6\u30f3\u30c8\u306f\u3059\u3067\u306b\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u307e\u3059",
+            "external_error": "\u5225\u306e\u30d5\u30ed\u30fc\u3067\u4f8b\u5916\u304c\u767a\u751f\u3057\u307e\u3057\u305f\u3002",
+            "external_setup": "Logi Circle\u306f\u5225\u306e\u30d5\u30ed\u30fc\u304b\u3089\u6b63\u5e38\u306b\u69cb\u6210\u3055\u308c\u307e\u3057\u305f\u3002",
+            "missing_configuration": "\u30b3\u30f3\u30dd\u30fc\u30cd\u30f3\u30c8\u304c\u8a2d\u5b9a\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u306b\u5f93\u3063\u3066\u304f\u3060\u3055\u3044\u3002"
+        },
+        "error": {
+            "authorize_url_timeout": "\u8a8d\u8a3cURL\u306e\u751f\u6210\u304c\u30bf\u30a4\u30e0\u30a2\u30a6\u30c8\u3057\u307e\u3057\u305f\u3002",
+            "follow_link": "\u9001\u4fe1(submit) \u3092\u62bc\u3059\u524d\u306b\u3001\u30ea\u30f3\u30af\u3092\u305f\u3069\u3063\u3066\u8a8d\u8a3c\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+            "invalid_auth": "\u7121\u52b9\u306a\u8a8d\u8a3c"
+        },
+        "step": {
+            "auth": {
+                "description": "\u4ee5\u4e0b\u306e\u30ea\u30f3\u30af\u3092\u30af\u30ea\u30c3\u30af\u3057\u3066\u3001Logi Circle\u30a2\u30ab\u30a6\u30f3\u30c8\u3078\u306e\u30a2\u30af\u30bb\u30b9\u3092 **\u627f\u8a8d(Accept)** \u3057\u3066\u304b\u3089\u3001\u623b\u3063\u3066\u304d\u3066\u4ee5\u4e0b\u306e **\u9001\u4fe1(submit)** \u3092\u62bc\u3057\u3066\u304f\u3060\u3055\u3044\u3002\n\n[\u30ea\u30f3\u30af]({authorization_url})",
+                "title": "Logi Circle\u3067\u8a8d\u8a3c\u3059\u308b"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "\u30d7\u30ed\u30d0\u30a4\u30c0\u30fc"
+                },
+                "description": "Logi Circle\u3067\u8a8d\u8a3c\u3059\u308b\u305f\u3081\u306e\u8a8d\u8a3c\u30d7\u30ed\u30d0\u30a4\u30c0\u30fc\u3092\u9078\u629e\u3057\u307e\u3059\u3002",
+                "title": "\u8a8d\u8a3c\u30d7\u30ed\u30d0\u30a4\u30c0\u30fc"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "\u6700\u5f8c\u306e\u30a2\u30af\u30c6\u30a3\u30d3\u30c6\u30a3"
+            },
+            "recording_mode": {
+                "name": "\u9332\u97f3\u30e2\u30fc\u30c9"
+            },
+            "streaming_mode": {
+                "name": "\u30b9\u30c8\u30ea\u30fc\u30df\u30f3\u30b0\u30e2\u30fc\u30c9"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi\u4fe1\u53f7\u30ab\u30c6\u30b4\u30ea"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi\u4fe1\u53f7\u5f37\u5ea6"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Logitech \u306f 2022 \u5e74 5 \u6708\u306b Logi Circle API \u3078\u306e\u30a2\u30af\u30bb\u30b9\u7533\u8acb\u306e\u53d7\u3051\u4ed8\u3051\u3092\u505c\u6b62\u3057\u3001Logi Circle \u306e\u7d71\u5408\u306f\u30db\u30fc\u30e0 \u30a2\u30b7\u30b9\u30bf\u30f3\u30c8\u304b\u3089\u524a\u9664\u3055\u308c\u307e\u3059\u3002 \n\n\u3053\u306e\u554f\u984c\u3092\u89e3\u6c7a\u3059\u308b\u306b\u306f\u3001\u30db\u30fc\u30e0 \u30a2\u30b7\u30b9\u30bf\u30f3\u30c8\u306e\u8a2d\u5b9a\u304b\u3089\u7d71\u5408\u30a8\u30f3\u30c8\u30ea\u3092\u524a\u9664\u3057\u3066\u304f\u3060\u3055\u3044\u3002 [\u65e2\u5b58\u306e Logi Circle \u7d71\u5408\u30a8\u30f3\u30c8\u30ea\u3092\u8868\u793a\u3059\u308b\u306b\u306f\u3001\u3053\u3053\u3092\u30af\u30ea\u30c3\u30af\u3057\u3066\u304f\u3060\u3055\u3044]( {entries} )\u3002",
+            "title": "Logi Circle \u7d71\u5408\u306f\u975e\u63a8\u5968\u3068\u306a\u3063\u3066\u304a\u308a\u3001\u524a\u9664\u3055\u308c\u308b\u4e88\u5b9a\u3067\u3059"
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "\u30ab\u30e1\u30e9\u306e\u30e9\u30a4\u30d6\u30b9\u30c8\u30ea\u30fc\u30e0\u304b\u3089\u30d3\u30c7\u30aa\u9332\u753b\u3092\u53d6\u5f97\u3057\u307e\u3059\u3002",
+            "fields": {
+                "duration": {
+                    "description": "\u9332\u97f3\u671f\u9593\u3002",
+                    "name": "\u671f\u9593"
+                },
+                "entity_id": {
+                    "description": "\u9332\u97f3\u3092\u4f5c\u6210\u3059\u308b\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u306e\u540d\u524d\u3002",
+                    "name": "\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3"
+                },
+                "filename": {
+                    "description": "\u30d5\u30a1\u30a4\u30eb\u540d\u306e\u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u3002\u5909\u6570\u306fentity_id\u3067\u3059\u3002",
+                    "name": "\u30d5\u30a1\u30a4\u30eb\u540d"
+                }
+            },
+            "name": "\u30e9\u30a4\u30d6\u30b9\u30c8\u30ea\u30fc\u30e0\u306e\u8a18\u9332"
+        },
+        "livestream_snapshot": {
+            "description": "\u30ab\u30e1\u30e9\u306e\u30e9\u30a4\u30d6\u30b9\u30c8\u30ea\u30fc\u30e0\u304b\u3089\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\u3092\u53d6\u5f97\u3057\u307e\u3059\u3002\u5fc5\u8981\u306b\u5fdc\u3058\u3066\u30ab\u30e1\u30e9\u3092\u30b9\u30ea\u30fc\u30d7\u304b\u3089\u5fa9\u5e30\u3055\u305b\u307e\u3059\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8\u306e\u4f5c\u6210\u5143\u3068\u306a\u308b\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u306e\u540d\u524d\u3002",
+                    "name": "\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3"
+                },
+                "filename": {
+                    "description": "\u30d5\u30a1\u30a4\u30eb\u540d\u306e\u30c6\u30f3\u30d7\u30ec\u30fc\u30c8\u3002\u5909\u6570\u306fentity_id\u3067\u3059\u3002",
+                    "name": "\u30d5\u30a1\u30a4\u30eb\u540d"
+                }
+            },
+            "name": "\u30e9\u30a4\u30d6\u30b9\u30c8\u30ea\u30fc\u30e0\u306e\u30b9\u30ca\u30c3\u30d7\u30b7\u30e7\u30c3\u30c8"
+        },
+        "set_config": {
+            "description": "\u69cb\u6210\u30d7\u30ed\u30d1\u30c6\u30a3\u3092\u8a2d\u5b9a\u3057\u307e\u3059\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u64cd\u4f5c\u30e2\u30fc\u30c9\u3092\u9069\u7528\u3059\u308b\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3\u306e\u540d\u524d\u3002",
+                    "name": "\u30a8\u30f3\u30c6\u30a3\u30c6\u30a3"
+                },
+                "mode": {
+                    "description": "\u52d5\u4f5c\u30e2\u30fc\u30c9\u3002\u8a31\u53ef\u3055\u308c\u308b\u5024: LED\u3001RECORDING_MODE\u3002",
+                    "name": "\u30e2\u30fc\u30c9"
+                },
+                "value": {
+                    "description": "\u64cd\u4f5c\u5024\u3002",
+                    "name": "\u5024"
+                }
+            },
+            "name": "\u69cb\u6210\u3092\u8a2d\u5b9a\u3059\u308b"
+        }
+    }
+}

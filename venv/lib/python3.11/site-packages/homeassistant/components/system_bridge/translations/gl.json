@@ -1,0 +1,17 @@
+{
+    "entity": {
+        "media_player": {
+            "media": {
+                "name": "Medio"
+            }
+        },
+        "sensor": {
+            "battery_time_remaining": {
+                "name": "Tempo restante de bater\u00eda"
+            },
+            "processes": {
+                "name": "Procesos"
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "config": {
+        "step": {
+            "reauth_confirm": {
+                "title": "Autentica nuovamente l'integrazione {name}"
+            }
+        }
+    }
+}

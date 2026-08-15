@@ -1,0 +1,18 @@
+{
+    "services": {
+        "play_media": {
+            "description": "Atsisiun\u010dia fail\u0105 i\u0161 nurodyto URL.",
+            "fields": {
+                "media_content_id": {
+                    "description": "Leid\u017eiamo turinio ID. Priklauso nuo platformos.",
+                    "name": "Medijos turinio ID"
+                },
+                "media_content_type": {
+                    "description": "Grojamo turinio tipas. Turi b\u016bti vienas i\u0161 \u0161i\u0173 variant\u0173: MUZIKA, TV LAIDOS, VIDEO, EPIZODAS, KANALAS arba MUZIKOS GROJARA\u0160TIS.",
+                    "name": "Medijos turinio tipas"
+                }
+            },
+            "name": "Leisti medij\u0105"
+        }
+    }
+}

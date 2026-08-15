@@ -1,0 +1,64 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "invalid_auth": "Virheellinen todennus",
+            "unknown": "Odottamaton virhe"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-avain"
+                }
+            }
+        }
+    },
+    "issues": {
+        "image_size_deprecated_format": {
+            "description": "OpenAI k\u00e4ytt\u00e4\u00e4 nyt Dall-E 3:a kuvien luomiseen kutsuttaessa `openai_conversation.generate_image`, joka tukee eri kokoja. Kelvolliset arvot ovat nyt \"1024x1024\", \"1024x1792\", \"1792x1024\". Vanhat arvot \"256\", \"512\" ja \"1024\" tulkitaan t\u00e4ll\u00e4 hetkell\u00e4 arvoksi \"1024x1024\".\nP\u00e4ivit\u00e4 skriptisi tai automaatiosi uusilla parametreilla.",
+            "title": "Poistunut kuvien luontipalvelun kokomuoto"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Vastauksessa palautettavien merkkien enimm\u00e4ism\u00e4\u00e4r\u00e4",
+                    "model": "T\u00e4ydennysmalli",
+                    "prompt": "Kehotusmalli",
+                    "temperature": "L\u00e4mp\u00f6tila",
+                    "top_p": "Yl\u00e4 P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_image": {
+            "description": "Muuta kehote kuvaksi",
+            "fields": {
+                "config_entry": {
+                    "description": "T\u00e4m\u00e4n palvelun asetus",
+                    "name": "Asetus"
+                },
+                "prompt": {
+                    "description": "Teksti, joka muutetaan kuvaksi",
+                    "example": "Kuva koirasta",
+                    "name": "Kehote"
+                },
+                "quality": {
+                    "description": "Luotavan kuvan laatu",
+                    "name": "Laatu"
+                },
+                "size": {
+                    "description": "Luotavan kuvan koko",
+                    "name": "Koko"
+                },
+                "style": {
+                    "description": "Luodun kuvan tyyli",
+                    "name": "Tyyli"
+                }
+            },
+            "name": "Luo kuva"
+        }
+    }
+}

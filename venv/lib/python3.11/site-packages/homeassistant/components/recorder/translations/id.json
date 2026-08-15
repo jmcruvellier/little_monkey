@@ -1,0 +1,63 @@
+{
+    "issues": {
+        "maria_db_range_index_regression": {
+            "description": "Versi MariaDB yang lebih lama mengalami penurunan kinerja yang signifikan saat mengambil data riwayat atau membersihkan basis data. Perbarui ke MariaDB versi {min_version} atau yang lebih baru dan mulai ulang Home Assistant. Jika Anda menggunakan add-on inti MariaDB, pastikan untuk memperbaruinya ke versi terbaru.",
+            "title": "Perbarui MariaDB ke {min_version} atau yang lebih baru untuk menyelesaikan masalah kinerja yang signifikan"
+        }
+    },
+    "services": {
+        "disable": {
+            "description": "Menghentikan perekaman peristiwa dan perubahan status.",
+            "name": "Nonaktifkan"
+        },
+        "enable": {
+            "description": "Memulai perekaman peristiwa dan perubahan status.",
+            "name": "Aktifkan"
+        },
+        "purge": {
+            "description": "Memulai tugas pembersihan - untuk membersihkan data lama dari basis data Anda.",
+            "fields": {
+                "apply_filter": {
+                    "description": "Menerapkan filter `entity_id` dan `event_type` sebagai tambahan dari pembersihan berbasis waktu.",
+                    "name": "Terapkan filter"
+                },
+                "keep_days": {
+                    "description": "Jumlah hari untuk menyimpan data dalam database. Mulai hari ini, dihitung mundur. Nilai `7` berarti semua data yang lebih tua dari seminggu akan dihapus.",
+                    "name": "Hari untuk disimpan"
+                },
+                "repack": {
+                    "description": "Mencoba menghemat ruang disk dengan menulis ulang seluruh file database.",
+                    "name": "Kemas ulang"
+                }
+            },
+            "name": "Pembersihan"
+        },
+        "purge_entities": {
+            "description": "Memulai tugas pembersihan untuk menghapus data yang terkait dengan entitas tertentu dari basis data Anda.",
+            "fields": {
+                "domains": {
+                    "description": "Daftar domain yang datanya perlu dihapus dari database perekam.",
+                    "name": "Domain yang akan dihapus"
+                },
+                "entity_globs": {
+                    "description": "Daftar pola glob yang digunakan untuk memilih entitas yang datanya akan dihapus dari database perekam.",
+                    "name": "Glob entitas untuk dihapus"
+                },
+                "keep_days": {
+                    "description": "Jumlah hari untuk menyimpan data untuk baris yang cocok dengan filter. Mulai hari ini, dihitung mundur. Nilai `7` berarti semua yang lebih tua dari seminggu akan dihapus. Nilai default 0 hari akan menghapus semua baris yang cocok dengan segera.",
+                    "name": "Hari untuk disimpan"
+                }
+            },
+            "name": "Bersihkan entitas"
+        }
+    },
+    "system_health": {
+        "info": {
+            "current_recorder_run": "Waktu Mulai Jalankan Saat Ini",
+            "database_engine": "Mesin Basis Data",
+            "database_version": "Versi Basis Data",
+            "estimated_db_size": "Perkiraan Ukuran Basis Data (MiB)",
+            "oldest_recorder_run": "Waktu Mulai Lari Terlama"
+        }
+    }
+}

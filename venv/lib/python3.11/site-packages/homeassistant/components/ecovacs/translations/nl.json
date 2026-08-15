@@ -1,0 +1,19 @@
+{
+    "entity": {
+        "vacuum": {
+            "vacuum": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "normal": "Normaal",
+                            "quiet": "Stil"
+                        }
+                    },
+                    "rooms": {
+                        "name": "Kamers"
+                    }
+                }
+            }
+        }
+    }
+}

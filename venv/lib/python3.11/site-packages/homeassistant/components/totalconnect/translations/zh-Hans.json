@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8d26\u53f7\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "no_locations": "\u8be5\u7528\u6237\u6ca1\u6709\u53ef\u7528\u7684\u4f4d\u7f6e\uff0c\u8bf7\u68c0\u67e5 TotalConnect \u8bbe\u7f6e",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "usercode": "\u7528\u6237\u4ee3\u7801\u5728\u6b64\u4f4d\u7f6e\u5bf9\u8be5\u7528\u6237\u65e0\u6548"
+        },
+        "step": {
+            "locations": {
+                "data": {
+                    "usercode": "\u7528\u6237\u7801"
+                },
+                "description": "\u8f93\u5165\u8be5\u7528\u6237\u5728\u4f4d\u7f6e {location_id} \u7684\u7528\u6237\u4ee3\u7801",
+                "title": "\u4f4d\u7f6e\u7528\u6237\u4ee3\u7801"
+            },
+            "reauth_confirm": {
+                "description": "Total Connect \u9700\u8981\u91cd\u65b0\u9a8c\u8bc1\u60a8\u7684\u8d26\u53f7",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "services": {
+        "arm_away_instant": {
+            "description": "\u7acb\u5373\u79bb\u5bb6\u8b66\u6212\uff0c\u65e0\u7b49\u5f85\u5ef6\u8fdf\u3002",
+            "name": "\u7acb\u5373\u79bb\u5bb6\u8b66\u6212"
+        },
+        "arm_home_instant": {
+            "description": "\u7acb\u5373\u5728\u5bb6\u8b66\u6212\uff0c\u65e0\u7b49\u5f85\u5ef6\u8fdf\u3002",
+            "name": "\u7acb\u5373\u5728\u5bb6\u8b66\u6212"
+        }
+    }
+}

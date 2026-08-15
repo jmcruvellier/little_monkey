@@ -1,0 +1,43 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat",
+            "cannot_connect": "Ha fallat la connexi\u00f3"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Amfitri\u00f3"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "energy_total": {
+                "name": "Consum total d'energia"
+            },
+            "ssid": {
+                "name": "Nom de la xarxa Wi-Fi"
+            },
+            "status": {
+                "name": "Estat",
+                "state": {
+                    "plugged_charging": "Endollat, carregant",
+                    "plugged_waiting": "Endollat, esperant",
+                    "unplugged": "Desendollat"
+                }
+            },
+            "voltage_in": {
+                "name": "Tensi\u00f3 d'entrada"
+            },
+            "voltage_out": {
+                "name": "Tensi\u00f3 de sortida"
+            }
+        }
+    }
+}

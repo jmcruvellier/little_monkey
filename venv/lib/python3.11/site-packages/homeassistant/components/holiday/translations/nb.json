@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Allerede konfigurert. Kun en enkelt konfigurasjon per land/provins-kombinasjon er mulig."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Provins"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Land"
+                }
+            }
+        }
+    },
+    "title": "Ferie"
+}

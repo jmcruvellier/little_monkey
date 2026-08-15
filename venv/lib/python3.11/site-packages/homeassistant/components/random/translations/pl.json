@@ -1,0 +1,16 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "name": "Nazwa"
+                }
+            },
+            "sensor": {
+                "data": {
+                    "name": "Nazwa"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "config": {
+        "create_entry": {
+            "default": "Om het instellen van de integratie te voltooien, gebruikt u de Ecowitt-app (op uw telefoon) of open je de Ecowitt WebUI in een browser op het IP-adres van het station. \n\nKies je station - > Menu Overige - > DIY Upload Servers. Klik op Volgende en selecteer 'Aangepast' \n\n - Server-IP: ` {server} `\n - Pad: ` {path} `\n - Poort: ` {port} ` \n\nKlik op 'Opslaan'."
+        },
+        "step": {
+            "user": {
+                "description": "Weet u zeker dat u Ecowitt wilt instellen?"
+            }
+        }
+    }
+}

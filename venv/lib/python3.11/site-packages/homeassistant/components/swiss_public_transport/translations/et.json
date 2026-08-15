@@ -1,0 +1,46 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Teenus on juba seadistatud",
+            "bad_config": "Taotlus eba\u00f5nnestus vigase konfiguratsiooni t\u00f5ttu: kontrolli saidilt [stationboard]({stationboard_url}), kas jaamade nimed on kehtivad",
+            "cannot_connect": "\u00dchendus serveriga nurjus",
+            "unknown": "Python-opendata-transport t\u00f5statas tundmatu vea."
+        },
+        "error": {
+            "bad_config": "Taotlus eba\u00f5nnestus vigase konfiguratsiooni t\u00f5ttu: kontrolli saidilt [stationboard]({stationboard_url}), kas  jaamade nimed on kehtivad",
+            "cannot_connect": "\u00dchendus serveriga nurjus",
+            "unknown": "Python-opendata-transport t\u00f5statas tundmatu vea."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "from": "L\u00e4htejaam",
+                    "to": "L\u00f5ppjaam"
+                },
+                "description": "Esita oma \u00fchenduse algus- ja l\u00f5ppjaam \n\n Kontrolli kehtivaid jaamu siit: [stationboard]({stationboard_url})",
+                "title": "\u0160veitsi \u00fchistransport"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "departure": {
+                "name": "V\u00e4ljumisaeg"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue_bad_config": {
+            "description": "\u0160veitsi \u00fchistranspordi konfigureerimine YAML-i abil on eemaldatud, kuid teie YAML-i konfiguratsioonis oli imporditud halb konfiguratsioon..\n\nKontrolli siin kehtivate jaamade kohta: [stationboard]({stationboard_url}).",
+            "title": "\u0160veitsi \u00fchistranspordi YAML-i konfiguratsiooni importimise taotlus nurjus halva konfiguratsiooni t\u00f5ttu"
+        },
+        "deprecated_yaml_import_issue_cannot_connect": {
+            "description": "\u0160veitsi \u00fchistranspordi seadistamine YAML-i abil eemaldatakse, kuid teie YAML-i konfiguratsiooni importimisel ilmnes \u00fchenduse viga. \n\n Veendu, et koduabiline saaks \u00fchendust [opendata serveriga] ({opendata_url}). Kui server on maas, proovige hiljem uuesti.",
+            "title": "\u0160veitsi \u00fchistranspordi YAML-i konfiguratsiooni import ei saa serveriga \u00fchendust luua"
+        },
+        "deprecated_yaml_import_issue_unknown": {
+            "description": "\u0160veitsi \u00fchistranspordi konfigureerimine YAML-i abil eemaldatakse, kuid YAML-i konfiguratsiooni importimisel ilmnes tundmatu viga.\n\nKontrollige oma konfiguratsiooni v\u00f5i vaadake integratsiooni dokumentatsiooni.",
+            "title": "\u0160veitsi \u00fchistranspordi YAML-i konfiguratsiooni import nurjus tundmatu vea t\u00f5ttu, mille p\u00f5hjustas python-opendata-transport"
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "Avansert niv\u00e5 for advarsel"
+            },
+            "current_warning_level": {
+                "name": "Gjeldende niv\u00e5 for advarsel"
+            }
+        }
+    }
+}

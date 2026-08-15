@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Poloha je ji\u017e nastavena"
+        },
+        "error": {
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "destination": "C\u00edl",
+                    "name": "N\u00e1zev",
+                    "origin": "Za\u010d\u00e1tek",
+                    "region": "Oblast"
+                },
+                "description": "Pro \"Za\u010d\u00e1tek\" a \"C\u00edl\" zadejte adresu nebo GPS sou\u0159adnice m\u00edsta (GPS sou\u0159adnice mus\u00ed b\u00fdt odd\u011bleny \u010d\u00e1rkou). M\u016f\u017eete tak\u00e9 zadat ID entity, kter\u00e9 poskytuje tyto informace ve sv\u00e9m stavu, ID entity s atributy zem\u011bpisn\u00e9 \u0161\u00ed\u0159ky a d\u00e9lky nebo popisn\u00fd n\u00e1zev z\u00f3ny."
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "avoid_ferries": "Vyhnout se trajekt\u016fm?",
+                    "avoid_subscription_roads": "Vyhnout se d\u00e1nic\u00edm?",
+                    "avoid_toll_roads": "Vyhnout se zpoplatn\u011bn\u00fdm silnic\u00edm?",
+                    "excl_filter": "substring NOT v popisu vybran\u00e9 trasy",
+                    "incl_filter": "substring v popisu vybran\u00e9 trasy",
+                    "realtime": "Doba j\u00edzdy v re\u00e1ln\u00e9m \u010dase?",
+                    "units": "Jednotky",
+                    "vehicle_type": "Typ vozidla"
+                },
+                "description": "Vstupy \"substring\" V\u00e1m umo\u017en\u00ed p\u0159inutit integraci pou\u017e\u00edt konkr\u00e9tn\u00ed trasu nebo se vyhnout konkr\u00e9tn\u00ed trase p\u0159i v\u00fdpo\u010dtu cestov\u00e1n\u00ed v \u010dase."
+            }
+        }
+    },
+    "selector": {
+        "region": {
+            "options": {
+                "au": "Austr\u00e1lie",
+                "eu": "Evropa",
+                "il": "Izrael",
+                "na": "Severn\u00ed Amerika",
+                "us": "USA"
+            }
+        },
+        "units": {
+            "options": {
+                "imperial": "Imperi\u00e1ln\u00ed syst\u00e9m",
+                "metric": "Metrick\u00fd syst\u00e9m"
+            }
+        },
+        "vehicle_type": {
+            "options": {
+                "car": "Vozidlo",
+                "motorcycle": "Motocykl",
+                "taxi": "Taxi"
+            }
+        }
+    },
+    "title": "Doba j\u00edzdy Waze"
+}

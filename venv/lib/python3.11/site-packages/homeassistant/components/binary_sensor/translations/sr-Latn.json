@@ -1,0 +1,104 @@
+{
+    "entity_component": {
+        "_": {
+            "state": {
+                "off": "Isklju\u010den",
+                "on": "Uklju\u010den"
+            }
+        },
+        "battery": {
+            "state": {
+                "off": "Normalno",
+                "on": "Nizak"
+            }
+        },
+        "battery_charging": {
+            "state": {
+                "off": "Ne puni se",
+                "on": "Punjenje"
+            }
+        },
+        "carbon_monoxide": {
+            "state": {
+                "off": "Normalno",
+                "on": "Detektovan"
+            }
+        },
+        "door": {
+            "name": "Vrata",
+            "state": {
+                "off": "Zatvorena",
+                "on": "Otvorena"
+            }
+        },
+        "garage_door": {
+            "name": "Gara\u017ena vrata",
+            "state": {
+                "off": "Zatvorena",
+                "on": "Otvorena"
+            }
+        },
+        "gas": {
+            "name": "Gas",
+            "state": {
+                "off": "Normalno",
+                "on": "Detektovan"
+            }
+        },
+        "heat": {
+            "name": "Grejanje"
+        },
+        "light": {
+            "name": "Svetlo"
+        },
+        "motion": {
+            "state": {
+                "off": "Normalno",
+                "on": "Detektovano"
+            }
+        },
+        "moving": {
+            "state": {
+                "on": "Kretanje"
+            }
+        },
+        "occupancy": {
+            "state": {
+                "on": "Detektovan"
+            }
+        },
+        "opening": {
+            "state": {
+                "off": "Zatvoren",
+                "on": "Otvoren"
+            }
+        },
+        "power": {
+            "state": {
+                "on": "Detektovano"
+            }
+        },
+        "smoke": {
+            "state": {
+                "on": "Detektovan"
+            }
+        },
+        "sound": {
+            "state": {
+                "on": "Detektovan"
+            }
+        },
+        "vibration": {
+            "state": {
+                "on": "Detektovana"
+            }
+        },
+        "window": {
+            "name": "Prozor",
+            "state": {
+                "off": "Zatvoren",
+                "on": "Otvoren"
+            }
+        }
+    }
+}

@@ -1,0 +1,8 @@
+{
+    "issues": {
+        "deprecated_integration": {
+            "description": "{integration_title} el lesz t\u00e1vol\u00edtva, mivel a `{mailbox}` platform elt\u00e1vol\u00edt\u00e1sa folyamatban van \u00e9s a(z) {integration_title} nem t\u00e1mogat m\u00e1s platformokat. T\u00e1vol\u00edtsa el a(z) `{domain}` konfigur\u00e1ci\u00f3t a configuration.yaml f\u00e1jlb\u00f3l \u00e9s ind\u00edtsa \u00fajra a Home Assistantot a probl\u00e9ma megold\u00e1s\u00e1hoz.",
+            "title": "A(z) {integration_title} elt\u00e1vol\u00edt\u00e1sa folyamatban van"
+        }
+    }
+}

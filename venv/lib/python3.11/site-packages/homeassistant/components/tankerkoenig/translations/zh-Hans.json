@@ -1,0 +1,47 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u5730\u70b9\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "no_stations": "\u627e\u4e0d\u5230\u8303\u56f4\u5185\u7684\u4efb\u4f55\u7ad9\u70b9\u3002"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5"
+                }
+            },
+            "select_station": {
+                "data": {
+                    "stations": "\u7ad9\u70b9"
+                },
+                "description": "\u5728\u534a\u5f84\u8303\u56f4\u5185\u627e\u5230 {stations_count} \u4e2a\u7ad9\u70b9",
+                "title": "\u9009\u62e9\u8981\u6dfb\u52a0\u7684\u7ad9\u70b9"
+            },
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "fuel_types": "\u71c3\u6599\u7c7b\u578b",
+                    "location": "\u5750\u6807",
+                    "name": "\u5730\u533a\u540d\u79f0",
+                    "radius": "\u641c\u7d22\u534a\u5f84",
+                    "stations": "\u989d\u5916\u7684\u52a0\u6cb9\u7ad9"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "show_on_map": "\u5728\u5730\u56fe\u4e0a\u663e\u793a\u7ad9\u70b9",
+                    "stations": "\u7ad9\u70b9"
+                },
+                "title": "Tankerkoenig \u9009\u9879"
+            }
+        }
+    }
+}

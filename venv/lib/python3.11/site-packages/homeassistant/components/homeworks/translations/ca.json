@@ -1,0 +1,46 @@
+{
+    "config": {
+        "error": {
+            "unknown_error": "Error inesperat"
+        },
+        "step": {
+            "import_controller_name": {
+                "data": {
+                    "name": "Nom del controlador"
+                }
+            },
+            "reconfigure": {
+                "data": {
+                    "host": "Amfitri\u00f3",
+                    "port": "Port"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "Amfitri\u00f3",
+                    "name": "Nom del controlador",
+                    "port": "Port"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "add_button": {
+                "data": {
+                    "name": "Nom"
+                }
+            },
+            "add_keypad": {
+                "data": {
+                    "name": "Nom"
+                }
+            },
+            "add_light": {
+                "data": {
+                    "name": "Nom"
+                }
+            }
+        }
+    }
+}

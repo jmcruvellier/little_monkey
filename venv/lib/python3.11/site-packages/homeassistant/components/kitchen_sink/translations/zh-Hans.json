@@ -1,0 +1,42 @@
+{
+    "issues": {
+        "bad_psu": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "\u6309\u201c\u63d0\u4ea4\u201d\u786e\u8ba4\u7535\u6e90\u5df2\u66f4\u6362",
+                        "title": "\u9700\u8981\u66f4\u6362\u7535\u6e90"
+                    }
+                }
+            },
+            "title": "\u7535\u6e90\u4e0d\u7a33\u5b9a"
+        },
+        "cold_tea": {
+            "fix_flow": {
+                "abort": {
+                    "not_tea_time": "\u76ee\u524d\u4e0d\u80fd\u91cd\u65b0\u52a0\u70ed\u8336"
+                }
+            },
+            "title": "\u8336\u51c9\u4e86"
+        },
+        "out_of_blinker_fluid": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "\u5f53\u8baf\u53f7\u5242\u91cd\u65b0\u586b\u5145\u540e\uff0c\u6309\u201c\u63d0\u4ea4\u201d",
+                        "title": "\u8baf\u53f7\u5242\u9700\u8981\u91cd\u65b0\u586b\u5145"
+                    }
+                }
+            },
+            "title": "\u8baf\u53f7\u5242\u5df2\u7a7a\uff0c\u9700\u8981\u91cd\u65b0\u586b\u5145"
+        },
+        "transmogrifier_deprecated": {
+            "description": "\u7531\u4e8e\u65b0 API \u4e2d\u7f3a\u4e4f\u53ef\u7528\u7684\u672c\u5730\u63a7\u5236\uff0ctransmogrifier \u7ec4\u4ef6\u73b0\u5df2\u5f03\u7528",
+            "title": "Transmogrifier \u7ec4\u4ef6\u5df2\u88ab\u5f03\u7528"
+        },
+        "unfixable_problem": {
+            "description": "\u8fd9\u4e2a\u95ee\u9898\u6c38\u8fdc\u4e0d\u4f1a\u653e\u5f03\u3002",
+            "title": "\u8fd9\u4e0d\u662f\u4e00\u4e2a\u53ef\u4ee5\u89e3\u51b3\u7684\u95ee\u9898"
+        }
+    }
+}

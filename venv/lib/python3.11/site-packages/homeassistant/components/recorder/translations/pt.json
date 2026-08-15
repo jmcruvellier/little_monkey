@@ -1,0 +1,22 @@
+{
+    "issues": {
+        "maria_db_range_index_regression": {
+            "description": "As vers\u00f5es mais antigas do MariaDB sofrem de uma diminui\u00e7\u00e3o significativa do desempenho ao recuperar dados do hist\u00f3rico ou ao limpar a base de dados. Actualize para a vers\u00e3o {min_version} ou posterior do MariaDB e reinicie o Home Assistant. Se estiver a utilizar o suplemento do n\u00facleo MariaDB, certifique-se de que o actualiza para a vers\u00e3o mais recente.",
+            "title": "Atualize o MariaDB para {min_version} ou resolva um problema significativo de desempenho mais tarde."
+        }
+    },
+    "services": {
+        "disable": {
+            "name": "Desativar"
+        },
+        "enable": {
+            "name": "Ligar"
+        }
+    },
+    "system_health": {
+        "info": {
+            "database_engine": "Motor de Base de Dados",
+            "database_version": "Vers\u00e3o de Base de Dados"
+        }
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Kelas perangkat",
+                    "name": "Nama"
+                },
+                "title": "Sensor biner acak"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Kelas perangkat",
+                    "maximum": "Maksimum",
+                    "minimum": "Minimum",
+                    "name": "Nama",
+                    "unit_of_measurement": "Satuan pengukuran"
+                },
+                "title": "Sensor acak"
+            },
+            "user": {
+                "description": "Pembantu ini dapat digunakan untuk membuat pembantu yang mengeluarkan nilai acak.",
+                "menu_options": {
+                    "binary_sensor": "Sensor biner acak",
+                    "sensor": "Sensor acak"
+                },
+                "title": "Pembantu acak"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Pembantu ini tidak memiliki opsi apa pun.",
+                "title": "Sensor biner acak"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Kelas perangkat",
+                    "maximum": "Maksimum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "Satuan pengukuran"
+                },
+                "title": "Sensor acak"
+            }
+        }
+    }
+}

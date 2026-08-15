@@ -1,0 +1,83 @@
+{
+    "config": {
+        "abort": {
+            "invalid_unique_id": "\u65e0\u6cd5\u786e\u5b9a\u8bbe\u5907\u7684\u6709\u6548\u552f\u4e00 ID",
+            "no_unique_id": "\u5df2\u914d\u7f6e\u6ca1\u6709\u6709\u6548\u552f\u4e00 ID \u7684\u8bbe\u5907\u3002\u65e0\u6cd5\u914d\u7f6e\u591a\u4e2a\u5b9e\u4f8b"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_host": "\u4e3b\u673a\u540d\u6216 IP \u5730\u5740\u65e0\u6548",
+            "pwd_and_ssh": "\u53ea\u63d0\u4f9b\u5bc6\u7801\u6216 SSH \u5bc6\u94a5\u6587\u4ef6",
+            "pwd_or_ssh": "\u8bf7\u63d0\u4f9b\u5bc6\u7801\u6216 SSH \u5bc6\u94a5\u6587\u4ef6",
+            "ssh_not_file": "\u672a\u627e\u5230 SSH \u5bc6\u94a5\u6587\u4ef6",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a",
+                    "mode": "\u6a21\u5f0f",
+                    "name": "\u540d\u79f0",
+                    "password": "\u5bc6\u7801",
+                    "port": "\u7aef\u53e3\uff08\u534f\u8bae\u9ed8\u8ba4\u7559\u7a7a\uff09",
+                    "protocol": "\u901a\u4fe1\u534f\u8bae",
+                    "ssh_key": "SSH \u5bc6\u94a5\u6587\u4ef6\u8def\u5f84 (\u4e0d\u662f\u5bc6\u7801)",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8bbe\u7f6e\u8fde\u63a5\u5230\u8def\u7531\u5668\u6240\u9700\u7684\u53c2\u6570",
+                "title": "AsusWRT"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "24ghz_temperature": {
+                "name": "2.4GHz\u6e29\u5ea6"
+            },
+            "5ghz_temperature": {
+                "name": "5GHz\u6e29\u5ea6"
+            },
+            "cpu_temperature": {
+                "name": "CPU \u6e29\u5ea6"
+            },
+            "devices_connected": {
+                "name": "\u8fde\u63a5\u7684\u8bbe\u5907"
+            },
+            "download": {
+                "name": "\u4e0b\u8f7d"
+            },
+            "download_speed": {
+                "name": "\u4e0b\u8f7d\u901f\u5ea6"
+            },
+            "load_avg_15m": {
+                "name": "\u5e73\u5747\u8d1f\u8f7d\uff0815m\uff09"
+            },
+            "load_avg_1m": {
+                "name": "\u5e73\u5747\u8d1f\u8f7d\uff081m\uff09"
+            },
+            "load_avg_5m": {
+                "name": "\u5e73\u5747\u8d1f\u8f7d\uff085m\uff09"
+            },
+            "upload": {
+                "name": "\u4e0a\u4f20"
+            },
+            "upload_speed": {
+                "name": "\u4e0a\u4f20\u901f\u5ea6"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "consider_home": "\u7b49\u5f85\u591a\u5c11\u79d2\u540e\u5219\u5224\u5b9a\u8bbe\u5907\u79bb\u5f00",
+                    "dnsmasq": "\u8def\u7531\u5668\u4e2d\u7684 dnsmasq.leases \u6587\u4ef6\u4f4d\u7f6e",
+                    "interface": "\u60f3\u8981\u76d1\u6d4b\u7684\u7aef\u53e3\uff08\u4f8b\u5982: eth0\u3001eth1 \u7b49\uff09",
+                    "require_ip": "\u8bbe\u5907\u5fc5\u987b\u5177\u6709 IP (\u7528\u4e8e\u63a5\u5165\u70b9\u6a21\u5f0f)",
+                    "track_unknown": "\u8ddf\u8e2a\u672a\u77e5/\u672a\u547d\u540d\u7684\u8bbe\u5907"
+                },
+                "title": "AsusWRT \u9009\u9879"
+            }
+        }
+    }
+}

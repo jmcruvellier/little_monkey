@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Laddar om sensorer f\u00f6r historikstatistik fr\u00e5n YAML-konfigurationen.",
+            "name": "Ladda om"
+        }
+    }
+}

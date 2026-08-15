@@ -1,0 +1,267 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "codelock": "\u5df2\u6536\u5230\u9396\u5b9a\u78bc",
+            "fingerprint": "\u5df2\u6536\u5230\u6307\u7d0b\u78bc",
+            "send_keys": "\u5df2\u6536\u5230\u50b3\u9001\u91d1\u9470",
+            "transmitter": "\u5df2\u6536\u5230\u767c\u5c04\u5668\u78bc",
+            "transponder": "\u5df2\u6536\u5230\u8a62\u7b54\u5668\u78bc"
+        }
+    },
+    "services": {
+        "dyn_text": {
+            "description": "\u50b3\u9001\u52d5\u614b\u6587\u5b57\u81f3 LCN-GTxD \u986f\u793a\u5668\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "row": {
+                    "description": "\u6587\u5b57\u884c\u3002",
+                    "name": "\u884c"
+                },
+                "text": {
+                    "description": "\u50b3\u9001\u7684\u6587\u5b57\uff08\u6700\u591a 60 \u500b\u4ee5 UTF-8 \u7de8\u78bc\u7684\u5b57\u5143\uff09\u3002",
+                    "name": "\u6587\u5b57"
+                }
+            },
+            "name": "\u52d5\u614b\u6587\u5b57"
+        },
+        "led": {
+            "description": "\u8a2d\u5b9a LED \u72c0\u614b\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "led": {
+                    "description": "LED\u3002",
+                    "name": "LED"
+                },
+                "state": {
+                    "description": "LED \u72c0\u614b\u3002",
+                    "name": "\u72c0\u614b"
+                }
+            },
+            "name": "LED"
+        },
+        "lock_keys": {
+            "description": "\u9396\u5b9a\u9375\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "state": {
+                    "description": "\u9375\u76e4\u9396\u5b9a\u72c0\u614b\u70ba\u5b57\u7b26\u4e32\uff081=\u958b\u555f\u30012=\u95dc\u9589\u3001T=\u5207\u63db\u3001-=\u7121\u8b8a\u5316\uff09\u3002",
+                    "name": "\u72c0\u614b"
+                },
+                "table": {
+                    "description": "\u5e36\u6709\u9396\u5b9a\u9375\u7684\u8868\u683c\uff08\u9593\u9694\u5fc5\u9808\u70ba A\uff09\u3002",
+                    "name": "\u8868\u683c"
+                },
+                "time": {
+                    "description": "\u9396\u5b9a\u9593\u9694\u3002",
+                    "name": "\u6642\u9593"
+                },
+                "time_unit": {
+                    "description": "\u9396\u5b9a\u9593\u9694\u6642\u9593\u55ae\u4f4d\u3002",
+                    "name": "\u6642\u9593\u55ae\u4f4d"
+                }
+            },
+            "name": "\u9396\u5b9a\u9375"
+        },
+        "lock_regulator": {
+            "description": "\u9396\u5b9a\u8abf\u7bc0\u5668\u8a2d\u5b9a\u9ede\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "setpoint": {
+                    "description": "\u8a2d\u5b9a\u9ede\u540d\u7a31\u3002",
+                    "name": "\u8a2d\u5b9a\u9ede"
+                },
+                "state": {
+                    "description": "\u65b0\u8a2d\u5b9a\u9ede\u72c0\u614b\u3002",
+                    "name": "\u72c0\u614b"
+                }
+            },
+            "name": "\u9396\u5b9a\u8abf\u7bc0\u5668"
+        },
+        "output_abs": {
+            "description": "\u4ee5\u767e\u5206\u6bd4\u8a2d\u5b9a\u8f38\u51fa\u57e0\u7684\u7d55\u5c0d\u4eae\u5ea6\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "brightness": {
+                    "description": "\u7d55\u5c0d\u4eae\u5ea6\u3002",
+                    "name": "\u4eae\u5ea6"
+                },
+                "output": {
+                    "description": "\u8f38\u51fa\u57e0\u3002",
+                    "name": "\u8f38\u51fa"
+                },
+                "transition": {
+                    "description": "\u8f49\u63db\u6642\u9593\u3002",
+                    "name": "\u8f49\u63db"
+                }
+            },
+            "name": "\u8f38\u51fa\u7d55\u5c0d\u4eae\u5ea6"
+        },
+        "output_rel": {
+            "description": "\u4ee5\u767e\u5206\u6bd4\u8a2d\u5b9a\u8f38\u51fa\u57e0\u7684\u76f8\u5c0d\u4eae\u5ea6\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "brightness": {
+                    "description": "\u76f8\u5c0d\u4eae\u5ea6\u3002",
+                    "name": "\u4eae\u5ea6"
+                },
+                "output": {
+                    "description": "\u8f38\u51fa\u57e0\u3002",
+                    "name": "\u8f38\u51fa"
+                }
+            },
+            "name": "\u8f38\u51fa\u76f8\u5c0d\u4eae\u5ea6"
+        },
+        "output_toggle": {
+            "description": "\u5207\u63db\u8f38\u51fa\u57e0\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "output": {
+                    "description": "\u8f38\u51fa\u57e0\u3002",
+                    "name": "\u8f38\u51fa"
+                },
+                "transition": {
+                    "description": "\u8f49\u63db\u6642\u9593\u3002",
+                    "name": "\u8f49\u63db"
+                }
+            },
+            "name": "\u5207\u63db\u8f38\u51fa"
+        },
+        "pck": {
+            "description": "\u50b3\u9001\u4efb\u610f PCK \u547d\u4ee4\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "pck": {
+                    "description": "PCK \u547d\u4ee4\uff08\u4e0d\u542b\u4f4d\u5740\u6a19\u982d\uff09\u3002",
+                    "name": "PCK"
+                }
+            },
+            "name": "PCK"
+        },
+        "relays": {
+            "description": "\u8a2d\u5b9a\u7e7c\u96fb\u5668\u72c0\u614b\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "state": {
+                    "description": "\u5c07\u7e7c\u96fb\u5668\u72c0\u614b\u4f5c\u70ba\u5b57\u4e32\uff081=\u958b\u30012=\u95dc\u3001t=\u5207\u63db\u3001-=\u7121\u8b8a\u5316\uff09\u3002",
+                    "name": "\u72c0\u614b"
+                }
+            },
+            "name": "\u7e7c\u96fb\u5668"
+        },
+        "send_keys": {
+            "description": "\u50b3\u9001\u9375\uff08\u57f7\u884c\u7d81\u5b9a\u547d\u4ee4\uff09\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "keys": {
+                    "description": "\u50b3\u9001\u9375\u3002",
+                    "name": "\u6309\u9375"
+                },
+                "state": {
+                    "description": "\u50b3\u9001\u9375\u72c0\u614b\uff08\u5fc5\u9808\u9ede\u64ca\u624d\u5ef6\u9072\uff09\u3002",
+                    "name": "\u72c0\u614b"
+                },
+                "time": {
+                    "description": "\u50b3\u9001\u5ef6\u8aa4\u3002",
+                    "name": "\u6642\u9593"
+                },
+                "time_unit": {
+                    "description": "\u50b3\u9001\u5ef6\u8aa4\u6642\u9593\u55ae\u4f4d\u3002",
+                    "name": "\u6642\u9593\u55ae\u4f4d"
+                }
+            },
+            "name": "\u50b3\u9001\u9375"
+        },
+        "var_abs": {
+            "description": "\u8a2d\u5b9a\u8b8a\u6578\u6216\u8a2d\u5b9a\u9ede\u7d55\u5c0d\u503c\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "unit_of_measurement": {
+                    "description": "\u6578\u503c\u55ae\u4f4d",
+                    "name": "\u55ae\u4f4d"
+                },
+                "value": {
+                    "description": "\u8a2d\u5b9a\u6578\u503c\u3002",
+                    "name": "\u6578\u503c"
+                },
+                "variable": {
+                    "description": "\u8b8a\u6578\u6216\u8a2d\u5b9a\u9ede\u540d\u7a31\u3002",
+                    "name": "\u8b8a\u6578"
+                }
+            },
+            "name": "\u8a2d\u5b9a\u7d55\u5c0d\u8b8a\u6578"
+        },
+        "var_rel": {
+            "description": "\u8f49\u79fb\u8b8a\u6578\u3001\u8a2d\u5b9a\u9ede\u6216\u81e8\u754c\u9ede\u6578\u503c\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "unit_of_measurement": {
+                    "description": "\u6578\u503c\u55ae\u4f4d",
+                    "name": "\u55ae\u4f4d"
+                },
+                "value": {
+                    "description": "\u8f49\u79fb\u6578\u503c\u3002",
+                    "name": "\u6578\u503c"
+                },
+                "value_reference": {
+                    "description": "\u8a2d\u5b9a\u9ede\u6216\u81e8\u754c\u9ede\u7684\u53c3\u8003\u503c\u3002",
+                    "name": "\u53c3\u8003\u503c"
+                },
+                "variable": {
+                    "description": "\u8b8a\u6578\u6216\u8a2d\u5b9a\u9ede\u540d\u7a31\u3002",
+                    "name": "\u8b8a\u6578"
+                }
+            },
+            "name": "\u8f49\u79fb\u8b8a\u6578"
+        },
+        "var_reset": {
+            "description": "\u91cd\u7f6e\u8b8a\u6578\u6216\u8a2d\u5b9a\u9ede\u6578\u503c\u3002",
+            "fields": {
+                "address": {
+                    "description": "\u6a21\u7d44\u4f4d\u5740\u3002",
+                    "name": "\u4f4d\u5740"
+                },
+                "variable": {
+                    "description": "\u8b8a\u6578\u6216\u8a2d\u5b9a\u9ede\u540d\u7a31\u3002",
+                    "name": "\u8b8a\u6578"
+                }
+            },
+            "name": "\u91cd\u7f6e\u8b8a\u6578"
+        }
+    }
+}

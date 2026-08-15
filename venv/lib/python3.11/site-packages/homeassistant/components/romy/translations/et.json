@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud",
+            "cannot_connect": "\u00dchendamine nurjus"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "invalid_auth": "Tuvastamine nurjus"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "password": {
+                "data": {
+                    "password": "Salas\u00f5na"
+                },
+                "data_description": {
+                    "password": "(8 t\u00e4hem\u00e4rki, vt QR-kood pr\u00fcgikasti all)."
+                },
+                "title": "Salas\u00f5na on n\u00f5utav"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Kas lisada ROMY tolmuimeja {name} Home Assistanti?"
+            }
+        }
+    },
+    "entity": {
+        "vacuum": {
+            "romy": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "auto": "Automaatne",
+                            "default": "Vaikimisi",
+                            "high": "K\u00f5rge",
+                            "intensive": "Intensiivne",
+                            "normal": "Tavaline",
+                            "silent": "Vaikne",
+                            "super_silent": "\u00dclivaikne"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

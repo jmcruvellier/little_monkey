@@ -1,0 +1,32 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "already_in_progress": "\u914d\u7f6e\u6d41\u7a0b\u5df2\u5728\u8fdb\u884c\u4e2d",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "no_devices_found": "\u6ca1\u6709\u5728\u7f51\u7edc\u4e0a\u627e\u5230\u8bbe\u5907",
+            "not_steamist_device": "\u4e0d\u662fsteamist\u8bbe\u5907"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "{name} ({ipaddress})",
+        "step": {
+            "discovery_confirm": {
+                "description": "\u60a8\u8981\u8bbe\u7f6e{name} ( {ipaddress} ) \u5417\uff1f"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "\u8bbe\u5907"
+                }
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                },
+                "description": "\u5982\u679c\u5c06\u4e3b\u673a\u7559\u7a7a\uff0c\u53d1\u73b0\u5c06\u7528\u4e8e\u67e5\u627e\u8bbe\u5907\u3002"
+            }
+        }
+    }
+}

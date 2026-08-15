@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Contul a fost configurat deja",
+            "external_error": "Excep\u021bia a survenit din alt flux.",
+            "external_setup": "Logi Circle a fost configurat cu succes din alt flux.",
+            "missing_configuration": "Componenta nu este configurat\u0103. Te rug\u0103m s\u0103 urmezi instruc\u021biunile din documenta\u021bie."
+        },
+        "error": {
+            "authorize_url_timeout": "Nu s-a generat URL-ul de autorizare \u00een timp util.",
+            "follow_link": "Te rug\u0103m s\u0103 urmezi linkul \u0219i s\u0103 te autentifici \u00eenainte de a ap\u0103sa Trimite.",
+            "invalid_auth": "Autentificare nevalid\u0103"
+        },
+        "step": {
+            "auth": {
+                "description": "Te rug\u0103m s\u0103 urmezi linkul de mai jos \u0219i s\u0103 **Accep\u021bi** accesul la contul t\u0103u Logi Circle, apoi s\u0103 revii \u0219i s\u0103 ape\u0219i **Trimite** mai jos.\n\n[Link]({authorization_url})",
+                "title": "Autentificare cu Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Furnizor"
+                },
+                "description": "Alege prin ce furnizor de autentificare dore\u0219ti s\u0103 te autentifici cu Logi Circle.",
+                "title": "Furnizor de autentificare"
+            }
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "language": "Idioma",
+                    "tld": "TLD"
+                }
+            }
+        }
+    }
+}

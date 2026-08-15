@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Layanan {domain}.{service} memanggil layanan {child_domain}.{child_service} yang tidak ditemukan."
+        }
+    }
+}

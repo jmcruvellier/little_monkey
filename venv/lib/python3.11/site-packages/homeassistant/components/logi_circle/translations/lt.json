@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paskyra jau sukonfig\u016bruota",
+            "external_error": "I\u0161imtis \u012fvyko i\u0161 kito srauto.",
+            "external_setup": "Logi Circle s\u0117kmingai sukonfig\u016bruotas i\u0161 kito srauto.",
+            "missing_configuration": "Komponentas nesukonfig\u016bruotas. Pra\u0161ome vadovautis dokumentacija."
+        },
+        "error": {
+            "authorize_url_timeout": "Baig\u0117si skirtasis laikas generuojant \u012fgaliojimo URL.",
+            "follow_link": "Sekite nuorod\u0105 ir patvirtinkite savo tapatyb\u0119 prie\u0161 paspausdami Pateikti.",
+            "invalid_auth": "Neteisingas autentifikavimas"
+        },
+        "step": {
+            "auth": {
+                "description": "Spustel\u0117kite toliau pateikt\u0105 nuorod\u0105 ir **Priimkite** prieig\u0105 prie savo Logi Circle paskyros, tada gr\u012f\u017ekite ir toliau paspauskite **Pateikti**. \n\n [Nuoroda]( {authorization_url} )",
+                "title": "Autentifikuokite naudodami Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Teik\u0117jas"
+                },
+                "description": "Pasirinkite, per kur\u012f autentifikavimo teik\u0117j\u0105 norite autentifikuoti naudodami \u201eLogi Circle\u201c.",
+                "title": "Autentifikavimo teik\u0117jas"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "Paskutin\u0117 veikla"
+            },
+            "recording_mode": {
+                "name": "\u012era\u0161ymo re\u017eimas"
+            },
+            "streaming_mode": {
+                "name": "Srautinio perdavimo re\u017eimas"
+            },
+            "wifi_signal_category": {
+                "name": "Wi-Fi signalo kategorija"
+            },
+            "wifi_signal_strength": {
+                "name": "Wi-Fi signalo stiprumas"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "2022 m. gegu\u017e\u0117s m\u0117n. \u201eLogitech\u201c nustojo priimti parai\u0161kas d\u0117l prieigos prie \u201eLogi Circle\u201c API, o \u201eLogi Circle\u201c integracija bus pa\u0161alinta i\u0161 \u201eHome Assistant\u201c. \n\n Nor\u0117dami i\u0161spr\u0119sti \u0161i\u0105 problem\u0105, pa\u0161alinkite integravimo \u012fra\u0161us i\u0161 nam\u0173 asistento s\u0105rankos. [Spustel\u0117kite \u010dia, kad pamatytum\u0117te esamus \u201eLogi Circle\u201c integravimo \u012fra\u0161us]( {entries} ).",
+            "title": "\u201eLogi Circle\u201c integracija buvo pasenusi ir bus pa\u0161alinta"
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Paima vaizdo \u012fra\u0161\u0105 i\u0161 kameros tiesiogin\u0117s transliacijos.",
+            "fields": {
+                "duration": {
+                    "description": "\u012era\u0161ymo trukm\u0117.",
+                    "name": "Trukm\u0117"
+                },
+                "entity_id": {
+                    "description": "Subjekt\u0173, i\u0161 kuri\u0173 reikia kurti \u012fra\u0161us, pavadinimas (-ai).",
+                    "name": "Subjektas"
+                },
+                "filename": {
+                    "description": "Failo pavadinimo \u0161ablonas. Kintamasis yra entity_id.",
+                    "name": "Failo pavadinimas"
+                }
+            },
+            "name": "Tiesiogin\u0117s transliacijos \u012fra\u0161as"
+        },
+        "livestream_snapshot": {
+            "description": "Daro momentin\u0119 nuotrauk\u0105 i\u0161 kameros tiesiogin\u0117s transliacijos. Prireikus pa\u017eadins fotoaparat\u0105 i\u0161 miego.",
+            "fields": {
+                "entity_id": {
+                    "description": "Objekt\u0173, i\u0161 kuri\u0173 reikia kurti momentines nuotraukas, pavadinimas (-ai).",
+                    "name": "Subjektas"
+                },
+                "filename": {
+                    "description": "Failo pavadinimo \u0161ablonas. Kintamasis yra entity_id.",
+                    "name": "Failo pavadinimas"
+                }
+            },
+            "name": "Tiesiogin\u0117s transliacijos momentin\u0117 nuotrauka"
+        },
+        "set_config": {
+            "description": "Nustato konfig\u016bracijos ypatyb\u0119.",
+            "fields": {
+                "entity_id": {
+                    "description": "Objekt\u0173, kuriems taikomas veikimo re\u017eimas, pavadinimas (-ai).",
+                    "name": "Subjektas"
+                },
+                "mode": {
+                    "description": "Operacijos re\u017eimas. Leid\u017eiamos reik\u0161m\u0117s: LED, RECORDING_MODE.",
+                    "name": "Re\u017eimas"
+                },
+                "value": {
+                    "description": "Operacijos vert\u0117.",
+                    "name": "Vert\u0117"
+                }
+            },
+            "name": "Nustatyti konfig\u016bracij\u0105"
+        }
+    }
+}

@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Device class",
+                    "name": "Name"
+                },
+                "title": "Random binary sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Device class",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "Name",
+                    "unit_of_measurement": "Unit of measurement"
+                },
+                "title": "Random sensor"
+            },
+            "user": {
+                "description": "This helper allows you to create a helper that emits a random value.",
+                "menu_options": {
+                    "binary_sensor": "Random binary sensor",
+                    "sensor": "Random sensor"
+                },
+                "title": "Random helper"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "This helper does not have any options.",
+                "title": "Random binary sensor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Device class",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "Unit of measurement"
+                },
+                "title": "Random sensor"
+            }
+        }
+    }
+}

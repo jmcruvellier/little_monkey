@@ -1,0 +1,20 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ji\u017e nastaveno. Je mo\u017en\u00e9 jen jedno nastaven\u00ed pro kombinaci zem\u011b/provincie."
+        },
+        "step": {
+            "province": {
+                "data": {
+                    "province": "Provincie"
+                }
+            },
+            "user": {
+                "data": {
+                    "country": "Zem\u011b"
+                }
+            }
+        }
+    },
+    "title": "Dovolen\u00e1"
+}

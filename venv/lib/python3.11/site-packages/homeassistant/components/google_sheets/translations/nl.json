@@ -1,0 +1,56 @@
+{
+    "application_credentials": {
+        "description": "Volg de [instructies]({more_info_url}) voor [OAuth-toestemmingsscherm]({oauth_consent_url}) om Home Assistant toegang te geven tot je Google Sheets. Je moet ook applicatiegegevens maken die aan je account zijn gekoppeld:\n\n1. Ga naar [Inloggegevens]({oauth_creds_url}) en klik op **Inloggegevens maken**.\n1. Selecteer uit de vervolgkeuzelijst **OAuth-client-ID**.\n1. Selecteer **Webtoepassing** voor het toepassingstype."
+    },
+    "config": {
+        "abort": {
+            "already_configured": "Account is al geconfigureerd",
+            "already_in_progress": "De configuratie is momenteel al bezig",
+            "cannot_connect": "Kan geen verbinding maken",
+            "create_spreadsheet_failure": "Fout bij het openen van een nieuw werkblad, zie de error log voor details",
+            "invalid_access_token": "Ongeldig toegangstoken",
+            "missing_configuration": "Integratie niet geconfigureerd. Raadpleeg de documentatie.",
+            "oauth_error": "Ongeldige tokengegevens ontvangen.",
+            "oauth_unauthorized": "OAuth autorisatiefout tijdens het verkrijgen van een toegangstoken.",
+            "open_spreadsheet_failure": "Fout bij het openen van een nieuw werkblad, zie de error log voor details",
+            "reauth_successful": "Herauthenticatie geslaagd",
+            "timeout_connect": "Time-out bij het maken van verbinding",
+            "unknown": "Onverwachte fout"
+        },
+        "create_entry": {
+            "default": "Succesvol aangemeld en werkblad gemaakt op: {url}"
+        },
+        "step": {
+            "auth": {
+                "title": "Google-account koppelen"
+            },
+            "pick_implementation": {
+                "title": "Kies een authenticatie methode"
+            },
+            "reauth_confirm": {
+                "description": "De Google Sheets integratie vereist dat je opnieuw inlogt met je account",
+                "title": "Authenticatie is verlopen voor {name}"
+            }
+        }
+    },
+    "services": {
+        "append_sheet": {
+            "description": "Voegt data toe aan een werkblad in Google Sheets.",
+            "fields": {
+                "config_entry": {
+                    "description": "De spreadsheet om de data aan toe te voegen.",
+                    "name": "Spreadsheet"
+                },
+                "data": {
+                    "description": "Data om toe te veogen aan het werkblad. Dit plaatst de nieuwe waarden op een nieuwe rij onder een overeenkomende kolom (sleutel). Elke sleutel wordt geplaatst bovenaan de nieuwe kolom.",
+                    "name": "Data"
+                },
+                "worksheet": {
+                    "description": "Naam van de spreadsheet. Is standaard de naam van de eerste in he document.",
+                    "name": "Spreadsheet"
+                }
+            },
+            "name": "Toevoegen aan spreadsheet"
+        }
+    }
+}

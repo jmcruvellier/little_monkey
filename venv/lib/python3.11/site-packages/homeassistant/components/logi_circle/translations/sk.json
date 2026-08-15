@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u00da\u010det je u\u017e nakonfigurovan\u00fd",
+            "external_error": "V\u00fdnimka nastala z in\u00e9ho toku.",
+            "external_setup": "Logi Circle \u00faspe\u0161ne nakonfigurovan\u00fd in\u00fdm sp\u00f4sobom.",
+            "missing_configuration": "Komponent nie je nakonfigurovan\u00fd. Postupujte pod\u013ea dokument\u00e1cie."
+        },
+        "error": {
+            "authorize_url_timeout": "\u010casov\u00fd limit generovania autorizovanej adresy URL.",
+            "follow_link": "Pred stla\u010den\u00edm Odosla\u0165 kliknite na odkaz a overte sa.",
+            "invalid_auth": "Neplatn\u00e9 overenie"
+        },
+        "step": {
+            "auth": {
+                "description": "Kliknite na odkaz ni\u017e\u0161ie a **Prijmite** pr\u00edstup k svojmu \u00fa\u010dtu Logi Circle, potom sa vr\u00e1\u0165te a stla\u010dte ni\u017e\u0161ie **Odosla\u0165**. \n\n[Odkaz]({authorization_url})",
+                "title": "Overte sa pomocou Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Poskytovate\u013e"
+                },
+                "description": "Vyberte si, prostredn\u00edctvom ktor\u00e9ho poskytovate\u013ea autentifik\u00e1cie sa chcete autentifikova\u0165 pomocou Logi Circle.",
+                "title": "Poskytovate\u013e overovania"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "Posledn\u00e1 aktivita"
+            },
+            "recording_mode": {
+                "name": "Re\u017eim nahr\u00e1vania"
+            },
+            "streaming_mode": {
+                "name": "Re\u017eim streamovania"
+            },
+            "wifi_signal_category": {
+                "name": "Kateg\u00f3ria sign\u00e1lu WiFi"
+            },
+            "wifi_signal_strength": {
+                "name": "Sila sign\u00e1lu WiFi"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Spolo\u010dnos\u0165 Logitech prestala prij\u00edma\u0165 \u017eiadosti o pr\u00edstup k rozhraniu API Logi Circle v m\u00e1ji 2022 a integr\u00e1cia Logi Circle bude z aplik\u00e1cie Home Assistant odstr\u00e1nen\u00e1.\n\nAk chcete tento probl\u00e9m vyrie\u0161i\u0165, odstr\u00e1\u0148te polo\u017eky integr\u00e1cie z nastavenia aplik\u00e1cie Home Assistant. [Kliknut\u00edm sem zobraz\u00edte existuj\u00face polo\u017eky integr\u00e1cie Logi Circle]({entries}).",
+            "title": "Integr\u00e1cia Logi Circle je zastaran\u00e1 a bude odstr\u00e1nen\u00e1"
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Nasn\u00edma videoz\u00e1znam z \u017eiv\u00e9ho vysielania kamery.",
+            "fields": {
+                "duration": {
+                    "description": "Trvanie nahr\u00e1vania.",
+                    "name": "Trvanie"
+                },
+                "entity_id": {
+                    "description": "N\u00e1zvy ent\u00edt, z ktor\u00fdch sa maj\u00fa vytv\u00e1ra\u0165 nahr\u00e1vky.",
+                    "name": "Entita"
+                },
+                "filename": {
+                    "description": "\u0160abl\u00f3na n\u00e1zvu s\u00faboru. Premenn\u00e1 je entity_id.",
+                    "name": "N\u00e1zov s\u00faboru"
+                }
+            },
+            "name": "Z\u00e1znam \u017eiv\u00e9ho vysielania"
+        },
+        "livestream_snapshot": {
+            "description": "Urob\u00ed sn\u00edmku zo \u017eiv\u00e9ho vysielania kamery. V pr\u00edpade potreby prebud\u00ed kameru z re\u017eimu sp\u00e1nku.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zov(-y) ent\u00edt, z ktor\u00fdch sa maj\u00fa vytv\u00e1ra\u0165 sn\u00edmky.",
+                    "name": "Entita"
+                },
+                "filename": {
+                    "description": "\u0160abl\u00f3na n\u00e1zvu s\u00faboru. Premenn\u00e1 je entity_id.",
+                    "name": "N\u00e1zov s\u00faboru"
+                }
+            },
+            "name": "Sn\u00edmka zo \u017eiv\u00e9ho vysielania"
+        },
+        "set_config": {
+            "description": "Nastav\u00ed konfigura\u010dn\u00fa vlastnos\u0165.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zvy ent\u00edt, na ktor\u00e9 sa m\u00e1 pou\u017ei\u0165 prev\u00e1dzkov\u00fd re\u017eim.",
+                    "name": "Entita"
+                },
+                "mode": {
+                    "description": "Prev\u00e1dzkov\u00fd re\u017eim. Pr\u00edpustn\u00e9 hodnoty: LED, RECORDING_MODE.",
+                    "name": "Re\u017eim"
+                },
+                "value": {
+                    "description": "Prev\u00e1dzkov\u00e1 hodnota.",
+                    "name": "Hodnota"
+                }
+            },
+            "name": "Nastavenie konfigur\u00e1cie"
+        }
+    }
+}

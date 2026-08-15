@@ -1,0 +1,267 @@
+{
+    "device_automation": {
+        "trigger_type": {
+            "codelock": "C\u00f3digo de bloqueo de c\u00f3digo recibido",
+            "fingerprint": "C\u00f3digo de huella dactilar recibido",
+            "send_keys": "Enviar claves recibidas",
+            "transmitter": "C\u00f3digo del transmisor recibido",
+            "transponder": "C\u00f3digo de transpondedor recibido"
+        }
+    },
+    "services": {
+        "dyn_text": {
+            "description": "Env\u00eda texto din\u00e1mico a las pantallas LCN-GTxD.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "row": {
+                    "description": "Fila de texto.",
+                    "name": "Fila"
+                },
+                "text": {
+                    "description": "Texto a enviar (hasta 60 caracteres codificados como UTF-8).",
+                    "name": "Texto"
+                }
+            },
+            "name": "Texto din\u00e1mico"
+        },
+        "led": {
+            "description": "Establece el estado del led.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "led": {
+                    "description": "Led.",
+                    "name": "LED"
+                },
+                "state": {
+                    "description": "Estado led.",
+                    "name": "Estado"
+                }
+            },
+            "name": "LED"
+        },
+        "lock_keys": {
+            "description": "Bloquea llaves.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "state": {
+                    "description": "Estados de bloqueo de llaves en forma de cadena (1=activado, 2=desactivado, T=cambiar, -=no cambiar).",
+                    "name": "Estado"
+                },
+                "table": {
+                    "description": "Tabla con llaves para bloquear (debe ser A para el intervalo).",
+                    "name": "Tabla"
+                },
+                "time": {
+                    "description": "Intervalo de bloqueo.",
+                    "name": "Hora"
+                },
+                "time_unit": {
+                    "description": "Unidad de tiempo del intervalo de bloqueo.",
+                    "name": "Unidad de tiempo"
+                }
+            },
+            "name": "Bloquear llaves"
+        },
+        "lock_regulator": {
+            "description": "Bloquea un punto de consigna del regulador.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "setpoint": {
+                    "description": "Nombre de la consigna.",
+                    "name": "Consigna"
+                },
+                "state": {
+                    "description": "Nuevo estado de consigna.",
+                    "name": "Estado"
+                }
+            },
+            "name": "Bloquear regulador"
+        },
+        "output_abs": {
+            "description": "Establece el brillo absoluto del puerto de salida en porcentaje.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "brightness": {
+                    "description": "Brillo absoluto.",
+                    "name": "Brillo"
+                },
+                "output": {
+                    "description": "Puerto de salida.",
+                    "name": "Salida"
+                },
+                "transition": {
+                    "description": "Tiempo de transici\u00f3n.",
+                    "name": "Transici\u00f3n"
+                }
+            },
+            "name": "Brillo absoluto de salida"
+        },
+        "output_rel": {
+            "description": "Establece el brillo relativo del puerto de salida en porcentaje.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "brightness": {
+                    "description": "Brillo relativo.",
+                    "name": "Brillo"
+                },
+                "output": {
+                    "description": "Puerto de salida.",
+                    "name": "Salida"
+                }
+            },
+            "name": "Brillo relativo de salida"
+        },
+        "output_toggle": {
+            "description": "Alterna el puerto de salida.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "output": {
+                    "description": "Puerto de salida.",
+                    "name": "Salida"
+                },
+                "transition": {
+                    "description": "Tiempo de transici\u00f3n.",
+                    "name": "Transici\u00f3n"
+                }
+            },
+            "name": "Alternar salida"
+        },
+        "pck": {
+            "description": "Env\u00eda un comando PCK arbitrario.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "pck": {
+                    "description": "Comando PCK (sin cabecera de direcci\u00f3n).",
+                    "name": "PCK"
+                }
+            },
+            "name": "PCK"
+        },
+        "relays": {
+            "description": "Establece el estado de los rel\u00e9s.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "state": {
+                    "description": "Estados de los rel\u00e9s como cadena (1=encendido, 2=apagado, t=cambio, -=sin cambio).",
+                    "name": "Estado"
+                }
+            },
+            "name": "Rel\u00e9s"
+        },
+        "send_keys": {
+            "description": "Env\u00eda claves (que ejecuta comandos enlazados).",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "keys": {
+                    "description": "Claves para enviar.",
+                    "name": "Claves"
+                },
+                "state": {
+                    "description": "Estado de la tecla al enviar (debe ser pulsada para diferido).",
+                    "name": "Estado"
+                },
+                "time": {
+                    "description": "Enviar retardo.",
+                    "name": "Hora"
+                },
+                "time_unit": {
+                    "description": "Unidad de tiempo del retardo de env\u00edo.",
+                    "name": "Unidad de tiempo"
+                }
+            },
+            "name": "Enviar claves"
+        },
+        "var_abs": {
+            "description": "Establece el valor absoluto de una variable o consigna.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "unit_of_measurement": {
+                    "description": "Unidad de valor.",
+                    "name": "Unidad de medida"
+                },
+                "value": {
+                    "description": "Valor a configurar.",
+                    "name": "Valor"
+                },
+                "variable": {
+                    "description": "Nombre de la variable o del punto de consigna.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Establecer variable absoluta"
+        },
+        "var_rel": {
+            "description": "Valor de cambio de una variable, punto de consigna o umbral.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "unit_of_measurement": {
+                    "description": "Unidad de valor.",
+                    "name": "Unidad de medida"
+                },
+                "value": {
+                    "description": "Valor de cambio.",
+                    "name": "Valor"
+                },
+                "value_reference": {
+                    "description": "Valor de referencia para la consigna y el umbral.",
+                    "name": "Valor de referencia"
+                },
+                "variable": {
+                    "description": "Nombre de la variable o del punto de consigna.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Variable de cambio"
+        },
+        "var_reset": {
+            "description": "Restablece el valor de la variable o consigna.",
+            "fields": {
+                "address": {
+                    "description": "Direcci\u00f3n del m\u00f3dulo.",
+                    "name": "Direcci\u00f3n"
+                },
+                "variable": {
+                    "description": "Nombre de la variable o del punto de consigna.",
+                    "name": "Variable"
+                }
+            },
+            "name": "Restablecer variable"
+        }
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "config": {
+        "error": {
+            "invalid_url": "URL\u65e0\u6548",
+            "invalid_url_schema_override_mqtt_url": "MQTT URL\u65b9\u6848\u65e0\u6548\u3002\nURL\u5e94\u5f53\u4ee5mqtt://\u6216mqtts://\u5f00\u5934\u3002",
+            "invalid_url_schema_override_rest_url": "REST URL\u65b9\u6848\u65e0\u6548\u3002\nURL\u5e94\u5f53\u4ee5http://\u6216https://\u5f00\u5934\u3002"
+        },
+        "step": {
+            "auth": {
+                "data": {
+                    "country": "\u56fd\u5bb6\u6216\u5730\u533a",
+                    "override_mqtt_url": "MQTT URL",
+                    "override_rest_url": "REST URL",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "entity": {
+        "button": {
+            "relocate": {
+                "name": "\u91cd\u65b0\u5b9a\u4f4d"
+            }
+        },
+        "image": {
+            "map": {
+                "name": "\u5730\u56fe"
+            }
+        },
+        "switch": {
+            "advanced_mode": {
+                "name": "\u9ad8\u7ea7\u6a21\u5f0f"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue_invalid_auth": {
+            "description": "\u6b63\u5728\u79fb\u9664\u4f7f\u7528YAML\u914d\u7f6eEcovacs\u7684\u529f\u80fd\uff0c\u4f46\u5728\u5c1d\u8bd5\u5bfc\u5165YAML\u914d\u7f6e\u65f6\u51fa\u73b0\u4e86\u8eab\u4efd\u9a8c\u8bc1\u9519\u8bef\u3002\n\n\u8bf7\u4fee\u6b63YAML\u914d\u7f6e\u5e76\u91cd\u65b0\u542f\u52a8Home Assistant\u4ee5\u518d\u6b21\u5c1d\u8bd5\uff0c\u6216\u8005\u4ece\u60a8\u7684configuration.yaml\u6587\u4ef6\u4e2d\u79fb\u9664Ecovacs\u7684YAML\u914d\u7f6e\uff0c\u5e76\u7ee7\u7eed[\u624b\u52a8\u8bbe\u7f6e\u96c6\u6210]({url})\u3002"
+        },
+        "deprecated_yaml_import_issue_unknown": {
+            "description": "\u6b63\u5728\u5220\u9664\u4f7f\u7528YAML\u914d\u7f6e\u7684Ecovacs\uff0c\u4f46\u5728\u5c1d\u8bd5\u5bfc\u5165YAML\u914d\u7f6e\u65f6\u51fa\u73b0\u4e86\u672a\u77e5\u9519\u8bef\u3002\n\n\u8bf7\u786e\u4fddYAML\u914d\u7f6e\u6b63\u786e\uff0c\u7136\u540e\u91cd\u65b0\u542f\u52a8Home Assistant\u4ee5\u518d\u6b21\u5c1d\u8bd5\uff0c\u6216\u8005\u4ece\u60a8\u7684configuration.yaml\u6587\u4ef6\u4e2d\u5220\u9664Ecovacs\u7684YAML\u914d\u7f6e\uff0c\u5e76\u7ee7\u7eed[\u624b\u52a8\u8bbe\u7f6e\u96c6\u6210]({url})\u3002"
+        }
+    }
+}

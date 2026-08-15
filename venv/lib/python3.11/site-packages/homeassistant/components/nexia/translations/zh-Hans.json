@@ -1,0 +1,57 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "brand": "\u54c1\u724c",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                }
+            }
+        }
+    },
+    "services": {
+        "set_aircleaner_mode": {
+            "description": "\u7a7a\u6c14\u51c0\u5316\u5668\u6a21\u5f0f\u3002",
+            "fields": {
+                "aircleaner_mode": {
+                    "description": "\u8981\u8bbe\u7f6e\u7684\u7a7a\u6c14\u51c0\u5316\u5668\u6a21\u5f0f\u3002",
+                    "name": "\u7a7a\u6c14\u51c0\u5316\u5668\u6a21\u5f0f"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u7a7a\u6c14\u51c0\u5316\u5668\u6a21\u5f0f"
+        },
+        "set_humidify_setpoint": {
+            "description": "\u52a0\u6e7f\u8bbe\u5b9a\u70b9\u3002",
+            "fields": {
+                "humidity": {
+                    "description": "\u52a0\u6e7f\u8bbe\u5b9a\u70b9\u3002",
+                    "name": "\u52a0\u6e7f"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u52a0\u6e7f\u8bbe\u5b9a\u70b9"
+        },
+        "set_hvac_run_mode": {
+            "description": "\u7a7a\u8c03\u8fd0\u884c\u6a21\u5f0f\u3002",
+            "fields": {
+                "hvac_mode": {
+                    "description": "\u7528\u4e8e\u8ba1\u5212\u6216\u4fdd\u6301\u7684\u7a7a\u8c03\u6a21\u5f0f\u3002\u5982\u679c\u672a\u6307\u5b9a\uff0c\u5c06\u4f7f\u7528\u5f53\u524d\u7684 HVAC \u6a21\u5f0f\u3002",
+                    "name": "\u7a7a\u8c03\u6a21\u5f0f"
+                },
+                "run_mode": {
+                    "description": "\u8fd0\u884c\u8ba1\u5212\u6216\u6682\u505c\u3002\u5982\u679c\u672a\u6307\u5b9a\uff0c\u5c06\u4f7f\u7528\u5f53\u524d\u7684\u8fd0\u884c\u6a21\u5f0f\u3002",
+                    "name": "\u8fd0\u884c\u6a21\u5f0f"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u7a7a\u8c03\u8fd0\u884c\u6a21\u5f0f"
+        }
+    }
+}

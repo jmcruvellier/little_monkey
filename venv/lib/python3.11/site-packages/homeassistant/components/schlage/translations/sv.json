@@ -1,0 +1,41 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Enheten \u00e4r redan konfigurerad",
+            "reauth_successful": "\u00c5terautentisering lyckades"
+        },
+        "error": {
+            "invalid_auth": "Ogiltig autentisering",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "L\u00f6senord"
+                },
+                "title": "Autentiseringen har upph\u00f6rt att g\u00e4lla f\u00f6r {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "L\u00f6senord",
+                    "username": "Anv\u00e4ndarnamn"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "keypad_disabled": {
+                "name": "Knappsats inaktiverad"
+            }
+        },
+        "switch": {
+            "beeper": {
+                "name": "Pip f\u00f6r knapptryckning"
+            },
+            "lock_and_leave": {
+                "name": "1-touch-l\u00e5sning"
+            }
+        }
+    }
+}

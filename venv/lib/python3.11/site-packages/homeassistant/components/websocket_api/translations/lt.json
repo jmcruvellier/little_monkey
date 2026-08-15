@@ -1,0 +1,7 @@
+{
+    "exceptions": {
+        "child_service_not_found": {
+            "message": "Paslauga {domain}. {service} vadinama paslauga {child_domain}. {child_service} kuris nerasta."
+        }
+    }
+}

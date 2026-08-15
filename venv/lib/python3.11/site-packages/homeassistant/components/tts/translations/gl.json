@@ -1,0 +1,24 @@
+{
+    "services": {
+        "clear_cache": {
+            "name": "Borrar a cach\u00e9 de TTS"
+        },
+        "say": {
+            "description": "D\u00ed algo usando texto-a-voz nun reprodutor de medios.",
+            "fields": {
+                "entity_id": {
+                    "description": "Reprodutores de medios para reproducir a mensaxe."
+                }
+            }
+        },
+        "speak": {
+            "description": "Fala algo usando texto-a-voz nun reprodutor de medios.",
+            "fields": {
+                "media_player_entity_id": {
+                    "description": "Reprodutores de medios para reproducir a mensaxe.",
+                    "name": "Entidade de reprodutor de medios"
+                }
+            }
+        }
+    }
+}

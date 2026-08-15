@@ -1,0 +1,81 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "not_supported": "\u4ec5\u652f\u6301 PrusaLink API v2",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u5bc6\u94a5",
+                    "host": "\u4e3b\u673a",
+                    "password": "\u5bc6\u7801"
+                }
+            }
+        }
+    },
+    "entity": {
+        "button": {
+            "cancel_job": {
+                "name": "\u53d6\u6d88\u4f5c\u4e1a"
+            },
+            "pause_job": {
+                "name": "\u6682\u505c\u4f5c\u4e1a"
+            },
+            "resume_job": {
+                "name": "\u6062\u590d\u4f5c\u4e1a"
+            }
+        },
+        "camera": {
+            "job_preview": {
+                "name": "\u9884\u89c8"
+            }
+        },
+        "sensor": {
+            "filename": {
+                "name": "\u6587\u4ef6\u540d"
+            },
+            "heatbed_target_temperature": {
+                "name": "\u70ed\u5e8a\u76ee\u6807\u6e29\u5ea6"
+            },
+            "heatbed_temperature": {
+                "name": "\u70ed\u5e8a\u6e29\u5ea6"
+            },
+            "material": {
+                "name": "\u6750\u6599"
+            },
+            "nozzle_target_temperature": {
+                "name": "\u55b7\u5634\u76ee\u6807\u6e29\u5ea6"
+            },
+            "nozzle_temperature": {
+                "name": "\u55b7\u5634\u6e29\u5ea6"
+            },
+            "print_finish": {
+                "name": "\u6253\u5370\u5b8c\u6210"
+            },
+            "print_speed": {
+                "name": "\u6253\u5370\u901f\u5ea6"
+            },
+            "print_start": {
+                "name": "\u5f00\u59cb\u6253\u5370"
+            },
+            "printer_state": {
+                "state": {
+                    "cancelling": "\u53d6\u6d88\u4e2d",
+                    "idle": "\u7a7a\u95f2",
+                    "paused": "\u5df2\u6682\u505c",
+                    "pausing": "\u6682\u505c\u4e2d",
+                    "printing": "\u6253\u5370\u4e2d"
+                }
+            },
+            "progress": {
+                "name": "\u8fdb\u5c55"
+            },
+            "z_height": {
+                "name": "Z\u8f74\u9ad8\u5ea6"
+            }
+        }
+    }
+}

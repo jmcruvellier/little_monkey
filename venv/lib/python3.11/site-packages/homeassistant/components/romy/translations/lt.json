@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "cannot_connect": "Nepavyko prisijungti"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "password": {
+                "data": {
+                    "password": "Slapta\u017eodis"
+                },
+                "data_description": {
+                    "password": "(8 simboliai, \u017er. QR kod\u0105 po \u0161iuk\u0161liad\u0117\u017ee)."
+                },
+                "title": "Reikalingas slapta\u017eodis"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Ar norite prid\u0117ti ROMY dulki\u0173 siurbl\u012f {name} prie nam\u0173 asistento?"
+            }
+        }
+    },
+    "entity": {
+        "vacuum": {
+            "romy": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "auto": "Automatinis",
+                            "default": "Numatytas",
+                            "high": "Auk\u0161tas",
+                            "intensive": "Intensyvus",
+                            "normal": "Normalus",
+                            "silent": "Tylus",
+                            "super_silent": "Super tylus"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

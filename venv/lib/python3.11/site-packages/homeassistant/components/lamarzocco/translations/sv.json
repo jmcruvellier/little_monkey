@@ -1,0 +1,17 @@
+{
+    "config": {
+        "step": {
+            "machine_selection": {
+                "data": {
+                    "host": "IP-adress"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "L\u00f6senord",
+                    "username": "Anv\u00e4ndarnamn"
+                }
+            }
+        }
+    }
+}

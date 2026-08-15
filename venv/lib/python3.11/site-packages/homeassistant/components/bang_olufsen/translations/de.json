@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Bereits konfiguriert. Nur eine einzige Konfiguration m\u00f6glich.",
+            "already_in_progress": "Der Konfigurationsablauf wird bereits ausgef\u00fchrt"
+        },
+        "error": {
+            "api_exception": "Verbindung fehlgeschlagen",
+            "client_connector_error": "Verbindung fehlgeschlagen",
+            "invalid_ip": "Ung\u00fcltige IPv4-Adresse",
+            "timeout_error": "Verbindung fehlgeschlagen"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP-Adresse",
+                    "model": "Modell"
+                },
+                "description": "Bang & Olufsen Ger\u00e4t manuell konfigurieren."
+            },
+            "zeroconf_confirm": {
+                "description": "Best\u00e4tige die Konfiguration von {model} \u2013 {serial_number} @ {host}.",
+                "title": "Bang & Olufsen Ger\u00e4t einrichten"
+            }
+        }
+    }
+}

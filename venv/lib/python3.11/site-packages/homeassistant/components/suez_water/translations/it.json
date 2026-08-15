@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "sensor": {
+            "water_usage_yesterday": {
+                "name": "Consumo d'acqua di ieri"
+            }
+        }
+    }
+}

@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "cannot_connect": "Nepavyko prisijungti",
+            "id_exists": "\u0160liuzo ID jau yra",
+            "timeout_connect": "Baig\u0117si ry\u0161io u\u017emezgimo laikas"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Kelias arba URL",
+                    "id": "ID",
+                    "name": "Vardas"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "Grind\u0173 temperat\u016bra",
+                    "read_precision": "Skaitykite Precision",
+                    "set_precision": "Nustatyti tikslum\u0105",
+                    "temporary_override_mode": "Laikinas nustatytosios vert\u0117s nepaisymo re\u017eimas"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "I\u0161 naujo nustato OpenTherm Gateway.",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                }
+            },
+            "name": "I\u0161 naujo nustatyti \u0161liuz\u0105"
+        },
+        "set_central_heating_ovrd": {
+            "description": "Nustato centrinio \u0161ildymo perjungimo parinkt\u012f vartuose. Kai vir\u0161ijama valdymo nustatyta reik\u0161m\u0117 (per set_control_setpoint paslaugos skambut\u012f, kurio reik\u0161m\u0117 kitokia nei 0), vartai automati\u0161kai \u012fjungia centrinio \u0161ildymo vir\u0161ijim\u0105, kad b\u016bt\u0173 prad\u0117tas \u0161ildymas. \u0160i\u0105 paslaug\u0105 galima naudoti centrinio \u0161ildymo perjungimo b\u016bsenai valdyti. Nor\u0117dami gr\u0105\u017einti centrinio \u0161ildymo valdym\u0105 termostatui, i\u0161kvieskite paslaug\u0105 set_control_setpoint su temperat\u016bros verte 0. To prireiks tik tuo atveju, jei ra\u0161ote savo programin\u0119 termostato \u012frang\u0105.\n.",
+            "fields": {
+                "ch_override": {
+                    "description": "Norima login\u0117 reik\u0161m\u0117 centrinio \u0161ildymo nepaisymui.",
+                    "name": "Centrinio \u0161ildymo perjungimas"
+                },
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                }
+            },
+            "name": "Nustatykite centrinio \u0161ildymo nepaisym\u0105"
+        },
+        "set_clock": {
+            "description": "Prijungtame termostate nustatomas laikrodis ir savait\u0117s diena.",
+            "fields": {
+                "date": {
+                    "description": "Neprivaloma data, nuo kurios bus i\u0161gaunama savait\u0117s diena. Numatytieji iki \u0161iandien.",
+                    "name": "Data"
+                },
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "time": {
+                    "description": "Pasirenkamas laikas 24h formatu, kuris bus pateiktas termostatui. Numatytasis dabartinis laikas.",
+                    "name": "Laikas"
+                }
+            },
+            "name": "Nustatykite laikrod\u012f"
+        },
+        "set_control_setpoint": {
+            "description": "Nustato centrinio \u0161ildymo valdymo kontrolin\u0117s vert\u0117s nepaisym\u0105 \u0161liuze. Jums to reik\u0117s tik tuo atveju, jei ra\u0161ote savo programin\u0117s \u012frangos termostat\u0105.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "temperature": {
+                    "description": "Centrinio \u0161ildymo kontrolin\u0117 vert\u0117, kuri\u0105 reikia nustatyti vartuose. Priimamos reik\u0161m\u0117s nuo 0 iki 90, ta\u010diau ne visi katilai palaiko \u0161\u012f diapazon\u0105. 0 reik\u0161m\u0117 i\u0161jungia centrinio \u0161ildymo kontrolin\u0117s vert\u0117s nepaisym\u0105.\n .",
+                    "name": "Temperat\u016bra"
+                }
+            },
+            "name": "Nustatykite valdymo ta\u0161k\u0105"
+        },
+        "set_gpio_mode": {
+            "description": "Pakei\u010dia \u0161liuzo GPIO kai\u0161\u010di\u0173 funkcij\u0105.",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "id": {
+                    "description": "GPIO kai\u0161\u010dio ID.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Re\u017eimas, skirtas nustatyti GPIO kai\u0161tyje. Vert\u0117s nuo 0 iki 6 priimamos abiem GPIO, o 7 \u2013 tik GPIO \u201eB\u201c. Jei norite paai\u0161kinti vertes, \u017er. https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes.\n .",
+                    "name": "Re\u017eimas"
+                }
+            },
+            "name": "Nustatykite gpio re\u017eim\u0105"
+        },
+        "set_hot_water_ovrd": {
+            "description": "Nustato buitinio kar\u0161to vandens \u012fjungimo parinkt\u012f \u0161liuze.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Valdykite kar\u0161to buitinio vandens \u012fjungimo parinkt\u012f. Jei katilas buvo sukonfig\u016bruotas taip, kad kambario blokas gal\u0117t\u0173 valdyti, kada laikyti nedidel\u012f vandens kiek\u012f i\u0161 anksto pa\u0161ildyt\u0105, \u0161i komanda gali tam tur\u0117ti \u012ftakos. Reik\u0161m\u0117 turi b\u016bti 0 arba 1, kad \u012fjungtum\u0117te arba i\u0161jungtum\u0117te nepaisym\u0105, arba \"A\", kad nepaisymas b\u016bt\u0173 i\u0161jungtas.\n .",
+                    "name": "Buitinio kar\u0161to vandens nepaisymas"
+                },
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                }
+            },
+            "name": "Nustatykite kar\u0161to vandens nepaisym\u0105"
+        },
+        "set_hot_water_setpoint": {
+            "description": "\u0160liuze nustato kar\u0161to buitinio vandens kontrolin\u0119 vert\u0119.",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "temperature": {
+                    "description": "Kar\u0161to buitinio vandens kontrolin\u0117 vert\u0117, kuri\u0105 reikia nustatyti \u0161liuze. Ne visi katilai palaiko \u0161i\u0105 funkcij\u0105. Priimamos reik\u0161m\u0117s nuo 0 iki 90, ta\u010diau ne visi katilai palaiko \u0161\u012f diapazon\u0105. Patikrinkite jutikli\u0173 slave_dhw_min_setp ir slave_dhw_max_setp reik\u0161mes, kad pamatytum\u0117te palaikom\u0105 katilo diapazon\u0105.\n .",
+                    "name": "Temperat\u016bra"
+                }
+            },
+            "name": "Nustatykite kar\u0161to vandens nustatymo ta\u0161k\u0105"
+        },
+        "set_led_mode": {
+            "description": "Pakei\u010dia \u0161liuzo \u0161viesos diod\u0173 funkcij\u0105.",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "id": {
+                    "description": "LED ID",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Funkcija, kuri\u0105 reikia priskirti \u0161viesos diodui. Jei norite paai\u0161kinti vertes, \u017er. https://www.home-assistant.io/integrations/opentherm_gw/#led-modes.\n .",
+                    "name": "Re\u017eimas"
+                }
+            },
+            "name": "Nustatykite LED re\u017eim\u0105"
+        },
+        "set_max_modulation": {
+            "description": "Nepaiso did\u017eiausio santykinio moduliavimo lygio. Jums to reik\u0117s tik tuo atveju, jei ra\u0161ote savo programin\u0117s \u012frangos termostat\u0105.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "level": {
+                    "description": "Moduliavimo lygis, kur\u012f reikia pateikti vartams. Nurodykite reik\u0161m\u0119 -1, kad panaikintum\u0117te nepaisym\u0105 ir v\u0117l persi\u0173stum\u0117te vert\u0119 i\u0161 termostato.\n .",
+                    "name": "Lygis"
+                }
+            },
+            "name": "Nustatykite maksimal\u0173 moduliavim\u0105"
+        },
+        "set_outside_temperature": {
+            "description": "Suteikia termostatui lauko temperat\u016br\u0105. Jei j\u016bs\u0173 termostatas negali rodyti lauko temperat\u016bros ir nepalaiko OTC (Outside Temperature Correction), tai neturi jokios \u012ftakos.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "temperature": {
+                    "description": "Temperat\u016bra, kuri\u0105 reikia pateikti termostatui. Vert\u0117s nuo -40,0 iki 64,0 bus priimtos, bet ne visi termostatai gali rodyti vis\u0105 diapazon\u0105. Bet kuri didesn\u0117 nei 64,0 reik\u0161m\u0117 i\u0161valys anks\u010diau sukonfig\u016bruot\u0105 reik\u0161m\u0119 (pasi\u016blymas: 99)\n .",
+                    "name": "Temperat\u016bra"
+                }
+            },
+            "name": "Nustatykite lauko temperat\u016br\u0105"
+        },
+        "set_setback_temperature": {
+            "description": "Konfig\u016bruoja suma\u017eint\u0105 temperat\u016br\u0105, kuri bus naudojama su GPIO i\u0161vykimo re\u017eimo funkcija.",
+            "fields": {
+                "gateway_id": {
+                    "description": "\"OpenTherm Gateway\" \u0161liuzo gateway_id.",
+                    "name": "\u0160liuzo ID"
+                },
+                "temperature": {
+                    "description": "Suma\u017e\u0117jusi temperat\u016bra, kuri\u0105 reikia konfig\u016bruoti \u0161liuze.",
+                    "name": "Temperat\u016bra"
+                }
+            },
+            "name": "Nustatykite suma\u017eint\u0105 temperat\u016br\u0105"
+        }
+    }
+}

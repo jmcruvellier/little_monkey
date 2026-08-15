@@ -1,0 +1,36 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispozitivul a fost configurat deja",
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_token": "Token de acces nevalid",
+            "reauth_successful": "Re-autentificarea s-a realizat cu succes",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "not_allowing_new_tokens": "Nanoleaf nu permite tokeni noi, urmeaz\u0103 instruc\u021biunile de mai jos.",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "link": {
+                "description": "Men\u021bine ap\u0103sat butonul de pornire de pe Nanoleaf pentru 5 secunde p\u00e2n\u0103 c\u00e2nd \u00eencep s\u0103 clipeasc\u0103 LED-urile, apoi apas\u0103 **TRIMITE** \u00een 30 de secunde.",
+                "title": "Asociaz\u0103 Nanoleaf"
+            },
+            "user": {
+                "data": {
+                    "host": "Gazd\u0103 (host)"
+                }
+            }
+        }
+    },
+    "device_automation": {
+        "trigger_type": {
+            "swipe_down": "La glisare \u00een jos",
+            "swipe_left": "La glisare spre st\u00e2nga",
+            "swipe_right": "La glisare spre dreapta",
+            "swipe_up": "La glisare \u00een sus"
+        }
+    }
+}

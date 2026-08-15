@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "T\u0159\u00edda za\u0159\u00edzen\u00ed",
+                    "name": "N\u00e1zev"
+                },
+                "title": "N\u00e1hodn\u00fd bin\u00e1rn\u00ed senzor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "T\u0159\u00edda za\u0159\u00edzen\u00ed",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "N\u00e1zev",
+                    "unit_of_measurement": "M\u011brn\u00e1 jednotka"
+                },
+                "title": "N\u00e1hodn\u00fd senzor"
+            },
+            "user": {
+                "description": "Tento pomocn\u00edk umo\u017e\u0148uje vytvo\u0159it jin\u00e9ho pomocn\u00edka, kter\u00fd generuje n\u00e1hodnou hodnotu.",
+                "menu_options": {
+                    "binary_sensor": "N\u00e1hodn\u00fd bin\u00e1rn\u00ed senzor",
+                    "sensor": "N\u00e1hodn\u00fd senzor"
+                },
+                "title": "N\u00e1hodn\u00fd pomocn\u00edk"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Tento pomocn\u00edk nem\u00e1 \u017e\u00e1dn\u00e9 volby.",
+                "title": "N\u00e1hodn\u00fd bin\u00e1rn\u00ed senzor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "T\u0159\u00edda za\u0159\u00edzen\u00ed",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "M\u011brn\u00e1 jednotka"
+                },
+                "title": "N\u00e1hodn\u00fd senzor"
+            }
+        }
+    }
+}

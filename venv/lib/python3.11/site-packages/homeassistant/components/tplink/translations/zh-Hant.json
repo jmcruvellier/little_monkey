@@ -1,0 +1,188 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u88dd\u7f6e\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210",
+            "no_devices_found": "\u7db2\u8def\u4e0a\u627e\u4e0d\u5230\u88dd\u7f6e",
+            "reauth_successful": "\u91cd\u65b0\u8a8d\u8b49\u6210\u529f"
+        },
+        "error": {
+            "cannot_connect": "\u9023\u7dda\u932f\u8aa4\uff1a{error}",
+            "invalid_auth": "\u9a57\u8b49\u7121\u6548\uff1a{error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u78bc",
+                    "username": "\u4f7f\u7528\u8005\u540d\u7a31"
+                },
+                "description": "\u88dd\u7f6e\u9700\u8981\u8a8d\u8b49\uff0c\u8acb\u65bc\u4e0b\u65b9\u8f38\u5165 TP-Link \u6191\u8b49\u3002",
+                "title": "\u8a8d\u8b49"
+            },
+            "discovery_confirm": {
+                "description": "\u662f\u5426\u8981\u8a2d\u5b9a  {name} {model} ({host})\uff1f"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "\u88dd\u7f6e"
+                }
+            },
+            "reauth": {
+                "description": "\u88dd\u7f6e\u9700\u8981\u8a8d\u8b49\uff0c\u8acb\u65bc\u4e0b\u65b9\u8f38\u5165 TP-Link \u6191\u8b49\u3002",
+                "title": "{name} \u8a8d\u8b49\u5df2\u904e\u671f"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u78bc",
+                    "username": "\u4f7f\u7528\u8005\u540d\u7a31"
+                },
+                "description": "\u88dd\u7f6e\u9700\u8981\u8a8d\u8b49\uff0c\u8acb\u65bc\u4e0b\u65b9\u8f38\u5165 TP-Link \u6191\u8b49\u3002",
+                "title": "{name} \u8a8d\u8b49\u5df2\u904e\u671f"
+            },
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u6a5f\u7aef"
+                },
+                "data_description": {
+                    "host": "TP-Link \u88dd\u7f6e\u4e4b\u4e3b\u6a5f\u540d\u7a31\u6216 IP \u4f4d\u5740\u3002"
+                },
+                "description": "\u5047\u5982\u4e3b\u6a5f\u7aef\u4f4d\u5740\u6b04\u4f4d\u70ba\u7a7a\u767d\uff0c\u5c07\u6703\u641c\u7d22\u6240\u6709\u53ef\u7528\u88dd\u7f6e\u3002"
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u78bc",
+                    "username": "\u4f7f\u7528\u8005\u540d\u7a31"
+                },
+                "description": "\u88dd\u7f6e\u9700\u8981\u8a8d\u8b49\uff0c\u8acb\u65bc\u4e0b\u65b9\u8f38\u5165 TP-Link \u6191\u8b49\u3002",
+                "title": "\u8a8d\u8b49"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_child": {
+                "name": "{device_name}\u96fb\u6d41"
+            },
+            "current_consumption": {
+                "name": "\u76ee\u524d\u8017\u80fd"
+            },
+            "current_consumption_child": {
+                "name": "{device_name}\u76ee\u524d\u8017\u80fd"
+            },
+            "today_consumption": {
+                "name": "\u4eca\u65e5\u8017\u80fd"
+            },
+            "today_consumption_child": {
+                "name": "{device_name}\u4eca\u65e5\u8017\u80fd"
+            },
+            "total_consumption": {
+                "name": "\u7e3d\u8017\u80fd"
+            },
+            "total_consumption_child": {
+                "name": "{device_name}\u7e3d\u8017\u80fd"
+            },
+            "voltage_child": {
+                "name": "{device_name}\u96fb\u58d3"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "\u8a2d\u5b9a\u96a8\u6a5f\u7279\u6548\u3002",
+            "fields": {
+                "backgrounds": {
+                    "description": "HSV \u5e8f\u5217\u8868\uff08\u6700\u9ad8 16 \u500b\uff09\u3002",
+                    "name": "\u80cc\u666f"
+                },
+                "brightness": {
+                    "description": "\u521d\u59cb\u4eae\u5ea6\u3002",
+                    "name": "\u4eae\u5ea6"
+                },
+                "brightness_range": {
+                    "description": "\u4eae\u5ea6\u7bc4\u570d\u3002",
+                    "name": "\u4eae\u5ea6\u7bc4\u570d"
+                },
+                "duration": {
+                    "description": "\u6301\u7e8c\u6642\u9593\u3002",
+                    "name": "\u6301\u7e8c\u6642\u9593"
+                },
+                "fadeoff": {
+                    "description": "\u6de1\u51fa\u3002",
+                    "name": "\u6de1\u51fa"
+                },
+                "hue_range": {
+                    "description": "\u8272\u8abf\u7bc4\u570d\u3002",
+                    "name": "\u8272\u8abf\u7bc4\u570d"
+                },
+                "init_states": {
+                    "description": "\u521d\u59cb HSV \u5e8f\u5217\u3002",
+                    "name": "\u521d\u59cb\u72c0\u614b"
+                },
+                "random_seed": {
+                    "description": "\u96a8\u6a5f\u901f\u5ea6\u3002",
+                    "name": "\u96a8\u6a5f\u901f\u5ea6"
+                },
+                "saturation_range": {
+                    "description": "\u98fd\u548c\u5ea6\u7bc4\u570d\u3002",
+                    "name": "\u98fd\u548c\u5ea6\u7bc4\u570d"
+                },
+                "segments": {
+                    "description": "\u5340\u6bb5\u8868\uff080 \u4ee3\u8868\u5168\u90e8\uff09\u3002",
+                    "name": "\u5340\u6bb5"
+                },
+                "transition": {
+                    "description": "\u8f49\u63db\u3002",
+                    "name": "\u8f49\u63db"
+                },
+                "transition_range": {
+                    "description": "\u8f49\u63db\u7bc4\u570d\u3002",
+                    "name": "\u8f49\u63db\u7bc4\u570d"
+                }
+            },
+            "name": "\u96a8\u6a5f\u7279\u6548\u3002"
+        },
+        "sequence_effect": {
+            "description": "\u8a2d\u5b9a\u5e8f\u5217\u7279\u6548\u3002",
+            "fields": {
+                "brightness": {
+                    "description": "\u521d\u59cb\u4eae\u5ea6\u3002",
+                    "name": "\u4eae\u5ea6"
+                },
+                "direction": {
+                    "description": "\u65b9\u5411\u3002",
+                    "name": "\u65b9\u5411"
+                },
+                "duration": {
+                    "description": "\u6301\u7e8c\u6642\u9593\u3002",
+                    "name": "\u6301\u7e8c\u6642\u9593"
+                },
+                "repeat_times": {
+                    "description": "\u91cd\u8907\uff080 \u8868\u793a\u6301\u7e8c\uff09\u3002",
+                    "name": "\u91cd\u8907"
+                },
+                "segments": {
+                    "description": "\u5340\u6bb5\u8868\uff080 \u4ee3\u8868\u5168\u90e8\uff09\u3002",
+                    "name": "\u5340\u6bb5"
+                },
+                "sequence": {
+                    "description": "HSV \u5e8f\u5217\u8868\uff08\u6700\u9ad8 16 \u500b\uff09\u3002",
+                    "name": "\u5e8f\u5217"
+                },
+                "spread": {
+                    "description": "\u50b3\u64ad\u901f\u5ea6\u3002",
+                    "name": "\u50b3\u64ad"
+                },
+                "transition": {
+                    "description": "\u8f49\u63db\u3002",
+                    "name": "\u8f49\u63db"
+                }
+            },
+            "name": "\u5e8f\u5217\u7279\u6548"
+        }
+    }
+}

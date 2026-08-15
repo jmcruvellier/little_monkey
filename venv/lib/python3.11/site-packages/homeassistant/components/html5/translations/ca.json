@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Descarta una notificaci\u00f3 html5.",
+            "fields": {
+                "data": {
+                    "description": "Informaci\u00f3 ampliada de la notificaci\u00f3. Admet etiqueta.",
+                    "name": "Dades"
+                },
+                "target": {
+                    "description": "Llista o 'array' d'objectius.",
+                    "name": "Objectiu"
+                }
+            },
+            "name": "Descarta"
+        }
+    }
+}

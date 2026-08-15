@@ -1,0 +1,98 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "title": "\u6a21\u677f\u4e8c\u8fdb\u5236\u4f20\u611f\u5668"
+            },
+            "sensor": {
+                "data": {
+                    "state": "\u72b6\u6001\u6a21\u677f",
+                    "state_class": "\u72b6\u6001\u7c7b\u522b",
+                    "state_template": "\u72b6\u6001\u6a21\u677f"
+                },
+                "title": "\u6a21\u677f\u4f20\u611f\u5668"
+            },
+            "user": {
+                "title": "\u6a21\u677f\u8f85\u52a9\u5143\u7d20"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "sensor": {
+                "data": {
+                    "state_class": "\u72b6\u6001\u7c7b\u522b"
+                }
+            }
+        }
+    },
+    "selector": {
+        "sensor_device_class": {
+            "options": {
+                "apparent_power": "\u89c6\u5728\u529f\u7387",
+                "aqi": "\u7a7a\u6c14\u8d28\u91cf\u6307\u6570",
+                "atmospheric_pressure": "\u6c14\u538b",
+                "battery": "\u7535\u6c60",
+                "carbon_dioxide": "\u4e8c\u6c27\u5316\u78b3",
+                "carbon_monoxide": "\u4e00\u6c27\u5316\u78b3",
+                "current": "\u7535\u6d41",
+                "data_rate": "\u6570\u636e\u901f\u7387",
+                "data_size": "\u6570\u636e\u5927\u5c0f",
+                "date": "\u6570\u636e",
+                "distance": "\u8ddd\u79bb",
+                "duration": "\u6301\u7eed\u65f6\u95f4",
+                "energy": "\u80fd\u8017",
+                "energy_storage": "\u50a8\u80fd",
+                "frequency": "\u9891\u7387",
+                "gas": "\u71c3\u6c14",
+                "humidity": "\u6e7f\u5ea6",
+                "illuminance": "\u5149\u7167\u5ea6",
+                "irradiance": "\u8f90\u7167\u5ea6",
+                "moisture": "\u6f6e\u6e7f",
+                "monetary": "\u4f59\u989d",
+                "nitrogen_dioxide": "\u4e8c\u6c27\u5316\u6c2e",
+                "nitrogen_monoxide": "\u4e00\u6c27\u5316\u6c2e",
+                "nitrous_oxide": "\u4e00\u6c27\u5316\u4e8c\u6c2e",
+                "ozone": "\u81ed\u6c27",
+                "ph": "pH",
+                "pm1": "PM1",
+                "pm10": "PM10",
+                "pm25": "PM2.5",
+                "power": "\u529f\u7387",
+                "power_factor": "\u529f\u7387\u56e0\u6570",
+                "precipitation": "\u964d\u6c34\u91cf",
+                "precipitation_intensity": "\u964d\u6c34\u5f3a\u5ea6",
+                "pressure": "\u6c14\u538b",
+                "reactive_power": "\u65e0\u529f\u529f\u7387",
+                "signal_strength": "\u4fe1\u53f7\u5f3a\u5ea6",
+                "sound_pressure": "\u58f0\u538b",
+                "speed": "\u901f\u5ea6",
+                "sulphur_dioxide": "\u4e8c\u6c27\u5316\u786b",
+                "temperature": "\u6e29\u5ea6",
+                "timestamp": "\u65f6\u95f4\u6233",
+                "volatile_organic_compounds": "VOCs",
+                "volatile_organic_compounds_parts": "VOCs",
+                "voltage": "\u7535\u538b",
+                "volume": "\u5377",
+                "volume_flow_rate": "\u4f53\u79ef\u6d41\u91cf",
+                "volume_storage": "\u50a8\u5b58\u91cf",
+                "water": "\u6c34",
+                "weight": "\u91cd\u91cf",
+                "wind_speed": "\u98ce\u901f"
+            }
+        },
+        "sensor_state_class": {
+            "options": {
+                "measurement": "\u6d4b\u91cf",
+                "total": "\u603b\u6570",
+                "total_increasing": "\u603b\u589e\u957f"
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "\u4ece YAML \u914d\u7f6e\u91cd\u65b0\u52a0\u8f7d\u6a21\u677f\u5b9e\u4f53\u3002",
+            "name": "\u91cd\u65b0\u52a0\u8f7d"
+        }
+    }
+}

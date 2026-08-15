@@ -1,0 +1,58 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Bereits konfiguriert. Nur eine einzige Konfiguration m\u00f6glich."
+        },
+        "error": {
+            "invalid_ip_address": "Ung\u00fcltige IPv4-Adresse."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "ip_address": "IP-Adresse"
+                },
+                "description": "Empfange Voice-over-IP-Anrufe, um mit Assist zu interagieren."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "call_active": {
+                "name": "Anruf aktiv"
+            },
+            "call_in_progress": {
+                "name": "Laufender Anruf"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assist-Pipeline",
+                "state": {
+                    "preferred": "Bevorzugt"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Zu Ende gesprochen Erkennung",
+                "state": {
+                    "aggressive": "Aggressiv",
+                    "default": "Standard",
+                    "relaxed": "Entspannt"
+                }
+            }
+        },
+        "switch": {
+            "allow_call": {
+                "name": "Anrufe zulassen"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sip_port": "SIP-Port"
+                }
+            }
+        }
+    }
+}

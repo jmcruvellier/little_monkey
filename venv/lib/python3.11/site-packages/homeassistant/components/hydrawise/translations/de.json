@@ -1,0 +1,48 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Der Dienst ist bereits konfiguriert"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "timeout_connect": "Zeit\u00fcberschreitung beim Verbindungsaufbau",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-Schl\u00fcssel"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "watering": {
+                "name": "Bew\u00e4sserung"
+            }
+        },
+        "sensor": {
+            "next_cycle": {
+                "name": "N\u00e4chster Zyklus"
+            },
+            "watering_time": {
+                "name": "Bew\u00e4sserungszeit"
+            }
+        },
+        "switch": {
+            "auto_watering": {
+                "name": "Automatische Bew\u00e4sserung"
+            },
+            "manual_watering": {
+                "name": "Manuelle Bew\u00e4sserung"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue": {
+            "description": "Die Konfiguration von Hydrawise mit YAML wird entfernt, aber beim Importieren deiner YAML-Konfiguration ist ein {error_type}-Fehler aufgetreten. \n\nStelle sicher, dass die Verbindung zu Hydrawise funktioniert, und starte Home Assistant neu, um es erneut zu versuchen, oder entferne die Hydrawise YAML-Konfiguration aus deiner Datei \u201econfiguration.yaml\u201c und fahre mit der manuellen [Einrichtung der Integration] ({url}) fort.",
+            "title": "Der Import der Hydrawise YAML-Konfiguration ist fehlgeschlagen"
+        }
+    }
+}

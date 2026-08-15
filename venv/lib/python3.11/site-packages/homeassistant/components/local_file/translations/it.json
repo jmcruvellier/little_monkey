@@ -1,0 +1,18 @@
+{
+    "services": {
+        "update_file_path": {
+            "description": "Utilizzare questo servizio per modificare il file visualizzato dalla fotocamera.",
+            "fields": {
+                "entity_id": {
+                    "description": "Nome del entity_id della fotocamera da aggiornare.",
+                    "name": "Entit\u00e0"
+                },
+                "file_path": {
+                    "description": "Il percorso completo del nuovo file immagine da visualizzare.",
+                    "name": "Percorso del file"
+                }
+            },
+            "name": "Aggiorna il percorso del file"
+        }
+    }
+}

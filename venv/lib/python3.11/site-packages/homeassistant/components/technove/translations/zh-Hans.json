@@ -1,0 +1,60 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a"
+                },
+                "data_description": {
+                    "host": "\u60a8\u7684TechnoVE\u7ad9\u70b9\u7684\u4e3b\u673a\u540d\u6216IP\u5730\u5740\u3002"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "is_static_ip": {
+                "name": "\u9759\u6001IP"
+            }
+        },
+        "sensor": {
+            "energy_session": {
+                "name": "\u4e0a\u6b21\u4f1a\u8bdd\u7684\u80fd\u6e90\u4f7f\u7528\u60c5\u51b5"
+            },
+            "energy_total": {
+                "name": "\u603b\u80fd\u6e90\u4f7f\u7528\u91cf"
+            },
+            "max_current": {
+                "name": "\u6700\u5927\u7535\u6d41"
+            },
+            "max_station_current": {
+                "name": "\u6700\u5927\u7ad9\u7535\u6d41"
+            },
+            "ssid": {
+                "name": "Wi-Fi \u7f51\u7edc\u540d\u79f0"
+            },
+            "status": {
+                "name": "\u72b6\u6001",
+                "state": {
+                    "plugged_charging": "\u5df2\u63d2\u5165\uff0c\u6b63\u5728\u5145\u7535",
+                    "plugged_waiting": "\u5df2\u63d2\u5165\uff0c\u7b49\u5f85\u4e2d",
+                    "unplugged": "\u5df2\u62d4\u51fa"
+                }
+            },
+            "voltage_in": {
+                "name": "\u8f93\u5165\u7535\u538b"
+            },
+            "voltage_out": {
+                "name": "\u8f93\u51fa\u7535\u538b"
+            }
+        }
+    }
+}

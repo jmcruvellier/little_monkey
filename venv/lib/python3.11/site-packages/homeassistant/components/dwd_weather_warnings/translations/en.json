@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Warncell ID / name is already configured.",
+            "invalid_identifier": "The specified region identifier is invalid."
+        },
+        "error": {
+            "invalid_identifier": "The specified region identifier is invalid."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "region_identifier": "Warncell ID or name"
+                },
+                "description": "To identify the desired region, the warncell ID / name is required."
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "advance_warning_level": {
+                "name": "Advance warning level",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Last update"
+                    },
+                    "region_id": {
+                        "name": "Region ID"
+                    },
+                    "region_name": {
+                        "name": "Region name"
+                    },
+                    "warning_count": {
+                        "name": "Warning count"
+                    }
+                }
+            },
+            "current_warning_level": {
+                "name": "Current warning level",
+                "state_attributes": {
+                    "last_update": {
+                        "name": "Last update"
+                    },
+                    "region_id": {
+                        "name": "Region ID"
+                    },
+                    "region_name": {
+                        "name": "Region name"
+                    },
+                    "warning_count": {
+                        "name": "Warning count"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml": {
+            "description": "Configuring Deutscher Wetterdienst (DWD) Weather Warnings using YAML is being removed.\n\nYour existing YAML configuration has been imported into the UI automatically.\n\nRemove the Deutscher Wetterdienst (DWD) Weather Warnings YAML configuration from your configuration.yaml file and restart Home Assistant to fix this issue.",
+            "title": "The Deutscher Wetterdienst (DWD) Weather Warnings YAML configuration is being removed"
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Teenus on juba seadistatud",
+            "reauth_successful": "Taastuvastamine \u00f5nnestus"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "invalid_api_key": "Vale API v\u00f5ti"
+        },
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_token": "Isiklik API v\u00f5ti"
+                },
+                "description": "Taastuvasta WeatherFlow"
+            },
+            "user": {
+                "data": {
+                    "api_token": "Isiklik API v\u00f5ti"
+                },
+                "description": "Seadista WeatherFlow Forecast Station"
+            }
+        }
+    }
+}

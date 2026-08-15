@@ -1,0 +1,8 @@
+{
+    "issues": {
+        "deprecated_integration": {
+            "description": "{integration_title} wird entfernt, da die Plattform \u201e{mailbox}\u201c entfernt wird und {integration_title} keine anderen Plattformen unterst\u00fctzt. Entferne die Konfiguration \u201e{domain}\u201c aus deiner \u201econfiguration.yaml\u201c-Datei und starte Home Assistant neu, um dieses Problem zu beheben.",
+            "title": "Der {integration_title} wird entfernt"
+        }
+    }
+}

@@ -1,0 +1,46 @@
+{
+    "services": {
+        "set_switch_override": {
+            "description": "Anula el interruptor por una duraci\u00f3n dada.",
+            "fields": {
+                "duration": {
+                    "description": "La duraci\u00f3n de la anulaci\u00f3n. Opcional, predeterminado 1 hora, m\u00e1ximo 24 horas.",
+                    "name": "Duraci\u00f3n"
+                }
+            },
+            "name": "Establecer anulaci\u00f3n del interruptor"
+        },
+        "set_zone_mode": {
+            "description": "Ajusta la zona a un modo de funcionamiento.",
+            "fields": {
+                "entity_id": {
+                    "description": "El entity_id de la zona.",
+                    "name": "Entidad"
+                },
+                "mode": {
+                    "description": "Uno de: apagado, temporizador o huella.",
+                    "name": "Modo"
+                }
+            },
+            "name": "Ajustar el modo de zona"
+        },
+        "set_zone_override": {
+            "description": "Anula la consigna de la zona durante un tiempo determinado.",
+            "fields": {
+                "duration": {
+                    "description": "La duraci\u00f3n de la anulaci\u00f3n. Opcional, predeterminado 1 hora, m\u00e1ximo 24 horas.",
+                    "name": "Duraci\u00f3n"
+                },
+                "entity_id": {
+                    "description": "El entity_id de la zona.",
+                    "name": "Entidad"
+                },
+                "temperature": {
+                    "description": "La temperatura deseada.",
+                    "name": "Temperatura"
+                }
+            },
+            "name": "Ajustar anulaci\u00f3n de zona"
+        }
+    }
+}

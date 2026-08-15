@@ -1,0 +1,28 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Juba seadistatud. V\u00f5imalik on ainult \u00fcks seadistamine.",
+            "already_in_progress": "Seadistamine on juba k\u00e4imas"
+        },
+        "error": {
+            "api_exception": "\u00dchendamine nurjus",
+            "client_connector_error": "\u00dchendamine nurjus",
+            "invalid_ip": "Sobimatu IPv4-aadress",
+            "timeout_error": "\u00dchendamine nurjus"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "IP-aadress",
+                    "model": "Mudel"
+                },
+                "description": "Seadista oma Bang & Olufseni seade k\u00e4sitsi."
+            },
+            "zeroconf_confirm": {
+                "description": "Kinnita {model} - {serial_number} @ {host} konfiguratsioon.",
+                "title": "Seadista Bang & Olufseni seade"
+            }
+        }
+    }
+}

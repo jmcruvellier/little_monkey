@@ -1,0 +1,139 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paskyra jau sukonfig\u016bruota",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "password": "Slapta\u017eodis",
+                    "region": "ConnectedDrive regionas",
+                    "username": "Prisijungimos vardas"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging_status": {
+                "name": "\u012ekrovimo b\u016bsena"
+            },
+            "check_control_messages": {
+                "name": "Patikrinkite valdymo prane\u0161imus"
+            },
+            "condition_based_services": {
+                "name": "S\u0105lygomis pagr\u012fstos paslaugos"
+            },
+            "connection_status": {
+                "name": "Ry\u0161io b\u016bsena"
+            },
+            "door_lock_state": {
+                "name": "Dur\u0173 u\u017erakto b\u016bsena"
+            },
+            "is_pre_entry_climatization_enabled": {
+                "name": "Klimatizacija prie\u0161 \u012fva\u017eiavim\u0105"
+            },
+            "lids": {
+                "name": "Dangteliai"
+            },
+            "windows": {
+                "name": "Langai"
+            }
+        },
+        "button": {
+            "activate_air_conditioning": {
+                "name": "\u012ejunkite oro kondicionieri\u0173"
+            },
+            "find_vehicle": {
+                "name": "Raskite transporto priemon\u0119"
+            },
+            "light_flash": {
+                "name": "Blykst\u0117s lemput\u0117s"
+            },
+            "refresh": {
+                "name": "Atsinaujinkite i\u0161 debesies"
+            },
+            "sound_horn": {
+                "name": "Garso ragas"
+            }
+        },
+        "lock": {
+            "lock": {
+                "name": "U\u017eraktas"
+            }
+        },
+        "number": {
+            "target_soc": {
+                "name": "Tikslin\u0117 SoC"
+            }
+        },
+        "select": {
+            "ac_limit": {
+                "name": "Kintamosios srov\u0117s \u012fkrovimo riba"
+            },
+            "charging_mode": {
+                "name": "\u012ekrovimo re\u017eimas"
+            }
+        },
+        "sensor": {
+            "ac_current_limit": {
+                "name": "Kintamosios srov\u0117s riba"
+            },
+            "charging_end_time": {
+                "name": "\u012ekrovimo pabaigos laikas"
+            },
+            "charging_start_time": {
+                "name": "\u012ekrovimo prad\u017eios laikas"
+            },
+            "charging_status": {
+                "name": "\u012ekrovimo b\u016bsena"
+            },
+            "charging_target": {
+                "name": "\u012ekrovimo tikslas"
+            },
+            "mileage": {
+                "name": "Rida"
+            },
+            "remaining_battery_percent": {
+                "name": "Lik\u0119s akumuliatoriaus procentas"
+            },
+            "remaining_fuel": {
+                "name": "Lik\u0119s kuras"
+            },
+            "remaining_fuel_percent": {
+                "name": "Lik\u0119s degal\u0173 kiekis procentais"
+            },
+            "remaining_range_electric": {
+                "name": "Lik\u0119s elektrinis diapazonas"
+            },
+            "remaining_range_fuel": {
+                "name": "Lik\u0119s degalai"
+            },
+            "remaining_range_total": {
+                "name": "I\u0161 viso lik\u0119s diapazonas"
+            }
+        },
+        "switch": {
+            "charging": {
+                "name": "\u012ekrovimas"
+            },
+            "climate": {
+                "name": "Klimatas"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "account_options": {
+                "data": {
+                    "read_only": "Tik skaitymas (tik jutikliai ir prane\u0161imai, nevykdomos paslaugos, n\u0117ra u\u017erakto)"
+                }
+            }
+        }
+    }
+}

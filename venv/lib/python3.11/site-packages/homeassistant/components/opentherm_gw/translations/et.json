@@ -1,0 +1,195 @@
+{
+    "config": {
+        "error": {
+            "already_configured": "L\u00fc\u00fcs on juba m\u00e4\u00e4ratud",
+            "cannot_connect": "\u00dchendamine nurjus",
+            "id_exists": "L\u00fc\u00fcsi ID on juba olemas",
+            "timeout_connect": "\u00dchenduse loomise ajal\u00f5pp"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "device": "Rada v\u00f5i URL",
+                    "id": "",
+                    "name": "Nimi"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "floor_temperature": "P\u00f5randa temperatuur",
+                    "read_precision": "Lugemi t\u00e4psus",
+                    "set_precision": "M\u00e4\u00e4ra lugemi t\u00e4psus",
+                    "temporary_override_mode": "Ajutine seadepunkti alistamine"
+                }
+            }
+        }
+    },
+    "services": {
+        "reset_gateway": {
+            "description": "L\u00e4htestab OpenTherm Gateway.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                }
+            },
+            "name": "L\u00e4htesta l\u00fc\u00fcs"
+        },
+        "set_central_heating_ovrd": {
+            "description": "M\u00e4\u00e4rab l\u00fc\u00fcsi keskk\u00fctte alistamise valiku. Reguleerimise seadev\u00e4\u00e4rtuse t\u00fchistamisel (teeninduse set_control_setpoint teenusekutse kaudu, mille v\u00e4\u00e4rtus ei ole 0), lubab l\u00fc\u00fcs automaatselt keskk\u00fctte alistamise k\u00fctmise k\u00e4ivitamiseks. Seda teenust saab seej\u00e4rel kasutada keskk\u00fctte t\u00fchistamise oleku juhtimiseks. Keskk\u00fctte juhtimise tagastamiseks termostaadile kutsu teenus set_control_setpoint temperatuuri v\u00e4\u00e4rtusega 0. Seda l\u00e4heb vaja ainult siis, kui kirjutad oma tarkvaratermostaati.\n .",
+            "fields": {
+                "ch_override": {
+                    "description": "Soovitud t\u00f5ev\u00e4\u00e4rtus keskk\u00fctte alistamiseks.",
+                    "name": "Keskk\u00fctte alistamine"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                }
+            },
+            "name": "Keskk\u00fctteseadme alistamine"
+        },
+        "set_clock": {
+            "description": "Seadistab \u00fchendatud termostaadil kellaaja ja n\u00e4dalap\u00e4eva.",
+            "fields": {
+                "date": {
+                    "description": "Valikuline kuup\u00e4ev, millest j\u00e4etakse v\u00e4lja n\u00e4dalap\u00e4ev. Vaikimisi on t\u00e4nane kuup\u00e4ev.",
+                    "name": "Kuup\u00e4ev"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "time": {
+                    "description": "Valikuline aeg 24h formaadis, mis edastatakse termostaadile. Vaikimisi praegune kellaaeg.",
+                    "name": "Kellaaeg"
+                }
+            },
+            "name": "M\u00e4\u00e4ra kellaaeg"
+        },
+        "set_control_setpoint": {
+            "description": "M\u00e4\u00e4rab l\u00fc\u00fcsi keskk\u00fctte reguleerimise seadev\u00e4\u00e4rtuse alistamise. Seda on vaja ainult siis, kui kirjutad oma tarkvaratermostaati.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "temperature": {
+                    "description": "Keskk\u00fctte seadev\u00e4\u00e4rtus, mis tuleb m\u00e4\u00e4rata l\u00fc\u00fcsile. V\u00e4\u00e4rtused vahemikus 0 kuni 90 on aktsepteeritud, kuid mitte k\u00f5ik katlad ei toeta seda vahemikku. V\u00e4\u00e4rtus 0 keelab keskk\u00fctte seadev\u00e4\u00e4rtuse alistamise.\n .",
+                    "name": "Temperatuur"
+                }
+            },
+            "name": "M\u00e4\u00e4ra juhtseadme seadepunkt"
+        },
+        "set_gpio_mode": {
+            "description": "Muudab l\u00fc\u00fcsi GPIO viikude funktsiooni.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "id": {
+                    "description": "GPIO viigu ID.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "GPIO viigui seadistamise re\u017eiim. V\u00e4\u00e4rtused 0 kuni 6 aktsepteeritakse m\u00f5lema GPIO puhul, 7 aktsepteeritakse ainult GPIO \"B\" puhul. V\u00e4\u00e4rtuste selgituse leiad https://www.home-assistant.io/integrations/opentherm_gw/#gpio-modes.\n.",
+                    "name": "Re\u017eiim"
+                }
+            },
+            "name": "M\u00e4\u00e4ra gpio re\u017eiim"
+        },
+        "set_hot_water_ovrd": {
+            "description": "M\u00e4\u00e4rab l\u00fc\u00fcsi sooja tarbevee lubamise valiku.",
+            "fields": {
+                "dhw_override": {
+                    "description": "Juhti sooja tarbevee lubamise v\u00f5imalust. Kui katel on seadistatud nii, et ruumi\u00fcksus saab kontrollida, millal v\u00e4ikest kogust vett eelsoojendada, v\u00f5ib see k\u00e4sk seda m\u00f5jutada. V\u00e4\u00e4rtus peaks olema 0 v\u00f5i 1, et lubada alistamine v\u00e4ljal\u00fclitatud v\u00f5i sissel\u00fclitatud olekus, v\u00f5i \"A\" alistamise keelamiseks.\n.",
+                    "name": "Sooja tarbevee alistamine"
+                },
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                }
+            },
+            "name": "M\u00e4\u00e4ra kuuma vee alistamine"
+        },
+        "set_hot_water_setpoint": {
+            "description": "M\u00e4\u00e4rab l\u00fc\u00fcsi sooja tarbevee seadev\u00e4\u00e4rtuse.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "temperature": {
+                    "description": "Sooja tarbevee s\u00e4ttepunkt, mis tuleb l\u00fc\u00fcsile m\u00e4\u00e4rata. K\u00f5ik katlad ei toeta seda funktsiooni. V\u00e4\u00e4rtused vahemikus 0 kuni 90 on aktsepteeritud, kuid mitte k\u00f5ik katlad ei toeta seda vahemikku. Kontrollige andurite slave_dhw_min_setp ja slave_dhw_max_setp v\u00e4\u00e4rtusi, et n\u00e4ha oma boileri toetatud vahemikku.\n .",
+                    "name": "Temperatuur"
+                }
+            },
+            "name": "M\u00e4\u00e4ra kuuma vee seadepunkt"
+        },
+        "set_led_mode": {
+            "description": "Muudab l\u00fc\u00fcsi LED-ide funktsiooni.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "id": {
+                    "description": "LED-i ID.",
+                    "name": "ID"
+                },
+                "mode": {
+                    "description": "Funktsioon, mis m\u00e4\u00e4ratakse LED-ile. Vt https://www.home-assistant.io/integrations/opentherm_gw/#led-modes v\u00e4\u00e4rtuste selgitamiseks.\n.",
+                    "name": "Re\u017eiim"
+                }
+            },
+            "name": "LED-re\u017eiimi seadistamine"
+        },
+        "set_max_modulation": {
+            "description": "Alistab maksimaalse suhtelise modulatsiooni taseme. Seda on vaja ainult siis kui kirjutad oma tarkvaratermostaati.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "level": {
+                    "description": "L\u00fc\u00fcsile esitatav modulatsioonitase. Siseste v\u00e4\u00e4rtus -1, et t\u00fchistada \u00fclekirjutus ja lugeda v\u00e4\u00e4rtus termostaadilt.\n .",
+                    "name": "Tase"
+                }
+            },
+            "name": "M\u00e4\u00e4ra maksimaalne modulatsioon"
+        },
+        "set_outside_temperature": {
+            "description": "Esitab termostaadile v\u00e4listemperatuuri. Kui termostaat ei suuda kuvada v\u00e4listemperatuuri ega toeta OTC-d (v\u00e4listemperatuuri korrigeerimist), pole sellel mingit m\u00f5ju.\n .",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "temperature": {
+                    "description": "Termostaadile esitatav temperatuur. V\u00e4\u00e4rtused vahemikus -40,0 kuni 64,0 aktsepteeritakse, kuid mitte k\u00f5ik termostaadid ei suuda kuvada kogu vahemikku. Iga v\u00e4\u00e4rtus, mis on suurem kui 64,0, kustutab eelnevalt konfigureeritud v\u00e4\u00e4rtuse (soovitus: 99)\n .",
+                    "name": "Temperatuur"
+                }
+            },
+            "name": "M\u00e4\u00e4ra v\u00e4listemperatuur"
+        },
+        "set_setback_temperature": {
+            "description": "M\u00e4\u00e4rab alandatud temperatuuri, mida kasutatakse GPIO eemalolekure\u017eiimi funktsiooniga.",
+            "fields": {
+                "gateway_id": {
+                    "description": "OpenTherm Gateway l\u00fc\u00fcsi ID.",
+                    "name": "L\u00fc\u00fcsi ID"
+                },
+                "temperature": {
+                    "description": "L\u00fc\u00fcsis seaditatav alandustemperatuur.",
+                    "name": "Temperatuur"
+                }
+            },
+            "name": "M\u00e4\u00e4ra alandatav temperatuur"
+        }
+    }
+}

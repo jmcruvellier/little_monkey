@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispositivo j\u00e1 configurado"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "nearest_dist_to_zone": {
+                "name": "Dist\u00e2ncia mais pr\u00f3xima"
+            }
+        }
+    },
+    "issues": {
+        "tracked_entity_removed": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "A entidade rastreada foi removida"
+                    }
+                }
+            },
+            "title": "A entidade rastreada foi removida"
+        }
+    },
+    "title": "Proximidade"
+}

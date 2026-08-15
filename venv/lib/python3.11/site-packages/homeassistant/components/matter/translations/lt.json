@@ -1,0 +1,83 @@
+{
+    "config": {
+        "abort": {
+            "addon_get_discovery_info_failed": "Nepavyko gauti \u201eMatter Server\u201c priedo aptikimo informacijos.",
+            "addon_info_failed": "Nepavyko gauti \u201eMatter Server\u201c priedo informacijos.",
+            "addon_install_failed": "Nepavyko \u012fdiegti \u201eMatter Server\u201c priedo.",
+            "addon_start_failed": "Nepavyko paleisti \u201eMatter Server\u201c priedo.",
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "already_in_progress": "Konfig\u016bracijos procesas jau vyksta",
+            "not_matter_addon": "Atrastas priedas n\u0117ra oficialus \u201eMatter Server\u201c priedas.",
+            "reconfiguration_successful": "Matter integravimas s\u0117kmingai sukonfig\u016bruotas."
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_server_version": "Matter serverio versija n\u0117ra tinkama",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "flow_title": "{name}",
+        "progress": {
+            "install_addon": "Palaukite, kol bus baigtas \u201eMatter Server\u201c priedo diegimas. Tai gali u\u017etrukti kelias minutes.",
+            "start_addon": "Palaukite, kol prasid\u0117s \u201eMatter Server\u201c priedas. \u0160is priedas suteikia gali\u0105 \u201eMatter in Home Assistant\u201c. Tai gali u\u017etrukti kelias sekundes."
+        },
+        "step": {
+            "hassio_confirm": {
+                "title": "Nustatykite \u201eMatter\u201c integracij\u0105 naudodami \u201eMatter Server\u201c pried\u0105"
+            },
+            "install_addon": {
+                "title": "Prad\u0117tas priedo diegimas"
+            },
+            "manual": {
+                "data": {
+                    "url": "URL"
+                }
+            },
+            "on_supervisor": {
+                "data": {
+                    "use_addon": "Naudokite oficial\u0173 \u201eMatter Server Supervisor\u201c pried\u0105"
+                },
+                "description": "Ar norite naudoti oficial\u0173 \u201eMatter Server Supervisor\u201c pried\u0105? \n\n Jei jau naudojate \u201eMatter Server\u201c kitame priede, pasirinktiniame konteineryje, savaime ir pan., nepasirinkite \u0161ios parinkties.",
+                "title": "Pasirinkite prisijungimo b\u016bd\u0105"
+            },
+            "start_addon": {
+                "title": "Paleid\u017eiamas priedas."
+            }
+        }
+    },
+    "entity": {
+        "event": {
+            "push": {
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "initial_press": "Pradinis spaudimas",
+                            "long_press": "Ilgas paspaudimas",
+                            "long_release": "Ilgas i\u0161leidimas",
+                            "multi_press_complete": "Daugkartinis paspaudimas baigtas",
+                            "multi_press_ongoing": "Daugkartinis paspaudimas baigtas",
+                            "short_release": "Trumpas leidimas",
+                            "switch_latched": "U\u017erakintas jungiklis"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "flow": {
+                "name": "Srautas"
+            }
+        }
+    },
+    "services": {
+        "open_commissioning_window": {
+            "description": "Leid\u017eia prid\u0117ti vien\u0105 i\u0161 j\u016bs\u0173 \u012frengini\u0173 prie kito \u201eMatter\u201c tinklo, atidarius \u0161io \u201eMatter\u201c \u012frenginio paleidimo lang\u0105 60 sekund\u017ei\u0173.",
+            "fields": {
+                "device_id": {
+                    "description": "\u201eMatter\u201c \u012frenginys, kur\u012f norite prid\u0117ti prie kito \u201eMatter\u201c tinklo.",
+                    "name": "\u012erenginys"
+                }
+            },
+            "name": "Atidarykite paleidimo lang\u0105"
+        }
+    }
+}

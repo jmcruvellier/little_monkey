@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "Bir html5 bildirimini iptal eder.",
+            "fields": {
+                "data": {
+                    "description": "Geni\u015fletilmi\u015f bildirim bilgisi. Etiketi destekler.",
+                    "name": "Veri"
+                },
+                "target": {
+                    "description": "Bir dizi hedef.",
+                    "name": "Hedef"
+                }
+            },
+            "name": "Yoksay"
+        }
+    }
+}

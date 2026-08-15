@@ -1,0 +1,57 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "invalid_auth": "Autenticaci\u00f3 inv\u00e0lida"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Contrasenya"
+                },
+                "description": "La integraci\u00f3 Honeywell ha de tornar a autenticar-se amb el teu compte",
+                "title": "L'autenticaci\u00f3 de {name} ha caducat"
+            },
+            "user": {
+                "data": {
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                },
+                "description": "Introdueix les credencials utilitzades per iniciar sessi\u00f3 a mytotalconnectcomfort.com."
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "honeywell": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "away": "A fora",
+                            "none": "Cap"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "outdoor_humidity": {
+                "name": "Humitat exterior"
+            },
+            "outdoor_temperature": {
+                "name": "Temperatura exterior"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "away_cool_temperature": "Temperatura freda, mode fora",
+                    "away_heat_temperature": "Temperatura calenta, mode fora"
+                },
+                "description": "Opcions addicionals de configuraci\u00f3 de Honeywell. Les temperatures es configuren en Fahrenheit."
+            }
+        }
+    }
+}

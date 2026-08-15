@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "A fi\u00f3k m\u00e1r konfigur\u00e1lva van"
+        },
+        "error": {
+            "invalid_credentials": "\u00c9rv\u00e9nytelen hiteles\u00edt\u00e9s",
+            "unknown": "V\u00e1ratlan hiba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API kulcs",
+                    "api_user": "Habitica API felhaszn\u00e1l\u00f3i azonos\u00edt\u00f3ja",
+                    "name": "A Habitica felhaszn\u00e1l\u00f3n\u00e9v fel\u00fcl\u00edr\u00e1sa. A szolg\u00e1ltat\u00e1si h\u00edv\u00e1sokhoz lesz haszn\u00e1lva",
+                    "url": "URL"
+                },
+                "description": "Csatlakoztassa Habitica-profilj\u00e1t, hogy figyelemmel k\u00eds\u00e9rhesse felhaszn\u00e1l\u00f3i profilj\u00e1t \u00e9s feladatait. Ne feledje, hogy az api_id \u00e9s api_key adatokat a https://habitica.com/user/settings/api webhelyr\u0151l kell beszerezni"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Megh\u00edvja a Habitica API-t.",
+            "fields": {
+                "args": {
+                    "description": "B\u00e1rmilyen tov\u00e1bbi JSON vagy URL param\u00e9ter argumentum. L\u00e1sd az eml\u00edtett apidoc-ot az \u00fatvonalhoz. A p\u00e9lda ugyanazt az API v\u00e9gpontot haszn\u00e1lja.",
+                    "name": "Argumentumok"
+                },
+                "name": {
+                    "description": "Habitica felhaszn\u00e1l\u00f3n\u00e9v az API h\u00edv\u00e1s\u00e1hoz.",
+                    "name": "Elnevez\u00e9s"
+                },
+                "path": {
+                    "description": "Az API URL-c\u00edmb\u0151l sz\u00e1rmaz\u00f3 elemek t\u00f6mb form\u00e1j\u00e1ban, a v\u00e9g\u00e9n csatolt met\u00f3dussal. Keresse fel a https://habitica.com/apidoc/ weboldalt. P\u00e9lda a haszn\u00e1latra: https://habitica.com/apidoc/#api-Task-CreateUserTasks",
+                    "name": "\u00datvonal"
+                }
+            },
+            "name": "API neve"
+        }
+    }
+}

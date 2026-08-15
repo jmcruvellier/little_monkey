@@ -1,0 +1,48 @@
+{
+    "services": {
+        "clear_sleep_timer": {
+            "description": "\u6e05\u9664 Bluesound \u5b9a\u65f6\u5668\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u5c06\u6e05\u9664\u5b9a\u65f6\u5668\u7684\u5b9e\u4f53\u7684\u540d\u79f0\u3002",
+                    "name": "\u5b9e\u4f53"
+                }
+            },
+            "name": "\u6e05\u9664\u7761\u7720\u5b9a\u65f6\u5668"
+        },
+        "join": {
+            "description": "\u5c06\u73a9\u5bb6\u5206\u7ec4\u5728\u4e00\u8d77\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u5c06\u534f\u8c03\u5206\u7ec4\u7684\u5b9e\u4f53\u7684\u540d\u79f0\u3002\u5e73\u53f0\u76f8\u5173\u3002",
+                    "name": "\u5b9e\u4f53"
+                },
+                "master": {
+                    "description": "\u5e94\u6210\u4e3a\u7fa4\u7ec4\u4e3b\u4eba\u7684\u73a9\u5bb6\u7684\u5b9e\u4f53 ID\u3002",
+                    "name": "\u4e3b\u4eba"
+                }
+            },
+            "name": "\u52a0\u5165"
+        },
+        "set_sleep_timer": {
+            "description": "\u8bbe\u7f6e Bluesound \u5b9a\u65f6\u5668\u3002\u5b83\u5c06\u6309\u6b65\u957f\u589e\u52a0\u5b9a\u65f6\u5668\uff1a15\u300130\u300145\u300160\u300190\u30010\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u5c06\u8bbe\u7f6e\u5b9a\u65f6\u5668\u7684\u5b9e\u4f53\u7684\u540d\u79f0\u3002",
+                    "name": "\u5b9e\u4f53"
+                }
+            },
+            "name": "\u8bbe\u7f6e\u7761\u7720\u5b9a\u65f6\u5668"
+        },
+        "unjoin": {
+            "description": "\u5c06\u73a9\u5bb6\u4ece\u7fa4\u7ec4\u4e2d\u53d6\u6d88\u52a0\u5165\u3002",
+            "fields": {
+                "entity_id": {
+                    "description": "\u5c06\u4ece\u5176\u7ec4\u4e2d\u53d6\u6d88\u52a0\u5165\u7684\u5b9e\u4f53\u7684\u540d\u79f0\u3002\u5e73\u53f0\u76f8\u5173\u3002",
+                    "name": "\u5b9e\u4f53"
+                }
+            },
+            "name": "\u53d6\u6d88\u52a0\u5165"
+        }
+    }
+}

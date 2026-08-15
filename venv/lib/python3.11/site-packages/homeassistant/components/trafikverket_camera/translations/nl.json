@@ -1,0 +1,41 @@
+{
+    "config": {
+        "step": {
+            "multiple_cameras": {
+                "data": {
+                    "id": "Kies camera"
+                }
+            },
+            "user": {
+                "data": {
+                    "api_key": "API-sleutel",
+                    "location": "Locatie"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "active": {
+                "name": "Actief"
+            }
+        },
+        "camera": {
+            "tv_camera": {
+                "state_attributes": {
+                    "description": {
+                        "name": "Omschrijving"
+                    },
+                    "location": {
+                        "name": "Locatie"
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "status": {
+                "name": "Status"
+            }
+        }
+    }
+}

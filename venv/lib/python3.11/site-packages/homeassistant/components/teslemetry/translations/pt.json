@@ -1,0 +1,30 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "A liga\u00e7\u00e3o falhou",
+            "invalid_access_token": "Token de acesso inv\u00e1lido",
+            "unknown": "Erro inesperado"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "access_token": "Token de Acesso"
+                }
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "driver_temp": {
+                "name": "Climatiza\u00e7\u00e3o",
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "off": "Normal"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

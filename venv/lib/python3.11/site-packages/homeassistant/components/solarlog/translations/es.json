@@ -1,0 +1,93 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado"
+        },
+        "error": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado",
+            "cannot_connect": "No se pudo conectar"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "name": "El prefijo que se usar\u00e1 para tus sensores Solar-Log"
+                },
+                "data_description": {
+                    "host": "El nombre de host o la direcci\u00f3n IP de tu dispositivo Solar-Log."
+                },
+                "title": "Define tu conexi\u00f3n Solar-Log"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "alternator_loss": {
+                "name": "P\u00e9rdida del alternador"
+            },
+            "capacity": {
+                "name": "Capacidad"
+            },
+            "consumption_ac": {
+                "name": "Consumo CA"
+            },
+            "consumption_day": {
+                "name": "Consumo en el d\u00eda"
+            },
+            "consumption_month": {
+                "name": "Consumo en el mes"
+            },
+            "consumption_total": {
+                "name": "Consumo total"
+            },
+            "consumption_year": {
+                "name": "Consumo en el a\u00f1o"
+            },
+            "consumption_yesterday": {
+                "name": "Consumo ayer"
+            },
+            "efficiency": {
+                "name": "Eficiencia"
+            },
+            "last_update": {
+                "name": "\u00daltima actualizaci\u00f3n"
+            },
+            "power_ac": {
+                "name": "Potencia CA"
+            },
+            "power_available": {
+                "name": "Potencia disponible"
+            },
+            "power_dc": {
+                "name": "Potencia CC"
+            },
+            "total_power": {
+                "name": "Potencia m\u00e1xima instalada"
+            },
+            "usage": {
+                "name": "Uso"
+            },
+            "voltage_ac": {
+                "name": "Voltaje CA"
+            },
+            "voltage_dc": {
+                "name": "Voltaje CC"
+            },
+            "yield_day": {
+                "name": "Rendimiento en el d\u00eda"
+            },
+            "yield_month": {
+                "name": "Rendimiento en el mes"
+            },
+            "yield_total": {
+                "name": "Rendimiento total"
+            },
+            "yield_year": {
+                "name": "Rendimiento en el a\u00f1o"
+            },
+            "yield_yesterday": {
+                "name": "Rendimiento ayer"
+            }
+        }
+    }
+}

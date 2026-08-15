@@ -1,0 +1,25 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u914d\u7f6e",
+            "success": "\u4fee\u6539\u5df2\u4fdd\u5b58"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "dist_to_zone": {
+                "name": "{tracked_entity}\u8ddd\u79bb"
+            },
+            "nearest_dir_of_travel": {
+                "name": "\u51fa\u884c\u7684\u6700\u8fd1\u65b9\u5411",
+                "state": {
+                    "arrived": "\u5df2\u5230\u8fbe"
+                }
+            },
+            "nearest_dist_to_zone": {
+                "name": "\u6700\u8fd1\u8ddd\u79bb"
+            }
+        }
+    },
+    "title": "\u8ddd\u79bb"
+}

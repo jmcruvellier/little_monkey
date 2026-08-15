@@ -1,0 +1,12 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Kalender",
+            "state": {
+                "off": "Af",
+                "on": "Aan"
+            }
+        }
+    },
+    "title": "Kalender"
+}

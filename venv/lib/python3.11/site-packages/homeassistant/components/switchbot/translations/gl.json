@@ -1,0 +1,9 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "motion": {
+                "name": "Movemento"
+            }
+        }
+    }
+}

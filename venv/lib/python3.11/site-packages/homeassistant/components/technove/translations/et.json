@@ -1,0 +1,81 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud",
+            "cannot_connect": "\u00dchendamine nurjus"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "TechnoVE jaama hostinimi v\u00f5i IP-aadress."
+                },
+                "description": "Seadista oma TechnoVE jaam Home Assistantiga sidumiseks."
+            },
+            "zeroconf_confirm": {
+                "description": "Kas soovid lisada TechnoVE jaama nimega ` {name} ` Home Assistantile?",
+                "title": "Avastati TechnoVE jaam"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "conflict_in_sharing_config": {
+                "name": "Konflikt toite jagamise re\u017eiimiga"
+            },
+            "in_sharing_mode": {
+                "name": "Toite jagamise re\u017eiim"
+            },
+            "is_battery_protected": {
+                "name": "Aku on kaitstud"
+            },
+            "is_static_ip": {
+                "name": "Staatiline IP"
+            }
+        },
+        "sensor": {
+            "energy_session": {
+                "name": "Viimase seansi energiakasutus"
+            },
+            "energy_total": {
+                "name": "Energiakasutus kokku"
+            },
+            "max_current": {
+                "name": "Maksimaalne voolutugevus"
+            },
+            "max_station_current": {
+                "name": "Maksimaalne laadimisvool"
+            },
+            "ssid": {
+                "name": "Wi-Fi v\u00f5rgu nimi"
+            },
+            "status": {
+                "name": "Olek",
+                "state": {
+                    "high_charge_period": "K\u00f5rge laadimise periood",
+                    "out_of_activation_period": "V\u00e4ljaspool aktiveerimisperioodi",
+                    "plugged_charging": "\u00dchendatud, laeb",
+                    "plugged_waiting": "\u00dchendatud, ootel",
+                    "unplugged": "Lahti \u00fchendatud"
+                }
+            },
+            "voltage_in": {
+                "name": "Sisendpinge"
+            },
+            "voltage_out": {
+                "name": "V\u00e4ljundpinge"
+            }
+        },
+        "switch": {
+            "auto_charge": {
+                "name": "Automaatne laadimine"
+            }
+        }
+    }
+}

@@ -1,0 +1,188 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9",
+            "no_devices_found": "V sieti sa nena\u0161li \u017eiadne zariadenia",
+            "reauth_successful": "Op\u00e4tovn\u00e9 overenie bolo \u00faspe\u0161n\u00e9"
+        },
+        "error": {
+            "cannot_connect": "Chyba pripojenia: {error}",
+            "invalid_auth": "Neplatn\u00e9 overenie: {error}"
+        },
+        "flow_title": "{name} {model} ({host})",
+        "step": {
+            "discovery_auth_confirm": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                },
+                "description": "Zariadenie vy\u017eaduje overenie, zadajte svoje prihlasovacie \u00fadaje TP-Link ni\u017e\u0161ie.",
+                "title": "Overenie"
+            },
+            "discovery_confirm": {
+                "description": "Chcete nastavi\u0165 {name} {model} ({host})?"
+            },
+            "pick_device": {
+                "data": {
+                    "device": "Zariadenie"
+                }
+            },
+            "reauth": {
+                "description": "Zariadenie vy\u017eaduje overenie, zadajte svoje prihlasovacie \u00fadaje TP-Link ni\u017e\u0161ie.",
+                "title": "Vypr\u0161ala platnos\u0165 overenia pre {name}"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                },
+                "description": "Zariadenie vy\u017eaduje overenie, zadajte svoje prihlasovacie \u00fadaje TP-Link ni\u017e\u0161ie.",
+                "title": "Vypr\u0161ala platnos\u0165 overenia pre {name}"
+            },
+            "user": {
+                "data": {
+                    "host": "Hostite\u013e"
+                },
+                "data_description": {
+                    "host": "N\u00e1zov hostite\u013ea alebo IP adresa zariadenia TP-Link."
+                },
+                "description": "Ak nech\u00e1te hostite\u013ea pr\u00e1zdneho, na vyh\u013ead\u00e1vanie zariaden\u00ed sa pou\u017eije zis\u0165ovanie."
+            },
+            "user_auth_confirm": {
+                "data": {
+                    "password": "Heslo",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                },
+                "description": "Zariadenie vy\u017eaduje overenie, zadajte svoje prihlasovacie \u00fadaje TP-Link ni\u017e\u0161ie.",
+                "title": "Overenie"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "current_child": {
+                "name": "{device_name} pr\u00fad"
+            },
+            "current_consumption": {
+                "name": "Aktu\u00e1lna spotreba"
+            },
+            "current_consumption_child": {
+                "name": "{device_name} aktu\u00e1lna spotreba"
+            },
+            "today_consumption": {
+                "name": "Dne\u0161n\u00e1 spotreba"
+            },
+            "today_consumption_child": {
+                "name": "{device_name} dne\u0161n\u00e1 spotreba"
+            },
+            "total_consumption": {
+                "name": "Celkov\u00e1 spotreba"
+            },
+            "total_consumption_child": {
+                "name": "{device_name} celkov\u00e1 spotreba"
+            },
+            "voltage_child": {
+                "name": "{device_name} nap\u00e4tie"
+            }
+        },
+        "switch": {
+            "led": {
+                "name": "LED"
+            }
+        }
+    },
+    "services": {
+        "random_effect": {
+            "description": "Nastav\u00ed n\u00e1hodn\u00fd efekt.",
+            "fields": {
+                "backgrounds": {
+                    "description": "Zoznam sekvenci\u00ed HSV (Max 16).",
+                    "name": "Pozadia"
+                },
+                "brightness": {
+                    "description": "Po\u010diato\u010dn\u00fd jas.",
+                    "name": "Jas"
+                },
+                "brightness_range": {
+                    "description": "Rozsah jasu.",
+                    "name": "Rozsah jasu"
+                },
+                "duration": {
+                    "description": "Trvanie.",
+                    "name": "Trvanie"
+                },
+                "fadeoff": {
+                    "description": "Zmizn\u00fa\u0165.",
+                    "name": "Zmiznutie"
+                },
+                "hue_range": {
+                    "description": "Rozsah odtie\u0148ov.",
+                    "name": "Rozsah odtie\u0148ov"
+                },
+                "init_states": {
+                    "description": "Po\u010diato\u010dn\u00e1 sekvencia HSV.",
+                    "name": "Po\u010diato\u010dn\u00e9 stavy"
+                },
+                "random_seed": {
+                    "description": "N\u00e1hodn\u00e9 plnenie.",
+                    "name": "N\u00e1hodn\u00e9 osivo"
+                },
+                "saturation_range": {
+                    "description": "Rozsah s\u00fdtosti.",
+                    "name": "Rozsah s\u00fdtosti"
+                },
+                "segments": {
+                    "description": "Zoznam segmentov (0 pre v\u0161etky).",
+                    "name": "Segmenty"
+                },
+                "transition": {
+                    "description": "Prechod.",
+                    "name": "Prechod"
+                },
+                "transition_range": {
+                    "description": "Rozsah prechodu.",
+                    "name": "Rozsah prechodu"
+                }
+            },
+            "name": "N\u00e1hodn\u00fd efekt"
+        },
+        "sequence_effect": {
+            "description": "Nastav\u00ed efekt sekvencie.",
+            "fields": {
+                "brightness": {
+                    "description": "Po\u010diato\u010dn\u00fd jas.",
+                    "name": "Jas"
+                },
+                "direction": {
+                    "description": "Smer.",
+                    "name": "Smer"
+                },
+                "duration": {
+                    "description": "Trvanie.",
+                    "name": "Trvanie"
+                },
+                "repeat_times": {
+                    "description": "Opakovania (0 pre nepretr\u017eit\u00fa prev\u00e1dzku).",
+                    "name": "Opakovania"
+                },
+                "segments": {
+                    "description": "Zoznam segmentov (0 pre v\u0161etky).",
+                    "name": "Segmenty"
+                },
+                "sequence": {
+                    "description": "Zoznam sekvenci\u00ed HSV (Max 16).",
+                    "name": "Sekvencia"
+                },
+                "spread": {
+                    "description": "R\u00fdchlos\u0165 \u0161\u00edrenia.",
+                    "name": "Roz\u0161\u00edrenie"
+                },
+                "transition": {
+                    "description": "Prechod.",
+                    "name": "Prechod"
+                }
+            },
+            "name": "Efekt sekvencie"
+        }
+    }
+}

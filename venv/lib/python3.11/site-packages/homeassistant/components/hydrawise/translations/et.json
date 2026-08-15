@@ -1,0 +1,48 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Teenus on juba seadistatud"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "timeout_connect": "\u00dchenduse loomise ajal\u00f5pp",
+            "unknown": "Ootamatu t\u00f5rge"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API v\u00f5ti"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "watering": {
+                "name": "Kastmine"
+            }
+        },
+        "sensor": {
+            "next_cycle": {
+                "name": "J\u00e4rgmine ts\u00fckkel"
+            },
+            "watering_time": {
+                "name": "Kastmise aeg"
+            }
+        },
+        "switch": {
+            "auto_watering": {
+                "name": "Automaatne kastmine"
+            },
+            "manual_watering": {
+                "name": "K\u00e4sitsi kastmine"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue": {
+            "description": "Hydrawise'i konfigureerimine YAML-i abil eemaldatakse, kuid YAML-i konfiguratsiooni importimisel ilmnes viga {error_type}.\n\nVeenduge, et \u00fchendus Hydrawise'iga t\u00f6\u00f6tab ja taask\u00e4ivitage Home Assistant, et proovida uuesti v\u00f5i eemaldada Hydrawise YAML-i konfiguratsioon failist configuration.yaml ja j\u00e4tkata [integratsiooni seadistamist]({url}) k\u00e4sitsi.",
+            "title": "Hydrawise YAML-i konfiguratsiooni importimine nurjus"
+        }
+    }
+}

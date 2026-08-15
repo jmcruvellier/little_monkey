@@ -1,0 +1,127 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Ja configurat. Nom\u00e9s \u00e9s possible una sola configuraci\u00f3."
+        }
+    },
+    "exceptions": {
+        "service_not_found": {
+            "message": "No s'ha trobat {domain}.{service}."
+        }
+    },
+    "issues": {
+        "config_entry_only": {
+            "description": "La integraci\u00f3 {domain} no admet la configuraci\u00f3 mitjan\u00e7ant fitxer YAML. \u00c9s possible que no notis cap problema evident amb la integraci\u00f3, per\u00f2 cap configuraci\u00f3 definida en YAML s'aplica realment.\n\nPer resoldre aix\u00f2: \n\n1. Si encara no ho has fet, [configura la integraci\u00f3]({add_integration}). \n\n2. Elimina `{domain}:` del teu fitxer de configuraci\u00f3 YAML. \n\n3. Reinicia Home Assistant.",
+            "title": "La integraci\u00f3 {domain} no admet la configuraci\u00f3 via YAML"
+        },
+        "config_entry_reauth": {
+            "title": "L'autenticaci\u00f3 de {name} ha caducat"
+        },
+        "country_not_configured": {
+            "description": "No s'ha configurat cap pa\u00eds, si us plau, actualitza la configuraci\u00f3 fent clic al bot\u00f3 \"m\u00e9s informaci\u00f3\" a continuaci\u00f3.",
+            "title": "El pa\u00eds no s'ha configurat"
+        },
+        "deprecated_yaml": {
+            "description": "La configuraci\u00f3 de {integration_title} mitjan\u00e7ant YAML s'eliminar\u00e0 de Home Assistant.\n\nLa configuraci\u00f3 YAML existent s'ha importat autom\u00e0ticament a la interf\u00edcie d'usuari.\n\nElimina la configuraci\u00f3 YAML de `{domain}` del fitxer configuration.yaml i reinicia Home Assistant per solucionar aquest problema.",
+            "title": "La configuraci\u00f3 YAML de {integration_title} est\u00e0 sent eliminada"
+        },
+        "historic_currency": {
+            "description": "El valor de moneda {currency} ja no s'utilitza, modifica la configuraci\u00f3 del valor de moneda.",
+            "title": "El valor de moneda configurat ja no s'utilitza"
+        },
+        "integration_key_no_support": {
+            "description": "La integraci\u00f3 {domain} no admet la configuraci\u00f3 mitjan\u00e7ant fitxer YAML. \u00c9s possible que no notis cap problema evident amb la integraci\u00f3, per\u00f2 cap configuraci\u00f3 definida en YAML s'aplica realment.\n\nPer resoldre aix\u00f2: \n\n1. Si encara no ho has fet, [configura la integraci\u00f3]({add_integration}). \n\n2. Elimina `{domain}:` del teu fitxer de configuraci\u00f3 YAML. \n\n3. Reinicia Home Assistant.",
+            "title": "La integraci\u00f3 {domain} no admet la configuraci\u00f3 via YAML"
+        },
+        "no_platform_setup": {
+            "description": "No \u00e9s possible configurar {platform} {domain} afegint `{platform_key}` a la configuraci\u00f3 de {domain}. Consulta la documentaci\u00f3 per a m\u00e9s informaci\u00f3 sobre com configurar aquesta integraci\u00f3.\n\nPer resoldre aix\u00f2:\n1. Elimina `{platform_key}` de la configuraci\u00f3 de `{domain}`: al fitxer de configuraci\u00f3 YAML.\n2. Reinicia Home Assistant. \n\nExemple del que caldria eliminar:\n{yaml_example}\n",
+            "title": "Configuraci\u00f3 YAML per a la integraci\u00f3 {platform} no utilitzada"
+        },
+        "platform_only": {
+            "description": "La integraci\u00f3 {domain} no admet la configuraci\u00f3 amb la seva pr\u00f2pia clau o entreada, s'ha de configurar a trav\u00e9s de les plataformes compatibles. \n\nPer resoldre aix\u00f2: \n\n1. Elimina `{domain}:` del teu fitxer de configuraci\u00f3 YAML. \n\n2. Reinicia Home Assistant.",
+            "title": "La integraci\u00f3 {domain} no admet la configuraci\u00f3 via YAML amb la seva pr\u00f2pia clau o entrada"
+        },
+        "python_version": {
+            "description": "La versi\u00f3 actual de Python {current_python_version} est\u00e0 obsoleta per funcionar amb Home Assistant i s'eliminar\u00e0 a Home Assistant {breaks_in_ha_version}. Si us plau, actualitza Python a la versi\u00f3 {required_python_version} per evitar que la teva inst\u00e0ncia de Home Assistant s'espatlli.",
+            "title": "S'est\u00e0 eliminant la compatibilitat amb Python {current_python_version}"
+        },
+        "storage_corruption": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "L'emmagatzematge `{storage_key}` no s'ha pogut analitzar i s'ha canviat el nom a `{corrupt_path}` per permetre que Home Assistant continu\u00ef. \n\n\u00c9s possible que s'hagi creat autom\u00e0ticament un `{storage_key}` predeterminat. \n\nSi has fet modificacions manuals al fitxer d'emmagatzematge, corregeix els errors de sintaxi a `{corrupt_path}`, restaura el fitxer al cam\u00ed original `{original_path}` i reinicia Home Assistant. En cas contrari, restaura el sistema des d'una c\u00f2pia de seguretat. \n\nFes clic a ENVIAR a continuaci\u00f3 per confirmar que has reparat el fitxer o has restaurat a partir d'una c\u00f2pia de seguretat. \n\nL'error exacte ha sigut el seg\u00fcent: {error}",
+                        "title": "S'ha detectat una corrupci\u00f3 d'emmagatzematge de `{storage_key}`"
+                    }
+                }
+            },
+            "title": "S'ha detectat una corrupci\u00f3 d'emmagatzematge de `{storage_key}`"
+        }
+    },
+    "services": {
+        "reload_all": {
+            "description": "Torna a carregar tota la configuraci\u00f3 YAML que es pugui actualitzar sense reiniciar Home Assistant.",
+            "name": "Torna a carregar-ho tot"
+        },
+        "reload_config_entry": {
+            "description": "Recarrega l'entrada de configuraci\u00f3 especificada."
+        },
+        "reload_core_config": {
+            "description": "Recarrega la configuraci\u00f3 del nucli des de la configuraci\u00f3 YAML."
+        },
+        "restart": {
+            "fields": {
+                "safe_mode": {
+                    "description": "Desactiva integracions i targetes personalitzades.",
+                    "name": "Mode segur"
+                }
+            },
+            "name": "Reinicia"
+        },
+        "set_location": {
+            "fields": {
+                "elevation": {
+                    "description": "Altitud de la seva ubicaci\u00f3.",
+                    "name": "Altitud"
+                },
+                "latitude": {
+                    "name": "Latitud"
+                },
+                "longitude": {
+                    "name": "Longitud"
+                }
+            }
+        },
+        "stop": {
+            "name": "Atura"
+        },
+        "toggle": {
+            "description": "Servei gen\u00e8ric per commutar (ON/OFF) dispositius de qualsevol domini.",
+            "name": "Commutaci\u00f3 gen\u00e8rica"
+        },
+        "turn_off": {
+            "description": "Servei gen\u00e8ric per desactivar/apagar dispositius de qualsevol domini.",
+            "name": "Desactivaci\u00f3 gen\u00e8rica"
+        },
+        "turn_on": {
+            "description": "Servei gen\u00e8ric per activar/engegar dispositius de qualsevol domini.",
+            "name": "Activaci\u00f3 gen\u00e8rica"
+        }
+    },
+    "system_health": {
+        "info": {
+            "arch": "Arquitectura de la CPU",
+            "config_dir": "Directori de configuraci\u00f3",
+            "dev": "Desenvolupador",
+            "docker": "Docker",
+            "hassio": "Supervisor",
+            "installation_type": "Tipus d'instal\u00b7laci\u00f3",
+            "os_name": "Fam\u00edlia del sistema operatiu",
+            "os_version": "Versi\u00f3 del sistema operatiu",
+            "python_version": "Versi\u00f3 de Python",
+            "timezone": "Zona hor\u00e0ria",
+            "user": "Usuari",
+            "version": "Versi\u00f3",
+            "virtualenv": "Entorn virtual"
+        }
+    }
+}

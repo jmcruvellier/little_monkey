@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86"
+        },
+        "error": {
+            "cannot_connect": "\u8fde\u63a5\u5931\u8d25",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef"
+        },
+        "flow_title": "{name} ({host})",
+        "step": {
+            "link": {
+                "description": "\u60a8\u8981\u8bbe\u7f6e {name} ({host})\u5417\uff1f",
+                "title": "\u8fde\u63a5\u5230 PowerView Hub"
+            },
+            "user": {
+                "data": {
+                    "host": "IP \u5730\u5740"
+                },
+                "data_description": {
+                    "api_version": "API \u7248\u672c\u662f\u53ef\u68c0\u6d4b\u7684\uff0c\u4f46\u60a8\u53ef\u4ee5\u8986\u76d6\u548c\u5f3a\u5236\u6267\u884c\u7279\u5b9a\u7248\u672c"
+                },
+                "title": "\u8fde\u63a5\u5230 PowerView Hub"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "signal_strength": {
+                "name": "\u4fe1\u53f7\u5f3a\u5ea6"
+            }
+        }
+    }
+}

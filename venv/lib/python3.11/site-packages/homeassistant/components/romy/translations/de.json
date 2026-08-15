@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert",
+            "cannot_connect": "Verbindung fehlgeschlagen"
+        },
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_auth": "Ung\u00fcltige Authentifizierung"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "password": {
+                "data": {
+                    "password": "Passwort"
+                },
+                "data_description": {
+                    "password": "(8 Zeichen, siehe QR-Code unter der M\u00fclltonne)."
+                },
+                "title": "Passwort erforderlich"
+            },
+            "user": {
+                "data": {
+                    "host": "Host"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "M\u00f6chtest du den ROMY-Staubsauger {name} zum Home Assistant hinzuf\u00fcgen?"
+            }
+        }
+    },
+    "entity": {
+        "vacuum": {
+            "romy": {
+                "state_attributes": {
+                    "fan_speed": {
+                        "state": {
+                            "auto": "Automatisch",
+                            "default": "Standard",
+                            "high": "Hoch",
+                            "intensive": "Intensiv",
+                            "normal": "Normal",
+                            "silent": "Leise",
+                            "super_silent": "Super leise"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

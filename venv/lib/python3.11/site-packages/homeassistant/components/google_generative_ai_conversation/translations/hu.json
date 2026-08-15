@@ -1,0 +1,48 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Sikertelen csatlakoz\u00e1s",
+            "invalid_auth": "\u00c9rv\u00e9nytelen hiteles\u00edt\u00e9s",
+            "unknown": "V\u00e1ratlan hiba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API kulcs"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "A v\u00e1laszk\u00e9nt visszak\u00fcldhet\u0151 tokenek maxim\u00e1lis sz\u00e1ma",
+                    "model": "Modell",
+                    "prompt": "V\u00e1lasz sablon",
+                    "temperature": "H\u0151m\u00e9rs\u00e9klet",
+                    "top_k": "Fels\u0151 K",
+                    "top_p": "Fels\u0151 P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_content": {
+            "description": "Sz\u00f6vegb\u0151l \u00e9s opcion\u00e1lisan k\u00e9pekb\u0151l \u00e1ll\u00f3 feladatb\u00f3l tartalmat gener\u00e1l",
+            "fields": {
+                "image_filename": {
+                    "description": "K\u00e9pek",
+                    "example": "/config/www/image.jpg",
+                    "name": "K\u00e9pf\u00e1jl neve"
+                },
+                "prompt": {
+                    "description": "A feladat",
+                    "example": "\u00cdrja le, mit l\u00e1t ezeken a k\u00e9peken",
+                    "name": "Feladat"
+                }
+            },
+            "name": "Tartalom gener\u00e1l\u00e1sa"
+        }
+    }
+}

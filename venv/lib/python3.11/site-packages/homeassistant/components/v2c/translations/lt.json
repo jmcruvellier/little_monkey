@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "J\u016bs\u0173 V2C Trydan EVSE pagrindinio kompiuterio pavadinimas arba IP adresas."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "\u012ekrovimas"
+            },
+            "connected": {
+                "name": "Prisijungta"
+            },
+            "ready": {
+                "name": "Paruo\u0161ta"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intensyvumas"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "\u012ekraukite energij\u0105"
+            },
+            "charge_power": {
+                "name": "\u012ekrovimo galia"
+            },
+            "charge_time": {
+                "name": "\u012ekrovimo laikas"
+            },
+            "fv_power": {
+                "name": "Fotovoltin\u0117 galia"
+            },
+            "house_power": {
+                "name": "Namo galia"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "Dinaminis intensyvumo moduliavimas"
+            },
+            "locked": {
+                "name": "U\u017erakinti EVSE"
+            },
+            "pause_dynamic": {
+                "name": "Pristabdyti dinaminio valdymo moduliavim\u0105"
+            },
+            "paused": {
+                "name": "Pristabdyti sesij\u0105"
+            },
+            "timer": {
+                "name": "\u012ekrovimo ta\u0161ko laikmatis"
+            }
+        }
+    }
+}

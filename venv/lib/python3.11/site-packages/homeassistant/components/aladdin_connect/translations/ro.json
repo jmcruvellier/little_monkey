@@ -1,0 +1,37 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispozitivul a fost configurat deja",
+            "reauth_successful": "Re-autentificarea s-a realizat cu succes"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_auth": "Autentificare nevalid\u0103"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Parola"
+                },
+                "description": "Integrarea Aladdin Connect trebuie s\u0103 \u00ee\u021bi autentifice din nou contul",
+                "title": "Re-autentificare integrare"
+            },
+            "user": {
+                "data": {
+                    "password": "Parola",
+                    "username": "Utilizator"
+                }
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ble_strength": {
+                "name": "Putere BLE"
+            },
+            "wifi_strength": {
+                "name": "RSSI Wi-Fi"
+            }
+        }
+    }
+}

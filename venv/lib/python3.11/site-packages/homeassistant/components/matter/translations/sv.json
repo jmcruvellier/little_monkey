@@ -1,0 +1,83 @@
+{
+    "config": {
+        "abort": {
+            "addon_get_discovery_info_failed": "Det gick inte att h\u00e4mta identifieringsinformation f\u00f6r Matter Server-till\u00e4gget.",
+            "addon_info_failed": "Misslyckades ta emot till\u00e4ggsinformation f\u00f6r Matter-server.",
+            "addon_install_failed": "Misslyckades att installera Matter Server-till\u00e4gget.",
+            "addon_start_failed": "Misslyckades att starta Matter Server-till\u00e4gget.",
+            "already_configured": "Enheten \u00e4r redan konfigurerad",
+            "already_in_progress": "Konfigurationsfl\u00f6det p\u00e5g\u00e5r redan",
+            "not_matter_addon": "Uppt\u00e4ckt till\u00e4gg \u00e4r inte det officiella Matter Server-till\u00e4gget.",
+            "reconfiguration_successful": "Lyckades \u00e5terkonfigurera Matter-integrationen."
+        },
+        "error": {
+            "cannot_connect": "Det gick inte att ansluta.",
+            "invalid_server_version": "Matter server \u00e4r inte r\u00e4tt version",
+            "unknown": "Ov\u00e4ntat fel"
+        },
+        "flow_title": "{name}",
+        "progress": {
+            "install_addon": "V\u00e4nligen v\u00e4nta n\u00e4r installationen av Matter Server-till\u00e4gget slutf\u00f6rs. Detta kan ta flera minuter.",
+            "start_addon": "V\u00e4nligen v\u00e4nta n\u00e4r Matter Server-till\u00e4gget startas. Detta till\u00e4gget \u00e4r det som ger kraft till Matter i Home Assistant. Detta kan ta n\u00e5gra sekunder."
+        },
+        "step": {
+            "hassio_confirm": {
+                "title": "St\u00e4ll in Matter-konfigurationen med Matter-server till\u00e4gget."
+            },
+            "install_addon": {
+                "title": "Installationen av till\u00e4gget har startat"
+            },
+            "manual": {
+                "data": {
+                    "url": "URL"
+                }
+            },
+            "on_supervisor": {
+                "data": {
+                    "use_addon": "Anv\u00e4nd det officiella till\u00e4gget f\u00f6r Matter Server"
+                },
+                "description": "Vill du anv\u00e4nde det officiella till\u00e4gget f\u00f6r Matter-server?\n\nOm du redan k\u00f6r Matter-server i ett annat till\u00e4gg, i en anpassad container, eller p\u00e5 annat s\u00e4tt., ska du inte v\u00e4lja detta alternativ.",
+                "title": "V\u00e4lj anslutningsmetod"
+            },
+            "start_addon": {
+                "title": "Startar add-on."
+            }
+        }
+    },
+    "entity": {
+        "event": {
+            "push": {
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "initial_press": "Inledande tryck",
+                            "long_press": "L\u00e5ng tryckning",
+                            "long_release": "L\u00e5ngt uppsl\u00e4pp",
+                            "multi_press_complete": "Multipress slutf\u00f6rt",
+                            "multi_press_ongoing": "Multipress p\u00e5g\u00e5r",
+                            "short_release": "Kort uppsl\u00e4pp",
+                            "switch_latched": "Brytare l\u00e5st"
+                        }
+                    }
+                }
+            }
+        },
+        "sensor": {
+            "flow": {
+                "name": "Fl\u00f6de"
+            }
+        }
+    },
+    "services": {
+        "open_commissioning_window": {
+            "description": "Till\u00e5ter att du l\u00e4gger till en av dina enheter i ett annat Matter-n\u00e4tverk genom att \u00f6ppna drifts\u00e4ttningsf\u00f6nstret f\u00f6r denna Matter-enhet i 60 sekunder.",
+            "fields": {
+                "device_id": {
+                    "description": "Den Matter-enhet som ska l\u00e4ggas till i det andra Matter-n\u00e4tverket.",
+                    "name": "Enhet"
+                }
+            },
+            "name": "\u00d6ppna drifts\u00e4ttningsf\u00f6nstret"
+        }
+    }
+}

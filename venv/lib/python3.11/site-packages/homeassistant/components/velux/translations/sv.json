@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reboot_gateway": {
+            "description": "Startar om KLF200 Gateway.",
+            "name": "Starta om gateway"
+        }
+    }
+}

@@ -1,0 +1,69 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Cihaz zaten yap\u0131land\u0131r\u0131lm\u0131\u015f",
+            "reauth_successful": "Yeniden kimlik do\u011frulama ba\u015far\u0131l\u0131 oldu"
+        },
+        "error": {
+            "cannot_connect": "Ba\u011flanma hatas\u0131",
+            "invalid_auth": "Ge\u00e7ersiz kimlik do\u011frulama",
+            "invalid_charset": "Belirtilen karakter desteklenmiyor",
+            "invalid_folder": "Se\u00e7ilen klas\u00f6r ge\u00e7ersiz",
+            "invalid_search": "Se\u00e7ilen arama ge\u00e7ersiz",
+            "ssl_error": "Bir SSL hatas\u0131 olu\u015ftu. SSL \u015fifre listesini de\u011fi\u015ftirin ve tekrar deneyin."
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u015eifre"
+                },
+                "description": "{username} \u015fifresi ge\u00e7ersiz.",
+                "title": "{name} i\u00e7in kimlik do\u011frulaman\u0131n s\u00fcresi doldu"
+            },
+            "user": {
+                "data": {
+                    "charset": "Karakter seti",
+                    "folder": "Klas\u00f6r",
+                    "password": "\u015eifre",
+                    "port": "Port",
+                    "search": "IMAP aramas\u0131",
+                    "server": "Sunucu",
+                    "ssl_cipher_list": "SSL \u015fifre listesi (Geli\u015fmi\u015f)",
+                    "username": "Kullan\u0131c\u0131 Ad\u0131",
+                    "verify_ssl": "SSL sertifikas\u0131n\u0131 do\u011frulay\u0131n"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "already_configured": "Bu klas\u00f6r ve arama se\u00e7eneklerine sahip bir giri\u015f zaten var.",
+            "cannot_connect": "Ba\u011flanma hatas\u0131",
+            "invalid_auth": "Ge\u00e7ersiz kimlik do\u011frulama",
+            "invalid_charset": "Belirtilen karakter desteklenmiyor",
+            "invalid_folder": "Se\u00e7ilen klas\u00f6r ge\u00e7ersiz",
+            "invalid_search": "Se\u00e7ilen arama ge\u00e7ersiz",
+            "invalid_template": "Ge\u00e7ersiz \u015fablon"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "custom_event_data_template": "\u00d6zel etkinlik verileri olu\u015fturmak i\u00e7in \u015fablon",
+                    "enable_push": "Sunucu destekliyorsa, Push-IMAP'yi etkinle\u015ftirin. Push-IMAP g\u00fcncellemeleri g\u00fcvenilir de\u011filse kapat\u0131n.",
+                    "folder": "Klas\u00f6r",
+                    "max_message_size": "Maksimum mesaj boyutu (2048 < boyut < 30000)",
+                    "search": "IMAP aramas\u0131"
+                }
+            }
+        }
+    },
+    "selector": {
+        "ssl_cipher_list": {
+            "options": {
+                "intermediate": "Orta d\u00fczey \u015fifreler",
+                "modern": "Modern \u015fifreler",
+                "python_default": "Varsay\u0131lan ayarlar"
+            }
+        }
+    }
+}

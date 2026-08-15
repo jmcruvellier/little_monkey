@@ -1,0 +1,31 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Apparaat is al geconfigureerd"
+        },
+        "error": {
+            "invalid_auth": "Ongeldige authenticatie",
+            "unknown": "Onverwachte fout"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Wachtwoord"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "Wachtwoord",
+                    "username": "Gebruikersnaam"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "keypad_disabled": {
+                "name": "Toetsenbord uitgeschakeld"
+            }
+        }
+    }
+}

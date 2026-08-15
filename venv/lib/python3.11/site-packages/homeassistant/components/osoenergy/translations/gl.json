@@ -1,0 +1,20 @@
+{
+    "config": {
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_key": "Clave API"
+                },
+                "description": "Xera e introduce unha nova 'Chave de Subscrici\u00f3n' para a t\u00faa conta en 'https://portal.osoenergy.no/'.",
+                "title": "Autorizaci\u00f3n de OSO Energy"
+            },
+            "user": {
+                "data": {
+                    "api_key": "Clave API"
+                },
+                "description": "Introduce a 'Chave de Subscrici\u00f3n' xerada para a t\u00faa conta en 'https://portal.osoenergy.no/'",
+                "title": "Autorizaci\u00f3n de OSO Energy"
+            }
+        }
+    }
+}

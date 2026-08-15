@@ -1,0 +1,63 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "\u00c9chec de connexion",
+            "invalid_auth": "Authentification non valide",
+            "unknown": "Erreur inattendue"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Cl\u00e9 d'API"
+                }
+            }
+        }
+    },
+    "issues": {
+        "image_size_deprecated_format": {
+            "description": "OpenAI utilise maintenant Dall-E 3 pour g\u00e9n\u00e9rer des images lors de l'appel \u00e0 `openai_conversation.generate_image`, qui supporte diff\u00e9rentes tailles. Les valeurs valides sont maintenant \"1024x1024\", \"1024x1792\", \"1792x1024\". Les anciennes valeurs \"256\", \"512\", \"1024\" sont actuellement interpr\u00e9t\u00e9es comme \"1024x1024\".\nVeuillez mettre \u00e0 jour vos scripts ou automatismes avec les nouveaux param\u00e8tres.",
+            "title": "Format de taille obsol\u00e8te pour le service de g\u00e9n\u00e9ration d'images"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Nombre maximal de jetons \u00e0 renvoyer en r\u00e9ponse",
+                    "model": "Mod\u00e8le d'ach\u00e8vement",
+                    "prompt": "Mod\u00e8le du prompt",
+                    "temperature": "Temp\u00e9rature"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_image": {
+            "description": "Transformez un prompt en image",
+            "fields": {
+                "config_entry": {
+                    "description": "Param\u00e8tre de configuration \u00e0 utiliser pour ce service",
+                    "name": "Param\u00e8tre de configurationEntr\u00e9e de configuration"
+                },
+                "prompt": {
+                    "description": "Le texte \u00e0 transformer en image",
+                    "example": "Une photo d'un chien",
+                    "name": "Prompt"
+                },
+                "quality": {
+                    "description": "La qualit\u00e9 de l'image qui sera g\u00e9n\u00e9r\u00e9e",
+                    "name": "Qualit\u00e9"
+                },
+                "size": {
+                    "description": "Taille de l'image \u00e0 g\u00e9n\u00e9rer",
+                    "name": "Taille"
+                },
+                "style": {
+                    "description": "Le style de l'image g\u00e9n\u00e9r\u00e9e",
+                    "name": "Style"
+                }
+            },
+            "name": "G\u00e9n\u00e9rer une image"
+        }
+    }
+}

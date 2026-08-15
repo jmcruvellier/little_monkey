@@ -1,0 +1,12 @@
+{
+    "entity": {
+        "sensor": {
+            "status": {
+                "state": {
+                    "high_charge_period": "Periodo di carica elevato",
+                    "out_of_activation_period": "Periodo di attivazione scaduto"
+                }
+            }
+        }
+    }
+}

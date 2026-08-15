@@ -1,0 +1,64 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Failed to connect",
+            "invalid_auth": "Invalid authentication",
+            "unknown": "Unexpected error"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API key"
+                }
+            }
+        }
+    },
+    "issues": {
+        "image_size_deprecated_format": {
+            "description": "OpenAI is now using Dall-E 3 to generate images when calling `openai_conversation.generate_image`, which supports different sizes. Valid values are now \"1024x1024\", \"1024x1792\", \"1792x1024\". The old values of \"256\", \"512\", \"1024\" are currently interpreted as \"1024x1024\".\nPlease update your scripts or automations with the new parameters.",
+            "title": "Deprecated size format for image generation service"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Maximum tokens to return in response",
+                    "model": "Completion Model",
+                    "prompt": "Prompt Template",
+                    "temperature": "Temperature",
+                    "top_p": "Top P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_image": {
+            "description": "Turn a prompt into an image",
+            "fields": {
+                "config_entry": {
+                    "description": "The config entry to use for this service",
+                    "name": "Config Entry"
+                },
+                "prompt": {
+                    "description": "The text to turn into an image",
+                    "example": "A photo of a dog",
+                    "name": "Prompt"
+                },
+                "quality": {
+                    "description": "The quality of the image that will be generated",
+                    "name": "Quality"
+                },
+                "size": {
+                    "description": "The size of the image to generate",
+                    "name": "Size"
+                },
+                "style": {
+                    "description": "The style of the generated image",
+                    "name": "Style"
+                }
+            },
+            "name": "Generate image"
+        }
+    }
+}

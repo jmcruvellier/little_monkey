@@ -1,0 +1,82 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Automatisierung",
+            "state": {
+                "off": "Aus",
+                "on": "An"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Laufende Automatisierungen"
+                },
+                "id": {
+                    "name": "ID"
+                },
+                "last_triggered": {
+                    "name": "Zuletzt ausgel\u00f6st"
+                },
+                "max": {
+                    "name": "Maximal laufende Automatisierungen"
+                },
+                "mode": {
+                    "name": "Ausf\u00fchrungsmodus",
+                    "state": {
+                        "parallel": "Parallel",
+                        "queued": "In Warteschlange",
+                        "restart": "Neu starten",
+                        "single": "Einzeln"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "service_not_found": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "Die Automatisierung \u201e{name}\u201c (\u201e{entity_id}\u201c) hat eine Aktion, die einen unbekannten Dienst aufruft: \u201e{service}\u201c.\n\nDieser Fehler verhindert, dass die Automatisierung ordnungsgem\u00e4\u00df ausgef\u00fchrt wird. Vielleicht ist dieser Dienst nicht mehr verf\u00fcgbar oder vielleicht hat ein Tippfehler ihn verursacht.\n\nUm diesen Fehler zu beheben, [bearbeite die Automatisierung]({edit}) und entferne die Aktion, die diesen Dienst aufruft.\n\nDr\u00fccke unten auf SENDEN, um zu best\u00e4tigen, dass du diese Automatisierung korrigiert hast.",
+                        "title": "{name} verwendet einen unbekannten Dienst"
+                    }
+                }
+            },
+            "title": "{name} verwendet einen unbekannten Dienst"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "L\u00e4dt die Automatisierungskonfiguration neu.",
+            "name": "Neu laden"
+        },
+        "toggle": {
+            "description": "Schaltet eine Automatisierung um (aktivieren / deaktivieren).",
+            "name": "Umschalten"
+        },
+        "trigger": {
+            "description": "L\u00f6st die Aktionen einer Automatisierung aus.",
+            "fields": {
+                "skip_condition": {
+                    "description": "Legt fest, ob die Bedingungen \u00fcbersprungen werden sollen oder nicht.",
+                    "name": "Bedingungen \u00fcberspringen"
+                }
+            },
+            "name": "Ausl\u00f6sen"
+        },
+        "turn_off": {
+            "description": "Deaktiviert eine Automatisierung.",
+            "fields": {
+                "stop_actions": {
+                    "description": "Stoppt aktuell ausgef\u00fchrte Aktionen.",
+                    "name": "Aktionen stoppen"
+                }
+            },
+            "name": "Ausschalten"
+        },
+        "turn_on": {
+            "description": "Aktiviert eine Automatisierung",
+            "name": "Einschalten"
+        }
+    },
+    "title": "Automatisierung"
+}

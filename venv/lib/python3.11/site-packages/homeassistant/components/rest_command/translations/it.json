@@ -1,0 +1,19 @@
+{
+    "exceptions": {
+        "client_error": {
+            "message": "Si \u00e8 verificato un errore durante la richiesta della risorsa '{request_url}'"
+        },
+        "decoding_error": {
+            "message": "Non \u00e8 stato possibile decodificare la risposta di '{request_url}' come {decoding_type}"
+        },
+        "timeout": {
+            "message": "Timeout durante la richiesta della risorsa '{request_url}'"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Ricarica i comandi RESTful dalla configurazione YAML.",
+            "name": "Ricarica"
+        }
+    }
+}

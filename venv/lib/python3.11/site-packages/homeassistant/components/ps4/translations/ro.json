@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispozitivul a fost configurat deja",
+            "credential_error": "Eroare la preluarea datelor de conectare.",
+            "no_devices_found": "Nu s-au descoperit dispozitive in re\u021bea",
+            "port_987_bind_error": "Nu s-a putut lega de portul 987. Consult\u0103 [documenta\u021bia](https://www.home-assistant.io/components/ps4/) pentru informa\u021bii suplimentare.",
+            "port_997_bind_error": "Nu s-a putut lega de portul 997. Consult\u0103 [documenta\u021bia](https://www.home-assistant.io/components/ps4/) pentru informa\u021bii suplimentare."
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "credential_timeout": "Serviciul de acreditare a expirat. Apas\u0103 butonul pentru a reporni.",
+            "login_failed": "Nu s-a putut asocia PlayStation 4. Verific\u0103 dac\u0103 este corect codul PIN.",
+            "no_ipaddress": "Introdu adresa IP a PlayStation 4 pe care dore\u0219ti s\u0103-l configurezi."
+        },
+        "step": {
+            "creds": {
+                "description": "Sunt necesare date de autentificare. Apas\u0103 pe \"Trimite\", apoi \u00een aplica\u021bia PS4 2nd Screen, re\u00eencarc\u0103 dispozitivele \u0219i \u0219i selecteaz\u0103 dispozitivul \"Home-Assistant\" pentru a continua."
+            },
+            "link": {
+                "data": {
+                    "code": "Cod PIN",
+                    "ip_address": "Adresa IP",
+                    "name": "Nume",
+                    "region": "Regiune"
+                },
+                "data_description": {
+                    "code": "Mergi la 'Settings' pe consola ta PlayStation 4. Apoi la 'Mobile App Connection Settings' \u0219i selecteaz\u0103 'Add Device' pentru a ob\u021bine PIN-ul."
+                }
+            },
+            "mode": {
+                "data": {
+                    "ip_address": "Adres\u0103 IP (Las\u0103 necompletat dac\u0103 folose\u0219ti descoperirea automat\u0103).",
+                    "mode": "Mod configurare"
+                },
+                "data_description": {
+                    "ip_address": "Las\u0103 necompletat dac\u0103 utilizezi descoperirea automat\u0103."
+                }
+            }
+        }
+    }
+}

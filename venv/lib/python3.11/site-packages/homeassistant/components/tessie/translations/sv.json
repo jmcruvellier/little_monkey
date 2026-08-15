@@ -1,0 +1,12 @@
+{
+    "config": {
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "access_token": "\u00c5tkomstnyckel"
+                },
+                "title": "Autentiseringen har upph\u00f6rt att g\u00e4lla f\u00f6r {name}"
+            }
+        }
+    }
+}

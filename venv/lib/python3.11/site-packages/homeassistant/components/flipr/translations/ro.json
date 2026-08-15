@@ -1,0 +1,57 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispozitivul a fost configurat deja"
+        },
+        "error": {
+            "cannot_connect": "A e\u0219uat conectarea",
+            "invalid_auth": "Autentificare nevalid\u0103",
+            "no_flipr_id_found": "Deocamdat\u0103 nu este asociat niciun id flipr contului t\u0103u. Ar trebui s\u0103 verifici mai \u00eent\u00e2i dac\u0103 func\u021bioneaz\u0103 cu aplica\u021bia mobil\u0103 Flipr.",
+            "unknown": "Eroare nea\u0219teptat\u0103"
+        },
+        "step": {
+            "flipr_id": {
+                "data": {
+                    "flipr_id": "ID Flipr"
+                },
+                "description": "Alege ID-ul t\u0103u Flipr din list\u0103",
+                "title": "Alege Flipr-ul t\u0103u"
+            },
+            "user": {
+                "data": {
+                    "email": "E-mail",
+                    "password": "Parola"
+                },
+                "description": "Conectare cu cont Flipr",
+                "title": "Conectare la Flipr"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "chlorine_status": {
+                "name": "Starea clorului"
+            },
+            "ph_status": {
+                "name": "Starea pH-ului"
+            }
+        },
+        "sensor": {
+            "chlorine": {
+                "name": "Clor"
+            },
+            "last_measured": {
+                "name": "Ultima m\u0103sur\u0103toare"
+            },
+            "ph": {
+                "name": "pH"
+            },
+            "red_ox": {
+                "name": "Red OX"
+            },
+            "water_temperature": {
+                "name": "Temperatura apei"
+            }
+        }
+    }
+}

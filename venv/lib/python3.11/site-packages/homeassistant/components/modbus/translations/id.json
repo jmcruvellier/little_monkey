@@ -1,0 +1,86 @@
+{
+    "issues": {
+        "deprecated_close_comm_config": {
+            "description": "Hapus kunci `{config_key}` dari entri {integration} di file `configuration.yaml` Anda dan mulai ulang Home Assistant untuk memperbaiki masalah ini. Semua kesalahan akan dilaporkan, karena `lazy_error_count` dapat diterima namun diabaikan.",
+            "title": "Kunci konfigurasi `{config_key}` dalam proses penghapusan"
+        },
+        "deprecated_retry_on_empty": {
+            "description": "Hapus kunci `{config_key}` dari entri {integration} di file configuration.yaml Anda dan mulai ulang Home Assistant untuk memperbaiki masalah ini.\n\nCoba lagi saat kosong secara otomatis diterapkan, lihat [dokumentasi]({url}) untuk parameter penanganan kesalahan lainnya.",
+            "title": "Kunci konfigurasi `{config_key}` dalam proses penghapusan"
+        },
+        "removed_lazy_error_count": {
+            "description": "Hapus kunci `{config_key}` dari entri {integration} di file configuration.yaml Anda dan mulai ulang Home Assistant untuk memperbaiki masalah ini. Semua kesalahan akan dilaporkan, karena lazy_error_count dapat diterima namun diabaikan",
+            "title": "Kunci konfigurasi `{config_key}` dalam proses penghapusan"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Memuat ulang semua entitas modbus.",
+            "name": "Muat Ulang"
+        },
+        "restart": {
+            "description": "Memulai ulang hub modbus (jika sedang berjalan, hentikan lalu mulai).",
+            "fields": {
+                "hub": {
+                    "description": "Nama hub Modbus.",
+                    "name": "Hub"
+                }
+            },
+            "name": "Mulai Ulang"
+        },
+        "stop": {
+            "description": "Menghentikan hub modbus.",
+            "fields": {
+                "hub": {
+                    "description": "Nama hub Modbus.",
+                    "name": "Hub"
+                }
+            },
+            "name": "Hentikan"
+        },
+        "write_coil": {
+            "description": "Menulis ke koil modbus.",
+            "fields": {
+                "address": {
+                    "description": "Alamat register yang akan ditulis.",
+                    "name": "Alamat"
+                },
+                "hub": {
+                    "description": "Nama hub Modbus.",
+                    "name": "Hub"
+                },
+                "slave": {
+                    "description": "Alamat unit modbus/slave.",
+                    "name": "Slave"
+                },
+                "state": {
+                    "description": "Status untuk ditulis.",
+                    "name": "Status"
+                }
+            },
+            "name": "Tulis koil"
+        },
+        "write_register": {
+            "description": "Menulis ke register penampung modbus.",
+            "fields": {
+                "address": {
+                    "description": "Alamat register penampung yang akan ditulis.",
+                    "name": "Alamat"
+                },
+                "hub": {
+                    "description": "Nama hub Modbus.",
+                    "name": "Hub"
+                },
+                "slave": {
+                    "description": "Alamat unit modbus/slave.",
+                    "name": "Slave"
+                },
+                "value": {
+                    "description": "Nilai (nilai tunggal atau array) yang akan ditulis.",
+                    "name": "Nilai"
+                }
+            },
+            "name": "Register tulis"
+        }
+    }
+}

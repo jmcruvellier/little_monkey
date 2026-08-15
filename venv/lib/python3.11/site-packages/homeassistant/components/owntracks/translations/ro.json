@@ -1,0 +1,17 @@
+{
+    "config": {
+        "abort": {
+            "cloud_not_connected": "Neconectat la Home Assistant Cloud.",
+            "single_instance_allowed": "Deja configurat. Doar o singur\u0103 configurare este posibil\u0103."
+        },
+        "create_entry": {
+            "default": "\n\nPe Android, deschide [aplica\u021bia OwnTracks]({android_url}), mergi la Preferences -> Connection. Schimb\u0103 urm\u0103toarele set\u0103ri:\n - Mode: Private HTTP\n - Host: {webhook_url}\n - Identification:\n   - Username: `'<Your name>'`\n   - Device ID: `'<Your device name>'`\n\nPe iOS, deschide [aplica\u021bia OwnTracks]({ios_url}), apas\u0103 pictograma (i) din col\u021bul de st\u00e2nga sus -> Settings. Schimb\u0103 urm\u0103toarele set\u0103ri:\n - Mode: HTTP\n - URL: {webhook_url}\n - Turn on authentication\n - UserID: `'<Your name>'`\n\n{secret}\n\nConsult\u0103 [documenta\u021bia]({docs_url}) pentru detalii adi\u021bionale."
+        },
+        "step": {
+            "user": {
+                "description": "Sigur dore\u0219ti s\u0103 configurezi OwnTracks?",
+                "title": "Configureaz\u0103 OwnTracks"
+            }
+        }
+    }
+}

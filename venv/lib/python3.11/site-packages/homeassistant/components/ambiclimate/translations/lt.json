@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Ne\u017einoma klaida generuojant prieigos prieigos rakt\u0105.",
+            "already_configured": "Paskyra jau sukonfig\u016bruota",
+            "missing_configuration": "Komponentas nesukonfig\u016bruotas. Pra\u0161ome vadovautis dokumentacija."
+        },
+        "create_entry": {
+            "default": "S\u0117kmingai autentifikuota"
+        },
+        "error": {
+            "follow_link": "Sekite nuorod\u0105 ir patvirtinkite savo tapatyb\u0119 prie\u0161 paspausdami Pateikti",
+            "no_token": "Nepatvirtinta naudojant Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "Pra\u0161ome sekti \u0161ia [nuoroda]({authorization_url}) ir **leisti** prieig\u0105 prie savo \"Ambiclimate\" paskyros, tada gr\u012f\u017ekite ir paspauskite **Pateikti** toliau.\n(\u012esitikinkite, kad nurodytas gr\u012f\u017etamojo ry\u0161io URL yra {cb_url})",
+                "title": "Autentifikuoti Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Visos \u201eAmbiclimate\u201c paslaugos bus nutrauktos 2024 m. kovo 31 d., nes \u201eAmbi Labs\u201c nutrauks verslo veikl\u0105, o \u201eAmbiclimate\u201c integracija bus pa\u0161alinta i\u0161 \u201eHome Assistant\u201c. \n\n Nor\u0117dami i\u0161spr\u0119sti \u0161i\u0105 problem\u0105, pa\u0161alinkite integravimo \u012fra\u0161us i\u0161 nam\u0173 asistento s\u0105rankos. [Spustel\u0117kite \u010dia, kad pamatytum\u0117te esamus \u201eLogi Circle\u201c integravimo \u012fra\u0161us]( {entries} ).",
+            "title": "\u201eAmbiclimate\u201c integracija buvo pasenusi ir bus pa\u0161alinta"
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Siun\u010dia atsiliepimus apie komforto re\u017eim\u0105.",
+            "fields": {
+                "name": {
+                    "description": "Eilut\u0117 su \u012frenginio pavadinimu.",
+                    "name": "\u012erenginio pavadinimas"
+                },
+                "value": {
+                    "description": "Si\u0173skite bet kuri\u0105 i\u0161 \u0161i\u0173 komforto ver\u010di\u0173: too_hot, too_warm, bit_warm, patogus, bit_cold, too_cold, frozing.",
+                    "name": "Komforto vert\u0117"
+                }
+            },
+            "name": "Si\u0173skite atsiliepim\u0105 apie komfort\u0105"
+        },
+        "set_comfort_mode": {
+            "description": "\u012ejungia komforto re\u017eim\u0105 j\u016bs\u0173 kintamosios srov\u0117s tinkle.",
+            "fields": {
+                "name": {
+                    "description": "Eilut\u0117 su \u012frenginio pavadinimu.",
+                    "name": "\u012erenginio pavadinimas"
+                }
+            },
+            "name": "Nustatykite komforto re\u017eim\u0105"
+        },
+        "set_temperature_mode": {
+            "description": "\u012ejungia temperat\u016bros re\u017eim\u0105 j\u016bs\u0173 kintamojoje srov\u0117je.",
+            "fields": {
+                "name": {
+                    "description": "Eilut\u0117 su \u012frenginio pavadinimu.",
+                    "name": "\u012erenginio pavadinimas"
+                },
+                "value": {
+                    "description": "Tikslin\u0117 vert\u0117 Celsijaus laipsniais.",
+                    "name": "Temperat\u016bra"
+                }
+            },
+            "name": "Nustatykite temperat\u016bros re\u017eim\u0105"
+        }
+    }
+}

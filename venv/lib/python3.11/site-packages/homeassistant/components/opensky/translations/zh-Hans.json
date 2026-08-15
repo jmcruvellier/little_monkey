@@ -1,0 +1,16 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "altitude": "\u6d77\u62d4",
+                    "latitude": "\u7eac\u5ea6",
+                    "longitude": "\u7ecf\u5ea6",
+                    "name": "API \u5bc6\u94a5",
+                    "radius": "\u534a\u5f84"
+                },
+                "description": "\u586b\u5199\u8981\u8ffd\u8e2a\u7684\u4f4d\u7f6e\u3002"
+            }
+        }
+    }
+}

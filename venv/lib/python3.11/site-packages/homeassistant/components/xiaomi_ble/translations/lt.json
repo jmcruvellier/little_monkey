@@ -1,0 +1,135 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "already_in_progress": "Konfig\u016bracijos procesas jau vyksta",
+            "no_devices_found": "Tinkle nerasta joki\u0173 \u012frengini\u0173",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "decryption_failed": "Pateiktas susiejimo raktas neveik\u0117, jutiklio duomen\u0173 nepavyko i\u0161\u0161ifruoti. Patikrinkite ir bandykite dar kart\u0105.",
+            "expected_24_characters": "Tikimasi 24 simboli\u0173 \u0161e\u0161ioliktainio susiejimo rakto.",
+            "expected_32_characters": "Tikimasi 32 simboli\u0173 \u0161e\u0161ioliktainio susiejimo rakto."
+        },
+        "flow_title": "{name}",
+        "step": {
+            "bluetooth_confirm": {
+                "description": "Ar norite nustatyti {name} ?"
+            },
+            "confirm_slow": {
+                "description": "Paskutin\u0119 minut\u0119 i\u0161 \u0161io \u012frenginio nebuvo transliuojama, tod\u0117l nesame tikri, ar \u0161iame \u012frenginyje naudojamas \u0161ifravimas, ar ne. Taip gali b\u016bti d\u0117l to, kad \u012frenginys naudoja l\u0117t\u0105 transliacijos interval\u0105. Patvirtinkite, kad vis tiek norite prid\u0117ti \u0161\u012f \u012frengin\u012f, tada kit\u0105 kart\u0105, kai bus gauta transliacija, b\u016bsite paraginti \u012fvesti jo susiejimo rakt\u0105, jei to reik\u0117s."
+            },
+            "get_encryption_key_4_5": {
+                "data": {
+                    "bindkey": "Priri\u0161imo raktas"
+                },
+                "description": "Jutiklio perduodami jutiklio duomenys yra u\u017e\u0161ifruoti. Nor\u0117dami j\u012f i\u0161\u0161ifruoti, mums reikia 32 simboli\u0173 \u0161e\u0161ioliktainio susiejimo rakto."
+            },
+            "get_encryption_key_legacy": {
+                "data": {
+                    "bindkey": "Priri\u0161imo raktas"
+                },
+                "description": "Jutiklio perduodami jutiklio duomenys yra u\u017e\u0161ifruoti. Nor\u0117dami j\u012f i\u0161\u0161ifruoti, mums reikia 24 simboli\u0173 \u0161e\u0161ioliktainio susiejimo rakto."
+            },
+            "user": {
+                "data": {
+                    "address": "\u012erenginys"
+                },
+                "description": "Pasirinkite \u012frengin\u012f, kur\u012f norite nustatyti"
+            }
+        }
+    },
+    "device_automation": {
+        "trigger_subtype": {
+            "double_press": "Dvigubas paspaudimas",
+            "long_press": "Ilgas paspaudimas",
+            "motion_detected": "Aptiktas judesys",
+            "press": "Paspauskite",
+            "rotate_left": "Pasukti \u012f kair\u0119",
+            "rotate_left_pressed": "Pasukti \u012f kair\u0119 (paspausta)",
+            "rotate_right": "Sukti \u012f de\u0161in\u0119",
+            "rotate_right_pressed": "Pasukti \u012f de\u0161in\u0119 (paspausta)"
+        },
+        "trigger_type": {
+            "button": "Mygtukas \" {subtype} \"",
+            "button_air_exchange": "Mygtukas Oro mainai \"{subtype}\"",
+            "button_brightness": "Mygtukas Ry\u0161kumas \"{subtype}\"",
+            "button_color_temperature": "Mygtukas Spalv\u0173 temperat\u016bra \"{subtype}\"",
+            "button_decrease_speed": "Mygtukas Suma\u017einti greit\u012f \" {subtype} \"",
+            "button_decrease_wind_speed": "Mygtukas Suma\u017einti v\u0117jo greit\u012f \u201e {subtype} \u201c",
+            "button_dry": "Mygtukas D\u017eiovinimas \u201e {subtype} \u201c",
+            "button_fan": "Mygtukas Ventiliatorius \" {subtype} \"",
+            "button_heat": "Mygtukas \u0160ildymas \" {subtype} \"",
+            "button_increase_speed": "Mygtukas Grei\u010dio didinimas \"{subtype}\"",
+            "button_increase_wind_speed": "Mygtukas Padidinti v\u0117jo greit\u012f \u201e {subtype} \u201c",
+            "button_left": "Kairysis mygtukas \" {subtype} \"",
+            "button_light": "Mygtukas \u0160viesos \"{subtype}\"",
+            "button_m": "Mygtukas M \"{subtype}\"",
+            "button_middle": "Vidurinis mygtukas \u201e {subtype} \u201c",
+            "button_min": "Mygtukas Min \"{subtype}\"",
+            "button_off": "Mygtukas i\u0161jungtas \u201e {subtype} \u201c",
+            "button_on": "\u012ejungtas mygtukas \"{subtype}\"",
+            "button_plus": "Mygtukas Plius \"{subtype}\"",
+            "button_power": "Mygtuko maitinimas \" {subtype} \"",
+            "button_right": "Mygtukas de\u0161in\u0117je \" {subtype} \"",
+            "button_stop": "Mygtukas Stop \" {subtype} \"",
+            "button_swing": "Mygtuko svyravimas \" {subtype} \"",
+            "button_timer_30_minutes": "Mygtuko Laikmatis 30 minu\u010di\u0173 \" {subtype} \"",
+            "button_timer_60_minutes": "Mygtuko Laikmatis 30 minu\u010di\u0173 \" {subtype} \"",
+            "button_wind_mode": "Mygtuko V\u0117jo re\u017eimas \" {subtype} \"",
+            "button_wind_speed": "Mygtukas V\u0117jo greitis \" {subtype} \"",
+            "cube": "{subtype}",
+            "dimmer": "{subtype}",
+            "motion": "{subtype}",
+            "motion_detected": "Aptiktas judesys"
+        }
+    },
+    "entity": {
+        "event": {
+            "button": {
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "double_press": "Dvigubas paspaudimas",
+                            "long_press": "Ilgas paspaudimas",
+                            "press": "Paspauskite"
+                        }
+                    }
+                }
+            },
+            "cube": {
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "rotate_left": "Pasukti \u012f kair\u0119",
+                            "rotate_right": "Pasukite \u012f de\u0161in\u0119"
+                        }
+                    }
+                }
+            },
+            "dimmer": {
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "long_press": "Ilgai paspauskite",
+                            "press": "Paspauskite",
+                            "rotate_left": "Pasukti \u012f kair\u0119",
+                            "rotate_left_pressed": "Pasukti \u012f kair\u0119 (paspaustas)",
+                            "rotate_right": "Pasukite \u012f de\u0161in\u0119",
+                            "rotate_right_pressed": "Pasukti \u012f de\u0161in\u0119 (paspausta)"
+                        }
+                    }
+                }
+            },
+            "motion": {
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "motion_detected": "Aptiktas judesys"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,82 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Automatizmus",
+            "state": {
+                "off": "Ki",
+                "on": "Be"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Fut\u00f3 automatizmusok"
+                },
+                "id": {
+                    "name": "Azonos\u00edt\u00f3"
+                },
+                "last_triggered": {
+                    "name": "Utolj\u00e1ra aktiv\u00e1lva"
+                },
+                "max": {
+                    "name": "Max. fut\u00f3 automatizmusok"
+                },
+                "mode": {
+                    "name": "Futtat\u00e1s m\u00f3dja",
+                    "state": {
+                        "parallel": "P\u00e1rhuzamos",
+                        "queued": "Sorba \u00e1ll\u00edt\u00e1s",
+                        "restart": "\u00dajraind\u00edt\u00e1s",
+                        "single": "Egyszeri"
+                    }
+                }
+            }
+        }
+    },
+    "issues": {
+        "service_not_found": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "A \"{name}\" (`{entity_id}`) automatizmusnak van egy m\u0171velete, amely egy ismeretlen szolg\u00e1ltat\u00e1st h\u00edv meg: `{service}`.\n\nEz a hiba megakad\u00e1lyozza az automatizmus megfelel\u0151 m\u0171k\u00f6d\u00e9s\u00e9t. Lehet, hogy ez a szolg\u00e1ltat\u00e1s m\u00e1r nem \u00e9rhet\u0151 el, vagy tal\u00e1n egy el\u00edr\u00e1s okozta.\n\nA hiba kijav\u00edt\u00e1s\u00e1hoz [szerkessze az automatizmust]({edit}) \u00e9s t\u00e1vol\u00edtsa el vagy \u00edrja \u00e1t a szolg\u00e1ltat\u00e1st h\u00edv\u00f3 m\u0171veletet.\n\nKattintson az al\u00e1bbi MEHET gombra ha sikeresen jav\u00edtotta a hib\u00e1t az automatizmusban.",
+                        "title": "{name} egy ismeretlen szolg\u00e1ltat\u00e1st haszn\u00e1l"
+                    }
+                }
+            },
+            "title": "{name} egy ismeretlen szolg\u00e1ltat\u00e1st haszn\u00e1l"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "\u00dajrat\u00f6lti az automatizmusi konfigur\u00e1ci\u00f3t.",
+            "name": "\u00dajrat\u00f6lt\u00e9s"
+        },
+        "toggle": {
+            "description": "Kapcsolja (enged\u00e9lyezi / letiltja) az automatizmust.",
+            "name": "Kapcsol\u00e1s"
+        },
+        "trigger": {
+            "description": "Elind\u00edtja az automatizmus m\u0171veleteit.",
+            "fields": {
+                "skip_condition": {
+                    "description": "Meghat\u00e1rozza, hogy a felt\u00e9telek kihagy\u00e1sra ker\u00fclnek-e vagy sem.",
+                    "name": "Felt\u00e9telek kihagy\u00e1sa"
+                }
+            },
+            "name": "Ind\u00edt\u00e1s"
+        },
+        "turn_off": {
+            "description": "Letiltja az automatizmust.",
+            "fields": {
+                "stop_actions": {
+                    "description": "Le\u00e1ll\u00edtja az \u00e9ppen fut\u00f3 m\u0171veleteket.",
+                    "name": "M\u0171veletek le\u00e1ll\u00edt\u00e1sa"
+                }
+            },
+            "name": "Kikapcsol\u00e1s"
+        },
+        "turn_on": {
+            "description": "Enged\u00e9lyezi az automatizmust.",
+            "name": "Bekapcsol\u00e1s"
+        }
+    },
+    "title": "Automatizmus"
+}

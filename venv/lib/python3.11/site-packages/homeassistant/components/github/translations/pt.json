@@ -1,0 +1,10 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Servi\u00e7o j\u00e1 configurado"
+        },
+        "progress": {
+            "wait_for_device": "1. Abrir {url} \n2. Cole a chave seguinte para autorizar a integra\u00e7\u00e3o:\n```\n{code}\n```\n"
+        }
+    }
+}

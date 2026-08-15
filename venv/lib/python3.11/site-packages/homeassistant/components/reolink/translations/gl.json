@@ -1,0 +1,64 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data_description": {
+                    "host": "O nome do host ou o enderezo IP do teu dispositivo Reolink. Por exemplo: '192.168.1.25'."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "motion_lens_0": {
+                "name": "Movemento de lente 0"
+            },
+            "motion_lens_1": {
+                "name": "Movemento de lente 1"
+            }
+        },
+        "camera": {
+            "main": {
+                "name": "Limpar"
+            },
+            "main_lens_0": {
+                "name": "Limpar lente 0"
+            },
+            "main_lens_1": {
+                "name": "Limpar lente 1"
+            },
+            "snapshots_main": {
+                "name": "Borrado de instant\u00e1neas"
+            },
+            "snapshots_main_lens_0": {
+                "name": "Borrado de instant\u00e1neas da lente 0"
+            },
+            "snapshots_main_lens_1": {
+                "name": "Borrado de instant\u00e1neas da lente 0"
+            }
+        },
+        "number": {
+            "motion_sensitivity": {
+                "name": "Sensibilidade ao movemento"
+            }
+        },
+        "select": {
+            "day_night_mode": {
+                "state": {
+                    "blackwhite": "Negro & branco"
+                }
+            }
+        },
+        "switch": {
+            "hdr": {
+                "name": "HDR"
+            }
+        }
+    },
+    "issues": {
+        "ssl": {
+            "description": "Certificado SSL global configurado no [configuration.yaml under http]({ssl_link}) mentres se configura un enderezo HTTP local `{base_url}` en \"Home Assistant URL\" nas [configuraci\u00f3ns de rede]({network_link}). Polo tanto, o dispositivo Reolink non pode alcanzar Home Assistant para enviar os seus eventos de movemento/AI. Por favor, aseg\u00farate de que o enderezo HTTP local non est\u00e1 cuberto polo certificado SSL, por exemplo, usando o [complemento NGINX]({nginx_link}) en lugar dun certificado SSL globalmente forzado.",
+            "title": "Reolink incompatible co certificado SSL global"
+        }
+    }
+}

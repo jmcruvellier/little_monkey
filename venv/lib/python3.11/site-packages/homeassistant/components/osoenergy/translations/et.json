@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Seade on juba h\u00e4\u00e4lestatud",
+            "reauth_successful": "Taastuvastamine \u00f5nnestus"
+        },
+        "error": {
+            "cannot_connect": "\u00dchendamine nurjus",
+            "invalid_auth": "Tuvastamine nurjus",
+            "unknown": "Ootamatu t\u00f5rge"
+        },
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_key": "API v\u00f5ti"
+                },
+                "description": "Loo ja sisesta konto jaoks uus tellimisv\u00f5ti aadressil https://portal.osoenergy.no/.",
+                "title": "OSO Energy Auth"
+            },
+            "user": {
+                "data": {
+                    "api_key": "API v\u00f5ti"
+                },
+                "description": "Sisesta oma konto jaoks loodud liitumisv\u00f5ti aadressilt\"https://portal.osoenergy.no/\"",
+                "title": "OSO Energy Auth"
+            }
+        }
+    }
+}

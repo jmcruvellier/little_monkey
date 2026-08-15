@@ -1,0 +1,19 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "id": "Instal\u00b7laci\u00f3",
+                    "password": "Contrasenya",
+                    "username": "Nom d'usuari"
+                }
+            }
+        }
+    }
+}

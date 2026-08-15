@@ -1,0 +1,73 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado"
+        },
+        "error": {
+            "cannot_connect": "No se pudo conectar",
+            "unknown": "Error inesperado"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "Nombre de host o direcci\u00f3n IP de tu V2C Trydan EVSE."
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "charging": {
+                "name": "Cargando"
+            },
+            "connected": {
+                "name": "Conectado"
+            },
+            "ready": {
+                "name": "Listo"
+            }
+        },
+        "number": {
+            "intensity": {
+                "name": "Intensidad"
+            }
+        },
+        "sensor": {
+            "charge_energy": {
+                "name": "Energ\u00eda de carga"
+            },
+            "charge_power": {
+                "name": "Potencia de carga"
+            },
+            "charge_time": {
+                "name": "Tiempo de carga"
+            },
+            "fv_power": {
+                "name": "Energ\u00eda fotovoltaica"
+            },
+            "house_power": {
+                "name": "Energ\u00eda de la casa"
+            }
+        },
+        "switch": {
+            "dynamic": {
+                "name": "Modulaci\u00f3n de intensidad din\u00e1mica"
+            },
+            "locked": {
+                "name": "Bloquear EVSE"
+            },
+            "pause_dynamic": {
+                "name": "Pausar la modulaci\u00f3n de control din\u00e1mico"
+            },
+            "paused": {
+                "name": "Pausar sesi\u00f3n"
+            },
+            "timer": {
+                "name": "Temporizador de punto de recarga"
+            }
+        }
+    }
+}

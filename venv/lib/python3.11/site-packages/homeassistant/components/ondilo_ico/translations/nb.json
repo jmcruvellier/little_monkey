@@ -1,0 +1,27 @@
+{
+    "config": {
+        "abort": {
+            "authorize_url_timeout": "Tidsavbrudd ved oppretting av godkjenningsadresse",
+            "missing_configuration": "Komponenten er ikke konfigurert, vennligst f\u00f8lg dokumentasjonen",
+            "oauth_timeout": "Tidsavbrudd som l\u00f8ser OAuth-token."
+        },
+        "create_entry": {
+            "default": "Vellykket godkjenning"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "Velg godkjenningsmetode"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "ph": {
+                "name": "pH"
+            },
+            "salt": {
+                "name": "Salt"
+            }
+        }
+    }
+}

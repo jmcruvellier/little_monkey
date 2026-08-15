@@ -1,0 +1,18 @@
+{
+    "issues": {
+        "deprecation_warning_characteristic": {
+            "description": "Konfigura\u010dn\u00ed parametr \"state_characteristic\" integrace statistiky bude povinn\u00fd.\n\nP\u0159idejte \"state_characteristic: {characteristic}\" do nastaven\u00ed senzoru \"{entity}\", abyste zachovali aktu\u00e1ln\u00ed chov\u00e1n\u00ed.\n\nDal\u0161\u00ed podrobnosti naleznete v dokumentaci integrace entity Statistika: https://www.home-assistant.io/integrations/statistics/",
+            "title": "Povinn\u00fd \"state_characteristic\" pro entitu Statistika"
+        },
+        "deprecation_warning_size": {
+            "description": "Konfigura\u010dn\u00ed parametr \"sampling_size\" integrace statistiky m\u011bl zat\u00edm v\u00fdchoz\u00ed hodnotu 20, kter\u00e1 se zm\u011bn\u00ed.\n\nZkontrolujte nastaven\u00ed senzoru \"{entity}\" a p\u0159idejte vhodn\u00e9 hranice, nap\u0159. \"sampling_size: 20\", abyste zachovali aktu\u00e1ln\u00ed chov\u00e1n\u00ed. Nastaven\u00ed integrace statistik bude s verz\u00ed 2022.12.0 flexibiln\u011bj\u0161\u00ed a bude akceptovat bu\u010f \"sampling_size\" nebo \"max_age\", p\u0159\u00edpadn\u011b ob\u011b nastaven\u00ed. V\u00fd\u0161e uveden\u00fd po\u017eadavek p\u0159iprav\u00ed va\u0161e nastaven\u00ed na tuto jinak z\u00e1sadn\u00ed zm\u011bnu.\n\nDal\u0161\u00ed podrobnosti naleznete v dokumentaci integrace entity Statistika: https://www.home-assistant.io/integrations/statistics/",
+            "title": "V\u00fdchoz\u00ed \"sampling_size\" pro entitu Statistika"
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "Znovu na\u010dte statistick\u00e9 senzory z nastaven\u00ed YAML.",
+            "name": "Znovu na\u010d\u00edst"
+        }
+    }
+}

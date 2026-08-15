@@ -1,0 +1,60 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositiu ja est\u00e0 configurat"
+        },
+        "error": {
+            "cannot_connect": "Ha fallat la connexi\u00f3",
+            "unknown": "Error inesperat"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Amfitri\u00f3"
+                },
+                "data_description": {
+                    "host": "Nom d'amfitri\u00f3 o adre\u00e7a IP del teu dispositiu Wi-Fi Balboa Spa. Per exemple, 192.168.1.58."
+                },
+                "description": "Connexi\u00f3 amb el dispositiu Wi-Fi Balboa",
+                "title": "Connexi\u00f3 amb dispositiu Wi-Fi Balboa"
+            }
+        }
+    },
+    "entity": {
+        "climate": {
+            "balboa": {
+                "state_attributes": {
+                    "preset_mode": {
+                        "state": {
+                            "ready": "A punt",
+                            "ready_in_rest": "A punt, en rep\u00f2s",
+                            "rest": "En rep\u00f2s"
+                        }
+                    }
+                }
+            }
+        },
+        "fan": {
+            "pump": {
+                "name": "Bomba {index}"
+            }
+        },
+        "light": {
+            "light_of_n": {
+                "name": "Llum {index}"
+            },
+            "only_light": {
+                "name": "Llum"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "sync_time": "Mantingues l'hora del spa Balboa sincronitzada amb Home Assistant"
+                }
+            }
+        }
+    }
+}

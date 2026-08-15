@@ -1,0 +1,13 @@
+{
+    "exceptions": {
+        "client_error": {
+            "message": "Det oppsto en feil under foresp\u00f8rselen om ressursen"
+        },
+        "decoding_error": {
+            "message": "Svaret fra tjeneren kunne ikke dekodes som {decoding_type}"
+        },
+        "timeout": {
+            "message": "Tidsavbrudd under venting p\u00e5 svar fra tjeneren"
+        }
+    }
+}

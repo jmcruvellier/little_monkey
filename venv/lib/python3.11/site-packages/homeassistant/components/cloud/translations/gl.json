@@ -1,0 +1,15 @@
+{
+    "services": {
+        "remote_connect": {
+            "name": "Conexi\u00f3n remota"
+        },
+        "remote_disconnect": {
+            "name": "Desconexi\u00f3n remota"
+        }
+    },
+    "system_health": {
+        "info": {
+            "instance_id": "ID da instancia"
+        }
+    }
+}

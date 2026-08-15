@@ -1,0 +1,90 @@
+{
+    "device_automation": {
+        "action_type": {
+            "close": "\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf {entity_name}",
+            "close_tilt": "\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf \u03ba\u03bb\u03af\u03c3\u03b7\u03c2 {entity_name}",
+            "open": "\u0386\u03bd\u03bf\u03b9\u03b3\u03bc\u03b1 {entity_name}",
+            "open_tilt": "\u0386\u03bd\u03bf\u03b9\u03b3\u03bc\u03b1 \u03ba\u03bb\u03af\u03c3\u03b7\u03c2 {entity_name}",
+            "set_position": "\u039f\u03c1\u03b9\u03c3\u03bc\u03cc\u03c2 \u03b8\u03ad\u03c3\u03b7\u03c2 {entity_name}",
+            "set_tilt_position": "\u039f\u03c1\u03b9\u03c3\u03bc\u03cc\u03c2 \u03b8\u03ad\u03c3\u03b7\u03c2 \u03ba\u03bb\u03af\u03c3\u03b7\u03c2 {entity_name}",
+            "stop": "\u0394\u03b9\u03b1\u03ba\u03bf\u03c0\u03ae {entity_name}"
+        },
+        "condition_type": {
+            "is_closed": "{entity_name} \u03b5\u03af\u03bd\u03b1\u03b9 \u03ba\u03bb\u03b5\u03b9\u03c3\u03c4\u03cc",
+            "is_closing": "{entity_name} \u03ba\u03bb\u03b5\u03af\u03bd\u03b5\u03b9",
+            "is_open": "{entity_name} \u03b5\u03af\u03bd\u03b1\u03b9 \u03b1\u03bd\u03bf\u03b9\u03c7\u03c4\u03cc",
+            "is_opening": "{entity_name} \u03b1\u03bd\u03bf\u03af\u03b3\u03b5\u03b9",
+            "is_position": "\u0397 \u03c4\u03c1\u03ad\u03c7\u03bf\u03c5\u03c3\u03b1 \u03b8\u03ad\u03c3\u03b7 {entity_name} \u03b5\u03af\u03bd\u03b1\u03b9",
+            "is_tilt_position": "\u0397 \u03c4\u03c1\u03ad\u03c7\u03bf\u03c5\u03c3\u03b1 \u03b8\u03ad\u03c3\u03b7 \u03ba\u03bb\u03af\u03c3\u03b7\u03c2 {entity_name} \u03b5\u03af\u03bd\u03b1\u03b9"
+        },
+        "trigger_type": {
+            "closed": "{entity_name} \u03ad\u03ba\u03bb\u03b5\u03b9\u03c3\u03b5",
+            "closing": "{entity_name} \u03ba\u03bb\u03b5\u03af\u03bd\u03b5\u03b9",
+            "opened": "{entity_name} \u03ac\u03bd\u03bf\u03b9\u03be\u03b5",
+            "opening": "{entity_name} \u03b1\u03bd\u03bf\u03af\u03b3\u03b5\u03b9",
+            "position": "\u0391\u03bb\u03bb\u03b1\u03b3\u03ae \u03b8\u03ad\u03c3\u03b7\u03c2 {entity_name}",
+            "tilt_position": "\u0391\u03bb\u03bb\u03b1\u03b3\u03ae \u03b8\u03ad\u03c3\u03b7\u03c2 \u03ba\u03bb\u03af\u03c3\u03b7\u03c2 {entity_name}"
+        }
+    },
+    "entity_component": {
+        "_": {
+            "state": {
+                "closed": "\u039a\u03bb\u03b5\u03b9\u03c3\u03c4\u03cc",
+                "closing": "\u039a\u03bb\u03b5\u03af\u03bd\u03b5\u03b9",
+                "open": "\u0391\u03bd\u03bf\u03b9\u03ba\u03c4\u03cc",
+                "opening": "\u0391\u03bd\u03bf\u03b9\u03b3\u03bc\u03b1",
+                "stopped": "\u03a3\u03c4\u03b1\u03bc\u03ac\u03c4\u03b7\u03c3\u03b5"
+            },
+            "state_attributes": {
+                "current_position": {
+                    "name": "\u0398\u03ad\u03c3\u03b7"
+                },
+                "current_tilt_position": {
+                    "name": "\u0398\u03ad\u03c3\u03b7 \u03ba\u03bb\u03af\u03c3\u03b7\u03c2"
+                }
+            }
+        },
+        "awning": {
+            "name": "\u03a4\u03ad\u03bd\u03c4\u03b1"
+        },
+        "blind": {
+            "name": "\u03a0\u03b5\u03c1\u03c3\u03af\u03b4\u03b1"
+        },
+        "curtain": {
+            "name": "\u039a\u03bf\u03c5\u03c1\u03c4\u03af\u03bd\u03b1"
+        },
+        "damper": {
+            "name": "\u0391\u03c0\u03bf\u03c3\u03b2\u03b5\u03c3\u03c4\u03ae\u03c1\u03b1\u03c2"
+        },
+        "door": {
+            "name": "\u03a0\u03cc\u03c1\u03c4\u03b1"
+        },
+        "garage": {
+            "name": "\u0393\u03ba\u03b1\u03c1\u03ac\u03b6"
+        },
+        "gate": {
+            "name": "\u03a0\u03cd\u03bb\u03b7"
+        },
+        "shade": {
+            "name": "\u03a3\u03ba\u03b9\u03ac"
+        },
+        "shutter": {
+            "name": "\u03a0\u03b1\u03bd\u03c4\u03b6\u03bf\u03cd\u03c1\u03b9"
+        },
+        "window": {
+            "name": "\u03a0\u03b1\u03c1\u03ac\u03b8\u03c5\u03c1\u03bf"
+        }
+    },
+    "issues": {
+        "platform_integration_no_support": {
+            "description": "\u0397 \u03c0\u03bb\u03b1\u03c4\u03c6\u03cc\u03c1\u03bc\u03b1 {platform} \u03b3\u03b9\u03b1 \u03c4\u03b7\u03bd \u03b5\u03bd\u03c3\u03c9\u03bc\u03ac\u03c4\u03c9\u03c3\u03b7 {domain} \u03b4\u03b5\u03bd \u03c5\u03c0\u03bf\u03c3\u03c4\u03b7\u03c1\u03af\u03b6\u03b5\u03b9 \u03c4\u03b7 \u03c1\u03cd\u03b8\u03bc\u03b9\u03c3\u03b7 \u03c0\u03bb\u03b1\u03c4\u03c6\u03cc\u03c1\u03bc\u03b1\u03c2.\n\n\u03a0\u03b1\u03c1\u03b1\u03ba\u03b1\u03bb\u03bf\u03cd\u03bc\u03b5 \u03b1\u03c6\u03b1\u03b9\u03c1\u03ad\u03c3\u03c4\u03b5 \u03c4\u03b7\u03bd \u03b1\u03c0\u03cc \u03c4\u03b7 \u03b4\u03b9\u03b1\u03bc\u03cc\u03c1\u03c6\u03c9\u03c3\u03ae \u03c3\u03b1\u03c2 \u03ba\u03b1\u03b9 \u03ba\u03ac\u03bd\u03c4\u03b5 \u03b5\u03c0\u03b1\u03bd\u03b5\u03ba\u03ba\u03af\u03bd\u03b7\u03c3\u03b7 \u03c4\u03bf\u03c5 Home Assistant \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b4\u03b9\u03bf\u03c1\u03b8\u03ce\u03c3\u03b5\u03c4\u03b5 \u03b1\u03c5\u03c4\u03cc \u03c4\u03bf \u03c0\u03c1\u03cc\u03b2\u03bb\u03b7\u03bc\u03b1.",
+            "title": "\u0397 \u03c5\u03c0\u03bf\u03c3\u03c4\u03ae\u03c1\u03b9\u03be\u03b7 \u03c0\u03bb\u03b1\u03c4\u03c6\u03cc\u03c1\u03bc\u03b1\u03c2 \u03b4\u03b5\u03bd \u03c5\u03c0\u03bf\u03c3\u03c4\u03b7\u03c1\u03af\u03b6\u03b5\u03c4\u03b1\u03b9"
+        }
+    },
+    "services": {
+        "close_cover": {
+            "name": "\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf"
+        }
+    },
+    "title": "\u039a\u03ac\u03bb\u03c5\u03bc\u03bc\u03b1"
+}

@@ -1,0 +1,71 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "La cuenta ya est\u00e1 configurada",
+            "already_in_progress": "El flujo de configuraci\u00f3n ya est\u00e1 en curso",
+            "authorize_url_timeout": "Tiempo de espera agotado mientras se generaba la URL de autorizaci\u00f3n.",
+            "missing_configuration": "El componente no est\u00e1 configurado. Por favor, sigue la documentaci\u00f3n.",
+            "missing_credentials": "La integraci\u00f3n requiere credenciales de aplicaci\u00f3n.",
+            "no_url_available": "No hay URL disponible. Para obtener informaci\u00f3n sobre este error, [revisa la secci\u00f3n de ayuda]({docs_url})",
+            "oauth_error": "Se han recibido datos de token no v\u00e1lidos.",
+            "oauth_failed": "Error al obtener el token de acceso.",
+            "oauth_timeout": "Tiempo de espera agotado mientras se resolv\u00eda el token OAuth.",
+            "oauth_unauthorized": "Error de autorizaci\u00f3n OAuth al obtener el token de acceso.",
+            "reauth_successful": "La autenticaci\u00f3n se volvi\u00f3 a realizar correctamente",
+            "user_rejected_authorize": "V\u00ednculo de cuenta rechazado: {error}"
+        },
+        "create_entry": {
+            "default": "Autenticado correctamente"
+        },
+        "step": {
+            "pick_implementation": {
+                "title": "Selecciona el m\u00e9todo de autenticaci\u00f3n"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "cutting_blade_usage_time": {
+                "name": "Tiempo de uso de la cuchilla de corte"
+            },
+            "mode": {
+                "name": "Modo",
+                "state": {
+                    "demo": "Demo",
+                    "home": "En casa",
+                    "main_area": "\u00c1rea principal",
+                    "secondary_area": "\u00c1rea secundaria"
+                }
+            },
+            "next_start_timestamp": {
+                "name": "Pr\u00f3ximo inicio"
+            },
+            "number_of_charging_cycles": {
+                "name": "N\u00famero de ciclos de carga"
+            },
+            "number_of_collisions": {
+                "name": "N\u00famero de colisiones"
+            },
+            "total_charging_time": {
+                "name": "Tiempo total de carga"
+            },
+            "total_cutting_time": {
+                "name": "Tiempo total de corte"
+            },
+            "total_drive_distance": {
+                "name": "Distancia total de recorrido"
+            },
+            "total_running_time": {
+                "name": "Tiempo total de funcionamiento"
+            },
+            "total_searching_time": {
+                "name": "Tiempo total de b\u00fasqueda"
+            }
+        },
+        "switch": {
+            "enable_schedule": {
+                "name": "Habilitar programaci\u00f3n"
+            }
+        }
+    }
+}

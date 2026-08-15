@@ -1,0 +1,63 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Palvelu on jo m\u00e4\u00e4ritetty",
+            "reauth_successful": "Uudelleentodennus onnistui"
+        },
+        "error": {
+            "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
+            "invalid_auth": "Virheellinen todennus"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "api_key": "API-avain"
+                },
+                "description": "Tailscalen API-tunnisteet ovat voimassa 90 p\u00e4iv\u00e4\u00e4. Voit luoda uuden Tailscale API-avaimen osoitteessa https://login.tailscale.com/admin/settings/authkeys."
+            },
+            "user": {
+                "data": {
+                    "api_key": "API-avain",
+                    "tailnet": "Tailnet"
+                },
+                "description": "T\u00e4m\u00e4 integraatio valvoo Tailscale-verkkoasi, mutta se ** EI** tee Home Assistantista Tailscale VPN:n kautta k\u00e4ytett\u00e4viss\u00e4 olevaa. \n\nTailscalen autentikointia varten sinun on luotava API-avain osoitteessa {authkeys_url}.\n\nTailnet on Tailscale-verkkosi nimi. L\u00f6yd\u00e4t sen Tailscalen hallintopaneelin vasemmasta yl\u00e4kulmasta (Tailscale-logon vierest\u00e4)."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "client": {
+                "name": "Asiakas"
+            },
+            "client_supports_hair_pinning": {
+                "name": "Tukee hiuspinnityst\u00e4"
+            },
+            "client_supports_ipv6": {
+                "name": "Tukee IPv6"
+            },
+            "client_supports_pcp": {
+                "name": "Tukee PCP:t\u00e4"
+            },
+            "client_supports_pmp": {
+                "name": "Tukee NAT-PMP:t\u00e4"
+            },
+            "client_supports_udp": {
+                "name": "Tukee UDP:t\u00e4"
+            },
+            "client_supports_upnp": {
+                "name": "Tukee UPnP:t\u00e4"
+            }
+        },
+        "sensor": {
+            "expires": {
+                "name": "Vanhenee"
+            },
+            "ip": {
+                "name": "IP-osoite"
+            },
+            "last_seen": {
+                "name": "Viimeksi n\u00e4hty"
+            }
+        }
+    }
+}

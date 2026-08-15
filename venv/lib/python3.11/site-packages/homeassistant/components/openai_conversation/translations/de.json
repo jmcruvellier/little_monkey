@@ -1,0 +1,64 @@
+{
+    "config": {
+        "error": {
+            "cannot_connect": "Verbindung fehlgeschlagen",
+            "invalid_auth": "Ung\u00fcltige Authentifizierung",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API-Schl\u00fcssel"
+                }
+            }
+        }
+    },
+    "issues": {
+        "image_size_deprecated_format": {
+            "description": "OpenAI verwendet jetzt Dall-E 3 zum Generieren von Bildern beim Aufruf von \u201eopenai_conversation.generate_image\u201c, das verschiedene Gr\u00f6\u00dfen unterst\u00fctzt. G\u00fcltige Werte sind jetzt \u201e1024x1024\u201c, \u201e1024x1792\u201c, \u201e1792x1024\u201c. Die alten Werte \u201e256\u201c, \u201e512\u201c, \u201e1024\u201c werden derzeit als \u201e1024x1024\u201c interpretiert.\nBitte aktualisiere deine Skripte oder Automatisierungen mit den neuen Parametern.",
+            "title": "Veraltetes Gr\u00f6\u00dfenformat f\u00fcr den Bildgenerierungsdienst"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "max_tokens": "Maximale Anzahl von Token, die als Antwort zur\u00fcckgegeben werden",
+                    "model": "Abschlussmodell",
+                    "prompt": "Eingabeaufforderung Vorlage",
+                    "temperature": "Temperatur",
+                    "top_p": "Top P"
+                }
+            }
+        }
+    },
+    "services": {
+        "generate_image": {
+            "description": "Umwandeln einer Eingabeaufforderung in ein Bild",
+            "fields": {
+                "config_entry": {
+                    "description": "Der Konfigurationseintrag, der f\u00fcr diesen Dienst verwendet werden soll",
+                    "name": "Konfigurationseintrag"
+                },
+                "prompt": {
+                    "description": "Der Text, der in ein Bild umgewandelt werden soll",
+                    "example": "Ein Foto eines Hundes",
+                    "name": "Eingabeaufforderung"
+                },
+                "quality": {
+                    "description": "Die Qualit\u00e4t des Bildes, das generiert wird",
+                    "name": "Qualit\u00e4t"
+                },
+                "size": {
+                    "description": "Die Gr\u00f6\u00dfe des zu generierenden Bildes",
+                    "name": "Gr\u00f6\u00dfe"
+                },
+                "style": {
+                    "description": "Der Stil des generierten Bildes",
+                    "name": "Stil"
+                }
+            },
+            "name": "Bild generieren"
+        }
+    }
+}

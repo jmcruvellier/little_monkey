@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Vieta jau sukonfig\u016bruota"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_api_key": "Neteisingas API raktas"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API raktas",
+                    "language": "Kalba",
+                    "latitude": "Platuma",
+                    "longitude": "Ilguma",
+                    "mode": "Re\u017eimas",
+                    "name": "Vardas"
+                },
+                "description": "Nor\u0117dami sugeneruoti API rakt\u0105, eikite \u012f https://openweathermap.org/appid"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "language": "Kalba",
+                    "mode": "Re\u017eimas"
+                }
+            }
+        }
+    }
+}

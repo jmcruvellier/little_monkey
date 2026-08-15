@@ -1,0 +1,105 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "La cuenta ya est\u00e1 configurada",
+            "external_error": "Ocurri\u00f3 una excepci\u00f3n desde otro flujo.",
+            "external_setup": "Logi Circle se configur\u00f3 correctamente desde otro flujo.",
+            "missing_configuration": "El componente no est\u00e1 configurado. Por favor, sigue la documentaci\u00f3n."
+        },
+        "error": {
+            "authorize_url_timeout": "Tiempo de espera agotado mientras se generaba la URL de autorizaci\u00f3n.",
+            "follow_link": "Por favor, sigue el enlace y autent\u00edcate antes de pulsar Enviar.",
+            "invalid_auth": "Autenticaci\u00f3n no v\u00e1lida"
+        },
+        "step": {
+            "auth": {
+                "description": "Por favor, sigue el enlace a continuaci\u00f3n y **Acepta** el acceso a tu cuenta Logi Circle, luego regresa y pulsa **Enviar** a continuaci\u00f3n. \n\n[Enlace]({authorization_url})",
+                "title": "Autenticar con Logi Circle"
+            },
+            "user": {
+                "data": {
+                    "flow_impl": "Proveedor"
+                },
+                "description": "Elige a trav\u00e9s de qu\u00e9 proveedor de autenticaci\u00f3n quieres autenticarte con Logi Circle.",
+                "title": "Proveedor de autenticaci\u00f3n"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "last_activity": {
+                "name": "\u00daltima actividad"
+            },
+            "recording_mode": {
+                "name": "Modo de grabaci\u00f3n"
+            },
+            "streaming_mode": {
+                "name": "Modo de transmisi\u00f3n"
+            },
+            "wifi_signal_category": {
+                "name": "Categor\u00eda de se\u00f1al Wi-Fi"
+            },
+            "wifi_signal_strength": {
+                "name": "Intensidad de la se\u00f1al Wi-Fi"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "Logitech dej\u00f3 de aceptar solicitudes para acceder a la API de Logi Circle en mayo de 2022 y la integraci\u00f3n de Logi Circle se eliminar\u00e1 de Home Assistant. \n\nPara resolver este problema, por favor, elimina las entradas de integraci\u00f3n de la configuraci\u00f3n de Home Assistant. [Haz clic aqu\u00ed para ver tus entradas existentes de la integraci\u00f3n Logi Circle]({entries}).",
+            "title": "La integraci\u00f3n con Logi Circle ha quedado obsoleta y ser\u00e1 eliminada."
+        }
+    },
+    "services": {
+        "livestream_record": {
+            "description": "Realiza una grabaci\u00f3n de v\u00eddeo de la transmisi\u00f3n en vivo de la c\u00e1mara.",
+            "fields": {
+                "duration": {
+                    "description": "Duraci\u00f3n de la grabaci\u00f3n.",
+                    "name": "Duraci\u00f3n"
+                },
+                "entity_id": {
+                    "description": "Nombre(s) de la(s) entidad(es) desde la(s) que crear grabaciones.",
+                    "name": "Entidad"
+                },
+                "filename": {
+                    "description": "Plantilla de un nombre de archivo. La variable es entidad_id.",
+                    "name": "Nombre de archivo"
+                }
+            },
+            "name": "Grabaci\u00f3n en directo"
+        },
+        "livestream_snapshot": {
+            "description": "Toma una instant\u00e1nea de la transmisi\u00f3n en vivo de la c\u00e1mara. Activar\u00e1 la c\u00e1mara del modo de suspensi\u00f3n si es necesario.",
+            "fields": {
+                "entity_id": {
+                    "description": "Nombre(s) de la(s) entidad(es) de la(s) que crear instant\u00e1neas.",
+                    "name": "Entidad"
+                },
+                "filename": {
+                    "description": "Plantilla de un nombre de archivo. La variable es entidad_id.",
+                    "name": "Nombre de archivo"
+                }
+            },
+            "name": "Instant\u00e1nea de transmisi\u00f3n en vivo"
+        },
+        "set_config": {
+            "description": "Establece una propiedad de configuraci\u00f3n.",
+            "fields": {
+                "entity_id": {
+                    "description": "Nombre(s) de la(s) entidad(es) a la(s) que aplicar el modo de operaci\u00f3n.",
+                    "name": "Entidad"
+                },
+                "mode": {
+                    "description": "Modo de funcionamiento. Valores permitidos: LED, RECORDING_MODE.",
+                    "name": "Modo"
+                },
+                "value": {
+                    "description": "Valor de operaci\u00f3n.",
+                    "name": "Valor"
+                }
+            },
+            "name": "Establecer configuraci\u00f3n"
+        }
+    }
+}

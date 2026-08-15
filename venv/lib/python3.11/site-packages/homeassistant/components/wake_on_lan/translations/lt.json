@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "\u201eWake on Lan\u201c konfig\u016bravimas naudojant YAML buvo perkeltas \u012f integravimo rakt\u0105. \n\n J\u016bs\u0173 esama YAML konfig\u016bracija veiks dar 2 versijose. \n\n Perkelkite YAML konfig\u016bracij\u0105 \u012f integravimo rakt\u0105 pagal dokumentacij\u0105.",
+            "title": "Wake on Lan YAML konfig\u016bracija buvo perkelta"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "Siun\u010dia \"magi\u0161k\u0105j\u012f paket\u0105\", kad pa\u017eadint\u0173 \u012frengin\u012f, turint\u012f \"Wake-On-LAN\" funkcij\u0105.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "Transliavimo IP, \u012f kur\u012f siun\u010diamas stebuklingasis paketas.",
+                    "name": "Transliacijos adresas"
+                },
+                "broadcast_port": {
+                    "description": "Prievadas, \u012f kur\u012f siun\u010diamas stebuklingasis paketas.",
+                    "name": "Transliacijos prievadas"
+                },
+                "mac": {
+                    "description": "\u017dadinamo \u012frenginio MAC adresas.",
+                    "name": "MAC adresas"
+                }
+            },
+            "name": "Si\u0173sti magi\u0161k\u0105 paket\u0105"
+        }
+    }
+}

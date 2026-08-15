@@ -1,0 +1,28 @@
+{
+    "issues": {
+        "moved_yaml": {
+            "description": "A Wake-on-LAN be\u00e1ll\u00edt\u00e1sa YAML haszn\u00e1lat\u00e1val m\u00e1r nem lehets\u00e9ges.\n\nA jelenlegi YAML konfigur\u00e1ci\u00f3ja m\u00e9g k\u00e9t verzi\u00f3ig fog m\u0171k\u00f6dni.\n\nAz integr\u00e1ci\u00f3s kulcsra val\u00f3 \u00e1tt\u00e9r\u00e9shez k\u00f6vesse a dokument\u00e1ci\u00f3ban tal\u00e1lhat\u00f3 utas\u00edt\u00e1sokat.",
+            "title": "A Wake on Lan YAML konfigur\u00e1ci\u00f3 meg fog sz\u0171nni"
+        }
+    },
+    "services": {
+        "send_magic_packet": {
+            "description": "'Magic csomagot' k\u00fcld egy eszk\u00f6z fel\u00e9breszt\u00e9s\u00e9hez, amely rendelkezik 'Wake-On-LAN' k\u00e9pess\u00e9ggel.",
+            "fields": {
+                "broadcast_address": {
+                    "description": "Broadcast IP, ahov\u00e1 a Magic csomagot k\u00fcldeni kell.",
+                    "name": "Broadcast c\u00edm"
+                },
+                "broadcast_port": {
+                    "description": "K\u00fcldj\u00f6n egy Magic csomagot.",
+                    "name": "Broadcast port"
+                },
+                "mac": {
+                    "description": "Az \u00e9bresztend\u0151 eszk\u00f6z MAC-c\u00edme.",
+                    "name": "MAC c\u00edm"
+                }
+            },
+            "name": "Magic csomag k\u00fcld\u00e9se"
+        }
+    }
+}

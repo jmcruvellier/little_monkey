@@ -1,0 +1,81 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "El dispositivo ya est\u00e1 configurado",
+            "cannot_connect": "No se pudo conectar"
+        },
+        "error": {
+            "cannot_connect": "No se pudo conectar"
+        },
+        "flow_title": "{name}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host"
+                },
+                "data_description": {
+                    "host": "Nombre de host o direcci\u00f3n IP de tu estaci\u00f3n TechnoVE."
+                },
+                "description": "Configura tu estaci\u00f3n TechnoVE para integrarla con Home Assistant."
+            },
+            "zeroconf_confirm": {
+                "description": "\u00bfQuieres a\u00f1adir la estaci\u00f3n TechnoVE llamada `{name}` a Home Assistant?",
+                "title": "Descubierta estaci\u00f3n TechnoVE"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "conflict_in_sharing_config": {
+                "name": "Conflicto con el modo de reparto de energ\u00eda"
+            },
+            "in_sharing_mode": {
+                "name": "Modo de reparto de energ\u00eda"
+            },
+            "is_battery_protected": {
+                "name": "Protegido por bater\u00eda"
+            },
+            "is_static_ip": {
+                "name": "IP est\u00e1tica"
+            }
+        },
+        "sensor": {
+            "energy_session": {
+                "name": "Consumo de energ\u00eda de la \u00faltima sesi\u00f3n"
+            },
+            "energy_total": {
+                "name": "Consumo total de energ\u00eda"
+            },
+            "max_current": {
+                "name": "Corriente m\u00e1xima"
+            },
+            "max_station_current": {
+                "name": "Corriente m\u00e1xima de la estaci\u00f3n"
+            },
+            "ssid": {
+                "name": "Nombre de la red Wi-Fi"
+            },
+            "status": {
+                "name": "Estado",
+                "state": {
+                    "high_charge_period": "Periodo de alta carga",
+                    "out_of_activation_period": "Fuera del periodo de activaci\u00f3n",
+                    "plugged_charging": "Enchufado, cargando",
+                    "plugged_waiting": "Enchufado, esperando",
+                    "unplugged": "Desenchufado"
+                }
+            },
+            "voltage_in": {
+                "name": "Tensi\u00f3n de entrada"
+            },
+            "voltage_out": {
+                "name": "Tensi\u00f3n de salida"
+            }
+        },
+        "switch": {
+            "auto_charge": {
+                "name": "Carga autom\u00e1tica"
+            }
+        }
+    }
+}

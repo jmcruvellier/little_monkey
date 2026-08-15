@@ -1,0 +1,48 @@
+{
+    "services": {
+        "clear_sleep_timer": {
+            "description": "Vymazanie \u010dasova\u010da Bluesound.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zvy ent\u00edt, ktor\u00fdm bude \u010dasova\u010d vymazan\u00fd.",
+                    "name": "Entita"
+                }
+            },
+            "name": "Vymazanie \u010dasova\u010da sp\u00e1nku"
+        },
+        "join": {
+            "description": "Zoskupte hr\u00e1\u010dov.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zov subjektu, ktor\u00fd bude koordinova\u0165 zoskupenie. Z\u00e1vis\u00ed od platformy.",
+                    "name": "Entita"
+                },
+                "master": {
+                    "description": "Identifik\u00e1tor subjektu hr\u00e1\u010da, ktor\u00fd sa m\u00e1 sta\u0165 kapit\u00e1nom skupiny.",
+                    "name": "Master"
+                }
+            },
+            "name": "Pripoji\u0165"
+        },
+        "set_sleep_timer": {
+            "description": "Nastavte \u010dasova\u010d Bluesound. \u010casova\u010d sa bude zvy\u0161ova\u0165 v krokoch: 15, 30, 45, 60, 90, 0.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zvy ent\u00edt, ktor\u00e9 bud\u00fa ma\u0165 nastaven\u00fd \u010dasova\u010d.",
+                    "name": "Entita"
+                }
+            },
+            "name": "Nastavenie \u010dasova\u010da sp\u00e1nku"
+        },
+        "unjoin": {
+            "description": "Odpojenie hr\u00e1\u010da od skupiny.",
+            "fields": {
+                "entity_id": {
+                    "description": "N\u00e1zov subjektu, ktor\u00fd bude odpojen\u00fd od svojej skupiny. Z\u00e1vis\u00ed od platformy.",
+                    "name": "Entita"
+                }
+            },
+            "name": "Odpoji\u0165"
+        }
+    }
+}

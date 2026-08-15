@@ -1,0 +1,38 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "data": {
+                    "country": "Land",
+                    "name": "Nafn"
+                }
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "workdays": "Vinnudagar"
+                },
+                "data_description": {
+                    "workdays": "Listi af vinnud\u00f6gum"
+                }
+            }
+        }
+    },
+    "selector": {
+        "days": {
+            "options": {
+                "fri": "F\u00f6studagur",
+                "holiday": "Fr\u00eddagar",
+                "mon": "M\u00e1nudagur",
+                "sat": "Laugardagur",
+                "sun": "Sunnudagur",
+                "thu": "Fimmtudagur",
+                "tue": "\u00deri\u00f0judagur",
+                "wed": "Mi\u00f0vikudagur"
+            }
+        }
+    }
+}

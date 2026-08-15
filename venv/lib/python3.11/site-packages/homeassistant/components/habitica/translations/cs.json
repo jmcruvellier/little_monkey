@@ -1,0 +1,42 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u00da\u010det je ji\u017e nastaven"
+        },
+        "error": {
+            "invalid_credentials": "Neplatn\u00e9 ov\u011b\u0159en\u00ed",
+            "unknown": "Neo\u010dek\u00e1van\u00e1 chyba"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Kl\u00ed\u010d API",
+                    "api_user": "ID u\u017eivatele API Habitica",
+                    "name": "P\u0159eps\u00e1n\u00ed u\u017eivatelsk\u00e9ho jm\u00e9na Habitica. Bude pou\u017eito pro servisn\u00ed hovory.",
+                    "url": "URL"
+                },
+                "description": "P\u0159ipojte v\u00e1\u0161 profil Habitica, abyste mohli sledovat profil a \u00fakoly va\u0161eho u\u017eivatele. Pamatujte, \u017ee api_id a api_key mus\u00ed b\u00fdt z\u00edsk\u00e1ny z https://habitica.com/user/settings/api"
+            }
+        }
+    },
+    "services": {
+        "api_call": {
+            "description": "Vol\u00e1 API Habitica.",
+            "fields": {
+                "args": {
+                    "description": "Jak\u00e9koli dal\u0161\u00ed argumenty JSON nebo URL. Viz apidoc uveden\u00fd pro cestu. P\u0159\u00edklad pou\u017e\u00edv\u00e1 stejn\u00fd koncov\u00fd bod API.",
+                    "name": "Argumenty"
+                },
+                "name": {
+                    "description": "U\u017eivatelsk\u00e9 jm\u00e9no Habitica, kter\u00e9 chcete zavolat.",
+                    "name": "N\u00e1zev"
+                },
+                "path": {
+                    "description": "Polo\u017eky z API URL ve form\u011b pole s metodou p\u0159ipojenou na konci. Pod\u00edvejte se na https://habitica.com/apidoc/. P\u0159\u00edklad pou\u017e\u00edv\u00e1 https://habitica.com/apidoc/#api-Task-CreateUserTasks.",
+                    "name": "Cesta"
+                }
+            },
+            "name": "N\u00e1zev API"
+        }
+    }
+}

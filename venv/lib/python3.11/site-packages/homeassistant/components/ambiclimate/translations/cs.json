@@ -1,0 +1,68 @@
+{
+    "config": {
+        "abort": {
+            "access_token": "Nezn\u00e1m\u00e1 chyba p\u0159i generov\u00e1n\u00ed p\u0159\u00edstupov\u00e9ho tokenu.",
+            "already_configured": "\u00da\u010det je ji\u017e nastaven",
+            "missing_configuration": "Komponenta nen\u00ed nastavena. Postupujte podle dokumentace."
+        },
+        "create_entry": {
+            "default": "\u00dasp\u011b\u0161n\u011b ov\u011b\u0159eno"
+        },
+        "error": {
+            "follow_link": "N\u00e1sledujte odkaz a prove\u010fte ov\u011b\u0159en\u00ed p\u0159ed stisknut\u00edm tla\u010d\u00edtka Odeslat.",
+            "no_token": "Nen\u00ed ov\u011b\u0159en s Ambiclimate"
+        },
+        "step": {
+            "auth": {
+                "description": "N\u00e1sledujte tento [odkaz]({authorization_url}), **Povolte** p\u0159\u00edstup k va\u0161emu \u00fa\u010dtu Ambiclimate a pot\u00e9 se vra\u0165te a klepn\u011bte na tla\u010d\u00edtko Odeslat n\u00ed\u017ee.\n(Ujist\u011bte se, \u017ee zadan\u00e1 URL zp\u011btn\u00e9ho vol\u00e1n\u00ed je {cb_url})",
+                "title": "Ov\u011b\u0159it Ambiclimate"
+            }
+        }
+    },
+    "issues": {
+        "integration_removed": {
+            "description": "V\u0161echny slu\u017eby Ambiclimate budou s \u00fa\u010dinnost\u00ed od 31. b\u0159ezna 2024 ukon\u010deny, proto\u017ee Ambi Labs ukon\u010d\u00ed obchodn\u00ed operace a integrace Ambiclimate bude z Home Assistanta odebr\u00e1na.\n\nChcete-li tento probl\u00e9m vy\u0159e\u0161it, odeberte polo\u017eky integrace z nastaven\u00ed Home Assistanta. [Klepnut\u00edm sem zobraz\u00edte sv\u00e9 st\u00e1vaj\u00edc\u00ed polo\u017eky integrace Logi Circle] ({entries}).",
+            "title": "Integrace Ambiclimate byla ukon\u010dena a bude odebr\u00e1na"
+        }
+    },
+    "services": {
+        "send_comfort_feedback": {
+            "description": "Ode\u0161le zp\u011btnou vazbu pro re\u017eim Komfort.",
+            "fields": {
+                "name": {
+                    "description": "Textov\u00fd \u0159et\u011bzec s n\u00e1zvem za\u0159\u00edzen\u00ed.",
+                    "name": "N\u00e1zev za\u0159\u00edzen\u00ed"
+                },
+                "value": {
+                    "description": "Ode\u0161lete jakoukoli z n\u00e1sleduj\u00edc\u00edch hodnot re\u017eimu Komfort: too_hot, too_warm, bit_warm, comfortable, bit_cold, too_cold, freezing.",
+                    "name": "Hodnota re\u017eimu Komfort"
+                }
+            },
+            "name": "Odeslat zp\u011btnou vazbu"
+        },
+        "set_comfort_mode": {
+            "description": "Povol\u00ed re\u017eim Komfort na va\u0161\u00ed klimatizaci.",
+            "fields": {
+                "name": {
+                    "description": "Textov\u00fd \u0159et\u011bzec s n\u00e1zvem za\u0159\u00edzen\u00ed.",
+                    "name": "N\u00e1zev za\u0159\u00edzen\u00ed"
+                }
+            },
+            "name": "Nastavit re\u017eim Komfort"
+        },
+        "set_temperature_mode": {
+            "description": "Povol\u00ed teplotn\u00ed re\u017eim klimatizace.",
+            "fields": {
+                "name": {
+                    "description": "Textov\u00fd \u0159et\u011bzec s n\u00e1zvem za\u0159\u00edzen\u00ed.",
+                    "name": "N\u00e1zev za\u0159\u00edzen\u00ed"
+                },
+                "value": {
+                    "description": "C\u00edlov\u00e1 hodnota ve stupn\u00edch Celsia.",
+                    "name": "Teplota"
+                }
+            },
+            "name": "Nastavit teplotn\u00ed re\u017eim"
+        }
+    }
+}

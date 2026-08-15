@@ -1,0 +1,39 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "no_serial": "ssdp \u53d1\u73b0\u4fe1\u606f\u4e2d\u6ca1\u6709\u5e8f\u5217\u53f7",
+            "not_ipv4_address": "ssdp \u53d1\u73b0\u4fe1\u606f\u4e2d\u6ca1\u6709 IPv4 \u5730\u5740"
+        },
+        "error": {
+            "config": "\u8fde\u63a5\u9519\u8bef\uff1a\u8bf7\u68c0\u67e5\u60a8\u7684\u914d\u7f6e\u662f\u5426\u6b63\u786e"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "host": "\u4e3b\u673a\u5730\u5740 (\u53ef\u9009)",
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d (\u53ef\u9009)"
+                },
+                "description": "\u9ed8\u8ba4\u4e3b\u673a\u5730\u5740: {host}\n\u9ed8\u8ba4\u7528\u6237\u540d: {username}"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "signal_strength": {
+                "name": "\u4fe1\u53f7\u5f3a\u5ea6"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "consider_home": "\u5224\u5b9a\u5728\u5bb6\u65f6\u95f4\uff08\u79d2\uff09"
+                },
+                "description": "\u6307\u5b9a\u53ef\u9009\u8bbe\u7f6e"
+            }
+        }
+    }
+}

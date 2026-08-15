@@ -1,0 +1,109 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ger\u00e4t ist bereits konfiguriert",
+            "reauth_successful": "Die erneute Authentifizierung war erfolgreich"
+        },
+        "error": {
+            "invalid_auth": "Ung\u00fcltige Authentifizierung",
+            "unknown": "Unerwarteter Fehler"
+        },
+        "step": {
+            "2fa": {
+                "data": {
+                    "2fa": "Zwei-Faktor-Code"
+                },
+                "title": "Zwei-Faktor-Authentifizierung"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "Passwort"
+                },
+                "description": "Die Ring-Integration muss dein Konto {username} erneut authentifizieren",
+                "title": "Die Authentifizierung ist abgelaufen f\u00fcr {name}"
+            },
+            "user": {
+                "data": {
+                    "password": "Passwort",
+                    "username": "Benutzername"
+                },
+                "title": "Anmeldung mit Ring-Konto"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "ding": {
+                "name": "Klingeln"
+            }
+        },
+        "button": {
+            "open_door": {
+                "name": "T\u00fcr \u00f6ffnen"
+            }
+        },
+        "light": {
+            "light": {
+                "name": "Licht"
+            }
+        },
+        "sensor": {
+            "doorbell_volume": {
+                "name": "T\u00fcrklingel-Lautst\u00e4rke"
+            },
+            "last_activity": {
+                "name": "Letzte Aktivit\u00e4t"
+            },
+            "last_ding": {
+                "name": "Letztes Klingeln"
+            },
+            "last_motion": {
+                "name": "Letzte Bewegung"
+            },
+            "mic_volume": {
+                "name": "Mikrofon-Lautst\u00e4rke"
+            },
+            "voice_volume": {
+                "name": "Sprach-Lautst\u00e4rke"
+            },
+            "volume": {
+                "name": "Lautst\u00e4rke"
+            },
+            "wifi_signal_category": {
+                "name": "WLAN-Signalkategorie"
+            },
+            "wifi_signal_strength": {
+                "name": "WLAN-Signalst\u00e4rke"
+            }
+        },
+        "siren": {
+            "siren": {
+                "name": "Sirene"
+            }
+        },
+        "switch": {
+            "siren": {
+                "name": "Sirene"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_service_ring_update": {
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "description": "Verwende stattdessen \u201ehomeassistant.update_entity\u201c, wodurch alle Ring-Entit\u00e4ten aktualisiert werden. \n\nBitte ersetze die Aufrufe dieses Dienstes, passe deine Automatisierungen und Skripte an und w\u00e4hle **Senden**, um dieses Problem zu schlie\u00dfen.",
+                        "title": "Verwendung des veralteten Dienstes \u201ering.update\u201c erkannt"
+                    }
+                }
+            },
+            "title": "Verwendung des veralteten Dienstes \u201ering.update\u201c erkannt"
+        }
+    },
+    "services": {
+        "update": {
+            "description": "Aktualisiert die Daten, die wir f\u00fcr alle deine Ring-Ger\u00e4te haben.",
+            "name": "Aktualisieren"
+        }
+    }
+}

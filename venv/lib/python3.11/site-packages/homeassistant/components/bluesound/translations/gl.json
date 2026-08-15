@@ -1,0 +1,11 @@
+{
+    "services": {
+        "clear_sleep_timer": {
+            "fields": {
+                "entity_id": {
+                    "name": "Entidade"
+                }
+            }
+        }
+    }
+}

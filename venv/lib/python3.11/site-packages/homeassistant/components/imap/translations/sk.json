@@ -1,0 +1,69 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Zariadenie u\u017e je nakonfigurovan\u00e9",
+            "reauth_successful": "Op\u00e4tovn\u00e9 overenie bolo \u00faspe\u0161n\u00e9"
+        },
+        "error": {
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_auth": "Neplatn\u00e9 overenie",
+            "invalid_charset": "Zadan\u00e1 znakov\u00e1 sada nie je podporovan\u00e1",
+            "invalid_folder": "Vybrat\u00fd prie\u010dinok je neplatn\u00fd",
+            "invalid_search": "Vybran\u00e9 vyh\u013ead\u00e1vanie je neplatn\u00e9",
+            "ssl_error": "Vyskytla sa chyba SSL. Zme\u0148te zoznam \u0161ifier SSL a sk\u00faste to znova."
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Heslo"
+                },
+                "description": "Heslo pre {username} je neplatn\u00e9.",
+                "title": "Vypr\u0161ala platnos\u0165 overenia pre {name}"
+            },
+            "user": {
+                "data": {
+                    "charset": "Sada znakov",
+                    "folder": "Prie\u010dinok",
+                    "password": "Heslo",
+                    "port": "Port",
+                    "search": "Vyh\u013ead\u00e1vanie IMAP",
+                    "server": "Server",
+                    "ssl_cipher_list": "Zoznam \u0161ifier SSL (Roz\u0161\u00edren\u00e9)",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno",
+                    "verify_ssl": "Overi\u0165 SSL certifik\u00e1t"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "already_configured": "Polo\u017eka s t\u00fdmito mo\u017enos\u0165ami prie\u010dinkov a vyh\u013ead\u00e1vania u\u017e existuje.",
+            "cannot_connect": "Nepodarilo sa pripoji\u0165",
+            "invalid_auth": "Neplatn\u00e9 overenie",
+            "invalid_charset": "Zadan\u00e1 znakov\u00e1 sada nie je podporovan\u00e1",
+            "invalid_folder": "Vybrat\u00fd prie\u010dinok je neplatn\u00fd",
+            "invalid_search": "Vybran\u00e9 vyh\u013ead\u00e1vanie je neplatn\u00e9",
+            "invalid_template": "Neplatn\u00e1 \u0161abl\u00f3na"
+        },
+        "step": {
+            "init": {
+                "data": {
+                    "custom_event_data_template": "\u0160abl\u00f3na na vytvorenie \u00fadajov vlastnej udalosti",
+                    "enable_push": "Ak server podporuje funkciu Push-IMAP, povo\u013ete ju. Vypnite, ak s\u00fa aktualiz\u00e1cie Push-IMAP nespo\u013eahliv\u00e9.",
+                    "folder": "Prie\u010dinok",
+                    "max_message_size": "Maxim\u00e1lna ve\u013ekos\u0165 spr\u00e1vy (2048 < ve\u013ekos\u0165 < 30000)",
+                    "search": "Vyh\u013ead\u00e1vanie IMAP"
+                }
+            }
+        }
+    },
+    "selector": {
+        "ssl_cipher_list": {
+            "options": {
+                "intermediate": "Stredn\u00e9 \u0161ifry",
+                "modern": "Modern\u00e9 \u0161ifry",
+                "python_default": "Predvolen\u00e9 nastavenia"
+            }
+        }
+    }
+}

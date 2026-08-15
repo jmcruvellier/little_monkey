@@ -1,0 +1,29 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u012erenginys jau sukonfig\u016bruotas",
+            "reauth_successful": "Pakartotinis autentifikavimas buvo s\u0117kmingas"
+        },
+        "error": {
+            "cannot_connect": "Nepavyko prisijungti",
+            "invalid_auth": "Neteisingas autentifikavimas",
+            "unknown": "Netik\u0117ta klaida"
+        },
+        "step": {
+            "reauth": {
+                "data": {
+                    "api_key": "API raktas"
+                },
+                "description": "Sukurkite ir \u012fveskite nauj\u0105 paskyros \u201ePrenumeratos rakt\u0105\u201c adresu https://portal.osoenergy.no/.",
+                "title": "OSO energijos leidimas"
+            },
+            "user": {
+                "data": {
+                    "api_key": "API raktas"
+                },
+                "description": "\u012eveskite sugeneruot\u0105 paskyros \u201ePrenumeratos rakt\u0105\u201c adresu \u201ehttps://portal.osoenergy.no/\u201c",
+                "title": "OSO energijos leidimas"
+            }
+        }
+    }
+}

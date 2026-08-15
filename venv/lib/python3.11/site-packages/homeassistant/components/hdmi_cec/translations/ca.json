@@ -1,0 +1,22 @@
+{
+    "services": {
+        "select_device": {
+            "fields": {
+                "device": {
+                    "name": "Dispositiu"
+                }
+            },
+            "name": "Selecciona dispositiu"
+        },
+        "send_command": {
+            "fields": {
+                "att": {
+                    "description": "Par\u00e0metres opcionals."
+                }
+            }
+        },
+        "standby": {
+            "name": "En espera"
+        }
+    }
+}

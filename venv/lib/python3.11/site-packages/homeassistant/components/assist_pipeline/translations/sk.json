@@ -1,0 +1,25 @@
+{
+    "entity": {
+        "binary_sensor": {
+            "assist_in_progress": {
+                "name": "Asistencia prebieha"
+            }
+        },
+        "select": {
+            "pipeline": {
+                "name": "Assist pipeline",
+                "state": {
+                    "preferred": "Preferovan\u00e9"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Ukon\u010den\u00e1 detekcia hovorenia",
+                "state": {
+                    "aggressive": "Agres\u00edvne",
+                    "default": "Predvolen\u00fd",
+                    "relaxed": "Uvo\u013enen\u00e9"
+                }
+            }
+        }
+    }
+}

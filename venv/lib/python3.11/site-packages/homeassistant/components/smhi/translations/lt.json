@@ -1,0 +1,19 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Paskyra jau sukonfig\u016bruota"
+        },
+        "error": {
+            "wrong_location": "Vieta tik \u0160vedijoje"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "latitude": "Platuma",
+                    "longitude": "Ilguma"
+                },
+                "title": "Vieta \u0160vedijoje"
+            }
+        }
+    }
+}

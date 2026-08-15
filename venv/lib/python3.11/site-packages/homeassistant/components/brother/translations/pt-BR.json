@@ -1,0 +1,138 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Dispositivo j\u00e1 est\u00e1 configurado",
+            "unsupported_model": "Este modelo de impressora n\u00e3o \u00e9 suportado."
+        },
+        "error": {
+            "cannot_connect": "Falha ao conectar",
+            "snmp_error": "Servidor SNMP desligado ou impressora n\u00e3o suportada.",
+            "wrong_host": "Nome de host ou endere\u00e7o IP inv\u00e1lido."
+        },
+        "flow_title": "{model} {serial_number}",
+        "step": {
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "type": "Tipo de impressora"
+                },
+                "data_description": {
+                    "host": "O nome do host ou endere\u00e7o IP da impressora Brother a ser controlada."
+                }
+            },
+            "zeroconf_confirm": {
+                "data": {
+                    "type": "Tipo de impressora"
+                },
+                "description": "Deseja adicionar a impressora {model} com n\u00famero de s\u00e9rie ` {serial_number} ` ao Home Assistant?",
+                "title": "Impressora Brother descoberta"
+            }
+        }
+    },
+    "entity": {
+        "sensor": {
+            "belt_unit_remaining_life": {
+                "name": "Vida restante da unidade de correia"
+            },
+            "black_drum_page_counter": {
+                "name": "Contador de p\u00e1ginas de tambor preto"
+            },
+            "black_drum_remaining_life": {
+                "name": "Vida restante do cilindro preto"
+            },
+            "black_drum_remaining_pages": {
+                "name": "P\u00e1ginas restantes do tambor preto"
+            },
+            "black_ink_remaining": {
+                "name": "Tinta preta restante"
+            },
+            "black_toner_remaining": {
+                "name": "Toner preto restante"
+            },
+            "bw_pages": {
+                "name": "P\u00e1ginas P/B"
+            },
+            "color_pages": {
+                "name": "P\u00e1ginas coloridas"
+            },
+            "cyan_drum_page_counter": {
+                "name": "Contador de p\u00e1gina de tambor ciano"
+            },
+            "cyan_drum_remaining_life": {
+                "name": "Vida restante do tambor ciano"
+            },
+            "cyan_drum_remaining_pages": {
+                "name": "P\u00e1ginas restantes do tambor ciano"
+            },
+            "cyan_ink_remaining": {
+                "name": "Tinta ciano restante"
+            },
+            "cyan_toner_remaining": {
+                "name": "Toner ciano restante"
+            },
+            "drum_page_counter": {
+                "name": "Contador de p\u00e1ginas de tambor"
+            },
+            "drum_remaining_life": {
+                "name": "Vida restante do tambor"
+            },
+            "drum_remaining_pages": {
+                "name": "P\u00e1ginas restantes do tambor"
+            },
+            "duplex_unit_page_counter": {
+                "name": "Contador de p\u00e1gina da unidade duplex"
+            },
+            "fuser_remaining_life": {
+                "name": "Vida restante do fusor"
+            },
+            "laser_remaining_life": {
+                "name": "Vida restante do laser"
+            },
+            "last_restart": {
+                "name": "\u00daltima reinicializa\u00e7\u00e3o"
+            },
+            "magenta_drum_page_counter": {
+                "name": "Contador de p\u00e1ginas de tambor magenta"
+            },
+            "magenta_drum_remaining_life": {
+                "name": "Tambor Magenta vida restante"
+            },
+            "magenta_drum_remaining_pages": {
+                "name": "P\u00e1ginas restantes do tambor magenta"
+            },
+            "magenta_ink_remaining": {
+                "name": "Tinta magenta restante"
+            },
+            "magenta_toner_remaining": {
+                "name": "Toner magenta restante"
+            },
+            "page_counter": {
+                "name": "Contador de p\u00e1ginas"
+            },
+            "pf_kit_1_remaining_life": {
+                "name": "PF Kit 1 vida restante"
+            },
+            "pf_kit_mp_remaining_life": {
+                "name": "Vida restante do kit PF MP"
+            },
+            "status": {
+                "name": "Status"
+            },
+            "yellow_drum_page_counter": {
+                "name": "Contador de p\u00e1ginas de tambor amarelo"
+            },
+            "yellow_drum_remaining_life": {
+                "name": "Vida restante do tambor amarelo"
+            },
+            "yellow_drum_remaining_pages": {
+                "name": "P\u00e1ginas restantes do tambor amarelo"
+            },
+            "yellow_ink_remaining": {
+                "name": "Tinta amarela restante"
+            },
+            "yellow_toner_remaining": {
+                "name": "Toner amarelo restante"
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "entity_component": {
+        "_": {
+            "name": "Skript",
+            "state": {
+                "off": "Aus",
+                "on": "An"
+            },
+            "state_attributes": {
+                "current": {
+                    "name": "Laufende Automatisierungen"
+                },
+                "last_action": {
+                    "name": "Letzte Aktion"
+                },
+                "last_triggered": {
+                    "name": "Zuletzt ausgel\u00f6st"
+                },
+                "max": {
+                    "name": "Maximal laufende Skripte"
+                },
+                "mode": {
+                    "name": "Ausf\u00fchrungsmodus",
+                    "state": {
+                        "parallel": "Parallel",
+                        "queued": "In Warteschlange",
+                        "restart": "Neu starten",
+                        "single": "Einzeln"
+                    }
+                }
+            }
+        }
+    },
+    "services": {
+        "reload": {
+            "description": "L\u00e4dt alle verf\u00fcgbaren Skripte neu.",
+            "name": "Neu laden"
+        },
+        "toggle": {
+            "description": "Schalte ein Skript um. Startet es, wenn es nicht l\u00e4uft, andernfalls stoppt es.",
+            "name": "Umschalten"
+        },
+        "turn_off": {
+            "description": "Stoppt ein laufendes Skript.",
+            "name": "Ausschalten"
+        },
+        "turn_on": {
+            "description": "F\u00fchrt die in einem Skript definierte Aktionssequenz aus.",
+            "name": "Einschalten"
+        }
+    },
+    "title": "Skript"
+}

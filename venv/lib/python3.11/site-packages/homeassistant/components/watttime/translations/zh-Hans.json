@@ -1,0 +1,52 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u8bbe\u5907\u5df2\u7ecf\u914d\u7f6e\u8fc7\u4e86",
+            "reauth_successful": "\u91cd\u65b0\u8ba4\u8bc1\u6210\u529f"
+        },
+        "error": {
+            "invalid_auth": "\u8eab\u4efd\u8ba4\u8bc1\u65e0\u6548",
+            "unknown": "\u975e\u9884\u671f\u7684\u9519\u8bef",
+            "unknown_coordinates": "\u6ca1\u6709\u7eac\u5ea6/\u7ecf\u5ea6\u6570\u636e"
+        },
+        "step": {
+            "coordinates": {
+                "data": {
+                    "latitude": "\u7eac\u5ea6",
+                    "longitude": "\u7ecf\u5ea6"
+                },
+                "description": "\u8f93\u5165\u8981\u76d1\u63a7\u7684\u7ecf\u7eac\u5ea6\uff1a"
+            },
+            "location": {
+                "data": {
+                    "location_type": "\u5750\u6807"
+                },
+                "description": "\u9009\u62e9\u8981\u76d1\u63a7\u7684\u4f4d\u7f6e\uff1a"
+            },
+            "reauth_confirm": {
+                "data": {
+                    "password": "\u5bc6\u7801"
+                },
+                "description": "\u8bf7\u91cd\u65b0\u8f93\u5165{username}\u7684\u5bc6\u7801\uff1a",
+                "title": "\u4f7f\u96c6\u6210\u91cd\u65b0\u8fdb\u884c\u8eab\u4efd\u8ba4\u8bc1"
+            },
+            "user": {
+                "data": {
+                    "password": "\u5bc6\u7801",
+                    "username": "\u7528\u6237\u540d"
+                },
+                "description": "\u8f93\u5165\u60a8\u7684\u7528\u6237\u540d\u548c\u5bc6\u7801\uff1a"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "show_on_map": "\u5728\u5730\u56fe\u4e0a\u663e\u793a\u76d1\u63a7\u4f4d\u7f6e"
+                },
+                "title": "\u914d\u7f6e WattTime"
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "issues": {
+        "deprecated_mailbox": {
+            "description": "Die Mailbox-Plattform wird entfernt. Bitte melde es dem Autor der benutzerdefinierten Integration '{integration_domain}'.",
+            "title": "Die Mailbox-Plattform wird entfernt"
+        }
+    },
+    "title": "Postfach"
+}

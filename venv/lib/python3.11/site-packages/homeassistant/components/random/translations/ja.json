@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "\u30c7\u30d0\u30a4\u30b9\u30af\u30e9\u30b9",
+                    "name": "\u540d\u524d"
+                },
+                "title": "\u30e9\u30f3\u30c0\u30e0\u30d0\u30a4\u30ca\u30ea\u30bb\u30f3\u30b5\u30fc"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "\u30c7\u30d0\u30a4\u30b9\u30af\u30e9\u30b9",
+                    "maximum": "\u6700\u5927",
+                    "minimum": "\u6700\u5c0f",
+                    "name": "\u540d\u524d",
+                    "unit_of_measurement": "\u6e2c\u5b9a\u5358\u4f4d"
+                },
+                "title": "\u30e9\u30f3\u30c0\u30e0\u30bb\u30f3\u30b5\u30fc"
+            },
+            "user": {
+                "description": "\u3053\u306e\u30d8\u30eb\u30d1\u30fc\u3092\u4f7f\u7528\u3059\u308b\u3068\u3001\u30e9\u30f3\u30c0\u30e0\u306a\u5024\u3092\u51fa\u529b\u3059\u308b\u30d8\u30eb\u30d1\u30fc\u3092\u4f5c\u6210\u3067\u304d\u307e\u3059\u3002",
+                "menu_options": {
+                    "binary_sensor": "\u30e9\u30f3\u30c0\u30e0\u30d0\u30a4\u30ca\u30ea\u30bb\u30f3\u30b5\u30fc",
+                    "sensor": "\u30e9\u30f3\u30c0\u30e0\u30bb\u30f3\u30b5\u30fc"
+                },
+                "title": "\u30e9\u30f3\u30c0\u30e0\u30d8\u30eb\u30d1\u30fc"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "\u3053\u306e\u30d8\u30eb\u30d1\u30fc\u306b\u306f\u30aa\u30d7\u30b7\u30e7\u30f3\u304c\u3042\u308a\u307e\u305b\u3093\u3002",
+                "title": "\u30e9\u30f3\u30c0\u30e0\u30d0\u30a4\u30ca\u30ea\u30bb\u30f3\u30b5\u30fc"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "\u30c7\u30d0\u30a4\u30b9\u30af\u30e9\u30b9",
+                    "maximum": "\u6700\u5927",
+                    "minimum": "\u6700\u5c0f",
+                    "unit_of_measurement": "\u6e2c\u5b9a\u5358\u4f4d"
+                },
+                "title": "\u30e9\u30f3\u30c0\u30e0\u30bb\u30f3\u30b5\u30fc"
+            }
+        }
+    }
+}

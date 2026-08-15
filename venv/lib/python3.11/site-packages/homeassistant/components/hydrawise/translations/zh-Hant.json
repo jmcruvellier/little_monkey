@@ -1,0 +1,48 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "\u670d\u52d9\u5df2\u7d93\u8a2d\u5b9a\u5b8c\u6210"
+        },
+        "error": {
+            "cannot_connect": "\u9023\u7dda\u5931\u6557",
+            "timeout_connect": "\u5efa\u7acb\u9023\u7dda\u903e\u6642",
+            "unknown": "\u672a\u9810\u671f\u932f\u8aa4"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "API \u91d1\u9470"
+                }
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "watering": {
+                "name": "\u6f86\u6c34\u4e2d"
+            }
+        },
+        "sensor": {
+            "next_cycle": {
+                "name": "\u4e0b\u6b21\u9031\u671f"
+            },
+            "watering_time": {
+                "name": "\u6f86\u6c34\u6642\u9593"
+            }
+        },
+        "switch": {
+            "auto_watering": {
+                "name": "\u81ea\u52d5\u6f86\u6c34"
+            },
+            "manual_watering": {
+                "name": "\u624b\u52d5\u6f86\u6c34"
+            }
+        }
+    },
+    "issues": {
+        "deprecated_yaml_import_issue": {
+            "description": "\u4f7f\u7528 YAML \u8a2d\u5b9a\u7684 Hydrawise \u5373\u5c07\u79fb\u9664\uff0c\u4f46\u5728\u532f\u5165 YAML \u8a2d\u5b9a\u6642\u51fa\u73fe {error_type} \u932f\u8aa4\u3002\n\n\u8acb\u78ba\u5b9a\u8207 Hydrawise \u7684\u9023\u7dda\u6b63\u5e38\u4e26\u91cd\u65b0\u555f\u52d5 Home Assistant \u5f8c\u518d\u8a66\u4e00\u6b21\u3001\u6216\u8005\u7531 configuration.yaml \u6a94\u6848\u4e2d\u79fb\u9664 Hydrawise YAML \u8a2d\u5b9a\u3001\u7136\u5f8c\u9032\u884c\u624b\u52d5 [\u8a2d\u5b9a\u6574\u5408]({url})\u3002",
+            "title": "Hydrawise YAML \u8a2d\u5b9a\u532f\u5165\u5931\u6557"
+        }
+    }
+}

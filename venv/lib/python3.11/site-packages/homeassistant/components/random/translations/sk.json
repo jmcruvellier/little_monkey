@@ -1,0 +1,48 @@
+{
+    "config": {
+        "step": {
+            "binary_sensor": {
+                "data": {
+                    "device_class": "Trieda zariadenia",
+                    "name": "N\u00e1zov"
+                },
+                "title": "N\u00e1hodn\u00fd bin\u00e1rny senzor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Trieda zariadenia",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "name": "N\u00e1zov",
+                    "unit_of_measurement": "Jednotka merania"
+                },
+                "title": "N\u00e1hodn\u00fd sn\u00edma\u010d"
+            },
+            "user": {
+                "description": "Tento pomocn\u00edk umo\u017e\u0148uje vytvori\u0165 pomocn\u00edka, ktor\u00fd vysiela n\u00e1hodn\u00fa hodnotu.",
+                "menu_options": {
+                    "binary_sensor": "N\u00e1hodn\u00fd bin\u00e1rny senzor",
+                    "sensor": "N\u00e1hodn\u00fd sn\u00edma\u010d"
+                },
+                "title": "N\u00e1hodn\u00fd pomocn\u00edk"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "binary_sensor": {
+                "description": "Tento pomocn\u00edk nem\u00e1 \u017eiadne mo\u017enosti.",
+                "title": "N\u00e1hodn\u00fd bin\u00e1rny senzor"
+            },
+            "sensor": {
+                "data": {
+                    "device_class": "Trieda zariadenia",
+                    "maximum": "Maximum",
+                    "minimum": "Minimum",
+                    "unit_of_measurement": "Jednotka merania"
+                },
+                "title": "N\u00e1hodn\u00fd sn\u00edma\u010d"
+            }
+        }
+    }
+}

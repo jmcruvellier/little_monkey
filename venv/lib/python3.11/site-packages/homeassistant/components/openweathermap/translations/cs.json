@@ -1,0 +1,34 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Poloha je ji\u017e nastavena"
+        },
+        "error": {
+            "cannot_connect": "Nepoda\u0159ilo se p\u0159ipojit",
+            "invalid_api_key": "Neplatn\u00fd kl\u00ed\u010d API"
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "api_key": "Kl\u00ed\u010d API",
+                    "language": "Jazyk",
+                    "latitude": "Zem\u011bpisn\u00e1 \u0161\u00ed\u0159ka",
+                    "longitude": "Zem\u011bpisn\u00e1 d\u00e9lka",
+                    "mode": "Re\u017eim",
+                    "name": "N\u00e1zev"
+                },
+                "description": "Chcete-li vygenerovat kl\u00ed\u010d API, p\u0159ejd\u011bte na https://openweathermap.org/appid"
+            }
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "language": "Jazyk",
+                    "mode": "Re\u017eim"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+Metadata-Version: 2.1
+Name: snitun
+Version: 0.36.2
+Summary: SNI proxy with TCP multiplexer
+Home-page: https://www.nabucasa.com/
+Download-URL: https://github.com/NabuCasa/snitun/tarball/0.36.2
+Author: Nabu Casa, Inc.
+Author-email: opensource@nabucasa.com
+License: GPL v3
+Keywords: sni,proxy,multiplexer,tls
+Platform: any
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Internet :: Proxy Servers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+License-File: LICENSE
+Requires-Dist: attrs >=18.2.0
+Requires-Dist: async-timeout >=3.0.1
+Requires-Dist: cryptography >=2.5
+

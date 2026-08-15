@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "YAML \u69cb\u6210\u304b\u3089\u6c4e\u7528\u30b5\u30fc\u30e2\u30b9\u30bf\u30c3\u30c8\u3092\u30ea\u30ed\u30fc\u30c9\u3057\u307e\u3059\u3002",
+            "name": "\u30ea\u30ed\u30fc\u30c9"
+        }
+    }
+}

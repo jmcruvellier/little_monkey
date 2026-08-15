@@ -1,0 +1,18 @@
+{
+    "services": {
+        "dismiss": {
+            "description": "L\u00fckkab html5-teatise tagasi.",
+            "fields": {
+                "data": {
+                    "description": "Teatise laiendatud teave. Toetab silte.",
+                    "name": "Andmed"
+                },
+                "target": {
+                    "description": "Sihtm\u00e4rkide nimekiri.",
+                    "name": "Sihtm\u00e4rk"
+                }
+            },
+            "name": "Loobu"
+        }
+    }
+}

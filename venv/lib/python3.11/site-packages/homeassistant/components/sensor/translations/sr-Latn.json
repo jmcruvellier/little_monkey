@@ -1,0 +1,14 @@
+{
+    "entity_component": {
+        "_": {
+            "state_attributes": {
+                "options": {
+                    "name": "Mogu\u0107a stanja"
+                }
+            }
+        },
+        "temperature": {
+            "name": "Temperatura"
+        }
+    }
+}

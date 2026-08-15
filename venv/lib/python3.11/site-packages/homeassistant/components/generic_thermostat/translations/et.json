@@ -1,0 +1,8 @@
+{
+    "services": {
+        "reload": {
+            "description": "Taaslaeb \u00fcldised termostaadid YAML-konfiguratsioonist.",
+            "name": "Taaslae"
+        }
+    }
+}
