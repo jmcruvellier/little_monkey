@@ -1,9 +1,0 @@
-{
-  "entity": {
-    "sensor": {
-      "glucose_value": {
-        "default": "mdi:diabetes"
-      }
-    }
-  }
-}

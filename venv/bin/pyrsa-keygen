@@ -1,6 +1,0 @@
-#!/root/projects/little_monkey/venv/bin/python3.11
-import sys
-from rsa.cli import keygen
-if __name__ == '__main__':
-    sys.argv[0] = sys.argv[0].removesuffix('.exe')
-    sys.exit(keygen())

@@ -1,9 +1,0 @@
-{
-  "entity": {
-    "todo": {
-      "shopping_list": {
-        "default": "mdi:cart"
-      }
-    }
-  }
-}
