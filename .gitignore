@@ -14,4 +14,16 @@ coverage.xml
 
 # Home Assistant configuration
 config/*
-!config/configuration.yamlvenv/
+!config/configuration.yaml
+
+# Environnement virtuel Python
+venv/
+.venv/
+env/
+.env/
+
+# Fichiers IDE (VS Code, PyCharm, etc.)
+.vscode/
+.idea/
+*.swp
+*.swo

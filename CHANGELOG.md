@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2.7
+- Correction du bug [#118](https://github.com/jmcruvellier/little_monkey/issues/118) : Entités non affichées dans l'appareil Ecojoko
+
 ## 1.2.6
 - Correction du bug [#116](https://github.com/jmcruvellier/little_monkey/issues/116) : Problème de reporting sur la page energie
 
