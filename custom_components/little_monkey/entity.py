@@ -75,7 +75,7 @@ class EcojokoSensor(CoordinatorEntity, SensorEntity):
     def device_info(self) -> DeviceInfo:
         """Return the device information of the parent Ecojoko device."""
         return self._main_device.device_info
-        
+
     @property
     def name(self):
         """Return the name of the sensor."""
