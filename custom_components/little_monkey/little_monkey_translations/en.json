@@ -3,6 +3,7 @@
     "grid_consumption": "Grid Consumption",
     "hc_grid_consumption": "HC Grid Consumption",
     "hp_grid_consumption": "HP Grid Consumption",
+    "weekend_grid_consumption": "Weekend Grid Consumption",
     "blue_hc_grid_consumption": "HC Blue Grid Consumption",
     "blue_hp_grid_consumption": "HP Blue Grid Consumption",
     "white_hc_grid_consumption": "HC White Grid Consumption",

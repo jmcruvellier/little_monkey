@@ -3,6 +3,7 @@
     "grid_consumption": "Consumo da Rede",
     "hc_grid_consumption": "Consumo da Rede em Vazio",
     "hp_grid_consumption": "Consumo da Rede em Ponta",
+    "weekend_grid_consumption": "Consumo Fim de Semana Rede",
     "blue_hc_grid_consumption": "Consumo da Rede Azul em Vazio",
     "blue_hp_grid_consumption": "Consumo da Rede Azul em Ponta",
     "white_hc_grid_consumption": "Consumo da Rede Branca em Vazio",
