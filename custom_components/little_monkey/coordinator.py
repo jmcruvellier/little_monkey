@@ -98,6 +98,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
                 "grid_consumption": self.client.kwh,
                 "hc_grid_consumption": self.client.kwh_hc_ns,
                 "hp_grid_consumption": self.client.kwh_hp_ns,
+                "weekend_grid_consumption": self.client.kwh_weekend,
                 "blue_hc_grid_consumption": self.client.tempo_hc_blue,
                 "blue_hp_grid_consumption": self.client.tempo_hp_blue,
                 "white_hc_grid_consumption": self.client.tempo_hc_white,

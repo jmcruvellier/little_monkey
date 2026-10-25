@@ -61,6 +61,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             SensorDeviceClass.ENERGY,
             UnitOfEnergy.KILO_WATT_HOUR,
             "mdi:lightning-bolt"))
+        main_device.add_child_entity(EcojokoSensor(
+            main_device,
+            "weekend_grid_consumption",
+            SensorStateClass.TOTAL_INCREASING,
+            SensorDeviceClass.ENERGY,
+            UnitOfEnergy.KILO_WATT_HOUR,
+            "mdi:lightning-bolt"))
 
     # Tempo grid consumption sensors
     if config_entry.data.get(CONF_USE_TEMPO_FEATURE) is True:

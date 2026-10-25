@@ -85,6 +85,7 @@ class LittleMonkeyApiClient:
         self._kwh = None
         self._kwh_hc_ns = None
         self._kwh_hp_ns = None
+        self._kwh_weekend = None
         self._tempo_hc_blue = None
         self._tempo_hp_blue = None
         self._tempo_hc_white = None
@@ -128,6 +129,11 @@ class LittleMonkeyApiClient:
     def kwh_hp_ns(self) -> int:
         """Return the HP consumption."""
         return self._kwh_hp_ns
+
+    @property
+    def kwh_weekend(self) -> int:
+        """Return the weekend consumption (HC/HP + Week-end option)."""
+        return self._kwh_weekend
 
     @property
     def tempo_hc_blue(self) -> int:
@@ -360,13 +366,26 @@ class LittleMonkeyApiClient:
                 # 78 bug fix
                 elif self._use_hchp is True and 'subconsumption' in data[week_day]:
                     # 74 bug fix
+                    # Option week-end (ex. EDF HC + Week-end) : en semaine
+                    # "HC Semaine" / "HP Semaine", le samedi et le dimanche
+                    # une seule tranche "Heures Weekend". Les compteurs sont
+                    # remis à zéro à chaque lecture pour ne pas garder la
+                    # valeur du vendredi pendant tout le week-end.
+                    kwh_hc = kwh_hp = kwh_we = 0.0
                     for item in data[week_day]['subconsumption']:
-                        if item['label'] == "Heures Creuses" or \
-                                item['label'].startswith("HC"):
-                            self._kwh_hc_ns = convert_to_float(item['kwh'])
-                        if item['label'] == "Heures Pleines" or \
-                                item['label'].startswith("HP"):
-                            self._kwh_hp_ns = convert_to_float(item['kwh'])
+                        label = str(item.get('label', ''))
+                        kwh = convert_to_float(item.get('kwh'))
+                        if 'weekend' in label.lower().replace('-', '').replace(' ', ''):
+                            kwh_we += kwh
+                        elif label == "Heures Creuses" or label.startswith("HC"):
+                            kwh_hc += kwh
+                        elif label == "Heures Pleines" or label.startswith("HP"):
+                            kwh_hp += kwh
+                        else:
+                            LOGGER.debug("Tranche tarifaire non gérée : %s", label)
+                    self._kwh_hc_ns = kwh_hc
+                    self._kwh_hp_ns = kwh_hp
+                    self._kwh_weekend = kwh_we
                 self._last_powerstat_refresh = datetime.combine(
                     current_date, current_time)
             # Temperature
@@ -396,7 +415,7 @@ class LittleMonkeyApiClient:
             return
 
         except Exception:  # pylint: disable=broad-except
-            # traceback.print_exc()
+            LOGGER.exception("Erreur lors de la lecture des données ecojoko")
             return
 
     async def _cookiesapi_wrapper(
