@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - "main"
+  # Every pull request, including those stacked on another branch
   pull_request:
-    branches:
-      - "main"
 
 permissions:
   contents: read
@@ -27,6 +26,26 @@ jobs:
 
         - name: "Install requirements"
           run: python3 -m pip install -r requirements_test.txt
+
+        - name: "Run"
+          run: python3 -m pytest tests
+
+  home-assistant:
+    name: "Pytest in Home Assistant"
+    runs-on: "ubuntu-latest"
+    steps:
+        - name: "Checkout the repository"
+          uses: "actions/checkout@v7"
+
+        - name: "Set up Python"
+          uses: actions/setup-python@v7
+          with:
+            # Version required by the latest Home Assistant
+            python-version: "3.14"
+            cache: "pip"
+
+        - name: "Install requirements"
+          run: python3 -m pip install -r requirements_test_ha.txt
 
         - name: "Run"
           run: python3 -m pytest tests

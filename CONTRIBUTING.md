@@ -16,7 +16,7 @@ Pull requests are the best way to propose changes to the codebase.
 1. Fork the repo and create your branch from `main`.
 2. If you've changed something, update the documentation.
 3. Make sure your code lints (using `scripts/lint`).
-4. Run the tests (`python -m pytest tests`, after `pip install -r requirements_test.txt`) and test your contribution.
+4. Run the tests (`python -m pytest tests`, after `pip install -r requirements_test.txt`) and test your contribution. With `pip install -r requirements_test_ha.txt` instead (Python 3.14), the same command also runs the tests of `tests/ha` inside a Home Assistant core.
 5. Issue that pull request!
 
 ## Any contributions you make will be under the MIT Software License
