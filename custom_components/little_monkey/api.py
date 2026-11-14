@@ -20,7 +20,8 @@ from .utils import (
     get_current_date,
     get_paris_timezone,
     get_value_from_json_array,
-    convert_to_float)
+    convert_to_float,
+    round_value)
 
 TZ = get_paris_timezone()
 
@@ -443,8 +444,8 @@ class LittleMonkeyApiClient:
             try:
                 # 101 bug fix
                 last = results[2]['stat']['data'][-1]
-                self._indoor_temp = last['value']
-                self._outdoor_temp = last['ext_value']
+                self._indoor_temp = round_value(last['value'])
+                self._outdoor_temp = round_value(last['ext_value'])
             except PARSE_ERRORS as exception:
                 self._warn_once(apis[2]['name'], exception)
             else:
@@ -454,8 +455,8 @@ class LittleMonkeyApiClient:
             try:
                 # 101 bug fix
                 last = results[3]['stat']['data'][-1]
-                self._indoor_hum = last['value']
-                self._outdoor_hum = last['ext_value']
+                self._indoor_hum = round_value(last['value'])
+                self._outdoor_hum = round_value(last['ext_value'])
             except PARSE_ERRORS as exception:
                 self._warn_once(apis[3]['name'], exception)
             else:
@@ -478,64 +479,69 @@ class LittleMonkeyApiClient:
             self._tempo_hp_white = None
             self._tempo_hc_red = None
             self._tempo_hp_red = None
-        self._kwh = kwh
+        self._kwh = round_value(kwh)
         self._stat_date = day
         # Surplus Production
         # 78 bug fix
         if self._use_prod is True and 'kwh_prod' in data[week_day]:
             if float(data[week_day]['kwh_prod']) != 0:
-                self._kwh_prod = abs(float(data[week_day]['kwh_prod']))
+                self._kwh_prod = round_value(
+                    abs(float(data[week_day]['kwh_prod'])))
             else:
                 self._kwh_prod = 0
         # Tempo option
         # 78 bug fix
         if self._use_tempo is True and 'subconsumption' in data[week_day]:
-            self._tempo_hc_blue = get_value_from_json_array(
+            self._tempo_hc_blue = round_value(get_value_from_json_array(
                 data[week_day]['subconsumption'],
                 "label",
                 "HC Bleu",
-                "kwh")
-            self._tempo_hp_blue = get_value_from_json_array(
+                "kwh"))
+            self._tempo_hp_blue = round_value(get_value_from_json_array(
                 data[week_day]['subconsumption'],
                 "label",
                 "HP Bleu",
-                "kwh")
-            self._tempo_hc_white = get_value_from_json_array(
+                "kwh"))
+            self._tempo_hc_white = round_value(get_value_from_json_array(
                 data[week_day]['subconsumption'],
                 "label",
                 "HC Blanc",
-                "kwh")
-            self._tempo_hp_white = get_value_from_json_array(
+                "kwh"))
+            self._tempo_hp_white = round_value(get_value_from_json_array(
                 data[week_day]['subconsumption'],
                 "label",
                 "HP Blanc",
-                "kwh")
-            self._tempo_hc_red = get_value_from_json_array(
+                "kwh"))
+            self._tempo_hc_red = round_value(get_value_from_json_array(
                 data[week_day]['subconsumption'],
                 "label",
                 "HC Rouge",
-                "kwh")
-            self._tempo_hp_red = get_value_from_json_array(
+                "kwh"))
+            self._tempo_hp_red = round_value(get_value_from_json_array(
                 data[week_day]['subconsumption'],
                 "label",
                 "HP Rouge",
-                "kwh")
+                "kwh"))
         # HC/HP option
         if self._use_tempo is True and self._use_hchp is True:
-            self._kwh_hc_ns = convert_to_float(self._tempo_hc_blue) + convert_to_float(
-                self._tempo_hc_white) + convert_to_float(self._tempo_hc_red)
-            self._kwh_hp_ns = convert_to_float(self._tempo_hp_blue) + convert_to_float(
-                self._tempo_hp_white) + convert_to_float(self._tempo_hp_red)
+            self._kwh_hc_ns = round_value(
+                convert_to_float(self._tempo_hc_blue)
+                + convert_to_float(self._tempo_hc_white)
+                + convert_to_float(self._tempo_hc_red))
+            self._kwh_hp_ns = round_value(
+                convert_to_float(self._tempo_hp_blue)
+                + convert_to_float(self._tempo_hp_white)
+                + convert_to_float(self._tempo_hp_red))
         # 78 bug fix
         elif self._use_hchp is True and 'subconsumption' in data[week_day]:
             # 74 bug fix
             for item in data[week_day]['subconsumption']:
                 if item['label'] == "Heures Creuses" or \
                         item['label'].startswith("HC"):
-                    self._kwh_hc_ns = convert_to_float(item['kwh'])
+                    self._kwh_hc_ns = round_value(convert_to_float(item['kwh']))
                 if item['label'] == "Heures Pleines" or \
                         item['label'].startswith("HP"):
-                    self._kwh_hp_ns = convert_to_float(item['kwh'])
+                    self._kwh_hp_ns = round_value(convert_to_float(item['kwh']))
 
     async def _cookiesapi_wrapper(
         self,

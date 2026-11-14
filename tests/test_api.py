@@ -612,3 +612,37 @@ def test_no_temphum_device(api, monkeypatch):
     )
     assert times["tempstat"] == []
     assert times["humstat"] == []
+
+
+def test_values_are_rounded_to_two_decimals(api):
+    """Float noise from ecojoko or from a sum does not reach the sensors."""
+    payload = powerstat(kwh=22.920000000000002, subconsumption=[
+        {"label": "HC Bleu", "kwh": 0.1},
+        {"label": "HC Blanc", "kwh": 0.2},
+        {"label": "HP Bleu", "kwh": 7.4399999999999995},
+    ])
+    session = Session(
+        powerstat=Response(payload=payload),
+        tempstat=Response(payload={"stat": {"data": [
+            {"value": 19.900000000000002, "ext_value": 9.92}]}}),
+        humstat=Response(payload={"stat": {"data": [
+            {"value": 46, "ext_value": 58.599999999999994}]}}),
+    )
+    # A poll of 30 seconds calls the three statistics APIs at once
+    client = make_client(
+        api, session, poll=30, hchp=True, tempo=True, temphum=True)
+    run(client.async_get_data())
+    assert client.kwh == 22.92
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == (0.3, 7.44)
+    assert client.tempo_hp_blue == 7.44
+    assert (client.indoor_temp, client.outdoor_temp) == (19.9, 9.92)
+    assert (client.indoor_hum, client.outdoor_hum) == (46, 58.6)
+    assert isinstance(client.indoor_hum, int)
+
+
+def test_round_value_leaves_other_values_alone(utils):
+    """Only numbers are rounded."""
+    assert utils.round_value(None) is None
+    assert utils.round_value("1.239") == "1.239"
+    assert utils.round_value(True) is True
+    assert utils.round_value(1.239) == 1.24
