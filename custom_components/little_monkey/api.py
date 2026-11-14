@@ -431,7 +431,12 @@ class LittleMonkeyApiClient:
             self._realtime_conso = real_time['value']
             # Apparent power in VA, read from the Linky meter. Not every
             # installation has it, and it is negative when power is injected
-            self._realtime_va = finite_number(real_time.get('value2'))
+            apparent_power = finite_number(real_time.get('value2'))
+            # Installations without this measure get a constant 0, which
+            # cannot be a real value while some power is consumed or injected
+            if apparent_power == 0 and self._realtime_conso != 0:
+                apparent_power = None
+            self._realtime_va = apparent_power
         except PARSE_ERRORS as exception:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API realtime_conso: {exception!r}"
