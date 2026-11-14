@@ -17,10 +17,6 @@ CONF_USE_HCHP_FEATURE = "use_hchp_feature"
 CONF_USE_TEMPO_FEATURE = "use_tempo_feature"
 CONF_USE_TEMPHUM_FEATURE = "use_temphum_feature"
 CONF_USE_PROD_FEATURE = "use_prod_feature"
-CONF_LANG = 'lang'
-DEFAULT_LANG = 'fr-FR'
-# Language Supported Codes
-LANG_CODES = ['fr-FR', 'en-US', 'pt-PT']
 
 # APIs
 CONF_API_TIMEOUT = 3

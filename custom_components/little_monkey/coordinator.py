@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 from datetime import timedelta
-from homeassistant.util import json
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -19,7 +18,6 @@ from .api import (
 )
 from .const import (
     DOMAIN,
-    CONF_LANG,
     POLL_INTERVAL,
     LOGGER
 )
@@ -42,9 +40,6 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self.hass = hass
         self.config_entry = entry
         self.client = client
-        self._lang = entry.options[CONF_LANG]
-        # 93 bug fix
-        self._tranfile = None
 
         super().__init__(
             hass=hass,
@@ -54,39 +49,6 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(
                 seconds=int(entry.data.get(POLL_INTERVAL))),
         )
-
-    @property
-    def tranfile(self):
-        """Get tranfile."""
-        return self._tranfile
-
-    # 93 bug fix
-    async def async_initialize(self):
-        """Async load the translation file."""
-        self._tranfile = await self.get_tran_file()
-
-    # 93 bug fix
-    async def get_tran_file(self):
-        """Async get translation file for wupws sensor friendly_name."""
-        tfiledir = f'custom_components/{DOMAIN}/{DOMAIN}_translations/'
-        tfilename = self._lang.split('-', 1)[0]
-        filepath = f'{tfiledir}{tfilename}.json'
-        fallback_filepath = f'{tfiledir}en.json'
-
-        def load_json(path):
-            try:
-                return json.load_json(path)
-            except Exception:
-                return None
-
-        tfiledata = await self.hass.async_add_executor_job(load_json, filepath)
-        if tfiledata is None:
-            tfiledata = await self.hass.async_add_executor_job(load_json, fallback_filepath)
-            LOGGER.warning(
-                'Sensor translation file %s.json does not exist. Defaulting to en-US.',
-                tfilename
-            )
-        return tfiledata
 
     async def _async_update_data(self):
         """Update data via library."""

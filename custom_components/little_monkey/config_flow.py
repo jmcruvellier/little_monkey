@@ -27,11 +27,9 @@ from .const import (
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
-    CONF_LANG,
-    DEFAULT_LANG,
-    LANG_CODES,
     LOGGER
 )
+from .utils import account_unique_id
 
 def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> vol.Schema:
     """Get a schema with default values."""
@@ -69,15 +67,6 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
                             max=60
                         ),
                     ),
-                vol.Required(
-                    CONF_LANG, default=DEFAULT_LANG
-                    ): selector.LanguageSelector(
-                    selector.LanguageSelectorConfig(
-                        languages=LANG_CODES,
-                        native_name=True,
-                        no_sort=True
-                    ),
-                ),
             }
         )
     # Default values come from config entry
@@ -120,15 +109,6 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
                             max=60
                         ),
                     ),
-            vol.Required(
-                CONF_LANG, default=config_entry.options.get(CONF_LANG, DEFAULT_LANG)
-                ): selector.LanguageSelector(
-                selector.LanguageSelectorConfig(
-                    languages=LANG_CODES,
-                    native_name=True,
-                    no_sort=True
-                ),
-            ),
         }
     )
 
@@ -167,7 +147,8 @@ async def _async_validate(
 class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Ecojoko."""
 
-    VERSION = 1
+    # Version 2: unique ids based on the config entry (see async_migrate_entry)
+    VERSION = 2
 
     def __init__(self) -> None:
         """Init EcojokoFlowHandler."""
@@ -181,12 +162,16 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
+            # The same ecojoko account cannot be added twice
+            await self.async_set_unique_id(
+                account_unique_id(user_input[CONF_USERNAME])
+            )
+            self._abort_if_unique_id_configured()
             _errors = await _async_validate(self.hass, user_input)
             if not _errors:
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
-                    data=user_input,
-                    options={CONF_LANG: user_input.get(CONF_LANG, DEFAULT_LANG)}
+                    data=user_input
                 )
 
         return self.async_show_form(
@@ -270,17 +255,17 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
                 self.hass, user_input, check_gateway=True
             )
             if not _errors:
-                options = {CONF_LANG: user_input.get(CONF_LANG, DEFAULT_LANG)}
-                # Data and options are saved together: the entry is reloaded
-                # once, and async_create_entry below changes nothing more
+                # All the settings are kept in the entry data. Data and options
+                # are saved together: the entry is reloaded once, and
+                # async_create_entry below changes nothing more
                 self.hass.config_entries.async_update_entry(
                     entry=self._config_entry,
                     data=user_input,
-                    options=options,
+                    options={},
                 )
                 return self.async_create_entry(
                     title=self._config_entry.title,
-                    data=options
+                    data={}
                 )
 
         return self.async_show_form(
