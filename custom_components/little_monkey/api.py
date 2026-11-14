@@ -16,7 +16,8 @@ from .const import (
     ECOJOKO_LOGIN_URL,
     ECOJOKO_GATEWAYS_URL,
     ECOJOKO_GATEWAY_URL,
-    LOGGER
+    LOGGER,
+    VERSION
 )
 from .utils import (
     get_current_date,
@@ -74,7 +75,12 @@ class LittleMonkeyApiClient:
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
-        self._headers = {"Content-type": "application/json"}
+        # ecojoko returns degraded powerstat data to the default
+        # Home Assistant User-Agent, so the integration sends its own
+        self._headers = {
+            "Content-type": "application/json",
+            "User-Agent": f"little_monkey/{VERSION}",
+        }
         self._cookies = None
         self._gateway_id = None
         self._power_meter_id = None
