@@ -2,12 +2,11 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Any
+from typing import TYPE_CHECKING, Any
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.data_entry_flow import FlowResult
 from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME, UnitOfTime
 from homeassistant.helpers import selector
 from homeassistant.helpers.selector import NumberSelectorMode
@@ -30,6 +29,10 @@ from .const import (
     LOGGER
 )
 from .utils import account_unique_id
+
+if TYPE_CHECKING:
+    # Only for the annotations: this type exists since Home Assistant 2024.4
+    from homeassistant.config_entries import ConfigFlowResult
 
 def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> vol.Schema:
     """Get a schema with default values."""
@@ -168,7 +171,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(
         self,
         user_input: dict | None = None,
-    ) -> config_entries.FlowResult:
+    ) -> ConfigFlowResult:
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
@@ -198,7 +201,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_reauth(
         self,
         entry_data: Mapping[str, Any],
-    ) -> config_entries.FlowResult:
+    ) -> ConfigFlowResult:
         """Handle a flow started because ecojoko rejected the credentials."""
         self._reauth_entry = self.hass.config_entries.async_get_entry(
             self.context["entry_id"]
@@ -208,7 +211,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_reauth_confirm(
         self,
         user_input: dict | None = None,
-    ) -> config_entries.FlowResult:
+    ) -> ConfigFlowResult:
         """Ask for the new password and check it."""
         entry = self._reauth_entry
         _errors = {}
@@ -258,7 +261,7 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
-    ) -> FlowResult:
+    ) -> ConfigFlowResult:
         """Configure options for Ecojoko."""
         _errors = {}
         if user_input is not None:
