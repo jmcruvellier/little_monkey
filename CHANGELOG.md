@@ -13,6 +13,7 @@
 - Un même compte ecojoko ne peut plus être ajouté deux fois
 - Une erreur HTTP d'ecojoko (4xx, 5xx) est désormais traitée comme une erreur, y compris à la connexion, au lieu d'être prise pour une réponse valide ; le délai d'attente couvre toute la réponse et les connexions sont toujours libérées
 - Ajout des diagnostics de l'intégration (téléchargeables depuis la page de l'appareil ou de l'intégration), identifiants ecojoko masqués, pour faciliter les rapports de bug
+- Version minimale de Home Assistant relevée à 2024.3.3 (au lieu de 2023.9.0) : c'est la plus ancienne version sur laquelle cette version de l'intégration a été testée
 - Suppression de deux dépendances non déclarées (`async_timeout`, `pytz`) au profit de la bibliothèque standard de Python
 
 ## 1.2.7
