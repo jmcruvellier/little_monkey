@@ -12,6 +12,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | Version | Capteur | Type | Unité | Disponibilité | Commentaire |
 | ------- | ------- | ---- | ----- | ------------- | ----------- |
 | 1.0.0 | Consommation Temps Réel | Puissance | W | Permanent | |
+| 1.2.8 | Puissance Apparente | Puissance apparente | VA | Automatique | Créé si ecojoko fournit cette mesure, lue sur le compteur Linky |
 | 1.0.0 | Consommation Réseau | Energie | kWh | Permanent | |
 | 1.0.0 | Consommation HC Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
 | 1.0.0 | Consommation HP Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |

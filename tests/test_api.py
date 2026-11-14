@@ -640,6 +640,38 @@ def test_values_are_rounded_to_two_decimals(api):
     assert isinstance(client.indoor_hum, int)
 
 
+@pytest.mark.parametrize(("real_time", "expected"), [
+    ({"value": 512, "value2": 640}, 640),
+    ({"value": -224, "value2": -310.456}, -310.46),
+    ({"value": 512, "value2": "640"}, 640.0),
+    ({"value": 512}, None),
+    ({"value": 512, "value2": None}, None),
+    ({"value": 512, "value2": "n/a"}, None),
+    ({"value": 512, "value2": float("nan")}, None),
+    ({"value": 512, "value2": True}, None),
+])
+def test_apparent_power(api, real_time, expected):
+    """The apparent power is optional and never breaks the real-time value."""
+    session = Session(realtime_conso=Response(payload={"real_time": real_time}))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.realtime_conso == real_time["value"]
+    assert client.realtime_va == expected
+
+
+def test_apparent_power_is_not_kept_when_it_disappears(api):
+    """A value of a previous poll is not published as the current one."""
+    answers = iter([
+        Response(payload={"real_time": {"value": 1, "value2": 2}}),
+        Response(payload={"real_time": {"value": 3}}),
+    ])
+    client = make_client(api, Session(realtime_conso=lambda: next(answers)))
+    run(client.async_get_data())
+    assert client.realtime_va == 2
+    run(client.async_get_data())
+    assert client.realtime_va is None
+
+
 def test_round_value_leaves_other_values_alone(utils):
     """Only numbers are rounded."""
     assert utils.round_value(None) is None

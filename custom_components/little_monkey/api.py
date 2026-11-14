@@ -21,6 +21,7 @@ from .utils import (
     get_paris_timezone,
     get_value_from_json_array,
     convert_to_float,
+    finite_number,
     round_value)
 
 TZ = get_paris_timezone()
@@ -81,6 +82,7 @@ class LittleMonkeyApiClient:
         # Properties
         self._gateway_firmware_version = None
         self._realtime_conso = None
+        self._realtime_va = None
         self._kwh = None
         self._kwh_hc_ns = None
         self._kwh_hp_ns = None
@@ -122,6 +124,11 @@ class LittleMonkeyApiClient:
     def realtime_conso(self) -> float | None:
         """Return the realtime consumption."""
         return self._realtime_conso
+
+    @property
+    def realtime_va(self) -> float | None:
+        """Return the apparent power, when ecojoko gives it."""
+        return self._realtime_va
 
     @property
     def kwh(self) -> float | None:
@@ -420,7 +427,11 @@ class LittleMonkeyApiClient:
                 "API realtime_conso did not return JSON data"
             )
         try:
-            self._realtime_conso = results[0]['real_time']['value']
+            real_time = results[0]['real_time']
+            self._realtime_conso = real_time['value']
+            # Apparent power in VA, read from the Linky meter. Not every
+            # installation has it, and it is negative when power is injected
+            self._realtime_va = finite_number(real_time.get('value2'))
         except PARSE_ERRORS as exception:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API realtime_conso: {exception!r}"

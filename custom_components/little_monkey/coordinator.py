@@ -58,6 +58,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
                 "gateway_firmware_version": self.client.gateway_firmware_version,
                 "stat_date": self.client.stat_date,
                 "realtime_consumption": self.client.realtime_conso,
+                "realtime_apparent_power": self.client.realtime_va,
                 "grid_consumption": self.client.kwh,
                 "hc_grid_consumption": self.client.kwh_hc_ns,
                 "hp_grid_consumption": self.client.kwh_hp_ns,
