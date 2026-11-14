@@ -19,7 +19,10 @@ from pytest_homeassistant_custom_component.common import (
     mock_restore_cache_with_extra_data,
 )
 
-from custom_components.little_monkey import api as lm_api
+from custom_components.little_monkey import (
+    api as lm_api,
+    async_remove_config_entry_device,
+)
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
 )
@@ -176,6 +179,39 @@ async def test_migration_from_1_2_7(hass, fake_api):
     await hass.async_block_till_done()
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
     assert len(entities) == count_before
+    assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
+
+
+async def test_device_left_by_a_renaming_can_be_removed(hass, fake_api):
+    """A device left behind by an old renaming can be removed, not the live one."""
+    entry, _device, entity_ids = add_1_2_7_install(hass)
+    entity_registry, device_registry = er.async_get(hass), dr.async_get(hass)
+    # What a renaming done with an older version left: a device and its entity
+    stale = device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        name="Ancien",
+        identifiers={(DOMAIN, "little_monkey_Ancien")},
+    )
+    entity_registry.async_update_entity(entity_ids["orphan"], device_id=stale.id)
+    assert await setup_entry(hass, entry)
+
+    devices = dr.async_entries_for_config_entry(device_registry, entry.entry_id)
+    assert len(devices) == 2
+    live = next(d for d in devices if d.id != stale.id)
+    stale = device_registry.async_get(stale.id)
+
+    assert await async_remove_config_entry_device(hass, entry, stale) is True
+    assert await async_remove_config_entry_device(hass, entry, live) is False
+
+    # What Home Assistant does once the removal is allowed
+    device_registry.async_update_device(
+        stale.id, remove_config_entry_id=entry.entry_id
+    )
+    await hass.async_block_till_done()
+    assert device_registry.async_get(stale.id) is None
+    assert entity_registry.async_get(entity_ids["orphan"]) is None
+    remaining = dr.async_entries_for_config_entry(device_registry, entry.entry_id)
+    assert [d.id for d in remaining] == [live.id]
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
 
 
