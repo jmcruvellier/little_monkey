@@ -270,7 +270,7 @@ async def test_unavailable_when_api_fails_then_recovers(hass, fake_api):
     """Entities are unavailable while the API fails, then come back."""
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator = entry.runtime_data
 
     fake_api.data_error = lm_api.LittleMonkeyApiClientCommunicationError("down")
     await coordinator.async_refresh()
@@ -288,7 +288,7 @@ async def test_unavailable_when_api_fails_then_recovers(hass, fake_api):
 
 async def refresh(hass, entry):
     """Poll ecojoko once."""
-    await hass.data[DOMAIN][entry.entry_id].async_refresh()
+    await entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
 
 
@@ -372,8 +372,7 @@ async def test_entry_has_its_own_http_session(hass, fake_api):
     assert second.state is ConfigEntryState.LOADED
 
     sessions = [
-        hass.data[DOMAIN][entry.entry_id].client._session
-        for entry in (first, second)
+        entry.runtime_data.client._session for entry in (first, second)
     ]
     assert sessions[0] is not sessions[1]
     assert async_get_clientsession(hass) not in sessions

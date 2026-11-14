@@ -49,3 +49,23 @@ jobs:
 
         - name: "Run"
           run: python3 -m pytest tests
+
+  home-assistant-minimum:
+    name: "Pytest in the minimum Home Assistant"
+    runs-on: "ubuntu-latest"
+    steps:
+        - name: "Checkout the repository"
+          uses: "actions/checkout@v7"
+
+        - name: "Set up Python"
+          uses: actions/setup-python@v7
+          with:
+            # Version required by the Home Assistant of requirements_test_ha_min.txt
+            python-version: "3.12"
+            cache: "pip"
+
+        - name: "Install requirements"
+          run: python3 -m pip install -r requirements_test_ha_min.txt
+
+        - name: "Run"
+          run: python3 -m pytest tests

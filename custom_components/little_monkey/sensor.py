@@ -9,7 +9,6 @@ from homeassistant.const import UnitOfPower, UnitOfEnergy, UnitOfTemperature, PE
 
 from .entity import EcojokoEntity, EcojokoSensor
 from .const import (
-    DOMAIN,
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
@@ -70,7 +69,7 @@ SENSORS = (
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the custom component sensors."""
-    coordinator = hass.data[DOMAIN][config_entry.entry_id]
+    coordinator = config_entry.runtime_data
 
     # Create the main device entity
     firmware = coordinator.data["gateway_firmware_version"]

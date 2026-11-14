@@ -1,0 +1,5 @@
+# Packages needed to run the tests of tests/ha on the oldest supported Home Assistant.
+# This version of pytest-homeassistant-custom-component installs Home Assistant
+# 2024.6.0, the minimum declared in hacs.json: change both together.
+-r requirements_test.txt
+pytest-homeassistant-custom-component==0.13.132

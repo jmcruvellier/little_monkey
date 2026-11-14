@@ -1,5 +1,5 @@
 colorlog==6.7.0
-homeassistant>=2024.3.3
+homeassistant>=2024.6.0
 pip>=23.3
 -r requirements_test.txt
 josepy>=1.13.0
