@@ -1,0 +1,41 @@
+"""Diagnostics support for little_monkey."""
+from __future__ import annotations
+
+from typing import Any
+
+from homeassistant.components.diagnostics import async_redact_data
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.core import HomeAssistant
+
+from .const import DOMAIN, VERSION
+
+# The title and the unique id of the entry are the ecojoko username
+TO_REDACT = {CONF_USERNAME, CONF_PASSWORD, "title", "unique_id"}
+
+
+async def async_get_config_entry_diagnostics(
+    hass: HomeAssistant, entry: ConfigEntry
+) -> dict[str, Any]:
+    """Return diagnostics for a config entry, without the credentials."""
+    diagnostics: dict[str, Any] = {
+        "integration_version": VERSION,
+        "entry": async_redact_data(entry.as_dict(), TO_REDACT),
+    }
+    # The coordinator is missing when the setup of the entry failed
+    coordinator = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    if coordinator is None:
+        return diagnostics
+
+    update_interval = coordinator.update_interval
+    last_exception = coordinator.last_exception
+    diagnostics["coordinator"] = {
+        "last_update_success": coordinator.last_update_success,
+        "update_interval_seconds": (
+            None if update_interval is None else update_interval.total_seconds()
+        ),
+        "last_exception": None if last_exception is None else str(last_exception),
+    }
+    diagnostics["data"] = coordinator.data
+    diagnostics["client"] = coordinator.client.diagnostics()
+    return diagnostics

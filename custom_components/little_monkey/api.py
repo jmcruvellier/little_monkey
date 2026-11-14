@@ -197,6 +197,25 @@ class LittleMonkeyApiClient:
         """Return the outdoor humidity."""
         return self._outdoor_hum
 
+    def diagnostics(self) -> dict:
+        """Return the state of the client for the diagnostics.
+
+        It holds no credential, cookie or device identifier.
+        """
+        now = time.monotonic()
+        return {
+            "logged_in": self._cookies is not None,
+            "gateway_found": self._gateway_id is not None,
+            "power_meter_found": self._power_meter_id is not None,
+            "temp_hum_found": self._temp_hum_id is not None,
+            "gateway_firmware_version": self._gateway_firmware_version,
+            "seconds_since_stat_refresh": {
+                name: None if last is None else round(now - last, 1)
+                for name, last in self._last_stat_refresh.items()
+            },
+            "failing_apis": sorted(self._warned),
+        }
+
     async def async_get_cookiesdata(self) -> any:
         """Perform login and return cookies."""
         login_data = {
