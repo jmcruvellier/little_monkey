@@ -6,12 +6,18 @@ the setup form and the options.
 """
 from __future__ import annotations
 
+import datetime as dt
 import json
 
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.config_entries import ConfigEntryState
+from homeassistant.core import State
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from homeassistant.util import dt as dt_util
+from pytest_homeassistant_custom_component.common import (
+    MockConfigEntry,
+    mock_restore_cache_with_extra_data,
+)
 
 from custom_components.little_monkey import api as lm_api
 from custom_components.little_monkey.diagnostics import (
@@ -41,6 +47,7 @@ ENABLED = [
     "outdoor_hum",
 ]
 REALTIME = "sensor.ecojoko_real_time_consumption"
+GRID = "sensor.ecojoko_grid_consumption"
 FORM = data_entry_flow.FlowResultType.FORM
 ABORT = data_entry_flow.FlowResultType.ABORT
 CREATE_ENTRY = data_entry_flow.FlowResultType.CREATE_ENTRY
@@ -237,6 +244,83 @@ async def test_unavailable_when_api_fails_then_recovers(hass, fake_api):
     await coordinator.async_refresh()
     await hass.async_block_till_done()
     assert hass.states.get(REALTIME).state == "512"
+
+
+# --- Energy totals never decrease during a day
+
+
+async def refresh(hass, entry):
+    """Poll ecojoko once."""
+    await hass.data[DOMAIN][entry.entry_id].async_refresh()
+    await hass.async_block_till_done()
+
+
+async def test_energy_is_held_when_ecojoko_lowers_it(hass, fake_api):
+    """A correction downwards is hidden until the total catches up."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get(GRID).state == "4.2"
+    assert hass.states.get(GRID).attributes["state_class"] == "total_increasing"
+
+    # Small and large corrections, then the total catches up
+    for received, published in ((3.9, "4.2"), (3.0, "4.2"), (4.1, "4.2"), (4.5, "4.5")):
+        fake_api.values["_kwh"] = received
+        await refresh(hass, entry)
+        assert hass.states.get(GRID).state == published, received
+
+
+async def test_power_follows_ecojoko_both_ways(hass, fake_api):
+    """Sensors that are not totals are not held."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    fake_api.values["_realtime_conso"] = 100
+    fake_api.values["_indoor_temp"] = 18
+    await refresh(hass, entry)
+    assert hass.states.get(REALTIME).state == "100"
+    assert hass.states.get("sensor.ecojoko_indoor_temperature").state == "18"
+
+
+async def test_energy_restarts_on_a_new_day(hass, fake_api):
+    """The drop of a new day is published."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get(GRID).state == "4.2"
+
+    fake_api.stat_date += dt.timedelta(days=1)
+    fake_api.values["_kwh"] = 0.1
+    await refresh(hass, entry)
+    assert hass.states.get(GRID).state == "0.1"
+
+
+def restore_grid_state(hass, value, last_updated=None):
+    """Make Home Assistant restore a state of the grid consumption sensor."""
+    state = State(
+        GRID, str(value), last_updated=last_updated or dt_util.utcnow()
+    )
+    extra_data = {"native_value": value, "native_unit_of_measurement": "kWh"}
+    mock_restore_cache_with_extra_data(hass, ((state, extra_data),))
+
+
+async def test_held_value_survives_a_restart_the_same_day(hass, fake_api):
+    """After a restart the total does not go below the one published before."""
+    restore_grid_state(hass, 7.32)
+    fake_api.values["_kwh"] = 7.05
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get(GRID).state == "7.32"
+
+    fake_api.values["_kwh"] = 7.5
+    await refresh(hass, entry)
+    assert hass.states.get(GRID).state == "7.5"
+
+
+async def test_restart_on_a_new_day_drops_the_old_value(hass, fake_api):
+    """After a restart on another day the new total is published."""
+    restore_grid_state(hass, 7.32, dt_util.utcnow() - dt.timedelta(days=2))
+    fake_api.values["_kwh"] = 0.3
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get(GRID).state == "0.3"
 
 
 # --- Setup

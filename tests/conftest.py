@@ -55,6 +55,12 @@ def _load(name: str) -> types.ModuleType:
 
 
 @pytest.fixture(scope="session")
+def utils() -> types.ModuleType:
+    """Return the utils module of the integration."""
+    return _load("utils")
+
+
+@pytest.fixture(scope="session")
 def api() -> types.ModuleType:
     """Return the api module of the integration."""
     _load("const")

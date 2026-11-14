@@ -3,9 +3,23 @@ from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import RestoreSensor, SensorStateClass
 
-from .const import ATTRIBUTION, DOMAIN, MANUFACTURER, MODEL, VERSION
+from .const import ATTRIBUTION, DOMAIN, LOGGER, MANUFACTURER, MODEL, VERSION
+from .utils import DailyCounter, get_paris_timezone
+
+TZ = get_paris_timezone()
+
+
+def _as_number(value):
+    """Return a sensor value as a number, None if it is not one."""
+    if isinstance(value, str):
+        try:
+            return float(value)
+        except ValueError:
+            return None
+    return value
+
 
 class EcojokoEntity(CoordinatorEntity):
     """EcojokoEntity class."""
@@ -60,7 +74,7 @@ class EcojokoEntity(CoordinatorEntity):
         """Add a child entity to the main device."""
         self._child_entities.append(child_entity)
 
-class EcojokoSensor(CoordinatorEntity, SensorEntity):
+class EcojokoSensor(CoordinatorEntity, RestoreSensor):
     """Representation of an Ecojoko sensor."""
 
     def __init__(self, main_device, sensor_name, state_class, device_class, unit_of_measurement, icon):
@@ -76,6 +90,29 @@ class EcojokoSensor(CoordinatorEntity, SensorEntity):
         # (entity.sensor.<key>.name), prefixed by the device name
         self._attr_has_entity_name = True
         self._attr_translation_key = sensor_name
+        # The daily energy totals never decrease during a day (see DailyCounter)
+        self._daily_counter = (
+            DailyCounter()
+            if state_class == SensorStateClass.TOTAL_INCREASING
+            else None
+        )
+        self._holding = False
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the value published before a restart of Home Assistant."""
+        await super().async_added_to_hass()
+        if self._daily_counter is None:
+            return
+        last_state = await self.async_get_last_state()
+        last_data = await self.async_get_last_sensor_data()
+        if last_state is None or last_data is None:
+            return
+        value = _as_number(last_data.native_value)
+        if not isinstance(value, int | float):
+            return
+        # The value belongs to the day it was last written
+        day = last_state.last_updated.astimezone(TZ).date().isoformat()
+        self._daily_counter.restore(day, value)
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -90,11 +127,16 @@ class EcojokoSensor(CoordinatorEntity, SensorEntity):
     @property
     def native_value(self):
         """Return the value of the sensor, in its native unit."""
-        value = (self.coordinator.data or {}).get(self._sensor_name)
-        if isinstance(value, str):
-            # All the sensors are numeric
-            try:
-                return float(value)
-            except ValueError:
-                return None
-        return value
+        data = self.coordinator.data or {}
+        # All the sensors are numeric
+        value = _as_number(data.get(self._sensor_name))
+        if self._daily_counter is None or value is None:
+            return value
+        published = self._daily_counter.update(data.get("stat_date"), value)
+        holding = published > value
+        if holding and not self._holding:
+            LOGGER.debug(
+                "%s: ecojoko lowered the value to %s, %s is kept until it catches up",
+                self._sensor_name, value, published)
+        self._holding = holding
+        return published

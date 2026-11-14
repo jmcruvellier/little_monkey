@@ -56,6 +56,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             await self.client.async_get_data()
             return {
                 "gateway_firmware_version": self.client.gateway_firmware_version,
+                "stat_date": self.client.stat_date,
                 "realtime_consumption": self.client.realtime_conso,
                 "grid_consumption": self.client.kwh,
                 "hc_grid_consumption": self.client.kwh_hc_ns,

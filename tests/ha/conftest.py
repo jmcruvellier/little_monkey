@@ -6,7 +6,9 @@ the network.
 """
 from __future__ import annotations
 
+import datetime as dt
 from unittest.mock import patch
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -40,6 +42,9 @@ class FakeApi:
         self.login_error = None
         self.data_error = None
         self.data_calls = 0
+        # Values reported by the client, and the day they belong to
+        self.values = dict(VALUES)
+        self.stat_date = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
 
 
 @pytest.fixture
@@ -58,8 +63,9 @@ def fake_api():
         state.data_calls += 1
         if state.data_error:
             raise state.data_error
-        for name, value in VALUES.items():
+        for name, value in state.values.items():
             setattr(self, name, value)
+        self._stat_date = state.stat_date
 
     client = lm_api.LittleMonkeyApiClient
     with patch.object(client, "async_get_cookiesdata", login), \
