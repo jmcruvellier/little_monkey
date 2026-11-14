@@ -12,7 +12,14 @@
                     "use_tempo_feature": "Tempo Blue/White/Red sensors",
                     "use_temphum_feature": "Humidity and temperature sensors",
                     "use_prod_feature": "Production sensor",
-                    "poll_interval": "Poll interval (in seconds)"
+                    "poll_interval": "Poll interval (in seconds)",
+                    "lang": "Language of the sensor names"
+                }
+            },
+            "reauth_confirm": {
+                "description": "ecojoko rejected the credentials of {username}. Enter the current password of this account.",
+                "data": {
+                    "password": "Password"
                 }
             }
         },
@@ -20,6 +27,9 @@
             "auth": "Username/Password is wrong.",
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred."
+        },
+        "abort": {
+            "reauth_successful": "The password has been updated."
         }
     },
     "options": {
@@ -34,7 +44,8 @@
                     "use_tempo_feature": "Tempo Blue/White/Red sensors",
                     "use_temphum_feature": "Humidity and temperature sensors",
                     "use_prod_feature": "Production sensor",
-                    "poll_interval": "Poll interval (in seconds)"
+                    "poll_interval": "Poll interval (in seconds)",
+                    "lang": "Language of the sensor names"
                 }
             }
         },

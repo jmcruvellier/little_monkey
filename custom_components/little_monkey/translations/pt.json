@@ -12,7 +12,14 @@
                     "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
                     "use_temphum_feature": "Sensores de Humidade e Temperatura",
                     "use_prod_feature": "Sensor de Produção",
-                    "poll_interval": "Intervalo de sondagem (em segundos)"
+                    "poll_interval": "Intervalo de sondagem (em segundos)",
+                    "lang": "Idioma dos nomes dos sensores"
+                }
+            },
+            "reauth_confirm": {
+                "description": "O ecojoko recusou as credenciais de {username}. Introduza a palavra-passe atual desta conta.",
+                "data": {
+                    "password": "Palavra-passe"
                 }
             }
         },
@@ -20,6 +27,9 @@
             "auth": "Nome de utilizador/Palavra-passe está incorreto.",
             "connection": "Não foi possível ligar ao servidor.",
             "unknown": "Ocorreu um erro desconhecido."
+        },
+        "abort": {
+            "reauth_successful": "A palavra-passe foi atualizada."
         }
     },
     "options": {
@@ -34,7 +44,8 @@
                     "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
                     "use_temphum_feature": "Sensores de Humidade e Temperatura",
                     "use_prod_feature": "Sensor de Produção",
-                    "poll_interval": "Intervalo de sondagem (em segundos)"
+                    "poll_interval": "Intervalo de sondagem (em segundos)",
+                    "lang": "Idioma dos nomes dos sensores"
                 }
             }
         },
