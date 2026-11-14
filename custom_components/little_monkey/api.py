@@ -1,9 +1,6 @@
 """API Client for little_monkey."""
 from __future__ import annotations
 
-# import traceback
-
-from enum import Enum
 import asyncio
 import json
 import math
@@ -47,13 +44,6 @@ class LittleMonkeyApiClientAuthenticationError(
     """Exception to indicate an authentication error."""
 
 
-class APIStatus(Enum):
-    """API status enum."""
-
-    INIT = 0
-    RUN = 1
-
-
 class LittleMonkeyApiClient:
     """API Client to retrieve ecojoko data."""
 
@@ -87,7 +77,7 @@ class LittleMonkeyApiClient:
         self._gateway_id = None
         self._power_meter_id = None
         self._temp_hum_id = None
-        """Properties."""
+        # Properties
         self._gateway_firmware_version = None
         self._realtime_conso = None
         self._kwh = None
@@ -105,9 +95,7 @@ class LittleMonkeyApiClient:
         self._indoor_hum = None
         self._outdoor_hum = None
 
-        """Internal."""
-        # 67 fix
-        self._status = APIStatus.INIT
+        # Internal
         # Monotonic time of the last call of each statistics API
         self._last_stat_refresh = {
             "powerstat": None,
@@ -118,82 +106,82 @@ class LittleMonkeyApiClient:
         self._warned = set()
 
     @property
-    def gateway_firmware_version(self) -> str:
+    def gateway_firmware_version(self) -> str | None:
         """Return the firmware version."""
         return self._gateway_firmware_version
 
     @property
-    def realtime_conso(self) -> int:
+    def realtime_conso(self) -> float | None:
         """Return the realtime consumption."""
         return self._realtime_conso
 
     @property
-    def kwh(self) -> int:
+    def kwh(self) -> float | None:
         """Return the grid consumption."""
         return self._kwh
 
     @property
-    def kwh_hc_ns(self) -> int:
+    def kwh_hc_ns(self) -> float | None:
         """Return the HC consumption."""
         return self._kwh_hc_ns
 
     @property
-    def kwh_hp_ns(self) -> int:
+    def kwh_hp_ns(self) -> float | None:
         """Return the HP consumption."""
         return self._kwh_hp_ns
 
     @property
-    def tempo_hc_blue(self) -> int:
+    def tempo_hc_blue(self) -> float | None:
         """Return the Blue HC consumption."""
         return self._tempo_hc_blue
 
     @property
-    def tempo_hp_blue(self) -> int:
+    def tempo_hp_blue(self) -> float | None:
         """Return the Blue HP consumption."""
         return self._tempo_hp_blue
 
     @property
-    def tempo_hc_white(self) -> int:
+    def tempo_hc_white(self) -> float | None:
         """Return the White HC consumption."""
         return self._tempo_hc_white
 
     @property
-    def tempo_hp_white(self) -> int:
+    def tempo_hp_white(self) -> float | None:
         """Return the White HP consumption."""
         return self._tempo_hp_white
 
     @property
-    def tempo_hc_red(self) -> int:
+    def tempo_hc_red(self) -> float | None:
         """Return the Red HC consumption."""
         return self._tempo_hc_red
 
     @property
-    def tempo_hp_red(self) -> int:
+    def tempo_hp_red(self) -> float | None:
         """Return the Red HP consumption."""
         return self._tempo_hp_red
 
     @property
-    def kwh_prod(self) -> int:
+    def kwh_prod(self) -> float | None:
         """Return the production surplus."""
         return self._kwh_prod
 
     @property
-    def indoor_temp(self) -> int:
+    def indoor_temp(self) -> float | None:
         """Return the indoor temperature."""
         return self._indoor_temp
 
     @property
-    def outdoor_temp(self) -> int:
+    def outdoor_temp(self) -> float | None:
         """Return the outdoor temperature."""
         return self._outdoor_temp
 
     @property
-    def indoor_hum(self) -> int:
+    def indoor_hum(self) -> float | None:
         """Return the indoor humidity."""
         return self._indoor_hum
 
     @property
-    def outdoor_hum(self) -> int:
+    def outdoor_hum(self) -> float | None:
         """Return the outdoor humidity."""
         return self._outdoor_hum
 
@@ -216,7 +204,7 @@ class LittleMonkeyApiClient:
             "failing_apis": sorted(self._warned),
         }
 
-    async def async_get_cookiesdata(self) -> any:
+    async def async_get_cookiesdata(self) -> None:
         """Perform login and return cookies."""
         login_data = {
             "l": f"{self._username}",
@@ -232,7 +220,7 @@ class LittleMonkeyApiClient:
                 f"Unexpected error during ecojoko login: {exception!r}"
             ) from exception
 
-    async def async_get_gatewaydata(self) -> any:
+    async def async_get_gatewaydata(self) -> None:
         """Get Ecojoko gateway data."""
         try:
             if self._cookies is None:
@@ -338,7 +326,6 @@ class LittleMonkeyApiClient:
                 raise LittleMonkeyApiClientError(
                     "ecojoko still rejects the session after a new login"
                 ) from exception
-        self._status = APIStatus.RUN
 
     def _stats_to_call(self, now) -> list:
         """Return the statistics APIs to call during this poll.

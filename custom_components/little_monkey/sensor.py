@@ -1,4 +1,4 @@
-"""Sensor platform for mon_ecojoko."""
+"""Sensor platform for little_monkey."""
 from __future__ import annotations
 
 from homeassistant.components.sensor import (

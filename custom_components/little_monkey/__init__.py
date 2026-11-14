@@ -13,6 +13,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import LittleMonkeyApiClient
 from .const import (
+    DEFAULT_POLL_INTERVAL,
     DOMAIN,
     LOGGER,
     PLATFORMS,
@@ -30,21 +31,6 @@ from .utils import account_unique_id
 ENTRY_VERSION = 2
 
 
-def get_boolean(array, index):
-    """Read the value with a default of False if the key is not found."""
-    return array.get(index, False)
-
-
-def get_int(array, index):
-    """Read the value with a default of -1 if the key is not found."""
-    return array.get(index, -1)
-
-
-def get_string(array, index):
-    """Read the value with a default of empty string if the key is not found."""
-    return array.get(index, "")
-
-
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
@@ -55,13 +41,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass=hass,
         entry=entry,
         client=LittleMonkeyApiClient(
-            username=get_string(entry.data, CONF_USERNAME),
-            password=get_string(entry.data, CONF_PASSWORD),
-            poll_interval=get_int(entry.data, POLL_INTERVAL),
-            use_hchp=get_boolean(entry.data, CONF_USE_HCHP_FEATURE),
-            use_tempo=get_boolean(entry.data, CONF_USE_TEMPO_FEATURE),
-            use_temphum=get_boolean(entry.data, CONF_USE_TEMPHUM_FEATURE),
-            use_prod=get_boolean(entry.data, CONF_USE_PROD_FEATURE),
+            username=entry.data.get(CONF_USERNAME, ""),
+            password=entry.data.get(CONF_PASSWORD, ""),
+            poll_interval=entry.data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
+            use_hchp=entry.data.get(CONF_USE_HCHP_FEATURE, False),
+            use_tempo=entry.data.get(CONF_USE_TEMPO_FEATURE, False),
+            use_temphum=entry.data.get(CONF_USE_TEMPHUM_FEATURE, False),
+            use_prod=entry.data.get(CONF_USE_PROD_FEATURE, False),
             session=async_get_clientsession(hass),
         ),
     )
@@ -84,7 +70,7 @@ def _async_sync_unique_id(hass: HomeAssistant, entry: ConfigEntry) -> None:
     before 1.2.8 have no unique id, and the username can be changed in the
     options. An account already used by another entry is left as it is.
     """
-    unique_id = account_unique_id(get_string(entry.data, CONF_USERNAME))
+    unique_id = account_unique_id(entry.data.get(CONF_USERNAME, ""))
     if not unique_id or entry.unique_id == unique_id:
         return
     for other in hass.config_entries.async_entries(DOMAIN):

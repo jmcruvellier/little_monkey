@@ -61,7 +61,7 @@ class EcojokoEntity(CoordinatorEntity):
         self._child_entities.append(child_entity)
 
 class EcojokoSensor(CoordinatorEntity, SensorEntity):
-    """Representation of a my_device sensor."""
+    """Representation of an Ecojoko sensor."""
 
     def __init__(self, main_device, sensor_name, state_class, device_class, unit_of_measurement, icon):
         """Initialize the sensor."""
