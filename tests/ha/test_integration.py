@@ -8,11 +8,13 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+from unittest.mock import patch
 
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import State
 from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
@@ -22,6 +24,7 @@ from pytest_homeassistant_custom_component.common import (
 from custom_components.little_monkey import (
     api as lm_api,
     async_remove_config_entry_device,
+    config_flow,
 )
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
@@ -355,6 +358,53 @@ async def test_restart_on_a_new_day_drops_the_old_value(hass, fake_api):
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     assert hass.states.get(GRID).state == "0.3"
+
+
+# --- HTTP session
+
+
+async def test_entry_has_its_own_http_session(hass, fake_api):
+    """Each entry uses a session of its own, released when it is unloaded."""
+    first = add_entry(hass)
+    second = add_entry(hass, data={**DATA, "name": "Autre", "username": "other"})
+    # Setting up the integration loads all its entries
+    assert await setup_entry(hass, first)
+    assert second.state is ConfigEntryState.LOADED
+
+    sessions = [
+        hass.data[DOMAIN][entry.entry_id].client._session
+        for entry in (first, second)
+    ]
+    assert sessions[0] is not sessions[1]
+    assert async_get_clientsession(hass) not in sessions
+    assert sessions[0].cookie_jar is not sessions[1].cookie_jar
+    assert not sessions[0].closed
+
+    assert await hass.config_entries.async_unload(first.entry_id)
+    await hass.async_block_till_done()
+    assert sessions[0].closed
+    assert not sessions[1].closed
+    assert not async_get_clientsession(hass).closed
+
+
+async def test_form_validation_releases_its_session(hass, fake_api):
+    """The session created to check the credentials is released at once."""
+    created = []
+    real = config_flow.async_create_clientsession
+
+    def spy(*args, **kwargs):
+        created.append(real(*args, **kwargs))
+        return created[-1]
+
+    with patch.object(config_flow, "async_create_clientsession", spy):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": config_entries.SOURCE_USER}
+        )
+        fake_api.login_error = lm_api.LittleMonkeyApiClientAuthenticationError("x")
+        await hass.config_entries.flow.async_configure(result["flow_id"], dict(DATA))
+
+    assert len(created) == 1
+    assert created[0].closed
 
 
 # --- Setup

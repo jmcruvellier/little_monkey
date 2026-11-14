@@ -125,6 +125,8 @@ async def _async_validate(
     check_gateway: bool = False,
 ) -> dict[str, str]:
     """Try to log in to ecojoko and return the form errors, empty if it worked."""
+    # A session used for this check only, released as soon as it is done
+    session = async_create_clientsession(hass, auto_cleanup=False)
     client = LittleMonkeyApiClient(
         username=data.get(CONF_USERNAME, ""),
         password=data.get(CONF_PASSWORD, ""),
@@ -133,7 +135,7 @@ async def _async_validate(
         use_tempo=data.get(CONF_USE_TEMPO_FEATURE, False),
         use_temphum=data.get(CONF_USE_TEMPHUM_FEATURE, False),
         use_prod=data.get(CONF_USE_PROD_FEATURE, False),
-        session=async_create_clientsession(hass),
+        session=session,
     )
     try:
         await client.async_get_cookiesdata()
@@ -148,6 +150,8 @@ async def _async_validate(
     except LittleMonkeyApiClientError as exception:
         LOGGER.exception(exception)
         return {"base": "unknown"}
+    finally:
+        session.detach()
     return {}
 
 

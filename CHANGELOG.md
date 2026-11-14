@@ -19,6 +19,7 @@
 - Les capteurs d'énergie ne baissent plus en cours de journée : quand ecojoko corrige une valeur à la baisse, la dernière valeur est conservée jusqu'à ce que la mesure la rattrape. Home Assistant prenait ces baisses pour une remise à zéro du compteur et pouvait compter deux fois l'énergie dans le tableau Énergie ; l'avertissement « state is not strictly increasing » disparaît
 - Au changement de jour, un capteur d'énergie dont ecojoko ne donne pas encore la valeur passe à « inconnu » au lieu de garder la valeur de la veille
 - La connexion à ecojoko envoie désormais les identifiants par une requête POST, au lieu d'une requête GET avec corps
+- Chaque compte ecojoko utilise sa propre session HTTP, au lieu de la session partagée de Home Assistant : ses cookies ne sont plus mélangés avec ceux d'un autre compte
 - Suppression de deux dépendances non déclarées (`async_timeout`, `pytz`) au profit de la bibliothèque standard de Python
 
 ## 1.2.7
