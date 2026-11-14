@@ -4,6 +4,8 @@
 -r requirements_test.txt
 pytest-homeassistant-custom-component==0.13.132
 # Home Assistant 2024.6.0 does not pin these indirect dependencies, and their
-# latest versions are no longer compatible with it
+# latest versions are no longer compatible with it or with its test tooling:
+# josepy 2 removed a class used by acme, and recent pycares versions leave a
+# thread that the test tooling of that time reports as an error
 josepy<2.0.0
-pycares<5.0.0
+pycares==4.4.0
