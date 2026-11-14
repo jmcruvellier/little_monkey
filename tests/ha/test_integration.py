@@ -204,9 +204,7 @@ async def test_device_left_by_a_renaming_can_be_removed(hass, fake_api):
     assert await async_remove_config_entry_device(hass, entry, live) is False
 
     # What Home Assistant does once the removal is allowed
-    device_registry.async_update_device(
-        stale.id, remove_config_entry_id=entry.entry_id
-    )
+    device_registry.async_remove_device(stale.id)
     await hass.async_block_till_done()
     assert device_registry.async_get(stale.id) is None
     assert entity_registry.async_get(entity_ids["orphan"]) is None
