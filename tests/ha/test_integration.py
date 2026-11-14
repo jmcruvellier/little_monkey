@@ -457,15 +457,18 @@ async def test_reauthentication(hass, fake_api):
 
 async def test_diagnostics_are_redacted(hass, fake_api):
     """Diagnostics give the state of the entry without the credentials."""
-    entry = add_entry(hass, title="User@Example.com")
+    entry = add_entry(
+        hass, title="User@Example.com", data={**DATA, "name": "Chez Dupont"}
+    )
     assert await setup_entry(hass, entry)
 
     diagnostics = await async_get_config_entry_diagnostics(hass, entry)
 
     text = json.dumps(diagnostics, default=str)
     assert "pw" not in json.dumps(diagnostics["entry"]["data"])
-    for secret in ("User@Example.com", "user@example.com"):
+    for secret in ("User@Example.com", "user@example.com", "Dupont"):
         assert secret not in text
+    assert diagnostics["entry"]["data"]["name"] == "**REDACTED**"
     assert diagnostics["entry"]["data"]["password"] == "**REDACTED**"
     assert diagnostics["entry"]["data"]["username"] == "**REDACTED**"
     assert diagnostics["entry"]["title"] == "**REDACTED**"
