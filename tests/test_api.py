@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import datetime as dt
+import json
 import logging
 import types
 from zoneinfo import ZoneInfo
@@ -116,11 +117,11 @@ class Session:
         self.calls = []
         self.requests = []
 
-    def get(self, url, **kwargs):
-        """Start a GET request."""
+    def request(self, method, url, **kwargs):
+        """Start a request."""
         name = next(key for key in self.routes if key in url)
         self.calls.append(name)
-        self.requests.append((url, kwargs))
+        self.requests.append((method, url, kwargs))
         return Request(self.routes[name])
 
 
@@ -164,8 +165,31 @@ def test_user_agent_is_sent(api):
     """Every request identifies the integration (1.2.8 fix)."""
     session = Session()
     run(make_client(api, session).async_get_data())
-    for _url, kwargs in session.requests:
+    for _method, _url, kwargs in session.requests:
         assert kwargs["headers"]["User-Agent"].startswith("little_monkey/")
+
+
+def test_login_is_a_post_with_the_credentials_in_the_body(api):
+    """The login sends the credentials as JSON in a POST request."""
+    session = Session()
+    run(make_client(api, session).async_get_data())
+    methods = {
+        name: method
+        for name, (method, _url, _kwargs) in zip(session.calls, session.requests)
+    }
+    assert methods == {
+        "login": "POST",
+        "gateways": "GET",
+        "realtime_conso": "GET",
+        "powerstat": "GET",
+    }
+    _method, url, kwargs = session.requests[0]
+    assert url == "https://service.ecojoko.com/login"
+    assert json.loads(kwargs["data"]) == {"l": "user", "p": "secret"}
+    assert kwargs["headers"]["Content-type"] == "application/json"
+    # The credentials never travel in the address
+    assert "user" not in url
+    assert "secret" not in url
 
 
 def test_diagnostics_hold_no_secret(api):
