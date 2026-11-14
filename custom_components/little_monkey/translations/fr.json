@@ -25,7 +25,8 @@
         "error": {
             "auth": "Nom d'utilisateur/Mot de passe incorrect.",
             "connection": "Impossible de se connecter au serveur.",
-            "unknown": "Une erreur inconnue est survenue."
+            "unknown": "Une erreur inconnue est survenue.",
+            "name_required": "Le nom est obligatoire : il sert à nommer l'appareil."
         },
         "abort": {
             "already_configured": "Ce compte ecojoko est déjà configuré.",
@@ -51,7 +52,8 @@
         "error": {
             "auth": "Nom d'utilisateur/Mot de passe incorrect.",
             "connection": "Impossible de se connecter au serveur.",
-            "unknown": "Une erreur inconnue est survenue."
+            "unknown": "Une erreur inconnue est survenue.",
+            "name_required": "Le nom est obligatoire : il sert à nommer l'appareil."
         }
     },
     "entity": {

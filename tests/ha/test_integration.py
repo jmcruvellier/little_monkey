@@ -477,6 +477,41 @@ async def test_user_flow(hass, fake_api):
     assert entry.state is ConfigEntryState.LOADED
 
 
+async def test_user_flow_requires_a_name(hass, fake_api):
+    """A blank name is refused before ecojoko is contacted."""
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    for name in ("", "   "):
+        fake_api.login_error = AssertionError("ecojoko must not be contacted")
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"], {**DATA, "name": name}
+        )
+        assert result["type"] == FORM
+        assert result["errors"] == {"name": "name_required"}
+
+    fake_api.login_error = None
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], dict(DATA)
+    )
+    await hass.async_block_till_done()
+    assert result["type"] == CREATE_ENTRY
+
+
+async def test_options_flow_requires_a_name(hass, fake_api):
+    """A blank name is refused in the options and nothing is saved."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**DATA, "name": " "}
+    )
+    assert result["type"] == FORM
+    assert result["errors"] == {"name": "name_required"}
+    assert entry.data["name"] == "Ecojoko"
+
+
 async def test_user_flow_refuses_an_account_twice(hass, fake_api):
     """The same ecojoko account, written differently, cannot be added again."""
     entry = add_entry(hass)

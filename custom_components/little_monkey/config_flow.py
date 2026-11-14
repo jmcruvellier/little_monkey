@@ -112,6 +112,13 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
         }
     )
 
+def _name_errors(user_input: Mapping[str, Any]) -> dict[str, str]:
+    """Return the form errors of the name, which names the device."""
+    if not str(user_input.get(CONF_NAME) or "").strip():
+        return {CONF_NAME: "name_required"}
+    return {}
+
+
 async def _async_validate(
     hass: HomeAssistant,
     data: Mapping[str, Any],
@@ -166,7 +173,9 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 account_unique_id(user_input[CONF_USERNAME])
             )
             self._abort_if_unique_id_configured()
-            _errors = await _async_validate(self.hass, user_input)
+            _errors = _name_errors(user_input) or await _async_validate(
+                self.hass, user_input
+            )
             if not _errors:
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
@@ -250,7 +259,7 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
         _errors = {}
         if user_input is not None:
             # Nothing is saved until ecojoko has accepted the new settings
-            _errors = await _async_validate(
+            _errors = _name_errors(user_input) or await _async_validate(
                 self.hass, user_input, check_gateway=True
             )
             if not _errors:
