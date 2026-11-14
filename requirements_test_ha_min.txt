@@ -3,3 +3,7 @@
 # 2024.6.0, the minimum declared in hacs.json: change both together.
 -r requirements_test.txt
 pytest-homeassistant-custom-component==0.13.132
+# Home Assistant 2024.6.0 does not pin these indirect dependencies, and their
+# latest versions are no longer compatible with it
+josepy<2.0.0
+pycares<5.0.0
