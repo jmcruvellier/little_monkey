@@ -104,6 +104,13 @@ class LittleMonkeyApiClient:
         }
         # APIs whose failure has already been logged as a warning
         self._warned = set()
+        # Day (in Paris) the energy properties belong to
+        self._stat_date = None
+
+    @property
+    def stat_date(self) -> str | None:
+        """Return the day the energy values belong to, as an ISO date."""
+        return None if self._stat_date is None else self._stat_date.isoformat()
 
     @property
     def gateway_firmware_version(self) -> str | None:
@@ -425,7 +432,7 @@ class LittleMonkeyApiClient:
         # Total Consumption + HC/HP + Tempo
         if results[1] is not None:
             try:
-                self._parse_powerstat(results[1], current_date.weekday())
+                self._parse_powerstat(results[1], current_date)
             except PARSE_ERRORS as exception:
                 self._warn_once(apis[1]['name'], exception)
             else:
@@ -453,10 +460,25 @@ class LittleMonkeyApiClient:
             else:
                 self._clear_warning(apis[3]['name'])
 
-    def _parse_powerstat(self, payload, week_day) -> None:
-        """Update the energy properties from a powerstat response."""
+    def _parse_powerstat(self, payload, day) -> None:
+        """Update the energy properties from the powerstat response of a day."""
+        week_day = day.weekday()
         data = payload['stat']['data']
-        self._kwh = data[week_day]['kwh']
+        kwh = data[week_day]['kwh']
+        if day != self._stat_date:
+            # New day: a value of the previous day must not be taken for a
+            # value of this one when the response does not give it yet
+            self._kwh_prod = None
+            self._kwh_hc_ns = None
+            self._kwh_hp_ns = None
+            self._tempo_hc_blue = None
+            self._tempo_hp_blue = None
+            self._tempo_hc_white = None
+            self._tempo_hp_white = None
+            self._tempo_hc_red = None
+            self._tempo_hp_red = None
+        self._kwh = kwh
+        self._stat_date = day
         # Surplus Production
         # 78 bug fix
         if self._use_prod is True and 'kwh_prod' in data[week_day]:

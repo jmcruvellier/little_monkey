@@ -459,6 +459,64 @@ def test_options_off_ignore_extra_data(api):
     assert client.kwh_hc_ns is None
 
 
+# --- Day of the statistics
+
+
+def week(**days):
+    """Return a powerstat response from the values of each week day."""
+    data = [{"kwh": 0} for _ in range(7)]
+    for index, values in days.items():
+        data[int(index[1:])] = values
+    return {"stat": {"data": data}}
+
+
+def test_stat_date_follows_the_statistics(api, monkeypatch):
+    """The client tells which day its energy values belong to."""
+    monday = dt.date(2026, 11, 9)
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: monday)
+    session = Session(powerstat=Response(payload=week(d0={"kwh": 7})))
+    client = make_client(api, session)
+    assert client.stat_date is None
+    run(client.async_get_data())
+    assert client.stat_date == "2026-11-09"
+    assert client.kwh == 7
+
+
+def test_values_of_the_previous_day_are_dropped(api, monkeypatch):
+    """A value missing from the response of a new day is not kept."""
+    today = {"date": dt.date(2026, 11, 9)}
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: today["date"])
+    monday = {
+        "kwh": 8,
+        "kwh_prod": 5,
+        "subconsumption": [
+            {"label": "Heures Creuses", "kwh": 3},
+            {"label": "Heures Pleines", "kwh": 5},
+        ],
+    }
+    session = Session(powerstat=Response(payload=week(d0=monday)))
+    client = make_client(api, session, hchp=True, prod=True)
+
+    async def scenario():
+        await client.async_get_data()
+        assert (client.kwh, client.kwh_prod) == (8, 5)
+        assert (client.kwh_hc_ns, client.kwh_hp_ns) == (3, 5)
+        # Tuesday, before ecojoko gives production and sub-consumptions
+        today["date"] = dt.date(2026, 11, 10)
+        session.routes["powerstat"] = Response(
+            payload=week(d0=monday, d1={"kwh": 0.1})
+        )
+        client._last_stat_refresh["powerstat"] = None
+        await client.async_get_data()
+
+    run(scenario())
+    assert client.stat_date == "2026-11-10"
+    assert client.kwh == 0.1
+    assert client.kwh_prod is None
+    assert client.kwh_hc_ns is None
+    assert client.kwh_hp_ns is None
+
+
 # --- Scheduling of the statistics APIs
 
 
