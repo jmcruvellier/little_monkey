@@ -83,10 +83,15 @@ const TEMPO_KEYS = [
 const HCHP_KEYS = ["hc_grid_consumption", "hp_grid_consumption"];
 
 // Trend of the central disc: minutes shown, and number of points drawn
-const DEFAULT_TREND_MINUTES = 10;
-const TREND_POINTS = 40;
+// The ecojoko dial shows the last 3 minutes
+const DEFAULT_TREND_MINUTES = 3;
+// One point per reading of 5 seconds, between 12 and 40 points: more would
+// draw the noise, fewer would draw steps
+const TREND_POINT_PERIOD = 5000;
+const TREND_MIN_POINTS = 12;
+const TREND_MAX_POINTS = 40;
 // Box of the trend in the disc
-const TREND_BOX = { left: 70, top: 117, width: 60, height: 15 };
+const TREND_BOX = { left: 70, top: 119, width: 60, height: 12 };
 
 // Greys of the ecojoko dial, from the lightest to the darkest: the same in
 // the light and dark themes, they stay visible on both
@@ -248,7 +253,7 @@ export function discColor(mode, tariff) {
  * holds (weighted by their duration), which keeps a short spike from
  * flattening the curve. Returns an empty path with less than two points.
  */
-export function trendPath(samples, now, period, box = TREND_BOX, points = TREND_POINTS) {
+export function trendPath(samples, now, period, box = TREND_BOX, points = trendPoints(period)) {
   const start = now - period;
   const step = period / points;
   const values = [];
@@ -285,15 +290,15 @@ export function trendPath(samples, now, period, box = TREND_BOX, points = TREND_
   if (values.length < 2) {
     return "";
   }
-  // The scale ends at the 95th percentile: the few points of a spike are
-  // drawn at the top of the box instead of flattening the rest of the curve
-  const numbers = values.map((item) => item.value).sort((a, b) => a - b);
-  const low = numbers[0];
-  const range = numbers[Math.floor(0.95 * (numbers.length - 1))] - low;
+  // From the lowest to the highest point, like the ecojoko dial: the peaks
+  // stay sharp, and a short spike is already damped by the mean
+  const numbers = values.map((item) => item.value);
+  const low = Math.min(...numbers);
+  const range = Math.max(...numbers) - low;
   const coordinates = values.map((item) => ({
     x: box.left + (box.width * item.point) / (points - 1),
     y: range > 0
-      ? box.top + box.height - box.height * Math.min((item.value - low) / range, 1)
+      ? box.top + box.height - (box.height * (item.value - low)) / range
       : box.top + box.height / 2,
   }));
   // Catmull-Rom spline through the points, drawn as cubic Bezier curves
@@ -313,6 +318,11 @@ export function trendPath(samples, now, period, box = TREND_BOX, points = TREND_
     path += ` C ${format(c1x)} ${format(c1y)} ${format(c2x)} ${format(c2y)} ${format(p2.x)} ${format(p2.y)}`;
   }
   return path;
+}
+
+/** Return the number of points of a trend period. */
+export function trendPoints(period) {
+  return Math.round(Math.min(Math.max(period / TREND_POINT_PERIOD, TREND_MIN_POINTS), TREND_MAX_POINTS));
 }
 
 /** Return the minutes of the trend from the configuration (1 to 60). */

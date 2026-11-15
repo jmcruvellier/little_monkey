@@ -72,12 +72,18 @@ test("the disc takes the color of the current period", () => {
   assert.equal(card.discColor("tempo", { period: "hc", color: null }), blue);
 });
 
-test("the trend covers ten minutes by default, one hour at most", () => {
-  assert.equal(card.trendMinutes({}), 10);
+test("the trend covers three minutes by default, one hour at most", () => {
+  assert.equal(card.trendMinutes({}), 3);
   assert.equal(card.trendMinutes({ trend_minutes: 5 }), 5);
   assert.equal(card.trendMinutes({ trend_minutes: 600 }), 60);
-  assert.equal(card.trendMinutes({ trend_minutes: 0 }), 10);
-  assert.equal(card.trendMinutes({ trend_minutes: "x" }), 10);
+  assert.equal(card.trendMinutes({ trend_minutes: 0 }), 3);
+  assert.equal(card.trendMinutes({ trend_minutes: "x" }), 3);
+});
+
+test("the trend has one point per reading, 12 to 40 points", () => {
+  assert.equal(card.trendPoints(3 * 60_000), 36);
+  assert.equal(card.trendPoints(60_000), 12);
+  assert.equal(card.trendPoints(10 * 60_000), 40);
 });
 
 test("the trend is drawn over the whole period, in its box", () => {
@@ -104,9 +110,11 @@ test("a short spike does not flatten the trend", () => {
   ];
   const path = card.trendPath(samples, now, 600_000, box, 40);
   const ys = [...path.matchAll(/ (-?[\d.]+) (-?[\d.]+)(?= C|$)/g)].map((m) => Number(m[2]));
-  // The step from 400 to 500 W uses the whole height, the spike is clipped
+  // The spike keeps its peak, damped by the mean of its interval: the step
+  // from 400 to 500 W still uses more than a third of the height
+  assert.equal(Math.min(...ys), 0);
   assert.equal(ys[0], 10);
-  assert.equal(ys[ys.length - 1], 0);
+  assert.ok(ys[0] - ys[ys.length - 1] > 10 / 3, path);
   assert.ok(ys.every((y) => y >= 0 && y <= 10), path);
 });
 
