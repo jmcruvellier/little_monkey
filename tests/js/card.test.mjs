@@ -130,11 +130,54 @@ test("empty options are removed", () => {
 
 test("the editor asks for the tariff period only with the HC/HP or Tempo option", () => {
   const names = (hass) => card.editorSchema(hass, { entity: "sensor.home_realtime_consumption" }).map((field) => field.name);
-  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "max_power"]);
+  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "max_power", "trend_minutes"]);
   assert.deepEqual(names(hassWith(["home", [POWER, "hc_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "max_power",
+    "entity", "apparent_power_entity", "tariff_entity", "max_power", "trend_minutes",
   ]);
   assert.deepEqual(names(hassWith(["home", [POWER, "red_hp_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "max_power",
+    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "max_power", "trend_minutes",
   ]);
+});
+
+test("the trend covers ten minutes by default, one hour at most", () => {
+  assert.equal(card.trendMinutes({}), 10);
+  assert.equal(card.trendMinutes({ trend_minutes: 5 }), 5);
+  assert.equal(card.trendMinutes({ trend_minutes: 600 }), 60);
+  assert.equal(card.trendMinutes({ trend_minutes: 0 }), 10);
+  assert.equal(card.trendMinutes({ trend_minutes: "x" }), 10);
+});
+
+test("the trend is drawn over the whole period, in its box", () => {
+  const box = { left: 0, top: 0, width: 100, height: 10 };
+  const now = 1_000_000;
+  // A value received before the period lasts into it, then 300 W at mid-period
+  const samples = [{ time: now - 2000, value: 100 }, { time: now - 500, value: 300 }];
+  const path = card.trendPath(samples, now, 1000, box, 11);
+  const numbers = path.match(/-?[\d.]+/g).map(Number);
+  assert.ok(path.startsWith("M 0.00 10.00"), path);
+  assert.ok(path.endsWith("100.00 0.00"), path);
+  assert.ok(numbers.every((n) => n >= 0 && n <= 100), path);
+});
+
+test("a short spike does not flatten the trend", () => {
+  const box = { left: 0, top: 0, width: 100, height: 10 };
+  const now = 1_000_000;
+  // 400 W then 500 W, with a 3000 W spike of one second
+  const samples = [
+    { time: now - 2000_000, value: 400 },
+    { time: now - 300_000, value: 500 },
+    { time: now - 100_000, value: 3000 },
+    { time: now - 99_000, value: 500 },
+  ];
+  const path = card.trendPath(samples, now, 600_000, box, 40);
+  const ys = [...path.matchAll(/ (-?[\d.]+) (-?[\d.]+)(?= C|$)/g)].map((m) => Number(m[2]));
+  // The step from 400 to 500 W uses the whole height, the spike is clipped
+  assert.equal(ys[0], 10);
+  assert.equal(ys[ys.length - 1], 0);
+  assert.ok(ys.every((y) => y >= 0 && y <= 10), path);
+});
+
+test("no trend without two known points", () => {
+  assert.equal(card.trendPath([], 1000, 1000), "");
+  assert.equal(card.trendPath([{ time: 2000, value: 5 }], 1000, 1000), "");
 });

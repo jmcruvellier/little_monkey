@@ -29,6 +29,7 @@ const TRANSLATIONS = {
       tariff_entity: "Current tariff period (optional)",
       tempo_color_entity: "Tempo color of the day (optional)",
       max_power: "Power of the MAX graduation",
+      trend_minutes: "Duration of the curve (10 min by default)",
       tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. Without it, the disc stays blue.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
     },
@@ -46,6 +47,7 @@ const TRANSLATIONS = {
       tariff_entity: "Période tarifaire en cours (facultatif)",
       tempo_color_entity: "Couleur Tempo du jour (facultatif)",
       max_power: "Puissance de la graduation MAX",
+      trend_minutes: "Durée de la courbe (10 min par défaut)",
       tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Sans elle, le disque reste bleu.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
     },
@@ -67,7 +69,6 @@ const POWER_LABELS = ["0", "50", "100", "500", "1K", "5K", "10K", "MAX"];
 const DEFAULT_MAX_POWER = 12000;
 // Lower arc, decorative until the integration provides its value
 const LOWER_START = 125; // +20 %
-const LOWER_MIDDLE = 180; // 0 %
 const LOWER_END = 235; // -20 %
 const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 
@@ -94,8 +95,23 @@ const TEMPO_KEYS = [
 ];
 const HCHP_KEYS = ["hc_grid_consumption", "hp_grid_consumption"];
 
-// Trend of the central disc
-const TREND_PERIOD = 60 * 60 * 1000;
+// Trend of the central disc: minutes shown, and number of points drawn
+const DEFAULT_TREND_MINUTES = 10;
+const TREND_POINTS = 40;
+// Box of the trend in the disc
+const TREND_BOX = { left: 72, top: 117, width: 56, height: 14 };
+
+// Power zones of the upper arc, from the lightest to the darkest: limits in
+// W and share of the text color mixed into the card background
+const POWER_ZONES = [100, 1000, 5000];
+const POWER_ZONE_SHADES = [30, 45, 62, 80];
+// Segments of the lower arc, from +20 % to -20 % (clockwise)
+const LOWER_COLORS = [
+  "color-mix(in srgb, var(--secondary-text-color, #727272) 75%, var(--lm-background))",
+  "color-mix(in srgb, var(--secondary-text-color, #727272) 45%, var(--lm-background))",
+  "#5cbf8f",
+  "#1ed98a",
+];
 
 const UNKNOWN_STATES = new Set(["unavailable", "unknown", "none", ""]);
 
@@ -111,6 +127,22 @@ function point(radius, angle) {
 function arc(radius, from, to) {
   const large = to - from > 180 ? 1 : 0;
   return `M ${point(radius, from)} A ${radius} ${radius} 0 ${large} 1 ${point(radius, to)}`;
+}
+
+/**
+ * Return the paths of an arc made of colored segments, rounded at both ends.
+ *
+ * angles: limits of the segments, increasing; colors: one per segment. The
+ * end segments are drawn first with round caps, the others over them with
+ * square ends: the joints stay straight.
+ */
+function segmentedArc(radius, angles, colors, className) {
+  const segment = (index, cap) =>
+    `<path class="${className}" stroke-linecap="${cap}" stroke="${colors[index]}" ` +
+    `d="${arc(radius, angles[index], angles[index + 1])}" />`;
+  const last = colors.length - 1;
+  const inner = colors.slice(1, last).map((_color, index) => segment(index + 1, "butt"));
+  return [segment(0, "round"), segment(last, "round"), ...inner].join("");
 }
 
 /** Return the clock angle of a power on the upper arc. */
@@ -197,6 +229,87 @@ export function discColor(mode, tariff) {
     return TEMPO_COLORS.blue[tariff.period];
   }
   return DEFAULT_COLOR;
+}
+
+/**
+ * Return the smoothed path of the power over a period ending now.
+ *
+ * samples: { time, value } sorted by time; a value lasts until the next one.
+ * The period is cut into intervals, each drawn at the mean of the values it
+ * holds (weighted by their duration), which keeps a short spike from
+ * flattening the curve. Returns an empty path with less than two points.
+ */
+export function trendPath(samples, now, period, box = TREND_BOX, points = TREND_POINTS) {
+  const start = now - period;
+  const step = period / points;
+  const values = [];
+  let index = 0;
+  let current = null;
+  for (let point = 0; point < points; point += 1) {
+    const from = start + step * point;
+    const to = from + step;
+    // Value at the start of the interval: the last one received before
+    while (index < samples.length && samples[index].time <= from) {
+      current = samples[index].value;
+      index += 1;
+    }
+    let sum = 0;
+    let duration = 0;
+    let time = from;
+    while (index < samples.length && samples[index].time < to) {
+      if (current !== null) {
+        sum += current * (samples[index].time - time);
+        duration += samples[index].time - time;
+      }
+      time = samples[index].time;
+      current = samples[index].value;
+      index += 1;
+    }
+    if (current !== null) {
+      sum += current * (to - time);
+      duration += to - time;
+    }
+    if (duration > 0) {
+      values.push({ point, value: sum / duration });
+    }
+  }
+  if (values.length < 2) {
+    return "";
+  }
+  // The scale ends at the 95th percentile: the few points of a spike are
+  // drawn at the top of the box instead of flattening the rest of the curve
+  const numbers = values.map((item) => item.value).sort((a, b) => a - b);
+  const low = numbers[0];
+  const range = numbers[Math.floor(0.95 * (numbers.length - 1))] - low;
+  const coordinates = values.map((item) => ({
+    x: box.left + (box.width * item.point) / (points - 1),
+    y: range > 0
+      ? box.top + box.height - box.height * Math.min((item.value - low) / range, 1)
+      : box.top + box.height / 2,
+  }));
+  // Catmull-Rom spline through the points, drawn as cubic Bezier curves
+  const format = (number) => number.toFixed(2);
+  // The control points stay in the box: no overshoot above or below
+  const clamp = (y) => Math.min(Math.max(y, box.top), box.top + box.height);
+  let path = `M ${format(coordinates[0].x)} ${format(coordinates[0].y)}`;
+  for (let i = 0; i < coordinates.length - 1; i += 1) {
+    const p0 = coordinates[Math.max(i - 1, 0)];
+    const p1 = coordinates[i];
+    const p2 = coordinates[i + 1];
+    const p3 = coordinates[Math.min(i + 2, coordinates.length - 1)];
+    const c1x = p1.x + (p2.x - p0.x) / 6;
+    const c1y = clamp(p1.y + (p2.y - p0.y) / 6);
+    const c2x = p2.x - (p3.x - p1.x) / 6;
+    const c2y = clamp(p2.y - (p3.y - p1.y) / 6);
+    path += ` C ${format(c1x)} ${format(c1y)} ${format(c2x)} ${format(c2y)} ${format(p2.x)} ${format(p2.y)}`;
+  }
+  return path;
+}
+
+/** Return the minutes of the trend from the configuration (1 to 60). */
+export function trendMinutes(config) {
+  const minutes = Number(config.trend_minutes);
+  return Number.isFinite(minutes) && minutes >= 1 ? Math.min(minutes, 60) : DEFAULT_TREND_MINUTES;
 }
 
 /** Return the sensors of the Little Monkey device of an entity, by key. */
@@ -303,6 +416,10 @@ export function editorSchema(hass, config) {
     name: "max_power",
     selector: { number: { min: 10001, max: 100000, step: 1, mode: "box", unit_of_measurement: "W" } },
   });
+  schema.push({
+    name: "trend_minutes",
+    selector: { number: { min: 1, max: 60, step: 1, mode: "slider", unit_of_measurement: "min" } },
+  });
   return schema;
 }
 
@@ -363,6 +480,17 @@ class LittleMonkeyCard extends HTMLElement {
       return `<text x="${x}" y="${y}" transform="rotate(${angle - 180} ${x} ${y})">${label}</text>`;
     }).join("");
     const [wattsX, wattsY] = point(R_TRACK - 8, 0).split(" ");
+    // Zones of the upper arc, and quarters of the lower arc
+    const maxPower = Number(this._config.max_power) || DEFAULT_MAX_POWER;
+    const powerZoneAngles = [
+      POWER_START, ...POWER_ZONES.map((power) => powerAngle(power, maxPower)), POWER_END,
+    ];
+    const powerZoneColors = POWER_ZONE_SHADES.map(
+      (shade) => `color-mix(in srgb, var(--secondary-text-color, #727272) ${shade}%, var(--lm-background))`,
+    );
+    const lowerAngles = [0, 1, 2, 3, 4].map(
+      (quarter) => LOWER_START + ((LOWER_END - LOWER_START) * quarter) / 4,
+    );
     const [percentX, percentY] = point(R_TRACK - 8, 180).split(" ");
 
     if (!this.shadowRoot) {
@@ -372,45 +500,49 @@ class LittleMonkeyCard extends HTMLElement {
       <style>
         ha-card { padding: 16px; display: flex; justify-content: center; }
         svg { width: 100%; max-width: 360px; display: block; }
-        .bezel { fill: var(--ha-card-background, var(--card-background-color, #fff)); stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
+        .bezel { fill: var(--lm-background); stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
         .bezel-inner { fill: none; stroke: var(--divider-color, #e0e0e0); stroke-width: 0.6; }
-        .track { fill: none; stroke: var(--secondary-text-color, #9e9e9e); stroke-opacity: 0.45; stroke-width: 5; stroke-linecap: round; }
+        :host { --lm-background: var(--ha-card-background, var(--card-background-color, #fff)); }
+        .track { fill: none; stroke-width: 5; }
         .labels text { fill: var(--secondary-text-color, #727272); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
         .unit { fill: var(--secondary-text-color, #727272); font-size: 5px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
-        .saving { fill: none; stroke: url(#lm-saving); stroke-width: 5; stroke-linecap: round; }
-        .needle { stroke: #3ea6e0; stroke-width: 5; stroke-linecap: round; transition: transform 0.8s ease-out; }
-        .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; }
+        .needle { transition: transform 0.8s ease-out; }
+        .needle line { stroke-linecap: round; transition: stroke 0.5s; }
+        .needle-body { stroke-width: 6; }
+        .needle-outline { stroke-width: 7.4; stroke: #9e9e9e; }
+        .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; filter: url(#lm-shadow); }
         .content text { text-anchor: middle; dominant-baseline: central; }
-        .title { font-size: 6.5px; font-weight: 500; letter-spacing: 0.3px; }
-        .value { font-size: 17px; font-weight: 500; }
-        .apparent { font-size: 7px; opacity: 0.85; }
+        .title { font-size: 8.5px; font-weight: 400; letter-spacing: 0.2px; }
+        .value { font-size: 21px; font-weight: 400; }
+        .apparent { font-size: 7.5px; opacity: 0.85; }
         .message { font-size: 5.5px; }
-        .trend { fill: none; stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; opacity: 0.9; }
+        .trend { fill: none; stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; }
         .hidden { display: none; }
       </style>
       <ha-card>
         <svg viewBox="0 0 200 200" role="img" aria-label="${text.title.join(" ")}">
           <defs>
-            <linearGradient id="lm-saving" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#3ddc84" />
-              <stop offset="1" stop-color="#26c6da" />
-            </linearGradient>
+            <filter id="lm-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.35" />
+            </filter>
           </defs>
           <circle class="bezel" cx="100" cy="100" r="${R_BEZEL}" />
           <circle class="bezel-inner" cx="100" cy="100" r="${R_BEZEL - 4}" />
-          <path class="track" d="${arc(R_TRACK, POWER_START, POWER_END)}" />
-          <path class="track" d="${arc(R_TRACK, LOWER_START, LOWER_MIDDLE)}" />
-          <path class="saving" d="${arc(R_TRACK, LOWER_MIDDLE, LOWER_END)}" />
+          ${segmentedArc(R_TRACK, powerZoneAngles, powerZoneColors, "track")}
+          ${segmentedArc(R_TRACK, lowerAngles, LOWER_COLORS, "track")}
           <g class="labels">${ticks}${lowerTicks}</g>
           <text class="unit" x="${wattsX}" y="${wattsY}">${text.watts}</text>
           <text class="unit" x="${percentX}" y="${percentY}">%</text>
-          <line class="needle" x1="100" y1="${100 - R_TRACK - 7}" x2="100" y2="${100 - R_TRACK + 7}" />
+          <g class="needle">
+            <line class="needle-outline hidden" x1="100" y1="${100 - R_TRACK - 8}" x2="100" y2="${100 - R_DISC}" />
+            <line class="needle-body" x1="100" y1="${100 - R_TRACK - 8}" x2="100" y2="${100 - R_DISC}" stroke="${DEFAULT_COLOR}" />
+          </g>
           <circle class="disc" cx="100" cy="100" r="${R_DISC}" fill="${DEFAULT_COLOR}" />
           <g class="content">
-            <text class="title" x="100" y="70">${text.title[0]}</text>
-            <text class="title" x="100" y="78.5">${text.title[1]}</text>
+            <text class="title" x="100" y="66">${text.title[0]}</text>
+            <text class="title" x="100" y="76.5">${text.title[1]}</text>
             <text class="value" x="100" y="96"></text>
-            <text class="apparent" x="100" y="108"></text>
+            <text class="apparent" x="100" y="110"></text>
             <text class="message hidden" x="100" y="96"></text>
             <path class="trend" d="" />
           </g>
@@ -419,6 +551,8 @@ class LittleMonkeyCard extends HTMLElement {
     const root = this.shadowRoot;
     this._elements = {
       needle: root.querySelector(".needle"),
+      needleBody: root.querySelector(".needle-body"),
+      needleOutline: root.querySelector(".needle-outline"),
       disc: root.querySelector(".disc"),
       content: root.querySelector(".content"),
       value: root.querySelector(".value"),
@@ -460,9 +594,13 @@ class LittleMonkeyCard extends HTMLElement {
       tariff.color = parsed.color || tariff.color;
     }
     const color = discColor(mode, tariff);
+    const light = LIGHT_COLORS.has(color);
     el.disc.setAttribute("fill", color);
-    el.content.setAttribute("fill", LIGHT_COLORS.has(color) ? "#212121" : "#ffffff");
-    el.trend.setAttribute("stroke", LIGHT_COLORS.has(color) ? "#212121" : "#ffffff");
+    el.content.setAttribute("fill", light ? "#212121" : "#ffffff");
+    el.trend.setAttribute("stroke", light ? "#212121" : "#ffffff");
+    // The needle has the color of the disc, outlined when it is light
+    el.needleBody.setAttribute("stroke", color);
+    el.needleOutline.classList.toggle("hidden", !light);
 
     // Power and apparent power
     const power = numericState(hass, config.entity);
@@ -487,17 +625,19 @@ class LittleMonkeyCard extends HTMLElement {
     this._updateTrend(power);
   }
 
-  /** Keep the values of the last hour and draw them in the disc. */
+  /** Keep the values of the trend period and draw them in the disc. */
   _updateTrend(power) {
     const entityId = this._config.entity;
     if (!entityId) {
       this._elements.trend.setAttribute("d", "");
       return;
     }
-    if (this._trendEntity !== entityId) {
-      this._trendEntity = entityId;
+    const period = trendMinutes(this._config) * 60 * 1000;
+    const key = `${entityId} ${period}`;
+    if (this._trendEntity !== key) {
+      this._trendEntity = key;
       this._trend = [];
-      this._loadHistory(entityId);
+      this._loadHistory(entityId, key, period);
     }
     const state = this._hass.states[entityId];
     const now = Date.now();
@@ -508,13 +648,18 @@ class LittleMonkeyCard extends HTMLElement {
         this._trend.push({ time, value: power });
       }
     }
-    this._trend = this._trend.filter((sample) => sample.time >= now - TREND_PERIOD);
-    this._drawTrend(now);
+    // The last value before the period is kept: it lasts into the period
+    const firstInside = this._trend.findIndex((sample) => sample.time >= now - period);
+    const keepFrom = firstInside === -1 ? this._trend.length - 1 : firstInside - 1;
+    if (keepFrom > 0) {
+      this._trend = this._trend.slice(keepFrom);
+    }
+    this._drawTrend(now, period);
   }
 
-  /** Load the history of the last hour, once per entity. */
-  async _loadHistory(entityId) {
-    const start = new Date(Date.now() - TREND_PERIOD).toISOString();
+  /** Load the history of the trend period, once per entity and period. */
+  async _loadHistory(entityId, key, period) {
+    const start = new Date(Date.now() - period).toISOString();
     try {
       const history = await this._hass.callWS({
         type: "history/history_during_period",
@@ -524,7 +669,7 @@ class LittleMonkeyCard extends HTMLElement {
         no_attributes: true,
         significant_changes_only: false,
       });
-      if (this._trendEntity !== entityId) {
+      if (this._trendEntity !== key) {
         return;
       }
       const samples = (history[entityId] || [])
@@ -532,37 +677,15 @@ class LittleMonkeyCard extends HTMLElement {
         .filter((sample) => Number.isFinite(sample.value) && Number.isFinite(sample.time));
       const first = this._trend[0]?.time ?? Infinity;
       this._trend = [...samples.filter((sample) => sample.time < first), ...this._trend];
-      this._drawTrend(Date.now());
+      this._drawTrend(Date.now(), period);
     } catch (error) {
       // No trend from the history: the card draws the values it receives
       console.debug("Little Monkey card: history not available", error);
     }
   }
 
-  _drawTrend(now) {
-    const samples = this._trend;
-    if (samples.length < 2) {
-      this._elements.trend.setAttribute("d", "");
-      return;
-    }
-    const left = 76;
-    const width = 48;
-    const top = 114;
-    const height = 12;
-    const values = samples.map((sample) => sample.value);
-    const low = Math.min(...values);
-    const high = Math.max(...values);
-    const range = high - low || 1;
-    const start = now - TREND_PERIOD;
-    const path = samples.map((sample, index) => {
-      const x = left + (width * (sample.time - start)) / TREND_PERIOD;
-      const y = top + height - (height * (sample.value - low)) / range;
-      return `${index ? "L" : "M"} ${Math.max(x, left).toFixed(2)} ${y.toFixed(2)}`;
-    });
-    // The last value lasts until now
-    const lastY = top + height - (height * (values[values.length - 1] - low)) / range;
-    path.push(`L ${left + width} ${lastY.toFixed(2)}`);
-    this._elements.trend.setAttribute("d", path.join(" "));
+  _drawTrend(now, period) {
+    this._elements.trend.setAttribute("d", trendPath(this._trend, now, period));
   }
 }
 
