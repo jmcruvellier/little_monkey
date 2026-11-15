@@ -3,7 +3,7 @@
 ## 1.2.8
 - Nouveau capteur « Puissance Apparente » (VA), créé quand ecojoko fournit cette mesure du compteur Linky ([#123](https://github.com/jmcruvellier/little_monkey/issues/123))
 - Correction des données de consommation erronées (Consommation Réseau, HC/HP, Tempo, surplus de production) : l'API ecojoko renvoyait des valeurs dégradées au User-Agent par défaut de Home Assistant, l'intégration envoie désormais son propre User-Agent
-- Les capteurs passent à l'état « indisponible » quand l'API ecojoko ne répond plus, au lieu de rester figés sur leur dernière valeur ; les erreurs sont désormais journalisées
+- Les capteurs passent à l'état « indisponible » quand l'API ecojoko ne répond plus depuis une minute, au lieu de rester figés sur leur dernière valeur ; une coupure plus brève (délai dépassé, résolution DNS) conserve les dernières valeurs. Les erreurs sont désormais journalisées, celles des statistiques seulement si elles se répètent
 - Demande de ré-authentification quand ecojoko refuse le mot de passe, et messages d'erreur précis (identifiants incorrects, connexion impossible) lors de la configuration
 - Options : les nouveaux paramètres ne sont enregistrés qu'après validation par ecojoko, et l'intégration n'est rechargée qu'une seule fois
 - Température et humidité : rafraîchissement désormais assuré quelle que soit la fréquence choisie (elles n'étaient plus mises à jour à partir de 15 secondes pour l'humidité et de 30 secondes pour la température), et plus aucun appel à ces APIs quand l'option est décochée

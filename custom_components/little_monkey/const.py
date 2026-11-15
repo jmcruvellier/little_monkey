@@ -20,6 +20,9 @@ CONF_USE_PROD_FEATURE = "use_prod_feature"
 # APIs
 CONF_API_TIMEOUT = 3
 CONF_API_STAT_REFRESH = 30
+# A communication failure shorter than this many seconds keeps the last
+# values instead of making the sensors unavailable
+CONF_API_FAILURE_GRACE = 60
 
 # URLs
 ECOJOKO_LOGIN_URL = "https://service.ecojoko.com/login"
