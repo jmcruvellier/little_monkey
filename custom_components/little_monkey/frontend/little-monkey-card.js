@@ -88,6 +88,8 @@ const R_NEEDLE = R_TRACK + 4.5;
 
 // Colors of the central disc
 const DEFAULT_COLOR = "#0b6aae";
+// Color of the disc while power is injected into the grid (solar surplus)
+const INJECTION_COLOR = "#11AF00";
 const TEMPO_COLORS = {
   blue: { hc: "#00008B", hp: "#0000FF" },
   white: { hc: "#D3D3D3", hp: "#FFFFFF" },
@@ -252,11 +254,15 @@ export function tariffLabel(lang, mode, tariff) {
  * Return the color of the central disc.
  *
  * mode: "tempo", "hchp" or null, from the options of the integration.
- * Without option, or when the current period is not known, the disc keeps
- * the blue of the ecojoko dial. A known Tempo color without period gives
- * its HP color.
+ * A negative power (injection of a solar surplus) gives green, whatever the
+ * tariff. Without option, or when the current period is not known, the disc
+ * keeps the blue of the ecojoko dial. A known Tempo color without period
+ * gives its HP color.
  */
-export function discColor(mode, tariff) {
+export function discColor(mode, tariff, power = null) {
+  if (power !== null && power < 0) {
+    return INJECTION_COLOR;
+  }
   if (mode === "tempo" && tariff.color) {
     return TEMPO_COLORS[tariff.color][tariff.period || "hp"];
   }
@@ -636,7 +642,8 @@ class LittleMonkeyCard extends HTMLElement {
       // The Tempo color entity has the last word on the color
       tariff.color = parsed.color || tariff.color;
     }
-    const color = discColor(mode, tariff);
+    const power = numericState(hass, config.entity);
+    const color = discColor(mode, tariff, power);
     el.tariff.textContent = tariffLabel(this._language, mode, tariff);
     const light = LIGHT_COLORS.has(color);
     el.disc.setAttribute("fill", color);
@@ -647,7 +654,6 @@ class LittleMonkeyCard extends HTMLElement {
     el.needleOutline.classList.toggle("hidden", !light);
 
     // Power and apparent power
-    const power = numericState(hass, config.entity);
     const apparentEntity = config.apparent_power_entity || sensors.realtime_apparent_power;
     const apparent = numericState(hass, apparentEntity);
     const format = new Intl.NumberFormat(hass.locale?.language || this._language, {
@@ -661,7 +667,8 @@ class LittleMonkeyCard extends HTMLElement {
     el.apparent.textContent = !problem && apparent !== null ? `${format.format(apparent)} VA` : "";
     el.needle.classList.toggle("hidden", power === null);
     if (power !== null) {
-      const angle = powerAngle(power, Number(config.max_power) || DEFAULT_MAX_POWER);
+      // An injected power is shown on the arc by its absolute value
+      const angle = powerAngle(Math.abs(power), Number(config.max_power) || DEFAULT_MAX_POWER);
       el.needle.style.transformOrigin = "100px 100px";
       el.needle.style.transform = `rotate(${angle}deg)`;
     }
