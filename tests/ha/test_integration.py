@@ -6,12 +6,17 @@ the setup form and the options.
 """
 from __future__ import annotations
 
+import json
+
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.little_monkey import api as lm_api
+from custom_components.little_monkey.diagnostics import (
+    async_get_config_entry_diagnostics,
+)
 
 DOMAIN = "little_monkey"
 DATA = {
@@ -278,6 +283,43 @@ async def test_reauthentication(hass, fake_api):
     assert entry.data["password"] == "new"
     assert entry.data["name"] == "Ecojoko"
     assert entry.state is ConfigEntryState.LOADED
+
+
+# --- Diagnostics
+
+
+async def test_diagnostics_are_redacted(hass, fake_api):
+    """Diagnostics give the state of the entry without the credentials."""
+    entry = add_entry(hass, title="User@Example.com")
+    assert await setup_entry(hass, entry)
+
+    diagnostics = await async_get_config_entry_diagnostics(hass, entry)
+
+    text = json.dumps(diagnostics, default=str)
+    assert "pw" not in json.dumps(diagnostics["entry"]["data"])
+    for secret in ("User@Example.com", "user@example.com"):
+        assert secret not in text
+    assert diagnostics["entry"]["data"]["password"] == "**REDACTED**"
+    assert diagnostics["entry"]["data"]["username"] == "**REDACTED**"
+    assert diagnostics["entry"]["title"] == "**REDACTED**"
+    assert diagnostics["entry"]["unique_id"] == "**REDACTED**"
+    assert diagnostics["entry"]["data"]["poll_interval"] == 5
+    assert diagnostics["coordinator"]["last_update_success"] is True
+    assert diagnostics["coordinator"]["update_interval_seconds"] == 5
+    assert diagnostics["data"]["realtime_consumption"] == 512
+    assert set(diagnostics["client"]) >= {"logged_in", "failing_apis"}
+
+
+async def test_diagnostics_when_setup_failed(hass, fake_api):
+    """Diagnostics are still available when the entry could not be set up."""
+    fake_api.data_error = lm_api.LittleMonkeyApiClientCommunicationError("down")
+    entry = add_entry(hass)
+    assert not await setup_entry(hass, entry)
+
+    diagnostics = await async_get_config_entry_diagnostics(hass, entry)
+
+    assert diagnostics["entry"]["data"]["password"] == "**REDACTED**"
+    assert "coordinator" not in diagnostics
 
 
 # --- Flows

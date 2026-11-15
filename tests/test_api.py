@@ -168,6 +168,30 @@ def test_user_agent_is_sent(api):
         assert kwargs["headers"]["User-Agent"].startswith("little_monkey/")
 
 
+def test_diagnostics_hold_no_secret(api):
+    """The diagnostics describe the client without credential or identifier."""
+    session = Session(powerstat=aiohttp.ClientError("boom"))
+    client = make_client(api, session, temphum=True)
+    before = client.diagnostics()
+    assert before["logged_in"] is False
+    assert before["gateway_found"] is False
+    assert before["seconds_since_stat_refresh"]["powerstat"] is None
+
+    run(client.async_get_data())
+    after = client.diagnostics()
+    assert after["logged_in"] is True
+    assert after["gateway_found"] is True
+    assert after["power_meter_found"] is True
+    assert after["temp_hum_found"] is True
+    assert after["gateway_firmware_version"] == "9"
+    assert after["failing_apis"] == ["powerstat (w)"]
+    assert after["seconds_since_stat_refresh"]["powerstat"] is not None
+    assert after["seconds_since_stat_refresh"]["tempstat"] is None
+    text = repr(after)
+    for secret in ("user", "secret", "abc"):
+        assert secret not in text
+
+
 # --- Login errors
 
 
