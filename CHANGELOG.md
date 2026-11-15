@@ -15,7 +15,7 @@
 - Le nom est désormais obligatoire à l'installation et dans les options
 - Une erreur HTTP d'ecojoko (4xx, 5xx) est désormais traitée comme une erreur, y compris à la connexion, au lieu d'être prise pour une réponse valide ; le délai d'attente couvre toute la réponse et les connexions sont toujours libérées
 - Ajout des diagnostics de l'intégration (téléchargeables depuis la page de l'appareil ou de l'intégration), identifiants ecojoko masqués, pour faciliter les rapports de bug
-- Version minimale de Home Assistant relevée à 2024.3.3 (au lieu de 2023.9.0) : c'est la plus ancienne version sur laquelle cette version de l'intégration a été testée
+- Version minimale de Home Assistant relevée à 2024.6.0 (au lieu de 2023.9.0) : l'intégration s'appuie désormais sur des fonctions de Home Assistant apparues dans cette version, et elle est testée automatiquement sur cette version comme sur la plus récente
 - Les capteurs d'énergie ne baissent plus en cours de journée : quand ecojoko corrige une valeur à la baisse, la dernière valeur est conservée jusqu'à ce que la mesure la rattrape. Home Assistant prenait ces baisses pour une remise à zéro du compteur et pouvait compter deux fois l'énergie dans le tableau Énergie ; l'avertissement « state is not strictly increasing » disparaît
 - Au changement de jour, un capteur d'énergie dont ecojoko ne donne pas encore la valeur passe à « inconnu » au lieu de garder la valeur de la veille
 - La connexion à ecojoko envoie désormais les identifiants par une requête POST, au lieu d'une requête GET avec corps

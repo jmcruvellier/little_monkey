@@ -34,7 +34,6 @@ ENTRY_VERSION = 2
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
-    hass.data.setdefault(DOMAIN, {})
     # Done before the update listener is registered: it does not reload
     _async_sync_unique_id(hass, entry)
     coordinator = LittleMonkeyDataUpdateCoordinator(
@@ -60,7 +59,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
+    # Home Assistant removes it when the entry is unloaded
+    entry.runtime_data = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
@@ -92,14 +92,9 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         _migrate_unique_ids(hass, entry)
         # The language option was removed in 1.2.8
         data = {key: value for key, value in entry.data.items() if key != "lang"}
-        try:
-            hass.config_entries.async_update_entry(
-                entry, data=data, options={}, version=ENTRY_VERSION
-            )
-        except TypeError:
-            # Home Assistant before 2024.3
-            entry.version = ENTRY_VERSION
-            hass.config_entries.async_update_entry(entry, data=data, options={})
+        hass.config_entries.async_update_entry(
+            entry, data=data, options={}, version=ENTRY_VERSION
+        )
         LOGGER.info("Config entry %s migrated to version %s",
                     entry.title, ENTRY_VERSION)
     return True
@@ -149,9 +144,7 @@ def _migrate_unique_ids(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Handle removal of an entry."""
-    if unloaded := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
-        hass.data[DOMAIN].pop(entry.entry_id)
-    return unloaded
+    return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
 async def async_remove_config_entry_device(

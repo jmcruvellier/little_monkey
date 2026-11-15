@@ -8,7 +8,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 
-from .const import DOMAIN, VERSION
+from .const import VERSION
 
 # The title and the unique id of the entry are the ecojoko username
 TO_REDACT = {CONF_USERNAME, CONF_PASSWORD, "title", "unique_id"}
@@ -23,7 +23,7 @@ async def async_get_config_entry_diagnostics(
         "entry": async_redact_data(entry.as_dict(), TO_REDACT),
     }
     # The coordinator is missing when the setup of the entry failed
-    coordinator = hass.data.get(DOMAIN, {}).get(entry.entry_id)
+    coordinator = getattr(entry, "runtime_data", None)
     if coordinator is None:
         return diagnostics
 
