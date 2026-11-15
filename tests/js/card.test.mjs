@@ -72,6 +72,69 @@ test("the disc takes the color of the current period", () => {
   assert.equal(card.discColor("tempo", { period: "hc", color: null }), blue);
 });
 
+test("the trend covers three minutes by default, one hour at most", () => {
+  assert.equal(card.trendMinutes({}), 3);
+  assert.equal(card.trendMinutes({ trend_minutes: 5 }), 5);
+  assert.equal(card.trendMinutes({ trend_minutes: 600 }), 60);
+  assert.equal(card.trendMinutes({ trend_minutes: 0 }), 3);
+  assert.equal(card.trendMinutes({ trend_minutes: "x" }), 3);
+});
+
+test("the trend has one point per reading, 12 to 40 points", () => {
+  assert.equal(card.trendPoints(3 * 60_000), 36);
+  assert.equal(card.trendPoints(60_000), 12);
+  assert.equal(card.trendPoints(10 * 60_000), 40);
+});
+
+test("the trend is drawn over the whole period, in its box", () => {
+  const box = { left: 0, top: 0, width: 100, height: 10 };
+  const now = 1_000_000;
+  // A value received before the period lasts into it, then 300 W at mid-period
+  const samples = [{ time: now - 2000, value: 100 }, { time: now - 500, value: 300 }];
+  const path = card.trendPath(samples, now, 1000, box, 11);
+  const numbers = path.match(/-?[\d.]+/g).map(Number);
+  assert.ok(path.startsWith("M 0.00 10.00"), path);
+  assert.ok(path.endsWith("100.00 0.00"), path);
+  assert.ok(numbers.every((n) => n >= 0 && n <= 100), path);
+});
+
+test("a short spike does not flatten the trend", () => {
+  const box = { left: 0, top: 0, width: 100, height: 10 };
+  const now = 1_000_000;
+  // 400 W then 500 W, with a 3000 W spike of one second
+  const samples = [
+    { time: now - 2000_000, value: 400 },
+    { time: now - 300_000, value: 500 },
+    { time: now - 100_000, value: 3000 },
+    { time: now - 99_000, value: 500 },
+  ];
+  const path = card.trendPath(samples, now, 600_000, box, 40);
+  const ys = [...path.matchAll(/ (-?[\d.]+) (-?[\d.]+)(?= C|$)/g)].map((m) => Number(m[2]));
+  // The spike keeps its peak, damped by the mean of its interval: the step
+  // from 400 to 500 W still uses more than a third of the height
+  assert.equal(Math.min(...ys), 0);
+  assert.equal(ys[0], 10);
+  assert.ok(ys[0] - ys[ys.length - 1] > 10 / 3, path);
+  assert.ok(ys.every((y) => y >= 0 && y <= 10), path);
+});
+
+test("no trend without two known points", () => {
+  assert.equal(card.trendPath([], 1000, 1000), "");
+  assert.equal(card.trendPath([{ time: 2000, value: 5 }], 1000, 1000), "");
+});
+
+test("the current tariff period is named under the curve", () => {
+  assert.equal(card.tariffLabel("fr", "hchp", { period: "hc", color: null }), "HEURES CREUSES");
+  assert.equal(card.tariffLabel("en", "hchp", { period: "hp", color: null }), "PEAK HOURS");
+  assert.equal(card.tariffLabel("fr", "tempo", { period: "hp", color: "red" }), "HEURES PLEINES · JOUR ROUGE");
+  assert.equal(card.tariffLabel("en", "tempo", { period: "hc", color: "white" }), "OFF-PEAK HOURS · WHITE DAY");
+  assert.equal(card.tariffLabel("fr", "tempo", { period: null, color: "blue" }), "JOUR BLEU");
+  // Nothing without option or without known period, like the color of the disc
+  assert.equal(card.tariffLabel("fr", null, { period: "hc", color: "red" }), "");
+  assert.equal(card.tariffLabel("fr", "hchp", { period: null, color: null }), "");
+  assert.equal(card.tariffLabel("fr", "tempo", { period: "hc", color: null }), "");
+});
+
 // Entity registry of Home Assistant with two Little Monkey devices
 function hassWith(...devices) {
   const entities = {};
@@ -153,59 +216,4 @@ test("the period sensor of the integration is chosen automatically", () => {
     card.editedConfig(hass, chosen, { ...chosen, entity: "sensor.barn_realtime_consumption" }).tariff_entity,
     "binary_sensor.heures_creuses",
   );
-});
-
-test("the trend covers ten minutes by default, one hour at most", () => {
-  assert.equal(card.trendMinutes({}), 10);
-  assert.equal(card.trendMinutes({ trend_minutes: 5 }), 5);
-  assert.equal(card.trendMinutes({ trend_minutes: 600 }), 60);
-  assert.equal(card.trendMinutes({ trend_minutes: 0 }), 10);
-  assert.equal(card.trendMinutes({ trend_minutes: "x" }), 10);
-});
-
-test("the trend is drawn over the whole period, in its box", () => {
-  const box = { left: 0, top: 0, width: 100, height: 10 };
-  const now = 1_000_000;
-  // A value received before the period lasts into it, then 300 W at mid-period
-  const samples = [{ time: now - 2000, value: 100 }, { time: now - 500, value: 300 }];
-  const path = card.trendPath(samples, now, 1000, box, 11);
-  const numbers = path.match(/-?[\d.]+/g).map(Number);
-  assert.ok(path.startsWith("M 0.00 10.00"), path);
-  assert.ok(path.endsWith("100.00 0.00"), path);
-  assert.ok(numbers.every((n) => n >= 0 && n <= 100), path);
-});
-
-test("a short spike does not flatten the trend", () => {
-  const box = { left: 0, top: 0, width: 100, height: 10 };
-  const now = 1_000_000;
-  // 400 W then 500 W, with a 3000 W spike of one second
-  const samples = [
-    { time: now - 2000_000, value: 400 },
-    { time: now - 300_000, value: 500 },
-    { time: now - 100_000, value: 3000 },
-    { time: now - 99_000, value: 500 },
-  ];
-  const path = card.trendPath(samples, now, 600_000, box, 40);
-  const ys = [...path.matchAll(/ (-?[\d.]+) (-?[\d.]+)(?= C|$)/g)].map((m) => Number(m[2]));
-  // The step from 400 to 500 W uses the whole height, the spike is clipped
-  assert.equal(ys[0], 10);
-  assert.equal(ys[ys.length - 1], 0);
-  assert.ok(ys.every((y) => y >= 0 && y <= 10), path);
-});
-
-test("no trend without two known points", () => {
-  assert.equal(card.trendPath([], 1000, 1000), "");
-  assert.equal(card.trendPath([{ time: 2000, value: 5 }], 1000, 1000), "");
-});
-
-test("the current tariff period is named under the curve", () => {
-  assert.equal(card.tariffLabel("fr", "hchp", { period: "hc", color: null }), "HEURES CREUSES");
-  assert.equal(card.tariffLabel("en", "hchp", { period: "hp", color: null }), "PEAK HOURS");
-  assert.equal(card.tariffLabel("fr", "tempo", { period: "hp", color: "red" }), "HEURES PLEINES · JOUR ROUGE");
-  assert.equal(card.tariffLabel("en", "tempo", { period: "hc", color: "white" }), "OFF-PEAK HOURS · WHITE DAY");
-  assert.equal(card.tariffLabel("fr", "tempo", { period: null, color: "blue" }), "JOUR BLEU");
-  // Nothing without option or without known period, like the color of the disc
-  assert.equal(card.tariffLabel("fr", null, { period: "hc", color: "red" }), "");
-  assert.equal(card.tariffLabel("fr", "hchp", { period: null, color: null }), "");
-  assert.equal(card.tariffLabel("fr", "tempo", { period: "hc", color: null }), "");
 });
