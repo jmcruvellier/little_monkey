@@ -7,12 +7,14 @@ from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .api import LittleMonkeyApiClient
 from .const import (
     DOMAIN,
+    LOGGER,
     PLATFORMS,
     POLL_INTERVAL,
     CONF_USE_HCHP_FEATURE,
@@ -21,6 +23,11 @@ from .const import (
     CONF_USE_PROD_FEATURE
 )
 from .coordinator import LittleMonkeyDataUpdateCoordinator
+from .sensor import SENSORS
+from .utils import account_unique_id
+
+# Version of the config entries, see EcojokoFlowHandler.VERSION
+ENTRY_VERSION = 2
 
 
 def get_boolean(array, index):
@@ -42,6 +49,8 @@ def get_string(array, index):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
+    # Done before the update listener is registered: it does not reload
+    _async_sync_unique_id(hass, entry)
     coordinator = LittleMonkeyDataUpdateCoordinator(
         hass=hass,
         entry=entry,
@@ -56,8 +65,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             session=async_get_clientsession(hass),
         ),
     )
-    # 93 bug fix
-    await coordinator.async_initialize()
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     await coordinator.async_config_entry_first_refresh()
 
@@ -68,6 +75,86 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
+
+
+def _async_sync_unique_id(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Identify the entry by its ecojoko account.
+
+    It prevents the same account from being added twice. Entries created
+    before 1.2.8 have no unique id, and the username can be changed in the
+    options. An account already used by another entry is left as it is.
+    """
+    unique_id = account_unique_id(get_string(entry.data, CONF_USERNAME))
+    if not unique_id or entry.unique_id == unique_id:
+        return
+    for other in hass.config_entries.async_entries(DOMAIN):
+        if other.entry_id != entry.entry_id and other.unique_id == unique_id:
+            return
+    hass.config_entries.async_update_entry(entry, unique_id=unique_id)
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate a config entry created by a previous version."""
+    if entry.version > ENTRY_VERSION:
+        # Created by a more recent version of the integration
+        return False
+    if entry.version == 1:
+        _migrate_unique_ids(hass, entry)
+        # The language option was removed in 1.2.8
+        data = {key: value for key, value in entry.data.items() if key != "lang"}
+        try:
+            hass.config_entries.async_update_entry(
+                entry, data=data, options={}, version=ENTRY_VERSION
+            )
+        except TypeError:
+            # Home Assistant before 2024.3
+            entry.version = ENTRY_VERSION
+            hass.config_entries.async_update_entry(entry, data=data, options={})
+        LOGGER.info("Config entry %s migrated to version %s",
+                    entry.title, ENTRY_VERSION)
+    return True
+
+
+def _migrate_unique_ids(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Replace the unique ids based on the name by ids based on the entry.
+
+    Until 1.2.7 the entities and the device were identified by the name
+    chosen by the user: renaming created new entities and lost the history.
+    Entity ids, history and statistics are kept by this migration. Entities
+    left behind by a previous renaming do not match the current name and are
+    not touched.
+    """
+    old_base = f"{DOMAIN}_{entry.data.get(CONF_NAME)}"
+    new_base = entry.entry_id
+    new_unique_ids = {old_base: new_base}
+    for key, _kind, _option in SENSORS:
+        new_unique_ids[f"{old_base}_{key}"] = f"{new_base}_{key}"
+
+    entity_registry = er.async_get(hass)
+    for entity in er.async_entries_for_config_entry(entity_registry, entry.entry_id):
+        new_unique_id = new_unique_ids.get(entity.unique_id)
+        if new_unique_id is None:
+            continue
+        if entity_registry.async_get_entity_id(
+            entity.domain, entity.platform, new_unique_id
+        ):
+            LOGGER.warning(
+                "Entity %s not migrated: its new unique id already exists",
+                entity.entity_id)
+            continue
+        entity_registry.async_update_entity(
+            entity.entity_id, new_unique_id=new_unique_id)
+
+    device_registry = dr.async_get(hass)
+    device = device_registry.async_get_device(identifiers={(DOMAIN, old_base)})
+    if (
+        device is not None
+        and entry.entry_id in device.config_entries
+        and device_registry.async_get_device(
+            identifiers={(DOMAIN, new_base)}) is None
+    ):
+        device_registry.async_update_device(
+            device.id, new_identifiers={(DOMAIN, new_base)})
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

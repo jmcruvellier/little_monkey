@@ -51,10 +51,12 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
   - Capteurs d'humidité et de température: à ne sélectionner que si vous désirez remonter ces données depuis votre ecojoko<sup>©️</sup>
   - Capteur de production: à ne sélectionner que si vous êtes producteur d'énergie solaire et que avez un capteur ecojoko<sup>©️</sup> ancienne génération
   - Fréquence de raffraichissement des données (en secondes): le minimum autorisé est de 3 secondes (afin de ne pas surcharger les serveurs d'ecojoko<sup>©️</sup>), et le maximum est de 60 secondes
-  - Choix de la langue: français par défaut, possibilité de passer en anglais
 
 > [!IMPORTANT]
-> Un changement de nom ou de langue après la première configuration nécessitera un rechargement de l'intégration et entrainera un renommage des capteurs
+> Un changement de nom après la première configuration renomme l'appareil et le nom affiché des capteurs. Depuis la version 1.2.8, les capteurs eux-mêmes sont conservés, avec leurs identifiants et leur historique
+
+> [!NOTE]
+> Les noms des capteurs suivent la langue de votre instance Home Assistant (français, anglais ou portugais ; anglais pour les autres langues). Depuis la version 1.2.8 il n'y a plus de choix de langue dans ce formulaire, contrairement à ce que montre la capture d'écran ci-dessous.
 
 ![Etape 1](/custom_components/little_monkey/res/config_step_01.png)
 

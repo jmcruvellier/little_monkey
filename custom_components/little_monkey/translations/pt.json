@@ -12,8 +12,7 @@
                     "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
                     "use_temphum_feature": "Sensores de Humidade e Temperatura",
                     "use_prod_feature": "Sensor de Produção",
-                    "poll_interval": "Intervalo de sondagem (em segundos)",
-                    "lang": "Idioma dos nomes dos sensores"
+                    "poll_interval": "Intervalo de sondagem (em segundos)"
                 }
             },
             "reauth_confirm": {
@@ -29,6 +28,7 @@
             "unknown": "Ocorreu um erro desconhecido."
         },
         "abort": {
+            "already_configured": "Esta conta ecojoko já está configurada.",
             "reauth_successful": "A palavra-passe foi atualizada."
         }
     },
@@ -44,8 +44,7 @@
                     "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
                     "use_temphum_feature": "Sensores de Humidade e Temperatura",
                     "use_prod_feature": "Sensor de Produção",
-                    "poll_interval": "Intervalo de sondagem (em segundos)",
-                    "lang": "Idioma dos nomes dos sensores"
+                    "poll_interval": "Intervalo de sondagem (em segundos)"
                 }
             }
         },
@@ -53,6 +52,55 @@
             "auth": "Nome de utilizador/Palavra-passe está incorreto.",
             "connection": "Não foi possível ligar ao servidor.",
             "unknown": "Ocorreu um erro desconhecido."
+        }
+    },
+    "entity": {
+        "sensor": {
+            "realtime_consumption": {
+                "name": "Consumo em Tempo Real"
+            },
+            "grid_consumption": {
+                "name": "Consumo da Rede"
+            },
+            "hc_grid_consumption": {
+                "name": "Consumo da Rede em Vazio"
+            },
+            "hp_grid_consumption": {
+                "name": "Consumo da Rede em Ponta"
+            },
+            "blue_hc_grid_consumption": {
+                "name": "Consumo da Rede Azul em Vazio"
+            },
+            "blue_hp_grid_consumption": {
+                "name": "Consumo da Rede Azul em Ponta"
+            },
+            "white_hc_grid_consumption": {
+                "name": "Consumo da Rede Branca em Vazio"
+            },
+            "white_hp_grid_consumption": {
+                "name": "Consumo da Rede Branca em Ponta"
+            },
+            "red_hc_grid_consumption": {
+                "name": "Consumo da Rede Vermelha em Vazio"
+            },
+            "red_hp_grid_consumption": {
+                "name": "Consumo da Rede Vermelha em Ponta"
+            },
+            "production_surplus": {
+                "name": "Excedente de Produção"
+            },
+            "indoor_temp": {
+                "name": "Temperatura Interior"
+            },
+            "outdoor_temp": {
+                "name": "Temperatura Exterior"
+            },
+            "indoor_hum": {
+                "name": "Humidade Interior"
+            },
+            "outdoor_hum": {
+                "name": "Humidade Exterior"
+            }
         }
     }
 }

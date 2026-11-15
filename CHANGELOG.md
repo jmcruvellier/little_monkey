@@ -7,6 +7,10 @@
 - Options : les nouveaux paramètres ne sont enregistrés qu'après validation par ecojoko, et l'intégration n'est rechargée qu'une seule fois
 - Température et humidité : rafraîchissement désormais assuré quelle que soit la fréquence choisie (elles n'étaient plus mises à jour à partir de 15 secondes pour l'humidité et de 30 secondes pour la température), et plus aucun appel à ces APIs quand l'option est décochée
 - Les données de consommation ne sont plus figées pendant une heure lors du passage à l'heure d'hiver
+- Capteurs conformes aux pratiques de Home Assistant (valeur et unité natives) : la conversion d'unité fonctionne désormais, par exemple pour un système configuré en °F
+- Les noms des capteurs utilisent désormais les traductions natives de Home Assistant : ils suivent la langue de l'instance (français, anglais, portugais) et l'option de langue de l'intégration disparaît. Les identifiants d'entité, l'historique et les statistiques ne changent pas ; seul le nom affiché perd son tiret (« Ecojoko Consommation Temps Réel » au lieu de « Ecojoko - Consommation Temps Réel »), sauf si vous l'avez personnalisé
+- Changer le nom dans les options ne recrée plus les capteurs : entités et appareil sont désormais identifiés par l'entrée de configuration et non par le nom. Les installations existantes sont migrées automatiquement au premier démarrage, en conservant identifiants d'entité, historique et statistiques. Attention : après cette migration, revenir à une version antérieure à la 1.2.8 demande de restaurer une sauvegarde ou de reconfigurer l'intégration
+- Un même compte ecojoko ne peut plus être ajouté deux fois
 - Suppression de deux dépendances non déclarées (`async_timeout`, `pytz`) au profit de la bibliothèque standard de Python
 
 ## 1.2.7

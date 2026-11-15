@@ -12,9 +12,10 @@ class EcojokoEntity(CoordinatorEntity):
 
     _attr_attribution = ATTRIBUTION
 
-    def __init__(self, coordinator, device_name, firmware_version):
+    def __init__(self, coordinator, entry_id, device_name, firmware_version):
         """Initialize the main device entity."""
         super().__init__(coordinator)
+        self._entry_id = entry_id
         self._device_name = device_name
         self._firmware_version = firmware_version
         self._child_entities = []
@@ -26,9 +27,12 @@ class EcojokoEntity(CoordinatorEntity):
 
     @property
     def unique_id(self):
-        """Return a unique ID for the Ecojoko device entity."""
-        return f"{DOMAIN}_{self._device_name}"
-        # return f"{DOMAIN}_main_device_{self._device_name}"
+        """Return a unique ID for the Ecojoko device entity.
+
+        It is based on the config entry, not on the name chosen by the user,
+        so that renaming keeps the entities and their history.
+        """
+        return self._entry_id
 
     @property
     def state(self):
@@ -64,11 +68,14 @@ class EcojokoSensor(CoordinatorEntity, SensorEntity):
         super().__init__(main_device.coordinator)
         self._main_device = main_device
         self._sensor_name = sensor_name
-        self._state_class = state_class
-        self._device_class = device_class
-        self._unit_of_measurement = unit_of_measurement
-        self._icon = icon
-        self._attr_has_entity_name = False
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_icon = icon
+        # The name comes from the Home Assistant translations
+        # (entity.sensor.<key>.name), prefixed by the device name
+        self._attr_has_entity_name = True
+        self._attr_translation_key = sensor_name
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -76,50 +83,18 @@ class EcojokoSensor(CoordinatorEntity, SensorEntity):
         return self._main_device.device_info
 
     @property
-    def name(self):
-        """Return the name of the sensor."""
-        return f"{self._main_device.name} - {self._main_device.coordinator.tranfile[self._sensor_name]}"
-
-    @property
     def unique_id(self):
         """Return a unique ID for the sensor."""
         return f"{self._main_device.unique_id}_{self._sensor_name}"
 
     @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self.coordinator.data.get(self._sensor_name)
-
-    @property
-    def state_class(self):
-        """Return the state class of the sensor."""
-        return self._state_class
-
-    @property
-    def device_class(self):
-        """Return the device class of the sensor."""
-        return self._device_class
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return self._unit_of_measurement
-
-    @property
-    def icon(self):
-        """Return the icon of the sensor."""
-        return self._icon
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
-        return {
-            "device_name": self._main_device.name,
-            "firmware_version": self._main_device._firmware_version,
-        }
-
-    # def update(self):
-    #     """Update the sensor data."""
-    #     # Add code here to update sensor data (e.g., read temperature from the device)
-    #     # For simplicity, we'll set a dummy value
-    #     self.coordinator.data[self._sensor_name] = 27.0  # Replace with actual sensor data
+    def native_value(self):
+        """Return the value of the sensor, in its native unit."""
+        value = (self.coordinator.data or {}).get(self._sensor_name)
+        if isinstance(value, str):
+            # All the sensors are numeric
+            try:
+                return float(value)
+            except ValueError:
+                return None
+        return value

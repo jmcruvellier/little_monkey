@@ -12,6 +12,10 @@ def has_day_changed(datetime1, datetime2):
     # Compare dates
     return _date1 != _date2
 
+def account_unique_id(username):
+    """Return the unique id of the config entry of an ecojoko account."""
+    return str(username).strip().lower()
+
 def get_paris_timezone():
     """Get Paris timezone."""
     return ZoneInfo('Europe/Paris')

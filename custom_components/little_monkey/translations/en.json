@@ -12,8 +12,7 @@
                     "use_tempo_feature": "Tempo Blue/White/Red sensors",
                     "use_temphum_feature": "Humidity and temperature sensors",
                     "use_prod_feature": "Production sensor",
-                    "poll_interval": "Poll interval (in seconds)",
-                    "lang": "Language of the sensor names"
+                    "poll_interval": "Poll interval (in seconds)"
                 }
             },
             "reauth_confirm": {
@@ -29,6 +28,7 @@
             "unknown": "Unknown error occurred."
         },
         "abort": {
+            "already_configured": "This ecojoko account is already configured.",
             "reauth_successful": "The password has been updated."
         }
     },
@@ -44,8 +44,7 @@
                     "use_tempo_feature": "Tempo Blue/White/Red sensors",
                     "use_temphum_feature": "Humidity and temperature sensors",
                     "use_prod_feature": "Production sensor",
-                    "poll_interval": "Poll interval (in seconds)",
-                    "lang": "Language of the sensor names"
+                    "poll_interval": "Poll interval (in seconds)"
                 }
             }
         },
@@ -53,6 +52,55 @@
             "auth": "Username/Password is wrong.",
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred."
+        }
+    },
+    "entity": {
+        "sensor": {
+            "realtime_consumption": {
+                "name": "Real-Time Consumption"
+            },
+            "grid_consumption": {
+                "name": "Grid Consumption"
+            },
+            "hc_grid_consumption": {
+                "name": "HC Grid Consumption"
+            },
+            "hp_grid_consumption": {
+                "name": "HP Grid Consumption"
+            },
+            "blue_hc_grid_consumption": {
+                "name": "HC Blue Grid Consumption"
+            },
+            "blue_hp_grid_consumption": {
+                "name": "HP Blue Grid Consumption"
+            },
+            "white_hc_grid_consumption": {
+                "name": "HC White Grid Consumption"
+            },
+            "white_hp_grid_consumption": {
+                "name": "HP White Grid Consumption"
+            },
+            "red_hc_grid_consumption": {
+                "name": "HC Red Grid Consumption"
+            },
+            "red_hp_grid_consumption": {
+                "name": "HP Red Grid Consumption"
+            },
+            "production_surplus": {
+                "name": "Production Surplus"
+            },
+            "indoor_temp": {
+                "name": "Indoor Temperature"
+            },
+            "outdoor_temp": {
+                "name": "Outdoor Temperature"
+            },
+            "indoor_hum": {
+                "name": "Indoor Humidity"
+            },
+            "outdoor_hum": {
+                "name": "Outdoor Humidity"
+            }
         }
     }
 }
