@@ -251,12 +251,12 @@ class LittleMonkeyApiClient:
         """
         if api['call'] is not True:
             return None
-        payload, _cookies = await self._async_get(
+        payload, _cookies = await self._async_request(
             api['name'], api['url'], cookies=self._cookies)
         return payload
 
-    async def _async_get(self, name, url, **kwargs):
-        """Send a GET request to ecojoko.
+    async def _async_request(self, name, url, method="GET", **kwargs):
+        """Send a request to ecojoko.
 
         Return the JSON payload (None when the answer is not JSON) and the
         cookies of the response. The timeout covers the whole exchange,
@@ -264,8 +264,9 @@ class LittleMonkeyApiClient:
         """
         try:
             async with asyncio.timeout(CONF_API_TIMEOUT):
-                async with self._session.get(
-                    url=url,
+                async with self._session.request(
+                    method,
+                    url,
                     headers=self._headers,
                     **kwargs,
                 ) as response:
@@ -541,13 +542,15 @@ class LittleMonkeyApiClient:
         data: str | None = None,
     ) -> None:
         """Log in and keep the session cookies."""
-        _payload, cookies = await self._async_get(
-            "Cookies", ECOJOKO_LOGIN_URL, data=data)
+        # The credentials are sent in the body: POST is the method made for
+        # it, a body in a GET request can be dropped by a proxy
+        _payload, cookies = await self._async_request(
+            "Cookies", ECOJOKO_LOGIN_URL, method="POST", data=data)
         self._cookies = cookies
 
     async def _gatewayapi_wrapper(self) -> None:
         """Get the gateway and device ids from the API."""
-        value_json, _cookies = await self._async_get(
+        value_json, _cookies = await self._async_request(
             "Gateway", ECOJOKO_GATEWAYS_URL, cookies=self._cookies)
         if value_json is None:
             return
