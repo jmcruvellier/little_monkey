@@ -9,7 +9,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 
 from .api import LittleMonkeyApiClient
 from .const import (
@@ -48,7 +48,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             use_tempo=entry.data.get(CONF_USE_TEMPO_FEATURE, False),
             use_temphum=entry.data.get(CONF_USE_TEMPHUM_FEATURE, False),
             use_prod=entry.data.get(CONF_USE_PROD_FEATURE, False),
-            session=async_get_clientsession(hass),
+            # A session of its own, with its own cookies: the ecojoko session
+            # cookie is not shared with the other integrations nor with
+            # another ecojoko account. Home Assistant releases it when the
+            # entry is unloaded.
+            session=async_create_clientsession(hass),
         ),
     )
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
