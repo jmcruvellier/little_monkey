@@ -78,6 +78,15 @@ Elle reprend le cadran du boîtier ecojoko<sup>©️</sup> :
 - le disque central affiche la puissance en W, la puissance apparente en VA en dessous quand le capteur Puissance Apparente existe, et la courbe des 3 dernières minutes (réglable), lissée ;
 - l'aiguille bleu clair de l'arc inférieur indique vos économies sur 7 jours par rapport à votre consommation de référence, de -20 % (côté vert, économie) à +20 % (surconsommation), d'après le capteur Économies sur 7 Jours ; elle reste en butée au-delà, et n'apparaît pas tant qu'ecojoko n'a pas de semaine de référence.
 
+Comme sur le cadran d'ecojoko<sup>©️</sup>, le disque central a plusieurs faces. On passe de l'une à l'autre en glissant le doigt (ou la souris) sur le cadran, ou en touchant les points en bas du disque :
+
+1. la puissance temps réel, décrite ci-dessus ; le titre devient « INJECTION RÉSEAU » quand la puissance est négative (surplus de production injecté), et le disque passe alors au vert ;
+2. les économies sur 7 jours, en %, par rapport à votre consommation de référence (« SURCONSOMMATION » quand elles sont positives) ;
+3. le coût et la consommation sur 7 jours, avec la consommation de chaque jour en histogramme ;
+4. la puissance maximale du mois en cours, de l'année en cours et depuis le début.
+
+Les faces 2 à 4 n'apparaissent qu'avec les capteurs de l'activité du compte (Little Monkey 1.3.0 ou plus récent). Après le choix d'une autre face, la carte revient d'elle-même sur la puissance temps réel au bout de 30 secondes (option `return_seconds`, 0 pour rester sur la face choisie).
+
 Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capteurs HP/HC ou Capteurs Tempo est cochée dans l'intégration, il prend la couleur de la période en cours :
 
 | Période | HC | HP |
@@ -109,6 +118,7 @@ tempo_color_entity: sensor.couleur_tempo_actuelle
 | `tariff_entity` | Non | Entité donnant la période en cours (HC/HP, et éventuellement la couleur Tempo) ; par défaut le capteur Période Tarifaire en Cours du même appareil Little Monkey |
 | `tempo_color_entity` | Non | Entité donnant la couleur Tempo du jour, prioritaire sur `tariff_entity` pour la couleur |
 | `max_power` | Non | Puissance en W de la graduation MAX (12000 par défaut, au moins 10001) |
+| `return_seconds` | Non | Délai en secondes avant le retour sur la face de la puissance temps réel (30 par défaut, 0 pour rester sur la face choisie) |
 | `savings_entity` | Non | Capteur des économies sur 7 jours en %, pour l'aiguille du bas ; par défaut le capteur Économies sur 7 Jours du même appareil Little Monkey |
 | `trend_minutes` | Non | Durée de la courbe du disque central, en minutes (3 par défaut, comme le cadran d'ecojoko ; de 1 à 60) |
 
