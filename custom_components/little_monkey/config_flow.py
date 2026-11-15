@@ -1,11 +1,12 @@
 """Adds config flow for Ecojoko."""
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME, UnitOfTime
 from homeassistant.helpers import selector
@@ -131,6 +132,38 @@ def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> 
         }
     )
 
+async def _async_validate(
+    hass: HomeAssistant,
+    data: Mapping[str, Any],
+    check_gateway: bool = False,
+) -> dict[str, str]:
+    """Try to log in to ecojoko and return the form errors, empty if it worked."""
+    client = LittleMonkeyApiClient(
+        username=data.get(CONF_USERNAME, ""),
+        password=data.get(CONF_PASSWORD, ""),
+        poll_interval=data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
+        use_hchp=data.get(CONF_USE_HCHP_FEATURE, False),
+        use_tempo=data.get(CONF_USE_TEMPO_FEATURE, False),
+        use_temphum=data.get(CONF_USE_TEMPHUM_FEATURE, False),
+        use_prod=data.get(CONF_USE_PROD_FEATURE, False),
+        session=async_create_clientsession(hass),
+    )
+    try:
+        await client.async_get_cookiesdata()
+        if check_gateway:
+            await client.async_get_gatewaydata()
+    except LittleMonkeyApiClientAuthenticationError as exception:
+        LOGGER.warning(exception)
+        return {"base": "auth"}
+    except LittleMonkeyApiClientCommunicationError as exception:
+        LOGGER.error(exception)
+        return {"base": "connection"}
+    except LittleMonkeyApiClientError as exception:
+        LOGGER.exception(exception)
+        return {"base": "unknown"}
+    return {}
+
+
 class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for Ecojoko."""
 
@@ -139,6 +172,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     def __init__(self) -> None:
         """Init EcojokoFlowHandler."""
         self._errors: dict[str, Any] = {}
+        self._reauth_entry: config_entries.ConfigEntry | None = None
 
     async def async_step_user(
         self,
@@ -147,57 +181,68 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
-            try:
-                await self._get_cookies(
-                    username=user_input[CONF_USERNAME],
-                    password=user_input[CONF_PASSWORD],
-                    poll_interval=user_input[POLL_INTERVAL],
-                    use_hchp=user_input[CONF_USE_HCHP_FEATURE],
-                    use_tempo=user_input[CONF_USE_TEMPO_FEATURE],
-                    use_temphum=user_input[CONF_USE_TEMPHUM_FEATURE],
-                    use_prod=user_input[CONF_USE_PROD_FEATURE]
-                )
-            except LittleMonkeyApiClientAuthenticationError as exception:
-                LOGGER.warning(exception)
-                _errors["base"] = "auth"
-            except LittleMonkeyApiClientCommunicationError as exception:
-                LOGGER.error(exception)
-                _errors["base"] = "connection"
-            except LittleMonkeyApiClientError as exception:
-                LOGGER.exception(exception)
-                _errors["base"] = "unknown"
-            else:
+            _errors = await _async_validate(self.hass, user_input)
+            if not _errors:
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME],
                     data=user_input,
-                    options={ CONF_LANG: DEFAULT_LANG }
+                    options={CONF_LANG: user_input.get(CONF_LANG, DEFAULT_LANG)}
                 )
 
         return self.async_show_form(
             step_id="user",
-            data_schema=_get_data_schema(),
+            # Keep what the user typed when the form is shown again
+            data_schema=self.add_suggested_values_to_schema(
+                _get_data_schema(), user_input
+            ),
             errors=_errors,
         )
 
-    async def _get_cookies(self, username: str,
-                           password: str,
-                           poll_interval: int,
-                           use_hchp: bool,
-                           use_temphum: bool,
-                           use_tempo: bool,
-                           use_prod: bool) -> None:
-        client = LittleMonkeyApiClient(
-            username=username,
-            password=password,
-            poll_interval=poll_interval,
-            use_hchp=use_hchp,
-            use_tempo=use_tempo,
-            use_temphum=use_temphum,
-            use_prod=use_prod,
-            session=async_create_clientsession(self.hass),
+    async def async_step_reauth(
+        self,
+        entry_data: Mapping[str, Any],
+    ) -> config_entries.FlowResult:
+        """Handle a flow started because ecojoko rejected the credentials."""
+        self._reauth_entry = self.hass.config_entries.async_get_entry(
+            self.context["entry_id"]
         )
-        await client.async_get_cookiesdata()
+        return await self.async_step_reauth_confirm()
 
+    async def async_step_reauth_confirm(
+        self,
+        user_input: dict | None = None,
+    ) -> config_entries.FlowResult:
+        """Ask for the new password and check it."""
+        entry = self._reauth_entry
+        _errors = {}
+        if user_input is not None:
+            data = {**entry.data, CONF_PASSWORD: user_input[CONF_PASSWORD]}
+            _errors = await _async_validate(self.hass, data)
+            if not _errors:
+                self.hass.config_entries.async_update_entry(entry, data=data)
+                # A loaded entry is reloaded by its update listener
+                if entry.state is not config_entries.ConfigEntryState.LOADED:
+                    self.hass.async_create_task(
+                        self.hass.config_entries.async_reload(entry.entry_id)
+                    )
+                return self.async_abort(reason="reauth_successful")
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_PASSWORD): selector.TextSelector(
+                        selector.TextSelectorConfig(
+                            type=selector.TextSelectorType.PASSWORD
+                        ),
+                    ),
+                }
+            ),
+            description_placeholders={
+                "username": entry.data.get(CONF_USERNAME, "")
+            },
+            errors=_errors,
+        )
 
     @staticmethod
     @callback
@@ -213,73 +258,36 @@ class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize the Ecojoko OptionsFlow."""
         self._config_entry = config_entry
-        self._errors: dict[str, Any] = {}
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> FlowResult:
         """Configure options for Ecojoko."""
-
+        _errors = {}
         if user_input is not None:
-            # Update config entry with data from user input
-            self.hass.config_entries.async_update_entry(
-                entry=self._config_entry,
-                data=user_input,
-                # options={ CONF_LANG: DEFAULT_LANG }
+            # Nothing is saved until ecojoko has accepted the new settings
+            _errors = await _async_validate(
+                self.hass, user_input, check_gateway=True
             )
-
-            client = await self._get_cookies(
-                username=user_input[CONF_USERNAME],
-                password=user_input[CONF_PASSWORD],
-                poll_interval=user_input[POLL_INTERVAL],
-                use_hchp=user_input[CONF_USE_HCHP_FEATURE],
-                use_tempo=user_input[CONF_USE_TEMPO_FEATURE],
-                use_temphum=user_input[CONF_USE_TEMPHUM_FEATURE],
-                use_prod=user_input[CONF_USE_PROD_FEATURE],
-            )
-
-            await self._get_gateway(client)
-
-            # TEST ONLY
-            # await self._get_realtime_conso(client)
-            # await self._get_kwhstat(client)
-
-            return self.async_create_entry(
-                title=self._config_entry.title,
-                data=user_input
-            )
+            if not _errors:
+                options = {CONF_LANG: user_input.get(CONF_LANG, DEFAULT_LANG)}
+                # Data and options are saved together: the entry is reloaded
+                # once, and async_create_entry below changes nothing more
+                self.hass.config_entries.async_update_entry(
+                    entry=self._config_entry,
+                    data=user_input,
+                    options=options,
+                )
+                return self.async_create_entry(
+                    title=self._config_entry.title,
+                    data=options
+                )
 
         return self.async_show_form(
             step_id="init",
-            data_schema=_get_data_schema(config_entry=self._config_entry),
-            errors=self._errors,
+            # Keep what the user typed when the form is shown again
+            data_schema=self.add_suggested_values_to_schema(
+                _get_data_schema(config_entry=self._config_entry), user_input
+            ),
+            errors=_errors,
         )
-
-    async def _get_cookies(self, username: str,
-                           password: str,
-                           poll_interval: int,
-                           use_hchp: bool,
-                           use_tempo: bool,
-                           use_temphum: bool,
-                           use_prod: bool) -> LittleMonkeyApiClient:
-        client = LittleMonkeyApiClient(
-            username=username,
-            password=password,
-            poll_interval=poll_interval,
-            use_hchp=use_hchp,
-            use_tempo=use_tempo,
-            use_temphum=use_temphum,
-            use_prod=use_prod,
-            session=async_create_clientsession(self.hass),
-        )
-        await client.async_get_cookiesdata()
-        return client
-
-    async def _get_gateway(self, client: LittleMonkeyApiClient) -> None:
-        await client.async_get_gatewaydata()
-
-    async def _get_realtime_conso(self, client: LittleMonkeyApiClient) -> None:
-        await client.async_get_realtime_conso()
-
-    async def _get_kwhstat(self, client: LittleMonkeyApiClient) -> None:
-        await client.async_get_kwhstat()

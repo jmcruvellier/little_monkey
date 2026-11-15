@@ -12,7 +12,14 @@
                     "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
                     "use_temphum_feature": "Capteurs d'humidité et de température",
                     "use_prod_feature": "Capteur de production",
-                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)"
+                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)",
+                    "lang": "Langue des noms de capteurs"
+                }
+            },
+            "reauth_confirm": {
+                "description": "ecojoko a refusé les identifiants de {username}. Saisissez le mot de passe actuel de ce compte.",
+                "data": {
+                    "password": "Mot de passe"
                 }
             }
         },
@@ -20,6 +27,9 @@
             "auth": "Nom d'utilisateur/Mot de passe incorrect.",
             "connection": "Impossible de se connecter au serveur.",
             "unknown": "Une erreur inconnue est survenue."
+        },
+        "abort": {
+            "reauth_successful": "Le mot de passe a été mis à jour."
         }
     },
     "options": {
@@ -34,7 +44,8 @@
                     "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
                     "use_temphum_feature": "Capteurs d'humidité et de température",
                     "use_prod_feature": "Capteur de production",
-                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)"
+                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)",
+                    "lang": "Langue des noms de capteurs"
                 }
             }
         },
