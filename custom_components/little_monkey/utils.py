@@ -75,3 +75,9 @@ def round_value(value, digits=2):
     if isinstance(value, bool) or not isinstance(value, int | float):
         return value
     return round(value, digits)
+
+
+def is_weekend_label(label) -> bool:
+    """Return whether an ecojoko pricing band is the weekend one."""
+    normalized = str(label).lower().replace("-", "").replace(" ", "")
+    return "weekend" in normalized

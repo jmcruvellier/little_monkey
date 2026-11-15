@@ -73,6 +73,9 @@
             "hp_grid_consumption": {
                 "name": "HP Grid Consumption"
             },
+            "weekend_grid_consumption": {
+                "name": "Weekend Grid Consumption"
+            },
             "blue_hc_grid_consumption": {
                 "name": "HC Blue Grid Consumption"
             },

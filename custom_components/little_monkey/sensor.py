@@ -65,6 +65,7 @@ SENSORS = (
     # HC/HP grid consumption sensors
     ("hc_grid_consumption", ENERGY, CONF_USE_HCHP_FEATURE),
     ("hp_grid_consumption", ENERGY, CONF_USE_HCHP_FEATURE),
+    ("weekend_grid_consumption", ENERGY, CONF_USE_HCHP_FEATURE),
     # Tempo grid consumption sensors
     ("blue_hc_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
     ("blue_hp_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),

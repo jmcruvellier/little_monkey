@@ -49,6 +49,7 @@ ENABLED = [
     "grid_consumption",
     "hc_grid_consumption",
     "hp_grid_consumption",
+    "weekend_grid_consumption",
     "indoor_temp",
     "outdoor_temp",
     "indoor_hum",

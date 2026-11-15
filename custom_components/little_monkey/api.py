@@ -24,6 +24,7 @@ from .utils import (
     get_value_from_json_array,
     convert_to_float,
     finite_number,
+    is_weekend_label,
     round_value)
 
 TZ = get_paris_timezone()
@@ -91,6 +92,7 @@ class LittleMonkeyApiClient:
         self._kwh = None
         self._kwh_hc_ns = None
         self._kwh_hp_ns = None
+        self._kwh_weekend = None
         self._tempo_hc_blue = None
         self._tempo_hp_blue = None
         self._tempo_hc_white = None
@@ -165,6 +167,11 @@ class LittleMonkeyApiClient:
     def kwh_hp_ns(self) -> float | None:
         """Return the HP consumption."""
         return self._kwh_hp_ns
+
+    @property
+    def kwh_weekend(self) -> float | None:
+        """Return the weekend consumption (HC/HP + Week-end option)."""
+        return self._kwh_weekend
 
     @property
     def tempo_hc_blue(self) -> float | None:
@@ -590,6 +597,7 @@ class LittleMonkeyApiClient:
             self._kwh_prod = None
             self._kwh_hc_ns = None
             self._kwh_hp_ns = None
+            self._kwh_weekend = None
             self._tempo_hc_blue = None
             self._tempo_hp_blue = None
             self._tempo_hc_white = None
@@ -652,13 +660,26 @@ class LittleMonkeyApiClient:
         # 78 bug fix
         elif self._use_hchp is True and 'subconsumption' in data[week_day]:
             # 74 bug fix
+            # Week-end option (e.g. EDF HC + Week-end): "HC Semaine" and
+            # "HP Semaine" on weekdays, a single "Heures Weekend" band on
+            # Saturday and Sunday. Each category is summed, and a category
+            # absent from the day counts as 0 so that HC/HP do not stay
+            # unknown during the weekend.
+            kwh_hc = kwh_hp = kwh_weekend = 0.0
             for item in data[week_day]['subconsumption']:
-                if item['label'] == "Heures Creuses" or \
-                        item['label'].startswith("HC"):
-                    self._kwh_hc_ns = round_value(convert_to_float(item['kwh']))
-                if item['label'] == "Heures Pleines" or \
-                        item['label'].startswith("HP"):
-                    self._kwh_hp_ns = round_value(convert_to_float(item['kwh']))
+                label = str(item.get('label', ''))
+                kwh = convert_to_float(item.get('kwh'))
+                if is_weekend_label(label):
+                    kwh_weekend += kwh
+                elif label == "Heures Creuses" or label.startswith("HC"):
+                    kwh_hc += kwh
+                elif label == "Heures Pleines" or label.startswith("HP"):
+                    kwh_hp += kwh
+                else:
+                    LOGGER.debug("Unhandled pricing band: %s", label)
+            self._kwh_hc_ns = round_value(kwh_hc)
+            self._kwh_hp_ns = round_value(kwh_hp)
+            self._kwh_weekend = round_value(kwh_weekend)
 
     async def _cookiesapi_wrapper(
         self,

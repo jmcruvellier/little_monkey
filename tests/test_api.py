@@ -874,3 +874,43 @@ def test_round_value_leaves_other_values_alone(utils):
     assert utils.round_value("1.239") == "1.239"
     assert utils.round_value(True) is True
     assert utils.round_value(1.239) == 1.24
+
+
+# --- Week-end option (EDF HC + Week-end)
+
+
+def test_hchp_weekend_option_on_a_weekday(api):
+    """On a weekday, the Semaine bands feed HC/HP and the weekend counts 0."""
+    payload = powerstat(kwh=24.71, subconsumption=[
+        {"id": 8, "label": "HP Semaine", "kwh": 6.43},
+        {"id": 9, "label": "HC Semaine", "kwh": 18.29},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert (client.kwh_hc_ns, client.kwh_hp_ns, client.kwh_weekend) == (
+        18.29, 6.43, 0)
+
+
+def test_hchp_weekend_option_on_a_weekend_day(api):
+    """On Saturday or Sunday, the single weekend band feeds its own sensor."""
+    payload = powerstat(kwh=26.19, subconsumption=[
+        {"id": 13, "label": "Heures Weekend", "kwh": 26.19},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert (client.kwh_hc_ns, client.kwh_hp_ns, client.kwh_weekend) == (
+        0, 0, 26.19)
+
+
+@pytest.mark.parametrize(
+    "label", ["Heures Weekend", "Heures Week-end", "HEURES WEEK END"])
+def test_weekend_label_variants(api, label):
+    """The weekend band is recognized whatever its spelling."""
+    payload = powerstat(subconsumption=[{"label": label, "kwh": 3}])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert client.kwh_weekend == 3
+    assert client.kwh_hc_ns == 0

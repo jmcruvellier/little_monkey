@@ -73,6 +73,9 @@
             "hp_grid_consumption": {
                 "name": "Consommation HP Réseau"
             },
+            "weekend_grid_consumption": {
+                "name": "Consommation Week-end Réseau"
+            },
             "blue_hc_grid_consumption": {
                 "name": "Consommation HC Bleu Réseau"
             },

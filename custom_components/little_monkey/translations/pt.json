@@ -73,6 +73,9 @@
             "hp_grid_consumption": {
                 "name": "Consumo da Rede em Ponta"
             },
+            "weekend_grid_consumption": {
+                "name": "Consumo Fim de Semana Rede"
+            },
             "blue_hc_grid_consumption": {
                 "name": "Consumo da Rede Azul em Vazio"
             },
