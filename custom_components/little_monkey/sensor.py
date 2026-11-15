@@ -5,7 +5,14 @@ from homeassistant.components.sensor import (
     SensorStateClass,
     SensorDeviceClass,
 )
-from homeassistant.const import UnitOfPower, UnitOfEnergy, UnitOfTemperature, PERCENTAGE, CONF_NAME
+from homeassistant.const import (
+    UnitOfApparentPower,
+    UnitOfPower,
+    UnitOfEnergy,
+    UnitOfTemperature,
+    PERCENTAGE,
+    CONF_NAME,
+)
 
 from .entity import EcojokoEntity, EcojokoSensor
 from .const import (
@@ -21,6 +28,12 @@ POWER = (
     SensorDeviceClass.POWER,
     UnitOfPower.WATT,
     "mdi:flash",
+)
+APPARENT_POWER = (
+    SensorStateClass.MEASUREMENT,
+    SensorDeviceClass.APPARENT_POWER,
+    UnitOfApparentPower.VOLT_AMPERE,
+    "mdi:flash-outline",
 )
 ENERGY = (
     SensorStateClass.TOTAL_INCREASING,
@@ -45,6 +58,8 @@ HUMIDITY = (
 SENSORS = (
     # Real time sensor
     ("realtime_consumption", POWER, None),
+    # Apparent power sensor
+    ("realtime_apparent_power", APPARENT_POWER, None),
     # Grid consumption sensor
     ("grid_consumption", ENERGY, None),
     # HC/HP grid consumption sensors
@@ -66,6 +81,10 @@ SENSORS = (
     ("outdoor_hum", HUMIDITY, CONF_USE_TEMPHUM_FEATURE),
 )
 
+# Sensors created only when ecojoko gives their value: it depends on the
+# installation of the user, not on an option
+IF_PROVIDED = {"realtime_apparent_power"}
+
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the custom component sensors."""
@@ -78,6 +97,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     # Create child entities and link them to the main device
     for key, kind, option in SENSORS:
+        if key in IF_PROVIDED and coordinator.data.get(key) is None:
+            continue
         if option is None or config_entry.data.get(option) is True:
             main_device.add_child_entity(EcojokoSensor(main_device, key, *kind))
 

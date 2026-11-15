@@ -613,3 +613,47 @@ async def test_options_flow_validates_before_saving(hass, fake_api):
     assert entry.options == {}
     assert entry.state is ConfigEntryState.LOADED
     assert fake_api.data_calls == calls_before + 1
+
+
+def apparent_power_entity(hass, entry):
+    """Return the entity id of the apparent power sensor of an entry, if any."""
+    return er.async_get(hass).async_get_entity_id(
+        "sensor", DOMAIN, f"{entry.entry_id}_realtime_apparent_power")
+
+
+async def test_apparent_power_sensor_needs_the_value(hass, fake_api):
+    """The apparent power sensor is not created when ecojoko does not give it."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert apparent_power_entity(hass, entry) is None
+
+
+async def test_apparent_power_sensor(hass, fake_api):
+    """The apparent power sensor is created when ecojoko gives the value."""
+    fake_api.values["_realtime_va"] = -640
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    state = hass.states.get(apparent_power_entity(hass, entry))
+    assert state.state == "-640"
+    assert state.attributes["unit_of_measurement"] == "VA"
+    assert state.attributes["device_class"] == "apparent_power"
+
+
+async def test_apparent_power_sensor_of_a_patched_1_2_7_is_kept(hass, fake_api):
+    """The sensor added by hand to a 1.2.7 installation keeps its entity."""
+    fake_api.values["_realtime_va"] = 640
+    entry, device, _entity_ids = add_1_2_7_install(hass)
+    patched = er.async_get(hass).async_get_or_create(
+        "sensor",
+        DOMAIN,
+        "little_monkey_Ecojoko_realtime_apparent_power",
+        config_entry=entry,
+        device_id=device.id,
+        suggested_object_id="ecojoko_puissance_apparente_linky",
+    ).entity_id
+
+    assert await setup_entry(hass, entry)
+
+    assert apparent_power_entity(hass, entry) == patched
+    assert hass.states.get(patched).state == "640"

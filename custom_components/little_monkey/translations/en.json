@@ -61,6 +61,9 @@
             "realtime_consumption": {
                 "name": "Real-Time Consumption"
             },
+            "realtime_apparent_power": {
+                "name": "Apparent Power"
+            },
             "grid_consumption": {
                 "name": "Grid Consumption"
             },

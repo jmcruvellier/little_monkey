@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import math
 from zoneinfo import ZoneInfo
 
 def account_unique_id(username):
@@ -54,6 +55,16 @@ def get_value_from_json_array(json_array, item_key, item_value, value_key):
 def convert_to_float(value):
     """Convert to float."""
     return float(value) if value is not None else 0
+
+def finite_number(value):
+    """Return a value as a rounded number, or None when it is not a number."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if isinstance(value, bool) or not math.isfinite(number):
+        return None
+    return round_value(value if isinstance(value, int) else number)
 
 def round_value(value, digits=2):
     """Round a number, and return anything else as it is.
