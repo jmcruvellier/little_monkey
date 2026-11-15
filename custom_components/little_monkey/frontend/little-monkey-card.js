@@ -55,7 +55,11 @@ const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 const R_BEZEL = 98;
 const R_LABELS = 89;
 const R_TRACK = 79;
-const R_DISC = 60;
+const R_DISC = 64;
+// Legends WATTS and %, halfway between the disc and the inner edge of the arcs
+const R_LEGEND = (R_DISC + R_TRACK - 2.5) / 2;
+// End of the needle, just beyond the arc
+const R_NEEDLE = R_TRACK + 4.5;
 
 // Colors of the central disc
 const DEFAULT_COLOR = "#0b6aae";
@@ -78,16 +82,18 @@ const HCHP_KEYS = ["hc_grid_consumption", "hp_grid_consumption"];
 const DEFAULT_TREND_MINUTES = 10;
 const TREND_POINTS = 40;
 // Box of the trend in the disc
-const TREND_BOX = { left: 72, top: 117, width: 56, height: 14 };
+const TREND_BOX = { left: 70, top: 117, width: 60, height: 15 };
 
-// Power zones of the upper arc, from the lightest to the darkest: limits in
-// W and share of the text color mixed into the card background
+// Greys of the ecojoko dial, from the lightest to the darkest: the same in
+// the light and dark themes, they stay visible on both
+const GREYS = ["#c4c1c1", "#aaa7a7", "#8e8b8b", "#6f6c6c"];
+// Power zones of the upper arc: limits in W, and their greys
 const POWER_ZONES = [100, 1000, 5000];
-const POWER_ZONE_SHADES = [30, 45, 62, 80];
+const POWER_ZONE_COLORS = GREYS;
 // Segments of the lower arc, from +20 % to -20 % (clockwise)
 const LOWER_COLORS = [
-  "color-mix(in srgb, var(--secondary-text-color, #727272) 75%, var(--lm-background))",
-  "color-mix(in srgb, var(--secondary-text-color, #727272) 45%, var(--lm-background))",
+  GREYS[3],
+  GREYS[2],
   "#5cbf8f",
   "#1ed98a",
 ];
@@ -366,19 +372,16 @@ class LittleMonkeyCard extends HTMLElement {
       const [x, y] = point(R_LABELS, angle).split(" ");
       return `<text x="${x}" y="${y}" transform="rotate(${angle - 180} ${x} ${y})">${label}</text>`;
     }).join("");
-    const [wattsX, wattsY] = point(R_TRACK - 8, 0).split(" ");
+    const [wattsX, wattsY] = point(R_LEGEND, 0).split(" ");
     // Zones of the upper arc, and quarters of the lower arc
     const maxPower = Number(this._config.max_power) || DEFAULT_MAX_POWER;
     const powerZoneAngles = [
       POWER_START, ...POWER_ZONES.map((power) => powerAngle(power, maxPower)), POWER_END,
     ];
-    const powerZoneColors = POWER_ZONE_SHADES.map(
-      (shade) => `color-mix(in srgb, var(--secondary-text-color, #727272) ${shade}%, var(--lm-background))`,
-    );
     const lowerAngles = [0, 1, 2, 3, 4].map(
       (quarter) => LOWER_START + ((LOWER_END - LOWER_START) * quarter) / 4,
     );
-    const [percentX, percentY] = point(R_TRACK - 8, 180).split(" ");
+    const [percentX, percentY] = point(R_LEGEND, 180).split(" ");
 
     if (!this.shadowRoot) {
       this.attachShadow({ mode: "open" });
@@ -392,7 +395,7 @@ class LittleMonkeyCard extends HTMLElement {
         :host { --lm-background: var(--ha-card-background, var(--card-background-color, #fff)); }
         .track { fill: none; stroke-width: 5; }
         .labels text { fill: var(--secondary-text-color, #727272); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
-        .unit { fill: var(--secondary-text-color, #727272); font-size: 5px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
+        .unit { fill: var(--secondary-text-color, #727272); font-size: 6px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
         .needle { transition: transform 0.8s ease-out; }
         .needle line { stroke-linecap: round; transition: stroke 0.5s; }
         .needle-body { stroke-width: 6; }
@@ -415,19 +418,19 @@ class LittleMonkeyCard extends HTMLElement {
           </defs>
           <circle class="bezel" cx="100" cy="100" r="${R_BEZEL}" />
           <circle class="bezel-inner" cx="100" cy="100" r="${R_BEZEL - 4}" />
-          ${segmentedArc(R_TRACK, powerZoneAngles, powerZoneColors, "track")}
+          ${segmentedArc(R_TRACK, powerZoneAngles, POWER_ZONE_COLORS, "track")}
           ${segmentedArc(R_TRACK, lowerAngles, LOWER_COLORS, "track")}
           <g class="labels">${ticks}${lowerTicks}</g>
           <text class="unit" x="${wattsX}" y="${wattsY}">${text.watts}</text>
           <text class="unit" x="${percentX}" y="${percentY}">%</text>
           <g class="needle">
-            <line class="needle-outline hidden" x1="100" y1="${100 - R_TRACK - 8}" x2="100" y2="${100 - R_DISC}" />
-            <line class="needle-body" x1="100" y1="${100 - R_TRACK - 8}" x2="100" y2="${100 - R_DISC}" stroke="${DEFAULT_COLOR}" />
+            <line class="needle-outline hidden" x1="100" y1="${100 - R_NEEDLE}" x2="100" y2="${100 - R_DISC}" />
+            <line class="needle-body" x1="100" y1="${100 - R_NEEDLE}" x2="100" y2="${100 - R_DISC}" stroke="${DEFAULT_COLOR}" />
           </g>
           <circle class="disc" cx="100" cy="100" r="${R_DISC}" fill="${DEFAULT_COLOR}" />
           <g class="content">
-            <text class="title" x="100" y="66">${text.title[0]}</text>
-            <text class="title" x="100" y="76.5">${text.title[1]}</text>
+            <text class="title" x="100" y="63">${text.title[0]}</text>
+            <text class="title" x="100" y="74">${text.title[1]}</text>
             <text class="value" x="100" y="96"></text>
             <text class="apparent" x="100" y="110"></text>
             <text class="message hidden" x="100" y="96"></text>
