@@ -255,13 +255,15 @@ export function trendPath(samples, now, period, box = TREND_BOX, points = TREND_
   if (values.length < 2) {
     return "";
   }
-  const numbers = values.map((item) => item.value);
-  const low = Math.min(...numbers);
-  const range = Math.max(...numbers) - low;
+  // The scale ends at the 95th percentile: the few points of a spike are
+  // drawn at the top of the box instead of flattening the rest of the curve
+  const numbers = values.map((item) => item.value).sort((a, b) => a - b);
+  const low = numbers[0];
+  const range = numbers[Math.floor(0.95 * (numbers.length - 1))] - low;
   const coordinates = values.map((item) => ({
     x: box.left + (box.width * item.point) / (points - 1),
     y: range > 0
-      ? box.top + box.height - (box.height * (item.value - low)) / range
+      ? box.top + box.height - box.height * Math.min((item.value - low) / range, 1)
       : box.top + box.height / 2,
   }));
   // Catmull-Rom spline through the points, drawn as cubic Bezier curves

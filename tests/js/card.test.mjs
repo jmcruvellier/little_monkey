@@ -104,11 +104,10 @@ test("a short spike does not flatten the trend", () => {
   ];
   const path = card.trendPath(samples, now, 600_000, box, 40);
   const ys = [...path.matchAll(/ (-?[\d.]+) (-?[\d.]+)(?= C|$)/g)].map((m) => Number(m[2]));
-  // The step from 400 to 500 W still uses a good part of the height
-  assert.ok(Math.max(...ys) - Math.min(...ys) === 10);
-  const before = ys[0];
-  const after = ys[ys.length - 1];
-  assert.ok(before - after > 3, `${before} -> ${after}`);
+  // The step from 400 to 500 W uses the whole height, the spike is clipped
+  assert.equal(ys[0], 10);
+  assert.equal(ys[ys.length - 1], 0);
+  assert.ok(ys.every((y) => y >= 0 && y <= 10), path);
 });
 
 test("no trend without two known points", () => {
