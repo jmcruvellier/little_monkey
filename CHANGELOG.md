@@ -20,6 +20,7 @@
 - Au changement de jour, un capteur d'énergie dont ecojoko ne donne pas encore la valeur passe à « inconnu » au lieu de garder la valeur de la veille
 - La connexion à ecojoko envoie désormais les identifiants par une requête POST, au lieu d'une requête GET avec corps
 - Chaque compte ecojoko utilise sa propre session HTTP, au lieu de la session partagée de Home Assistant : ses cookies ne sont plus mélangés avec ceux d'un autre compte
+- Les valeurs reçues d'ecojoko sont arrondies à deux décimales : une température comme 19.900000000000002 devient 19.9
 - Suppression de deux dépendances non déclarées (`async_timeout`, `pytz`) au profit de la bibliothèque standard de Python
 
 ## 1.2.7

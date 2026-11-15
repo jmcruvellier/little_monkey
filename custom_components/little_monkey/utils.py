@@ -54,3 +54,13 @@ def get_value_from_json_array(json_array, item_key, item_value, value_key):
 def convert_to_float(value):
     """Convert to float."""
     return float(value) if value is not None else 0
+
+def round_value(value, digits=2):
+    """Round a number, and return anything else as it is.
+
+    ecojoko sometimes returns values such as 19.900000000000002, and a sum
+    of decimal numbers gives the same kind of result.
+    """
+    if isinstance(value, bool) or not isinstance(value, int | float):
+        return value
+    return round(value, digits)
