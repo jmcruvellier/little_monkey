@@ -285,12 +285,12 @@ async def test_unavailable_when_api_fails_then_recovers(hass, fake_api):
         assert hass.states.get(REALTIME).state == "512"
         assert coordinator.last_update_success
 
-        clock["now"] += 59
+        clock["now"] += 119
         await coordinator.async_refresh()
         await hass.async_block_till_done()
         assert hass.states.get(REALTIME).state == "512"
 
-        # After a minute the sensors become unavailable
+        # After two minutes the sensors become unavailable
         clock["now"] += 1
         await coordinator.async_refresh()
         await hass.async_block_till_done()
