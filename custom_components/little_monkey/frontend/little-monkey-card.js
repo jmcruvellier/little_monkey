@@ -269,7 +269,7 @@ class LittleMonkeyCard extends HTMLElement {
         .bezel-inner { fill: none; stroke: var(--divider-color, #e0e0e0); stroke-width: 0.6; }
         .track { fill: none; stroke: var(--secondary-text-color, #9e9e9e); stroke-opacity: 0.45; stroke-width: 5; stroke-linecap: round; }
         .labels text { fill: var(--secondary-text-color, #727272); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
-        .unit { fill: var(--secondary-text-color, #727272); font-size: 4px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
+        .unit { fill: var(--secondary-text-color, #727272); font-size: 5px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
         .saving { fill: none; stroke: url(#lm-saving); stroke-width: 5; stroke-linecap: round; }
         .needle { stroke: #3ea6e0; stroke-width: 5; stroke-linecap: round; transition: transform 0.8s ease-out; }
         .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; }
