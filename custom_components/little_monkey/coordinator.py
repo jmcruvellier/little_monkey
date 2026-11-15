@@ -17,6 +17,7 @@ from .api import (
     LittleMonkeyApiClientError,
 )
 from .const import (
+    DEFAULT_POLL_INTERVAL,
     DOMAIN,
     POLL_INTERVAL,
     LOGGER
@@ -45,16 +46,15 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             hass=hass,
             logger=LOGGER,
             name=DOMAIN,
-            update_method=self._async_update_data,
             update_interval=timedelta(
-                seconds=int(entry.data.get(POLL_INTERVAL))),
+                seconds=int(entry.data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL))),
         )
 
     async def _async_update_data(self):
         """Update data via library."""
         try:
             await self.client.async_get_data()
-            data = {
+            return {
                 "gateway_firmware_version": self.client.gateway_firmware_version,
                 "realtime_consumption": self.client.realtime_conso,
                 "grid_consumption": self.client.kwh,
@@ -72,14 +72,9 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
                 "indoor_hum": self.client.indoor_hum,
                 "outdoor_hum": self.client.outdoor_hum,
             }
-            self.data = data
-            return data
         except LittleMonkeyApiClientAuthenticationError as exception:
-            # LOGGER.error("COORDINATOR API client authentication error: %s", exception)
             raise ConfigEntryAuthFailed(exception) from exception
         except LittleMonkeyApiClientError as exception:
-            # LOGGER.error("COORDINATOR API client error: %s", exception)
             raise UpdateFailed(exception) from exception
         except Exception as exception:  # pylint: disable=broad-except
-            # LOGGER.error("COORDINATOR other error: %s", exception)
             raise UpdateFailed(exception) from exception

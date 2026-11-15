@@ -3,14 +3,13 @@ from logging import Logger, getLogger
 
 LOGGER: Logger = getLogger(__package__)
 
-NAME = "Little Monkey"
 DOMAIN = "little_monkey"
 MANUFACTURER = "Jean-Marc Cruvellier"
 MODEL = "Ecojoko"
 VERSION = "1.2.8"
-ATTRIBUTION = "Data provided by https://service.ecojoko.com//"
+ATTRIBUTION = "Data provided by https://service.ecojoko.com/"
 POLL_INTERVAL = "poll_interval"
-DEFAULT_POLL_INTERVAL = "5"
+DEFAULT_POLL_INTERVAL = 5
 
 PLATFORMS = ['sensor']
 CONF_USE_HCHP_FEATURE = "use_hchp_feature"

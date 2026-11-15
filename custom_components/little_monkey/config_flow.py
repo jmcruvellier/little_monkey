@@ -152,7 +152,6 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         """Init EcojokoFlowHandler."""
-        self._errors: dict[str, Any] = {}
         self._reauth_entry: config_entries.ConfigEntry | None = None
 
     async def async_step_user(
@@ -234,7 +233,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     def async_get_options_flow(
         config_entry: config_entries.ConfigEntry,
     ) -> config_entries.OptionsFlow:
-        """Get the options flow for Met."""
+        """Get the options flow for Ecojoko."""
         return EcojokoOptionsFlowHandler(config_entry)
 
 class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
