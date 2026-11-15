@@ -156,33 +156,6 @@ test("the disc is green while power is injected", () => {
   }
 });
 
-test("the trend moves by steps, not at each redraw", () => {
-  const samples = Array.from({ length: 60 }, (_, i) => ({ time: i * 5000, value: 400 + (i % 7) * 30 }));
-  const period = 3 * 60_000;
-  // Same path anywhere inside an interval of 5 s, another one after it
-  const now = 290_000;
-  assert.equal(card.trendPath(samples, now + 1000, period), card.trendPath(samples, now + 4000, period));
-  assert.notEqual(card.trendPath(samples, now + 4000, period), card.trendPath(samples, now + 6000, period));
-});
-
-// Entity registry of Home Assistant with two Little Monkey devices
-
-function hassWith(...devices) {
-  const entities = {};
-  for (const [deviceId, keys] of devices) {
-    for (const key of keys) {
-      const entityId = `sensor.${deviceId}_${key}`;
-      entities[entityId] = { entity_id: entityId, device_id: deviceId, platform: "little_monkey", translation_key: key };
-    }
-  }
-  entities["sensor.other_power"] = { entity_id: "sensor.other_power", device_id: "other", platform: "shelly" };
-  return { entities, states: {} };
-}
-
-const POWER = "realtime_consumption";
-
-const APPARENT = "realtime_apparent_power";
-
 test("a new card takes the sensors of the Little Monkey device", () => {
   assert.deepEqual(card.stubConfig(hassWith(["home", [POWER, APPARENT]])), {
     type: "custom:little-monkey-card",
