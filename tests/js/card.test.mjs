@@ -156,6 +156,24 @@ test("the disc is green while power is injected", () => {
   }
 });
 
+// Entity registry of Home Assistant with two Little Monkey devices
+
+function hassWith(...devices) {
+  const entities = {};
+  for (const [deviceId, keys] of devices) {
+    for (const key of keys) {
+      const entityId = `sensor.${deviceId}_${key}`;
+      entities[entityId] = { entity_id: entityId, device_id: deviceId, platform: "little_monkey", translation_key: key };
+    }
+  }
+  entities["sensor.other_power"] = { entity_id: "sensor.other_power", device_id: "other", platform: "shelly" };
+  return { entities, states: {} };
+}
+
+const POWER = "realtime_consumption";
+
+const APPARENT = "realtime_apparent_power";
+
 test("a new card takes the sensors of the Little Monkey device", () => {
   assert.deepEqual(card.stubConfig(hassWith(["home", [POWER, APPARENT]])), {
     type: "custom:little-monkey-card",
