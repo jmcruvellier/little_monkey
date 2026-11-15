@@ -229,6 +229,35 @@ def test_diagnostics_hold_no_secret(api):
         assert secret not in text
 
 
+def test_diagnostics_show_the_response_headers(api):
+    """The headers of the last responses tell whether a proxy cached them."""
+    answer = Response(payload={"real_time": {"value": 512}})
+    answer.headers.update({
+        "Age": "540",
+        "X-Cache": "HIT",
+        "Set-Cookie": "session=abc; Path=/",
+    })
+    session = Session(realtime_conso=answer, powerstat=Response(status=503))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    responses = client.diagnostics()["last_responses"]
+    assert set(responses) == {"Cookies", "Gateway", "realtime_conso", "powerstat (w)"}
+    realtime_conso = responses["realtime_conso"]
+    assert realtime_conso["status"] == 200
+    assert realtime_conso["headers"] == {
+        "Content-Type": "application/json",
+        "Age": "540",
+        "X-Cache": "HIT",
+    }
+    assert realtime_conso["seconds_ago"] >= 0
+    # A response that is an error is recorded as well
+    assert responses["powerstat (w)"]["status"] == 503
+    # Neither the session cookie nor the URL, which holds the device ids
+    text = repr(responses)
+    for secret in ("abc", "gw-1", "http"):
+        assert secret not in text
+
+
 # --- Login errors
 
 
