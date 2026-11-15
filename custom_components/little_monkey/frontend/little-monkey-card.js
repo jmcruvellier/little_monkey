@@ -32,6 +32,7 @@ const TRANSLATIONS = {
       tempo_color_entity: "Tempo color of the day (optional)",
       max_power: "Power of the MAX graduation",
       trend_minutes: "Duration of the curve (3 min by default)",
+      savings_entity: "Savings over 7 days (optional)",
       tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. By default, the Current Tariff Period sensor of Little Monkey.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
     },
@@ -52,6 +53,7 @@ const TRANSLATIONS = {
       tempo_color_entity: "Couleur Tempo du jour (facultatif)",
       max_power: "Puissance de la graduation MAX",
       trend_minutes: "Durée de la courbe (3 min par défaut)",
+      savings_entity: "Économies sur 7 jours (facultatif)",
       tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Par défaut, le capteur Période Tarifaire en Cours de Little Monkey.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
     },
@@ -74,6 +76,9 @@ const DEFAULT_MAX_POWER = 12000;
 // Lower arc, decorative until the integration provides its value
 const LOWER_START = 125; // +20 %
 const LOWER_END = 235; // -20 %
+const LOWER_RANGE = 20;
+// Needle of the savings, light blue like on the ecojoko dial
+const SAVINGS_COLOR = "#6dcfd9";
 const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 
 // Radii, in a 200 x 200 view box centered on (100, 100)
@@ -175,6 +180,18 @@ export function powerAngle(power, maxPower = DEFAULT_MAX_POWER) {
     ? (value - low) / (high - low)
     : Math.log(value / low) / Math.log(high / low);
   return POWER_START + step * (index + ratio);
+}
+
+/**
+ * Return the clock angle of the savings needle on the lower arc.
+ *
+ * savings: gap in % to the reference consumption, negative for a saving,
+ * drawn on the green side; beyond 20 %, the needle stays at the end.
+ */
+export function savingsAngle(savings) {
+  const value = Math.min(Math.max(savings, -LOWER_RANGE), LOWER_RANGE);
+  const middle = (LOWER_START + LOWER_END) / 2;
+  return middle - (value * (LOWER_END - LOWER_START)) / (2 * LOWER_RANGE);
 }
 
 /** Return the words of a state: "HC Bleu" gives ["hc", "bleu"]. */
@@ -393,6 +410,7 @@ function findEntity(hass, translationKey) {
 const AUTOMATIC = {
   apparent_power_entity: "realtime_apparent_power",
   tariff_entity: "current_tariff_period",
+  savings_entity: "savings_7_days",
 };
 
 /**
@@ -466,6 +484,10 @@ export function editorSchema(hass, config) {
       selector: { entity: { filter: { domain: ["sensor", "input_select", "select"] } } },
     });
   }
+  schema.push({
+    name: "savings_entity",
+    selector: { entity: { filter: { domain: "sensor" } } },
+  });
   schema.push({
     name: "max_power",
     selector: { number: { min: 10001, max: 100000, step: 1, mode: "box", unit_of_measurement: "W" } },
@@ -561,6 +583,8 @@ class LittleMonkeyCard extends HTMLElement {
         .needle line { stroke-linecap: round; transition: stroke 0.5s; }
         .needle-body { stroke-width: 6; }
         .needle-outline { stroke-width: 7.4; stroke: #9e9e9e; }
+        .savings-needle { transition: transform 0.8s ease-out; }
+        .savings-needle line { stroke-linecap: round; stroke-width: 6; }
         .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; filter: url(#lm-shadow); }
         .content text { text-anchor: middle; dominant-baseline: central; }
         .title { font-size: 8.5px; font-weight: 400; letter-spacing: 0.2px; }
@@ -585,6 +609,9 @@ class LittleMonkeyCard extends HTMLElement {
           <g class="labels">${ticks}${lowerTicks}</g>
           <text class="unit" x="${wattsX}" y="${wattsY}">${text.watts}</text>
           <text class="unit" x="${percentX}" y="${percentY}">%</text>
+          <g class="savings-needle hidden">
+            <line x1="100" y1="${100 - R_NEEDLE}" x2="100" y2="${100 - R_DISC}" stroke="${SAVINGS_COLOR}" />
+          </g>
           <g class="needle">
             <line class="needle-outline hidden" x1="100" y1="${100 - R_NEEDLE}" x2="100" y2="${100 - R_DISC}" />
             <line class="needle-body" x1="100" y1="${100 - R_NEEDLE}" x2="100" y2="${100 - R_DISC}" stroke="${DEFAULT_COLOR}" />
@@ -604,6 +631,7 @@ class LittleMonkeyCard extends HTMLElement {
     const root = this.shadowRoot;
     this._elements = {
       needle: root.querySelector(".needle"),
+      savingsNeedle: root.querySelector(".savings-needle"),
       needleBody: root.querySelector(".needle-body"),
       needleOutline: root.querySelector(".needle-outline"),
       disc: root.querySelector(".disc"),
@@ -677,6 +705,14 @@ class LittleMonkeyCard extends HTMLElement {
       const angle = powerAngle(power, Number(config.max_power) || DEFAULT_MAX_POWER);
       el.needle.style.transformOrigin = "100px 100px";
       el.needle.style.transform = `rotate(${angle}deg)`;
+    }
+
+    // Savings over 7 days on the lower arc, by default the sensor of the device
+    const savings = numericState(hass, config.savings_entity || sensors.savings_7_days);
+    el.savingsNeedle.classList.toggle("hidden", savings === null);
+    if (savings !== null) {
+      el.savingsNeedle.style.transformOrigin = "100px 100px";
+      el.savingsNeedle.style.transform = `rotate(${savingsAngle(savings)}deg)`;
     }
 
     this._updateTrend(power);
