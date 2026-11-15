@@ -91,7 +91,7 @@ const TREND_POINT_PERIOD = 5000;
 const TREND_MIN_POINTS = 12;
 const TREND_MAX_POINTS = 40;
 // Box of the trend in the disc
-const TREND_BOX = { left: 70, top: 119, width: 60, height: 12 };
+const TREND_BOX = { left: 70, top: 116, width: 60, height: 16 };
 
 // Greys of the ecojoko dial, from the lightest to the darkest: the same in
 // the light and dark themes, they stay visible on both
@@ -254,8 +254,11 @@ export function discColor(mode, tariff) {
  * flattening the curve. Returns an empty path with less than two points.
  */
 export function trendPath(samples, now, period, box = TREND_BOX, points = trendPoints(period)) {
-  const start = now - period;
+  // Intervals on fixed multiples of their length, the last one complete: the
+  // curve moves by steps when a new interval ends, like the ecojoko dial,
+  // instead of changing shape at each redraw
   const step = period / points;
+  const start = Math.floor(now / step) * step - period;
   const values = [];
   let index = 0;
   let current = null;
