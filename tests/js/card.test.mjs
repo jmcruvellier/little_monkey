@@ -143,3 +143,15 @@ test("the trend moves by steps, not at each redraw", () => {
   assert.equal(card.trendPath(samples, now + 1000, period), card.trendPath(samples, now + 4000, period));
   assert.notEqual(card.trendPath(samples, now + 4000, period), card.trendPath(samples, now + 6000, period));
 });
+
+test("the disc is green while power is injected", () => {
+  for (const [mode, tariff] of [
+    [null, { period: null, color: null }],
+    ["hchp", { period: "hc", color: null }],
+    ["tempo", { period: "hp", color: "red" }],
+  ]) {
+    assert.equal(card.discColor(mode, tariff, -350), "#11AF00");
+    assert.notEqual(card.discColor(mode, tariff, 350), "#11AF00");
+    assert.notEqual(card.discColor(mode, tariff, 0), "#11AF00");
+  }
+});
