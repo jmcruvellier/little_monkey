@@ -1,0 +1,4 @@
+# Packages needed to also run the tests of tests/ha inside a Home Assistant core.
+# pytest-homeassistant-custom-component installs the matching Home Assistant.
+-r requirements_test.txt
+pytest-homeassistant-custom-component

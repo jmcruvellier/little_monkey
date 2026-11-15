@@ -1,6 +1,7 @@
 # Packages needed to lint and test the integration (no Home Assistant required)
 aiohttp>=3.9.0
 pytest>=8.0.0
+pytest-asyncio>=0.23.0
 ruff==0.11.2
 # Time zone database, missing from Python on Windows
 tzdata>=2024.1
