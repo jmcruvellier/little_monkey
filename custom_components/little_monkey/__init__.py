@@ -8,10 +8,16 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
+from homeassistant.helpers.typing import ConfigType
 
 from .api import LittleMonkeyApiClient
+from .card import async_register_card
 from .const import (
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
@@ -29,6 +35,15 @@ from .utils import account_unique_id
 
 # Version of the config entries, see EcojokoFlowHandler.VERSION
 ENTRY_VERSION = 2
+
+# Configured from the user interface only
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the integration, once for all its entries."""
+    await async_register_card(hass)
+    return True
 
 
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry

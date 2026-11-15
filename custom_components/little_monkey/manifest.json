@@ -1,13 +1,17 @@
 {
   "domain": "little_monkey",
   "name": "Little Monkey",
+  "after_dependencies": [
+    "frontend",
+    "http"
+  ],
   "codeowners": [
     "@jmcruvellier"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/jmcruvellier/little_monkey/blob/v1.2.8/README.md",
+  "documentation": "https://github.com/jmcruvellier/little_monkey/blob/v1.3.0/README.md",
   "integration_type": "device",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jmcruvellier/little_monkey/issues",
-  "version": "1.2.8"
+  "version": "1.3.0"
 }

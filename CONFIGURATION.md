@@ -67,3 +67,17 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 4. Voici un exemple de tous les capteurs créés:
 
 ![Etape 3](/custom_components/little_monkey/res/config_step_03.png)
+
+## Carte du tableau de bord
+
+Depuis la version 1.3.0, l'intégration fournit la carte « Little Monkey ». Elle est chargée automatiquement par Home Assistant : il n'y a pas de ressource Lovelace à ajouter, ni de dépôt HACS supplémentaire à installer. Elle nécessite Home Assistant 2024.7 ou plus récent.
+
+Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"), ou utiliser la configuration YAML suivante, en remplaçant l'entité par votre capteur Consommation Temps Réel:
+
+```yaml
+type: custom:little-monkey-card
+entity: sensor.ecojoko_consommation_temps_reel
+```
+
+> [!TIP]
+> Après une mise à jour de l'intégration, si la carte n'apparaît pas ou n'a pas changé, actualisez la page en vidant le cache du navigateur (Ctrl+F5), et sur l'application mobile videz le cache du frontend depuis les paramètres de l'application.

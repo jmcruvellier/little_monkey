@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+- Nouvelle carte « Little Monkey » pour les tableaux de bord, fournie par l'intégration elle-même : aucune ressource Lovelace à ajouter, elle est chargée automatiquement et suit toujours la version de l'intégration. Cette première étape affiche la puissance en temps réel
+- Version minimale de Home Assistant relevée à 2024.7.0 (au lieu de 2024.6.0) : la carte est servie avec la fonction de Home Assistant prévue à cet effet depuis cette version, l'ancienne étant retirée de Home Assistant 2025.7
+
 ## 1.2.8
 - Nouveau capteur « Puissance Apparente » (VA), créé quand ecojoko fournit cette mesure du compteur Linky ([#123](https://github.com/jmcruvellier/little_monkey/issues/123))
 - Correction des données de consommation erronées (Consommation Réseau, HC/HP, Tempo, surplus de production) : l'API ecojoko renvoyait des valeurs dégradées au User-Agent par défaut de Home Assistant, l'intégration envoie désormais son propre User-Agent
