@@ -74,8 +74,8 @@ Depuis la version 1.3.0, l'intégration fournit la carte « Little Monkey ». El
 
 Elle reprend le cadran du boîtier ecojoko<sup>©️</sup> :
 
-- l'arc supérieur montre la puissance en temps réel sur une échelle logarithmique (0, 50, 100, 500, 1K, 5K, 10K, MAX) ;
-- le disque central affiche la puissance en W, la puissance apparente en VA en dessous quand le capteur Puissance Apparente existe, et la courbe de la dernière heure ;
+- l'arc supérieur montre la puissance en temps réel sur une échelle logarithmique (0, 50, 100, 500, 1K, 5K, 10K, MAX), en zones de plus en plus marquées (0-100 W, 100 W-1K, 1K-5K, 5K-MAX), avec une aiguille rattachée au disque et de sa couleur ;
+- le disque central affiche la puissance en W, la puissance apparente en VA en dessous quand le capteur Puissance Apparente existe, et la courbe des 10 dernières minutes (réglable), lissée ;
 - l'arc inférieur est pour l'instant décoratif.
 
 Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capteurs HP/HC ou Capteurs Tempo est cochée dans l'intégration, il prend la couleur de la période en cours :
@@ -106,6 +106,7 @@ tempo_color_entity: sensor.couleur_tempo_actuelle
 | `tariff_entity` | Non | Entité donnant la période en cours (HC/HP, et éventuellement la couleur Tempo) |
 | `tempo_color_entity` | Non | Entité donnant la couleur Tempo du jour, prioritaire sur `tariff_entity` pour la couleur |
 | `max_power` | Non | Puissance en W de la graduation MAX (12000 par défaut, au moins 10001) |
+| `trend_minutes` | Non | Durée de la courbe du disque central, en minutes (10 par défaut, de 1 à 60) |
 
 La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du même appareil Little Monkey.
 
