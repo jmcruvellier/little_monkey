@@ -29,7 +29,7 @@ const TRANSLATIONS = {
       tariff_entity: "Current tariff period (optional)",
       tempo_color_entity: "Tempo color of the day (optional)",
       max_power: "Power of the MAX graduation",
-      tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. Without it, the disc stays blue.",
+      tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. By default, the Current Tariff Period sensor of Little Monkey.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
     },
   },
@@ -46,7 +46,7 @@ const TRANSLATIONS = {
       tariff_entity: "Période tarifaire en cours (facultatif)",
       tempo_color_entity: "Couleur Tempo du jour (facultatif)",
       max_power: "Puissance de la graduation MAX",
-      tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Sans elle, le disque reste bleu.",
+      tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Par défaut, le capteur Période Tarifaire en Cours de Little Monkey.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
     },
   },
@@ -233,6 +233,12 @@ function findEntity(hass, translationKey) {
   )?.entity_id;
 }
 
+// Options set automatically to a sensor of the device, by translation key
+const AUTOMATIC = {
+  apparent_power_entity: "realtime_apparent_power",
+  tariff_entity: "current_tariff_period",
+};
+
 /**
  * Return the configuration of a new card: the sensors of the first Little
  * Monkey device, chosen automatically.
@@ -242,9 +248,11 @@ export function stubConfig(hass) {
   const entity = findEntity(hass, "realtime_consumption");
   if (entity) {
     config.entity = entity;
-    const apparent = deviceEntities(hass, entity).realtime_apparent_power;
-    if (apparent) {
-      config.apparent_power_entity = apparent;
+    const sensors = deviceEntities(hass, entity);
+    for (const [option, key] of Object.entries(AUTOMATIC)) {
+      if (sensors[key]) {
+        config[option] = sensors[key];
+      }
     }
   }
   return config;
@@ -253,16 +261,19 @@ export function stubConfig(hass) {
 /**
  * Return the configuration after a change in the editor.
  *
- * Choosing another Little Monkey device also takes its apparent power
- * sensor, unless another sensor was chosen by hand. Empty options are
- * removed from the configuration.
+ * Choosing another Little Monkey device also takes its apparent power and
+ * tariff period sensors, unless other sensors were chosen by hand. Empty
+ * options are removed from the configuration.
  */
 export function editedConfig(hass, previous, value) {
   const config = { ...value };
   if (config.entity !== previous.entity) {
-    const before = deviceEntities(hass, previous.entity).realtime_apparent_power;
-    if (!config.apparent_power_entity || config.apparent_power_entity === before) {
-      config.apparent_power_entity = deviceEntities(hass, config.entity).realtime_apparent_power;
+    const before = deviceEntities(hass, previous.entity);
+    const after = deviceEntities(hass, config.entity);
+    for (const [option, key] of Object.entries(AUTOMATIC)) {
+      if (!config[option] || config[option] === before[key]) {
+        config[option] = after[key];
+      }
     }
   }
   for (const [key, option] of Object.entries(config)) {
@@ -453,7 +464,9 @@ class LittleMonkeyCard extends HTMLElement {
     // Color of the central disc
     const mode = tariffMode(sensors);
     const tariff = { period: null, color: null };
-    for (const entityId of [config.tariff_entity, config.tempo_color_entity]) {
+    // Without entity chosen, the period sensor of the integration
+    const tariffEntity = config.tariff_entity || sensors.current_tariff_period;
+    for (const entityId of [tariffEntity, config.tempo_color_entity]) {
       const parsed = parseTariff(entityId, entityId && hass.states[entityId]?.state);
       tariff.period = tariff.period || parsed.period;
       // The Tempo color entity has the last word on the color

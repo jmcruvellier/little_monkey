@@ -91,6 +91,19 @@
             "red_hp_grid_consumption": {
                 "name": "Consumo da Rede Vermelha em Ponta"
             },
+            "current_tariff_period": {
+                "name": "Período Tarifário Atual",
+                "state": {
+                    "hc": "Horas de vazio",
+                    "hp": "Horas cheias",
+                    "hc_blue": "Vazio Azul",
+                    "hp_blue": "Cheias Azul",
+                    "hc_white": "Vazio Branco",
+                    "hp_white": "Cheias Branco",
+                    "hc_red": "Vazio Vermelho",
+                    "hp_red": "Cheias Vermelho"
+                }
+            },
             "production_surplus": {
                 "name": "Excedente de Produção"
             },

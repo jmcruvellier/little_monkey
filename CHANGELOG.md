@@ -2,6 +2,7 @@
 
 ## 1.3.0
 - Nouvelle carte « Little Monkey » pour les tableaux de bord, fournie par l'intégration elle-même : aucune ressource Lovelace à ajouter, elle est chargée automatiquement et suit toujours la version de l'intégration. Elle reprend le cadran du boîtier ecojoko : la puissance en temps réel sur un arc logarithmique, et dans le disque central la puissance, la puissance apparente (VA) quand elle est disponible et la courbe de la dernière heure. Avec l'option HC/HP ou Tempo, le disque prend la couleur de la période en cours, lue sur une entité de votre choix (couleur Tempo, heures creuses, période du compteur Linky...). Elle suit les thèmes clair et sombre de Home Assistant, en français et en anglais, et se configure avec un éditeur visuel qui choisit seul les capteurs de l'appareil Little Monkey
+- Nouveau capteur « Période Tarifaire en Cours », créé avec l'option HC/HP ou Tempo : heures creuses ou pleines, et couleur du jour en Tempo. ecojoko ne donnant que l'énergie de chaque période, la période en cours est celle dont le compteur augmente : elle est connue avec quelques minutes de retard, et conservée quand la consommation est trop faible pour faire avancer un compteur. La carte l'utilise automatiquement pour colorer son disque
 - Version minimale de Home Assistant relevée à 2024.7.0 (au lieu de 2024.6.0) : la carte est servie avec la fonction de Home Assistant prévue à cet effet depuis cette version, l'ancienne étant retirée de Home Assistant 2025.7
 
 ## 1.2.8
