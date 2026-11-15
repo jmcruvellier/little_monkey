@@ -23,6 +23,12 @@ CONF_API_STAT_REFRESH = 30
 # A communication failure shorter than this many seconds keeps the last
 # values instead of making the sensors unavailable
 CONF_API_FAILURE_GRACE = 120
+# ecojoko feeds its APIs with live data during ten minutes after the list
+# of the gateways is read, then serves outdated data without any error.
+# The list is read again after this many seconds, to keep the data live
+CONF_API_KEEP_LIVE = 300
+# and after this many seconds when this reading failed
+CONF_API_KEEP_LIVE_RETRY = 30
 
 # URLs
 ECOJOKO_LOGIN_URL = "https://service.ecojoko.com/login"

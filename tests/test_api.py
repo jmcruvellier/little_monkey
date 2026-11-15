@@ -92,6 +92,18 @@ class Request:
         return False
 
 
+class CookieJar:
+    """Fake aiohttp cookie jar."""
+
+    def __init__(self):
+        """Initialize."""
+        self.cleared = 0
+
+    def clear(self):
+        """Forget the cookies."""
+        self.cleared += 1
+
+
 class Session:
     """Fake aiohttp session.
 
@@ -116,6 +128,7 @@ class Session:
         }
         self.calls = []
         self.requests = []
+        self.cookie_jar = CookieJar()
 
     def request(self, method, url, **kwargs):
         """Start a request."""
@@ -384,6 +397,113 @@ def test_session_still_rejected_after_login(api):
         run(make_client(api, session).async_get_data())
     assert type(raised.value) is api.LittleMonkeyApiClientError
     assert session.calls.count("login") == 2
+
+
+# --- Live data: ecojoko serves outdated data ten minutes after /gateways
+
+
+def fake_clock(api, monkeypatch):
+    """Replace the clock of the API client by one the test moves."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(
+        api, "time", types.SimpleNamespace(monotonic=lambda: clock["now"])
+    )
+    return clock
+
+
+def poll_during(client, clock, seconds, step=5):
+    """Poll every `step` seconds of the fake clock."""
+
+    async def scenario():
+        for _ in range(seconds // step):
+            await client.async_get_data()
+            clock["now"] += step
+
+    run(scenario())
+
+
+def test_gateways_are_read_again_every_five_minutes(api, monkeypatch):
+    """The list of the gateways is read often enough to keep the data live."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session()
+    client = make_client(api, session)
+    poll_during(client, clock, 295)
+    assert session.calls.count("gateways") == 1
+    poll_during(client, clock, 10)
+    assert session.calls.count("gateways") == 2
+    # One hour: the first reading, then one every five minutes
+    poll_during(client, clock, 3295)
+    assert session.calls.count("gateways") == 12
+    diagnostics = client.diagnostics()
+    assert diagnostics["gateways_count"] == 12
+    # Never a new login: the session is kept
+    assert session.calls.count("login") == 1
+    assert diagnostics["login_count"] == 1
+
+
+def test_frozen_values_do_not_log_in_again(api, monkeypatch):
+    """Values that do not change are reported, without a new login."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session()
+    client = make_client(api, session)
+    poll_during(client, clock, 900)
+    assert session.calls.count("login") == 1
+    assert client.diagnostics()["seconds_since_realtime_change"] == 900
+
+
+def test_gateways_reading_updates_the_firmware_version(api, monkeypatch):
+    """The periodic reading refreshes what the gateway reports."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session()
+    client = make_client(api, session)
+    poll_during(client, clock, 5)
+    updated = json.loads(json.dumps(GATEWAYS))
+    updated["gateways"][0]["gateway_firmware_version"] = "10"
+    session.routes["gateways"] = Response(payload=updated)
+    poll_during(client, clock, 300)
+    assert client.gateway_firmware_version == "10"
+
+
+@pytest.mark.parametrize("answer", [
+    lambda: aiohttp.ClientError("boom"),
+    lambda: Response(status=503),
+    lambda: Response(payload={"gateways": []}),
+    lambda: Response(is_json=False),
+])
+def test_failed_gateways_reading_is_tried_again_shortly(api, monkeypatch, answer):
+    """A reading that fails neither fails the poll nor waits five minutes."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session()
+    client = make_client(api, session)
+    poll_during(client, clock, 300)
+    session.routes["gateways"] = answer()
+    poll_during(client, clock, 5)
+    assert session.calls.count("gateways") == 2
+    assert client.realtime_conso == 512
+    # Not at each poll
+    poll_during(client, clock, 25)
+    assert session.calls.count("gateways") == 2
+    session.routes["gateways"] = Response(payload=GATEWAYS)
+    poll_during(client, clock, 5)
+    assert session.calls.count("gateways") == 3
+    # Back to the usual delay
+    poll_during(client, clock, 295)
+    assert session.calls.count("gateways") == 3
+    poll_during(client, clock, 5)
+    assert session.calls.count("gateways") == 4
+
+
+def test_gateways_reading_rejected_logs_in_again(api, monkeypatch):
+    """A session rejected by the periodic reading is replaced, as for any API."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session()
+    client = make_client(api, session)
+    poll_during(client, clock, 300)
+    answers = iter([Response(status=401), Response(payload=GATEWAYS)])
+    session.routes["gateways"] = lambda: next(answers)
+    poll_during(client, clock, 5)
+    assert session.calls.count("login") == 2
+    assert client.realtime_conso == 512
 
 
 # --- Statistics errors: the update succeeds, a lasting failure warns once

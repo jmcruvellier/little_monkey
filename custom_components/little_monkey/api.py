@@ -10,6 +10,8 @@ import aiohttp
 from .const import (
     CONF_API_TIMEOUT,
     CONF_API_STAT_REFRESH,
+    CONF_API_KEEP_LIVE,
+    CONF_API_KEEP_LIVE_RETRY,
     ECOJOKO_LOGIN_URL,
     ECOJOKO_GATEWAYS_URL,
     ECOJOKO_GATEWAY_URL,
@@ -111,6 +113,17 @@ class LittleMonkeyApiClient:
         self._failed_once = set()
         # Day (in Paris) the energy properties belong to
         self._stat_date = None
+        # Monotonic time of the last login
+        self._last_login = None
+        # Monotonic time the list of the gateways is due again, and number
+        # of times it was read, for the diagnostics
+        self._gateways_due = None
+        self._gateways_count = 0
+        # Number of logins since the start, for the diagnostics
+        self._login_count = 0
+        # Last real-time values and monotonic time of their last change
+        self._last_reading = None
+        self._last_reading_change = None
 
     @property
     def stat_date(self) -> str | None:
@@ -210,6 +223,16 @@ class LittleMonkeyApiClient:
         now = time.monotonic()
         return {
             "logged_in": self._cookies is not None,
+            "login_count": self._login_count,
+            "seconds_since_login": (
+                None if self._last_login is None
+                else round(now - self._last_login, 1)
+            ),
+            "gateways_count": self._gateways_count,
+            "seconds_since_realtime_change": (
+                None if self._last_reading_change is None
+                else round(now - self._last_reading_change, 1)
+            ),
             "gateway_found": self._gateway_id is not None,
             "power_meter_found": self._power_meter_id is not None,
             "temp_hum_found": self._temp_hum_id is not None,
@@ -229,6 +252,8 @@ class LittleMonkeyApiClient:
         }
         try:
             payload_json = json.dumps(login_data)
+            # A new session: the cookies of the previous one are not sent
+            self._session.cookie_jar.clear()
             return await self._cookiesapi_wrapper(data=payload_json)
         except LittleMonkeyApiClientError:
             raise
@@ -358,6 +383,31 @@ class LittleMonkeyApiClient:
                     "ecojoko still rejects the session after a new login"
                 ) from exception
 
+    async def _async_keep_live(self) -> None:
+        """Read the list of the gateways again, to keep the data live.
+
+        ecojoko feeds its APIs, and its own web application, with live data
+        during ten minutes after this list is read. Afterwards the real-time
+        values freeze for minutes and the energy totals are hours late,
+        without any error. Reading the list during these ten minutes starts
+        them again. A failure is not an error of the poll: the reading is
+        tried again shortly.
+        """
+        now = time.monotonic()
+        self._gateways_due = now + CONF_API_KEEP_LIVE_RETRY
+        read_before = self._gateways_count
+        try:
+            await self._gatewayapi_wrapper()
+        except LittleMonkeyApiClientAuthenticationError:
+            raise
+        except (LittleMonkeyApiClientError, *PARSE_ERRORS) as exception:
+            LOGGER.debug("The list of the gateways was not read: %r", exception)
+            return
+        if self._gateways_count == read_before:
+            LOGGER.debug("The list of the gateways was not read: no JSON answer")
+            return
+        self._gateways_due = now + CONF_API_KEEP_LIVE
+
     def _stats_to_call(self, now) -> list:
         """Return the statistics APIs to call during this poll.
 
@@ -387,6 +437,9 @@ class LittleMonkeyApiClient:
         """Call the ecojoko APIs and update the properties."""
         if self._gateway_id is None:
             await self.async_get_gatewaydata()
+            self._gateways_due = time.monotonic() + CONF_API_KEEP_LIVE
+        elif time.monotonic() >= self._gateways_due:
+            await self._async_keep_live()
 
         # Initialization
         current_date = get_current_date(TZ)
@@ -452,6 +505,10 @@ class LittleMonkeyApiClient:
             if apparent_power == 0 and self._realtime_conso != 0:
                 apparent_power = None
             self._realtime_va = apparent_power
+            reading = (self._realtime_conso, apparent_power)
+            if reading != self._last_reading:
+                self._last_reading = reading
+                self._last_reading_change = now
         except PARSE_ERRORS as exception:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API realtime_conso: {exception!r}"
@@ -590,6 +647,8 @@ class LittleMonkeyApiClient:
         _payload, cookies = await self._async_request(
             "Cookies", ECOJOKO_LOGIN_URL, method="POST", data=data)
         self._cookies = cookies
+        self._last_login = time.monotonic()
+        self._login_count += 1
 
     async def _gatewayapi_wrapper(self) -> None:
         """Get the gateway and device ids from the API."""
@@ -597,6 +656,7 @@ class LittleMonkeyApiClient:
             "Gateway", ECOJOKO_GATEWAYS_URL, cookies=self._cookies)
         if value_json is None:
             return
+        self._gateways_count += 1
         gateways = value_json.get('gateways')
 
         # Looking for gateway Id
