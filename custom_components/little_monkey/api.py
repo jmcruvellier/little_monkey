@@ -28,6 +28,9 @@ from .utils import (
 
 TZ = get_paris_timezone()
 
+# Response headers left out of the diagnostics: they hold the session
+HIDDEN_HEADERS = {"set-cookie", "set-cookie2"}
+
 # Errors raised when an API response does not have the expected format
 PARSE_ERRORS = (KeyError, IndexError, TypeError, ValueError, AttributeError)
 
@@ -119,6 +122,9 @@ class LittleMonkeyApiClient:
         # of times it was read, for the diagnostics
         self._gateways_due = None
         self._gateways_count = 0
+        # Status and headers of the last response of each API, for the
+        # diagnostics: they tell whether a proxy answered from its cache
+        self._last_responses = {}
         # Number of logins since the start, for the diagnostics
         self._login_count = 0
         # Last real-time values and monotonic time of their last change
@@ -242,6 +248,14 @@ class LittleMonkeyApiClient:
                 for name, last in self._last_stat_refresh.items()
             },
             "failing_apis": sorted(self._warned | self._failed_once),
+            "last_responses": {
+                name: {
+                    "seconds_ago": round(now - last["time"], 1),
+                    "status": last["status"],
+                    "headers": last["headers"],
+                }
+                for name, last in self._last_responses.items()
+            },
         }
 
     async def async_get_cookiesdata(self) -> None:
@@ -305,6 +319,15 @@ class LittleMonkeyApiClient:
                     headers=self._headers,
                     **kwargs,
                 ) as response:
+                    self._last_responses[name] = {
+                        "time": time.monotonic(),
+                        "status": response.status,
+                        "headers": {
+                            key: value
+                            for key, value in response.headers.items()
+                            if key.lower() not in HIDDEN_HEADERS
+                        },
+                    }
                     if response.status in (401, 403):
                         # 71 bug fix
                         self._cookies = None
