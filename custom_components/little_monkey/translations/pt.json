@@ -25,7 +25,8 @@
         "error": {
             "auth": "Nome de utilizador/Palavra-passe está incorreto.",
             "connection": "Não foi possível ligar ao servidor.",
-            "unknown": "Ocorreu um erro desconhecido."
+            "unknown": "Ocorreu um erro desconhecido.",
+            "name_required": "O nome é obrigatório: dá o nome ao dispositivo."
         },
         "abort": {
             "already_configured": "Esta conta ecojoko já está configurada.",
@@ -51,7 +52,8 @@
         "error": {
             "auth": "Nome de utilizador/Palavra-passe está incorreto.",
             "connection": "Não foi possível ligar ao servidor.",
-            "unknown": "Ocorreu um erro desconhecido."
+            "unknown": "Ocorreu um erro desconhecido.",
+            "name_required": "O nome é obrigatório: dá o nome ao dispositivo."
         }
     },
     "entity": {

@@ -25,7 +25,8 @@
         "error": {
             "auth": "Username/Password is wrong.",
             "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "unknown": "Unknown error occurred.",
+            "name_required": "The name is required: it names the device."
         },
         "abort": {
             "already_configured": "This ecojoko account is already configured.",
@@ -51,7 +52,8 @@
         "error": {
             "auth": "Username/Password is wrong.",
             "connection": "Unable to connect to the server.",
-            "unknown": "Unknown error occurred."
+            "unknown": "Unknown error occurred.",
+            "name_required": "The name is required: it names the device."
         }
     },
     "entity": {
