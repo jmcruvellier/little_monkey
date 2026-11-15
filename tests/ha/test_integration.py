@@ -807,7 +807,10 @@ async def test_activity_sensors(hass, fake_api):
     assert cost.state == "16.6"
     assert cost.attributes["device_class"] == "monetary"
     assert cost.attributes["unit_of_measurement"] == "EUR"
-    assert hass.states.get("sensor.ecojoko_consumption_over_7_days").state == "74.33"
+    consumption = hass.states.get("sensor.ecojoko_consumption_over_7_days")
+    assert consumption.state == "74.33"
+    assert consumption.attributes["daily_consumption"] == [
+        9.14, 12.46, 9.55, 12.43, 12.36, 7.92, 10.37]
     assert hass.states.get("sensor.ecojoko_total_savings").state == "393.83"
     assert hass.states.get("sensor.ecojoko_max_power_since_the_start").state == "7386"
 

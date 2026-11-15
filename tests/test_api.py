@@ -912,6 +912,7 @@ def test_activity(api):
         "savings_7_days": -3,
         "reference_consumption_7_days": 74.4,
         "consumption_7_days": 74.33,
+        "daily_consumption_7_days": [9.14, 12.46, 9.55, 12.43, 12.36, 7.92, 10.37],
         "cost_7_days": 16.6,
         "total_savings": 393.83,
         "max_power_month": 4290,
@@ -976,3 +977,15 @@ def test_activity_unexpected_answer(api, answer):
     run(client.async_get_data())
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(client.async_get_activity())
+
+
+@pytest.mark.parametrize("data", [None, "x", [381, None, 398], [381, "a"]])
+def test_activity_without_daily_values(api, data):
+    """Unexpected daily values are left out, the other values are kept."""
+    answer = json.loads(json.dumps(ACTIVITY))
+    answer["activity"]["conso_7j"]["data"] = data
+    client = make_client(api, Session(activity=Response(payload=answer)))
+    run(client.async_get_data())
+    values = run(client.async_get_activity())
+    assert values["daily_consumption_7_days"] is None
+    assert values["consumption_7_days"] == 74.33

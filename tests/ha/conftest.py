@@ -33,6 +33,7 @@ ACTIVITY = {
     "savings_7_days": -3,
     "reference_consumption_7_days": 74.4,
     "consumption_7_days": 74.33,
+    "daily_consumption_7_days": [9.14, 12.46, 9.55, 12.43, 12.36, 7.92, 10.37],
     "cost_7_days": 16.6,
     "total_savings": 393.83,
     "max_power_month": 4290,

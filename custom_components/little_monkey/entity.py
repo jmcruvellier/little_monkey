@@ -14,6 +14,13 @@ from .utils import DailyCounter, get_paris_timezone
 
 TZ = get_paris_timezone()
 
+# Attributes of the activity sensors: name and key of the activity data
+ACTIVITY_ATTRIBUTES = {
+    "savings_7_days": {"reference_consumption": "reference_consumption_7_days"},
+    # Consumption of each of the last 7 days in kWh, the oldest first
+    "consumption_7_days": {"daily_consumption": "daily_consumption_7_days"},
+}
+
 
 def _as_number(value):
     """Return a sensor value as a number, None if it is not one."""
@@ -211,8 +218,9 @@ class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self):
-        """Return the reference consumption with the savings over 7 days."""
-        if self._sensor_name != "savings_7_days":
+        """Return the details of the savings and of the consumption over 7 days."""
+        attributes = ACTIVITY_ATTRIBUTES.get(self._sensor_name)
+        if attributes is None:
             return None
         data = self.coordinator.data or {}
-        return {"reference_consumption": data.get("reference_consumption_7_days")}
+        return {name: data.get(key) for name, key in attributes.items()}

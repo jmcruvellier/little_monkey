@@ -128,7 +128,12 @@
                 }
             },
             "consumption_7_days": {
-                "name": "Consumption over 7 Days"
+                "name": "Consumption over 7 Days",
+                "state_attributes": {
+                    "daily_consumption": {
+                        "name": "Daily consumption"
+                    }
+                }
             },
             "cost_7_days": {
                 "name": "Cost over 7 Days"
