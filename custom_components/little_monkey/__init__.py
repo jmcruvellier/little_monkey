@@ -150,6 +150,18 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unloaded
 
 
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: ConfigEntry, device_entry: dr.DeviceEntry
+) -> bool:
+    """Tell whether a device can be removed from the user interface.
+
+    Until 1.2.7 renaming the integration created a new device and left the
+    previous one behind, with unavailable entities. Such a device can be
+    removed; the device currently provided by the entry cannot.
+    """
+    return (DOMAIN, entry.entry_id) not in device_entry.identifiers
+
+
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Reload config entry."""
     await hass.config_entries.async_reload(entry.entry_id)
