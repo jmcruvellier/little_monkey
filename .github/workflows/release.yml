@@ -24,14 +24,23 @@ jobs:
           # is never interpreted by the shell
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
-          yq -i -o json '.version = strenv(TAG_NAME)' \
+          # The tag is v1.2.8, the version of the integration is 1.2.8
+          export VERSION="${TAG_NAME#v}"
+          yq -i -o json '.version = strenv(VERSION)' \
             "${{ github.workspace }}/custom_components/little_monkey/manifest.json"
 
       - name: "ZIP the integration directory"
         shell: "bash"
         run: |
-          cd "${{ github.workspace }}/custom_components/little_monkey"
-          zip little_monkey.zip -r ./
+          # The archive is built from a copy without the res folder: its
+          # images only illustrate the documentation on GitHub
+          SOURCE="${{ github.workspace }}/custom_components/little_monkey"
+          STAGING="${{ runner.temp }}/little_monkey"
+          mkdir -p "$STAGING"
+          cp -r "$SOURCE/." "$STAGING/"
+          rm -rf "$STAGING/res"
+          cd "$STAGING"
+          zip "$SOURCE/little_monkey.zip" -r ./
 
       - name: "Upload the ZIP file to the release"
         uses: softprops/action-gh-release@v3
