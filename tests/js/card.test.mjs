@@ -181,3 +181,15 @@ test("no trend without two known points", () => {
   assert.equal(card.trendPath([], 1000, 1000), "");
   assert.equal(card.trendPath([{ time: 2000, value: 5 }], 1000, 1000), "");
 });
+
+test("the current tariff period is named under the curve", () => {
+  assert.equal(card.tariffLabel("fr", "hchp", { period: "hc", color: null }), "HEURES CREUSES");
+  assert.equal(card.tariffLabel("en", "hchp", { period: "hp", color: null }), "PEAK HOURS");
+  assert.equal(card.tariffLabel("fr", "tempo", { period: "hp", color: "red" }), "HEURES PLEINES · JOUR ROUGE");
+  assert.equal(card.tariffLabel("en", "tempo", { period: "hc", color: "white" }), "OFF-PEAK HOURS · WHITE DAY");
+  assert.equal(card.tariffLabel("fr", "tempo", { period: null, color: "blue" }), "JOUR BLEU");
+  // Nothing without option or without known period, like the color of the disc
+  assert.equal(card.tariffLabel("fr", null, { period: "hc", color: "red" }), "");
+  assert.equal(card.tariffLabel("fr", "hchp", { period: null, color: null }), "");
+  assert.equal(card.tariffLabel("fr", "tempo", { period: "hc", color: null }), "");
+});
