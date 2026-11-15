@@ -24,6 +24,13 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Consommation HP Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
 | 1.3.0 | Période Tarifaire en Cours | Énumération | | Optionnel | Si l'option HC/HP ou Tempo est cochée : HC / HP, ou période et couleur Tempo (HC Bleu, HP Rouge...), déduite du compteur qui augmente |
 | 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
+| 1.3.0 | Économies sur 7 Jours | Pourcentage | % | Permanent | Écart de la consommation des 7 derniers jours par rapport à votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
+| 1.3.0 | Consommation sur 7 Jours | Energie | kWh | Permanent | Consommation des 7 derniers jours |
+| 1.3.0 | Coût sur 7 Jours | Monétaire | EUR | Permanent | Coût des 7 derniers jours, selon le tarif renseigné dans ecojoko |
+| 1.3.0 | Économies Cumulées | Monétaire | EUR | Permanent | Économies depuis le début, négatives en cas de surconsommation |
+| 1.3.0 | Puissance Max du Mois | Puissance | W | Permanent | |
+| 1.3.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
+| 1.3.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |

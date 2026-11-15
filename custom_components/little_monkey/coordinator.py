@@ -19,6 +19,8 @@ from .api import (
     LittleMonkeyApiClientError,
 )
 from .const import (
+    CONF_API_ACTIVITY_GRACE,
+    CONF_API_ACTIVITY_REFRESH,
     CONF_API_FAILURE_GRACE,
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
@@ -132,3 +134,51 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "indoor_hum": self.client.indoor_hum,
             "outdoor_hum": self.client.outdoor_hum,
         }
+
+
+class LittleMonkeyActivityCoordinator(DataUpdateCoordinator):
+    """Fetch the activity of the account (savings over 7 days...).
+
+    It is apart from the polls: ecojoko is slow to compute it, and its
+    values change slowly. A failure never makes the real-time sensors
+    unavailable, and the last values are kept for CONF_API_ACTIVITY_GRACE
+    seconds.
+    """
+
+    config_entry: ConfigEntry
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        client: LittleMonkeyApiClient,
+    ) -> None:
+        """Initialize."""
+        self.config_entry = entry
+        self.client = client
+        # Monotonic time of the last successful reading
+        self._last_success = None
+        super().__init__(
+            hass=hass,
+            logger=LOGGER,
+            name=f"{DOMAIN} activity",
+            update_interval=timedelta(seconds=CONF_API_ACTIVITY_REFRESH),
+        )
+
+    async def _async_update_data(self):
+        """Read the activity of the account."""
+        try:
+            data = await self.client.async_get_activity()
+        except LittleMonkeyApiClientError as exception:
+            if (
+                self.data is not None
+                and self._last_success is not None
+                and time.monotonic() - self._last_success < CONF_API_ACTIVITY_GRACE
+            ):
+                LOGGER.debug(
+                    "ecojoko activity not read, the last values are kept: %s",
+                    exception)
+                return self.data
+            raise UpdateFailed(exception) from exception
+        self._last_success = time.monotonic()
+        return data

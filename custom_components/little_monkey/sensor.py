@@ -14,7 +14,12 @@ from homeassistant.const import (
     CONF_NAME,
 )
 
-from .entity import EcojokoEntity, EcojokoPeriodSensor, EcojokoSensor
+from .entity import (
+    EcojokoActivitySensor,
+    EcojokoEntity,
+    EcojokoPeriodSensor,
+    EcojokoSensor,
+)
 from .const import (
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
@@ -91,6 +96,28 @@ SENSORS = (
     ("outdoor_hum", HUMIDITY, CONF_USE_TEMPHUM_FEATURE),
 )
 
+SAVINGS = (
+    SensorStateClass.MEASUREMENT,
+    None,
+    PERCENTAGE,
+    "mdi:piggy-bank-outline",
+)
+# Totals over a sliding period: neither a measurement nor an increasing total
+ENERGY_7_DAYS = (None, SensorDeviceClass.ENERGY, UnitOfEnergy.KILO_WATT_HOUR, "mdi:lightning-bolt")
+COST = (None, SensorDeviceClass.MONETARY, "EUR", "mdi:currency-eur")
+MAX_POWER = (None, SensorDeviceClass.POWER, UnitOfPower.WATT, "mdi:flash-alert")
+
+# Sensors of the activity of the account, read apart from the polls
+ACTIVITY_SENSORS = (
+    ("savings_7_days", SAVINGS),
+    ("consumption_7_days", ENERGY_7_DAYS),
+    ("cost_7_days", COST),
+    ("total_savings", COST),
+    ("max_power_month", MAX_POWER),
+    ("max_power_year", MAX_POWER),
+    ("max_power_alltime", MAX_POWER),
+)
+
 # Option that enables a sensor: None (always), one option, or several (any)
 
 
@@ -128,5 +155,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         else:
             sensor = EcojokoSensor(main_device, key, *kind)
         main_device.add_child_entity(sensor)
+
+    for key, kind in ACTIVITY_SENSORS:
+        main_device.add_child_entity(
+            EcojokoActivitySensor(main_device, coordinator.activity, key, *kind))
 
     async_add_entities([main_device] + main_device.child_entities)

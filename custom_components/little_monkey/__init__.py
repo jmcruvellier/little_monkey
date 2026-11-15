@@ -29,7 +29,10 @@ from .const import (
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE
 )
-from .coordinator import LittleMonkeyDataUpdateCoordinator
+from .coordinator import (
+    LittleMonkeyActivityCoordinator,
+    LittleMonkeyDataUpdateCoordinator,
+)
 from .sensor import SENSORS
 from .utils import account_unique_id
 
@@ -71,6 +74,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     await coordinator.async_config_entry_first_refresh()
+
+    # Activity of the account, read apart from the polls: ecojoko is slow to
+    # answer, the setup does not wait for it
+    coordinator.activity = LittleMonkeyActivityCoordinator(
+        hass=hass, entry=entry, client=coordinator.client)
+    entry.async_create_background_task(
+        hass, coordinator.activity.async_refresh(), "little_monkey activity")
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 

@@ -54,6 +54,16 @@ ENABLED = [
     "indoor_hum",
     "outdoor_hum",
 ]
+# Sensors of the activity of the account, created for every entry
+ACTIVITY_KEYS = [
+    "savings_7_days",
+    "consumption_7_days",
+    "cost_7_days",
+    "total_savings",
+    "max_power_month",
+    "max_power_year",
+    "max_power_alltime",
+]
 REALTIME = "sensor.ecojoko_real_time_consumption"
 GRID = "sensor.ecojoko_grid_consumption"
 FORM = data_entry_flow.FlowResultType.FORM
@@ -71,9 +81,12 @@ def add_entry(hass, **kwargs):
 
 
 async def setup_entry(hass, entry):
-    """Set up a config entry and return whether it succeeded."""
+    """Set up a config entry and return whether it succeeded.
+
+    The first reading of the activity, in the background, is waited for.
+    """
     result = await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
+    await hass.async_block_till_done(wait_background_tasks=True)
     return result
 
 
@@ -152,10 +165,10 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert entry.data["name"] == "Ecojoko"
     assert entry.unique_id == "user@example.com"
 
-    # Same entity ids, new unique ids, nothing duplicated; only the sensor
-    # added by 1.3.0 is created
+    # Same entity ids, new unique ids, nothing duplicated; only the sensors
+    # added by 1.3.0 are created
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 1
+    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS)
     assert not [e.entity_id for e in entities if e.entity_id.endswith("_2")]
     assert entity_registry.async_get(entity_ids["main"]).unique_id == entry.entry_id
     for key in [*ENABLED, "production_surplus"]:
@@ -184,7 +197,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 1
+    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS)
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
 
 
@@ -229,7 +242,7 @@ async def test_new_install_entities(hass, fake_api):
 
     entity_registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    keys = [*ENABLED, "current_tariff_period"]
+    keys = [*ENABLED, "current_tariff_period", *ACTIVITY_KEYS]
     expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in keys]]
     assert sorted(e.unique_id for e in entities) == sorted(expected)
 
@@ -766,3 +779,79 @@ async def test_tariff_period_is_restored_after_a_restart(hass, fake_api):
     fake_api.values["_kwh_hp_ns"] = 2.6
     await refresh(hass, entry)
     assert hass.states.get(entity_id).state == "hp"
+
+
+# --- Activity of the account
+
+
+SAVINGS = "sensor.ecojoko_savings_over_7_days"
+
+
+async def refresh_activity(hass, entry):
+    """Read the activity of the account once."""
+    await entry.runtime_data.activity.async_refresh()
+    await hass.async_block_till_done()
+
+
+async def test_activity_sensors(hass, fake_api):
+    """The activity of the account gives its sensors."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    savings = hass.states.get(SAVINGS)
+    assert savings.state == "-3"
+    assert savings.attributes["unit_of_measurement"] == "%"
+    assert savings.attributes["reference_consumption"] == 74.4
+    assert savings.attributes["friendly_name"] == "Ecojoko Savings over 7 Days"
+    cost = hass.states.get("sensor.ecojoko_cost_over_7_days")
+    assert cost.state == "16.6"
+    assert cost.attributes["device_class"] == "monetary"
+    assert cost.attributes["unit_of_measurement"] == "EUR"
+    assert hass.states.get("sensor.ecojoko_consumption_over_7_days").state == "74.33"
+    assert hass.states.get("sensor.ecojoko_total_savings").state == "393.83"
+    assert hass.states.get("sensor.ecojoko_max_power_since_the_start").state == "7386"
+
+
+async def test_activity_failure_does_not_stop_the_polls(hass, fake_api):
+    """The activity sensors fail alone; the real-time ones go on."""
+    fake_api.activity_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert entry.state is ConfigEntryState.LOADED
+    assert hass.states.get(SAVINGS).state == "unavailable"
+    assert hass.states.get(REALTIME).state == "512"
+
+    fake_api.activity_error = None
+    await refresh_activity(hass, entry)
+    assert hass.states.get(SAVINGS).state == "-3"
+
+
+async def test_activity_keeps_its_values_during_an_hour(hass, fake_api):
+    """A failure keeps the last values, until it lasts an hour."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    fake_api.activity_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
+    await refresh_activity(hass, entry)
+    assert hass.states.get(SAVINGS).state == "-3"
+
+    entry.runtime_data.activity._last_success -= 3600
+    await refresh_activity(hass, entry)
+    assert hass.states.get(SAVINGS).state == "unavailable"
+
+
+async def test_no_savings_without_reference_week(hass, fake_api):
+    """Without a reference week, the savings are unknown."""
+    fake_api.activity.update(savings_7_days=None, reference_consumption_7_days=None)
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get(SAVINGS).state == "unknown"
+    assert hass.states.get("sensor.ecojoko_cost_over_7_days").state == "16.6"
+
+
+async def test_activity_in_diagnostics(hass, fake_api):
+    """Diagnostics show the state of the activity."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    diagnostics = await async_get_config_entry_diagnostics(hass, entry)
+    assert diagnostics["activity"]["last_update_success"] is True
+    assert diagnostics["activity"]["data"]["savings_7_days"] == -3
