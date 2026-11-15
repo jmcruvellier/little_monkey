@@ -1,0 +1,427 @@
+"""Tests of the ecojoko API client, with a fake HTTP session."""
+from __future__ import annotations
+
+import asyncio
+import datetime as dt
+import logging
+import types
+from zoneinfo import ZoneInfo
+
+import aiohttp
+import pytest
+
+WEEK_DAY = dt.datetime.now(ZoneInfo("Europe/Paris")).weekday()
+
+GATEWAYS = {
+    "gateways": [
+        {
+            "gateway_id": 1,
+            "gateway_firmware_version": "9",
+            "devices": [
+                {"device_type": "POWER_METER", "device_id": 2},
+                {"device_type": "TEMP_HUM", "device_id": 3},
+            ],
+        }
+    ]
+}
+GATEWAYS_WITHOUT_TEMP_HUM = {
+    "gateways": [
+        {
+            "gateway_id": 1,
+            "gateway_firmware_version": "9",
+            "devices": [{"device_type": "POWER_METER", "device_id": 2}],
+        }
+    ]
+}
+STAT_APIS = ("powerstat", "tempstat", "humstat")
+
+
+def powerstat(kwh=4.2, **today):
+    """Return a powerstat response whose current day holds the given values."""
+    data = [{"kwh": 0} for _ in range(7)]
+    data[WEEK_DAY] = {"kwh": kwh, **today}
+    return {"stat": {"data": data}}
+
+
+class Response:
+    """Fake aiohttp response."""
+
+    def __init__(self, status=200, payload=None, is_json=True):
+        """Initialize."""
+        self.status = status
+        self.cookies = {"session": "abc"}
+        self.headers = {
+            "Content-Type": "application/json" if is_json else "text/html"
+        }
+        self._payload = payload
+
+    async def json(self):
+        """Return the JSON payload."""
+        return self._payload
+
+
+class Session:
+    """Fake aiohttp session.
+
+    Each API is answered by a Response, an exception to raise, or a function
+    (possibly async) returning one of them.
+    """
+
+    def __init__(self, **overrides):
+        """Initialize with working answers, replaced by the overrides."""
+        self.routes = {
+            "login": Response(),
+            "gateways": Response(payload=GATEWAYS),
+            "realtime_conso": Response(payload={"real_time": {"value": 512}}),
+            "powerstat": Response(payload=powerstat()),
+            "tempstat": Response(
+                payload={"stat": {"data": [{"value": 20, "ext_value": 8}]}}
+            ),
+            "humstat": Response(
+                payload={"stat": {"data": [{"value": 50, "ext_value": 80}]}}
+            ),
+            **overrides,
+        }
+        self.calls = []
+        self.requests = []
+
+    async def get(self, url, **kwargs):
+        """Answer a GET request."""
+        name = next(key for key in self.routes if key in url)
+        self.calls.append(name)
+        self.requests.append((url, kwargs))
+        answer = self.routes[name]
+        if callable(answer):
+            answer = answer()
+        if asyncio.iscoroutine(answer):
+            answer = await answer
+        if isinstance(answer, BaseException):
+            raise answer
+        return answer
+
+
+def make_client(api, session, poll=5, hchp=False, tempo=False,
+                temphum=False, prod=False):
+    """Return an API client using the fake session."""
+    return api.LittleMonkeyApiClient(
+        username="user",
+        password="secret",
+        poll_interval=poll,
+        use_hchp=hchp,
+        use_tempo=tempo,
+        use_temphum=temphum,
+        use_prod=prod,
+        session=session,
+    )
+
+
+def run(coroutine):
+    """Run a coroutine to completion."""
+    return asyncio.run(coroutine)
+
+
+# --- Nominal case
+
+
+def test_nominal(api):
+    """The first poll logs in, reads the gateway and the consumption."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.realtime_conso == 512
+    assert client.kwh == 4.2
+    assert client.gateway_firmware_version == "9"
+    assert session.calls == [
+        "login", "gateways", "realtime_conso", "powerstat"
+    ]
+
+
+def test_user_agent_is_sent(api):
+    """Every request identifies the integration (1.2.8 fix)."""
+    session = Session()
+    run(make_client(api, session).async_get_data())
+    for _url, kwargs in session.requests:
+        assert kwargs["headers"]["User-Agent"].startswith("little_monkey/")
+
+
+# --- Login errors
+
+
+@pytest.mark.parametrize("status", [401, 403])
+def test_login_rejected(api, status):
+    """Wrong credentials raise the authentication error."""
+    client = make_client(api, Session(login=Response(status=status)))
+    with pytest.raises(api.LittleMonkeyApiClientAuthenticationError):
+        run(client.async_get_cookiesdata())
+    with pytest.raises(api.LittleMonkeyApiClientAuthenticationError):
+        run(client.async_get_data())
+
+
+@pytest.mark.parametrize(
+    "failure", [asyncio.TimeoutError(), aiohttp.ClientError("dns")]
+)
+def test_login_network_error(api, failure):
+    """A network failure at login raises the communication error."""
+    client = make_client(api, Session(login=failure))
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_cookiesdata())
+
+
+def test_login_unexpected_error(api):
+    """Any other failure at login raises the generic error."""
+    client = make_client(api, Session(login=RuntimeError("boom")))
+    with pytest.raises(api.LittleMonkeyApiClientError) as raised:
+        run(client.async_get_cookiesdata())
+    assert type(raised.value) is api.LittleMonkeyApiClientError
+
+
+# --- Gateway errors
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        Response(is_json=False),
+        Response(payload={"gateways": []}),
+        Response(payload={"gateways": [{"gateway_id": 1, "devices": []}]}),
+    ],
+)
+def test_gateway_not_found(api, answer):
+    """An account without gateway or power meter raises an error."""
+    session = Session(gateways=answer)
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(make_client(api, session).async_get_data())
+    assert "realtime_conso" not in session.calls
+
+
+# --- Real-time consumption errors: the update fails
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        aiohttp.ClientError("down"),
+        asyncio.TimeoutError(),
+        Response(is_json=False),
+    ],
+)
+def test_realtime_unreachable(api, answer):
+    """Without real-time consumption the communication error is raised."""
+    client = make_client(api, Session(realtime_conso=answer))
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_data())
+
+
+def test_slow_api_times_out(api, monkeypatch):
+    """An API slower than the timeout raises the communication error."""
+    monkeypatch.setattr(api, "CONF_API_TIMEOUT", 0.01)
+
+    async def too_slow():
+        await asyncio.sleep(5)
+
+    client = make_client(api, Session(realtime_conso=too_slow))
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_data())
+
+
+def test_realtime_unexpected_format(api):
+    """An unexpected real-time payload raises the generic error."""
+    session = Session(realtime_conso=Response(payload={"oops": 1}))
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(make_client(api, session).async_get_data())
+
+
+# --- Session expiry
+
+
+def test_session_expiry_logs_in_again(api):
+    """A rejected session triggers one new login, then the poll succeeds."""
+    answers = iter(
+        [Response(status=401), Response(payload={"real_time": {"value": 7}})]
+    )
+    session = Session(realtime_conso=lambda: next(answers))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.realtime_conso == 7
+    assert session.calls.count("login") == 2
+    # The statistics skipped by the failed attempt are not postponed
+    assert client.kwh == 4.2
+
+
+def test_session_still_rejected_after_login(api):
+    """A session rejected after a new login is not a credentials error."""
+    session = Session(realtime_conso=Response(status=401))
+    with pytest.raises(api.LittleMonkeyApiClientError) as raised:
+        run(make_client(api, session).async_get_data())
+    assert type(raised.value) is api.LittleMonkeyApiClientError
+    assert session.calls.count("login") == 2
+
+
+# --- Statistics errors: the update succeeds, a warning is logged once
+
+
+def test_powerstat_network_error(api, caplog):
+    """A failing statistic keeps the real-time value and warns once."""
+    session = Session(powerstat=aiohttp.ClientError("boom"))
+    client = make_client(api, session)
+
+    async def poll_twice():
+        await client.async_get_data()
+        await client.async_get_data()
+
+    with caplog.at_level(logging.DEBUG):
+        run(poll_twice())
+    assert client.realtime_conso == 512
+    assert client.kwh is None
+    # Called again after the usual delay only, not at each poll
+    assert session.calls.count("powerstat") == 1
+    warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warnings) == 1
+
+
+def test_powerstat_unexpected_format_then_recovery(api, caplog):
+    """An unexpected statistic format warns once, then recovery is logged."""
+    session = Session(powerstat=Response(payload={"stat": {"data": []}}))
+    client = make_client(api, session)
+
+    async def scenario():
+        await client.async_get_data()
+        session.routes["powerstat"] = Response(payload=powerstat(9))
+        client._last_stat_refresh["powerstat"] = None
+        await client.async_get_data()
+
+    with caplog.at_level(logging.INFO):
+        run(scenario())
+    assert client.kwh == 9
+    levels = [r.levelno for r in caplog.records]
+    assert levels == [logging.WARNING, logging.INFO]
+
+
+# --- Parsing of the energy statistics
+
+
+def test_hchp(api):
+    """HC/HP values are read from the sub-consumptions."""
+    payload = powerstat(subconsumption=[
+        {"label": "Heures Creuses", "kwh": "1.5"},
+        {"label": "Heures Pleines", "kwh": 2},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == (1.5, 2.0)
+
+
+def test_tempo(api):
+    """Tempo values are read by label and summed for HC/HP."""
+    payload = powerstat(subconsumption=[
+        {"label": "HC Bleu", "kwh": 1},
+        {"label": "HP Bleu", "kwh": 2},
+        {"label": "HC Blanc", "kwh": 3},
+        {"label": "HP Rouge", "kwh": 4},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True, tempo=True)
+    run(client.async_get_data())
+    assert client.tempo_hc_blue == 1
+    assert client.tempo_hp_blue == 2
+    assert client.tempo_hc_white == 3
+    assert client.tempo_hp_white is None
+    assert client.tempo_hc_red is None
+    assert client.tempo_hp_red == 4
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == (4, 6)
+
+
+@pytest.mark.parametrize(("raw", "expected"), [(-1.5, 1.5), ("0", 0), (2, 2)])
+def test_production_surplus_is_positive(api, raw, expected):
+    """The production surplus is always reported as a positive value."""
+    session = Session(powerstat=Response(payload=powerstat(kwh_prod=raw)))
+    client = make_client(api, session, prod=True)
+    run(client.async_get_data())
+    assert client.kwh_prod == expected
+
+
+def test_options_off_ignore_extra_data(api):
+    """Without the options, sub-consumptions and production are ignored."""
+    payload = powerstat(
+        kwh_prod=3, subconsumption=[{"label": "HC Bleu", "kwh": 1}]
+    )
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.kwh_prod is None
+    assert client.tempo_hc_blue is None
+    assert client.kwh_hc_ns is None
+
+
+# --- Scheduling of the statistics APIs
+
+
+def simulate(api, monkeypatch, poll, temphum=True, gateways=GATEWAYS,
+             duration=600):
+    """Poll during `duration` seconds of a fake clock.
+
+    Return the client, the call times of each statistics API and the
+    highest number of statistics APIs called during one poll.
+    """
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(
+        api, "time", types.SimpleNamespace(monotonic=lambda: clock["now"])
+    )
+    session = Session(gateways=Response(payload=gateways))
+    client = make_client(api, session, poll=poll, temphum=temphum)
+    times = {name: [] for name in STAT_APIS}
+    busiest = 0
+
+    async def scenario():
+        nonlocal busiest
+        while clock["now"] - 1000.0 <= duration:
+            before = len(session.calls)
+            await client.async_get_data()
+            called = [n for n in session.calls[before:] if n in times]
+            busiest = max(busiest, len(called))
+            for name in called:
+                times[name].append(clock["now"] - 1000.0)
+            # The coordinator waits for the poll interval after each update
+            clock["now"] += poll + 0.3
+
+    run(scenario())
+    return client, times, busiest
+
+
+@pytest.mark.parametrize("poll", [3, 5, 10, 15, 20, 30, 60])
+def test_every_statistic_is_refreshed(api, monkeypatch, poll):
+    """Whatever the poll interval, no statistic is left behind."""
+    client, times, _ = simulate(api, monkeypatch, poll)
+    for name in STAT_APIS:
+        calls = times[name]
+        assert len(calls) >= 3, name
+        gaps = [later - earlier for earlier, later in zip(calls, calls[1:])]
+        # Usual delay, plus the granularity of the polls
+        assert max(gaps) <= api.CONF_API_STAT_REFRESH + 2 * poll, name
+    assert (client.indoor_temp, client.outdoor_temp) == (20, 8)
+    assert (client.indoor_hum, client.outdoor_hum) == (50, 80)
+
+
+@pytest.mark.parametrize("poll", [3, 5, 10])
+def test_short_poll_spreads_the_statistics(api, monkeypatch, poll):
+    """With a short poll interval one statistics API is called per poll."""
+    _, _, busiest = simulate(api, monkeypatch, poll)
+    assert busiest == 1
+
+
+def test_temphum_option_off(api, monkeypatch):
+    """Temperature and humidity are not requested without the option."""
+    _, times, _ = simulate(api, monkeypatch, 5, temphum=False)
+    assert times["tempstat"] == []
+    assert times["humstat"] == []
+    assert len(times["powerstat"]) > 10
+
+
+def test_no_temphum_device(api, monkeypatch):
+    """Temperature and humidity are not requested without the device."""
+    _, times, _ = simulate(
+        api, monkeypatch, 5, gateways=GATEWAYS_WITHOUT_TEMP_HUM
+    )
+    assert times["tempstat"] == []
+    assert times["humstat"] == []

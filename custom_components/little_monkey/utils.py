@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import datetime
-import pytz
+from zoneinfo import ZoneInfo
 
 def has_day_changed(datetime1, datetime2):
     """Compare two dates and return if day has changed."""
@@ -14,7 +14,7 @@ def has_day_changed(datetime1, datetime2):
 
 def get_paris_timezone():
     """Get Paris timezone."""
-    return pytz.timezone('Europe/Paris')
+    return ZoneInfo('Europe/Paris')
 
 def get_current_date(timezone):
     """Return local date."""
