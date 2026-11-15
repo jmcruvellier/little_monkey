@@ -237,30 +237,47 @@ class LittleMonkeyApiClient:
         """
         if api['call'] is not True:
             return None
+        payload, _cookies = await self._async_get(
+            api['name'], api['url'], cookies=self._cookies)
+        return payload
+
+    async def _async_get(self, name, url, **kwargs):
+        """Send a GET request to ecojoko.
+
+        Return the JSON payload (None when the answer is not JSON) and the
+        cookies of the response. The timeout covers the whole exchange,
+        body included, and the connection is always released.
+        """
         try:
             async with asyncio.timeout(CONF_API_TIMEOUT):
-                response = await self._session.get(
-                    url=api['url'],
+                async with self._session.get(
+                    url=url,
                     headers=self._headers,
-                    cookies=self._cookies,
-                )
-            if response.status in (401, 403):
-                # 71 bug fix
-                self._cookies = None
-                raise LittleMonkeyApiClientAuthenticationError(
-                    f"API {api['name']} rejected the session "
-                    f"(HTTP {response.status})",
-                )
-            if "application/json" in response.headers.get("Content-Type", ""):
-                return await response.json()
-            return None
+                    **kwargs,
+                ) as response:
+                    if response.status in (401, 403):
+                        # 71 bug fix
+                        self._cookies = None
+                        raise LittleMonkeyApiClientAuthenticationError(
+                            f"API {name} rejected the request "
+                            f"(HTTP {response.status})",
+                        )
+                    if response.status >= 400:
+                        raise LittleMonkeyApiClientCommunicationError(
+                            f"API {name} returned HTTP {response.status}",
+                        )
+                    payload = None
+                    content_type = response.headers.get("Content-Type", "")
+                    if "application/json" in content_type:
+                        payload = await response.json()
+                    return payload, response.cookies
         except asyncio.TimeoutError as exception:
             raise LittleMonkeyApiClientCommunicationError(
-                f"API {api['name']} timeout error",
+                f"API {name} timeout error",
             ) from exception
         except (aiohttp.ClientError, socket.gaierror, ValueError) as exception:
             raise LittleMonkeyApiClientCommunicationError(
-                f"API {api['name']} client error: {exception!r}",
+                f"API {name} client error: {exception!r}",
             ) from exception
 
     def _warn_once(self, name, error) -> None:
@@ -493,93 +510,34 @@ class LittleMonkeyApiClient:
 
     async def _cookiesapi_wrapper(
         self,
-        data: dict | None = None,
-    ) -> any:
-        """Get cookies from the API."""
-        try:
-            async with asyncio.timeout(CONF_API_TIMEOUT):
-                response = await self._session.get(
-                    url=ECOJOKO_LOGIN_URL,
-                    headers=self._headers,
-                    data=data
-                )
-            if response.status in (401, 403):
-                # 71 bug fix
-                self._cookies = None
-                raise LittleMonkeyApiClientAuthenticationError(
-                    f"Invalid credentials (HTTP {response.status})",
-                )
-            self._cookies = response.cookies
-            # response.raise_for_status()
+        data: str | None = None,
+    ) -> None:
+        """Log in and keep the session cookies."""
+        _payload, cookies = await self._async_get(
+            "Cookies", ECOJOKO_LOGIN_URL, data=data)
+        self._cookies = cookies
+
+    async def _gatewayapi_wrapper(self) -> None:
+        """Get the gateway and device ids from the API."""
+        value_json, _cookies = await self._async_get(
+            "Gateway", ECOJOKO_GATEWAYS_URL, cookies=self._cookies)
+        if value_json is None:
             return
+        gateways = value_json.get('gateways')
 
-        # Errors are logged by the caller (coordinator or config flow)
-        except LittleMonkeyApiClientError:
-            raise
-        except asyncio.TimeoutError as exception:
-            raise LittleMonkeyApiClientCommunicationError(
-                "API Cookies timeout error",
-            ) from exception
-        except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise LittleMonkeyApiClientCommunicationError(
-                f"API Cookies client error: {exception!r}",
-            ) from exception
-        except Exception as exception:  # pylint: disable=broad-except
-            raise LittleMonkeyApiClientError(
-                f"API Cookies other error: {exception!r}"
-            ) from exception
+        # Looking for gateway Id
+        gateway_id = gateways[0].get('gateway_id')
+        self._gateway_id = gateway_id
 
-    async def _gatewayapi_wrapper(self) -> any:
-        """Get gateway Id from the API."""
-        try:
-            async with asyncio.timeout(CONF_API_TIMEOUT):
-                response = await self._session.get(
-                    url=ECOJOKO_GATEWAYS_URL,
-                    headers=self._headers,
-                    cookies=self._cookies,
-                )
-            if response.status in (401, 403):
-                # 71 bug fix
-                self._cookies = None
-                raise LittleMonkeyApiClientAuthenticationError(
-                    "Invalid credentials",
-                )
-            if "application/json" in response.headers.get("Content-Type", ""):
-                value_json = await response.json()
-                gateways = value_json.get('gateways')
+        # Looking for gateway firmware
+        gateway_firmware_version = gateways[0].get(
+            'gateway_firmware_version')
+        self._gateway_firmware_version = gateway_firmware_version
 
-                # Looking for gateway Id
-                gateway_id = gateways[0].get('gateway_id')
-                self._gateway_id = gateway_id
-
-                # Looking for gateway firmware
-                gateway_firmware_version = gateways[0].get(
-                    'gateway_firmware_version')
-                self._gateway_firmware_version = gateway_firmware_version
-
-                value_json = gateways[0].get('devices')
-                # Looking for humidity temperature and  power meter devices id
-                for item in value_json:
-                    if item["device_type"] == "TEMP_HUM":
-                        self._temp_hum_id = item["device_id"]
-                    if item["device_type"] == "POWER_METER":
-                        self._power_meter_id = item["device_id"]
-
-                # response.raise_for_status()
-                return
-
-        # Errors are logged by the caller (coordinator or config flow)
-        except LittleMonkeyApiClientError:
-            raise
-        except asyncio.TimeoutError as exception:
-            raise LittleMonkeyApiClientCommunicationError(
-                "API Gateway timeout error",
-            ) from exception
-        except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise LittleMonkeyApiClientCommunicationError(
-                f"API Gateway client error: {exception!r}",
-            ) from exception
-        except Exception as exception:  # pylint: disable=broad-except
-            raise LittleMonkeyApiClientError(
-                f"API Gateway other error: {exception!r}"
-            ) from exception
+        value_json = gateways[0].get('devices')
+        # Looking for humidity temperature and  power meter devices id
+        for item in value_json:
+            if item["device_type"] == "TEMP_HUM":
+                self._temp_hum_id = item["device_id"]
+            if item["device_type"] == "POWER_METER":
+                self._power_meter_id = item["device_id"]

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import datetime as dt
 import logging
 import types
@@ -46,18 +47,48 @@ def powerstat(kwh=4.2, **today):
 class Response:
     """Fake aiohttp response."""
 
-    def __init__(self, status=200, payload=None, is_json=True):
+    def __init__(self, status=200, payload=None, is_json=True, delay=0):
         """Initialize."""
         self.status = status
         self.cookies = {"session": "abc"}
         self.headers = {
             "Content-Type": "application/json" if is_json else "text/html"
         }
+        self.released = False
         self._payload = payload
+        self._delay = delay
 
     async def json(self):
-        """Return the JSON payload."""
+        """Return the JSON payload, after the delay if any."""
+        await asyncio.sleep(self._delay)
         return self._payload
+
+
+class Request:
+    """Fake aiohttp request: an async context manager giving the response."""
+
+    def __init__(self, answer):
+        """Initialize with a Response, an exception or a function."""
+        self._answer = answer
+        self._response = None
+
+    async def __aenter__(self):
+        """Return the response or raise the error of the request."""
+        answer = self._answer
+        if callable(answer):
+            answer = answer()
+        if asyncio.iscoroutine(answer):
+            answer = await answer
+        if isinstance(answer, BaseException):
+            raise answer
+        self._response = answer
+        return answer
+
+    async def __aexit__(self, *exc_info):
+        """Release the connection."""
+        if self._response is not None:
+            self._response.released = True
+        return False
 
 
 class Session:
@@ -85,19 +116,12 @@ class Session:
         self.calls = []
         self.requests = []
 
-    async def get(self, url, **kwargs):
-        """Answer a GET request."""
+    def get(self, url, **kwargs):
+        """Start a GET request."""
         name = next(key for key in self.routes if key in url)
         self.calls.append(name)
         self.requests.append((url, kwargs))
-        answer = self.routes[name]
-        if callable(answer):
-            answer = answer()
-        if asyncio.iscoroutine(answer):
-            answer = await answer
-        if isinstance(answer, BaseException):
-            raise answer
-        return answer
+        return Request(self.routes[name])
 
 
 def make_client(api, session, poll=5, hchp=False, tempo=False,
@@ -229,6 +253,63 @@ def test_realtime_unexpected_format(api):
     session = Session(realtime_conso=Response(payload={"oops": 1}))
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(make_client(api, session).async_get_data())
+
+
+# --- HTTP errors and release of the connections
+
+
+@pytest.mark.parametrize("status", [400, 404, 500, 503])
+def test_login_http_error_is_not_a_success(api, status):
+    """An HTTP error at login is reported, not taken as a valid session."""
+    session = Session(login=Response(status=status))
+    client = make_client(api, session)
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_cookiesdata())
+    assert client._cookies is None
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_data())
+    assert "gateways" not in session.calls
+
+
+@pytest.mark.parametrize("status", [404, 500, 503])
+def test_realtime_http_error(api, status):
+    """An HTTP error on the real-time API fails the update, even with JSON."""
+    answer = Response(status=status, payload={"real_time": {"value": 1}})
+    client = make_client(api, Session(realtime_conso=answer))
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_data())
+    assert client.realtime_conso is None
+
+
+def test_statistic_http_error_is_best_effort(api):
+    """An HTTP error on a statistics API keeps the real-time value."""
+    answer = Response(status=500, payload=powerstat())
+    client = make_client(api, Session(powerstat=answer))
+    run(client.async_get_data())
+    assert client.realtime_conso == 512
+    assert client.kwh is None
+
+
+def test_slow_body_times_out(api, monkeypatch):
+    """The timeout also covers the reading of the response body."""
+    monkeypatch.setattr(api, "CONF_API_TIMEOUT", 0.01)
+    answer = Response(payload={"real_time": {"value": 1}}, delay=5)
+    client = make_client(api, Session(realtime_conso=answer))
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_data())
+    assert answer.released is True
+
+
+@pytest.mark.parametrize("status", [200, 401, 500])
+def test_responses_are_released(api, status):
+    """The connection is released whatever the answer."""
+    answer = Response(status=status, payload={"real_time": {"value": 512}})
+    session = Session(realtime_conso=answer)
+    with contextlib.suppress(api.LittleMonkeyApiClientError):
+        run(make_client(api, session).async_get_data())
+    assert answer.released is True
+    for name in ("login", "gateways"):
+        assert session.routes[name].released is True
 
 
 # --- Session expiry
