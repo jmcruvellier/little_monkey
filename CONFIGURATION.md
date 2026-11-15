@@ -86,7 +86,7 @@ Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capt
 | Tempo Blanc | gris clair `#D3D3D3` | blanc `#FFFFFF` |
 | Tempo Rouge | rouge foncé `#8B0000` | rouge `#FF0000` |
 
-L'intégration ne connaît pas encore la période en cours : indiquez dans la carte une entité qui la donne. Sont compris les états `HC` / `HP` (ou « Heures Creuses », « off-peak »...), la couleur Tempo en français ou en anglais (`Bleu`, `white`...), les deux ensemble (`HC Bleu`, `hp_red`), les périodes du compteur Linky (`HCJB`, `HPJR`...) et un capteur binaire allumé pendant les heures creuses. Sans période connue, le disque reste bleu ecojoko<sup>©️</sup> ; une couleur Tempo connue sans période donne sa couleur HP.
+L'intégration ne connaît pas encore la période en cours : indiquez dans la carte une entité qui la donne. Sont compris les états `HC` / `HP` (ou « Heures Creuses », « off-peak »...), la couleur Tempo en français ou en anglais (`Bleu`, `white`...), les deux ensemble (`HC Bleu`, `hp_red`), les périodes du compteur Linky (`HCJB`, `HPJR`...) et un capteur binaire allumé pendant les heures creuses. Sans période connue, le disque reste bleu ecojoko<sup>©️</sup> ; une couleur Tempo connue sans période donne sa couleur HP. Sous la courbe, la carte affiche aussi le nom de la période en cours, par exemple « HEURES CREUSES » ou « HEURES PLEINES · JOUR ROUGE ».
 
 Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"), ou utiliser la configuration YAML suivante, en remplaçant les entités par les vôtres :
 

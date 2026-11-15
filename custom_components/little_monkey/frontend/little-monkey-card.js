@@ -22,6 +22,8 @@ const TRANSLATIONS = {
     watts: "WATTS",
     no_entity: "Choose the real-time consumption sensor of Little Monkey",
     unavailable: "Unavailable",
+    periods: { hc: "OFF-PEAK HOURS", hp: "PEAK HOURS" },
+    colors: { blue: "BLUE DAY", white: "WHITE DAY", red: "RED DAY" },
   },
   fr: {
     name: "Petit Singe",
@@ -30,6 +32,8 @@ const TRANSLATIONS = {
     watts: "WATTS",
     no_entity: "Choisissez le capteur Consommation Temps Réel de Little Monkey",
     unavailable: "Indisponible",
+    periods: { hc: "HEURES CREUSES", hp: "HEURES PLEINES" },
+    colors: { blue: "JOUR BLEU", white: "JOUR BLANC", red: "JOUR ROUGE" },
   },
 };
 
@@ -196,6 +200,26 @@ export function parseTariff(entityId, state) {
     result.color = "red";
   }
   return result;
+}
+
+/**
+ * Return the name of the current tariff period, shown under the curve.
+ *
+ * mode: "tempo", "hchp" or null, from the options of the integration.
+ * Empty without option or when the period is not known, like the color of
+ * the disc. A known Tempo color without period gives the color of the day.
+ */
+export function tariffLabel(lang, mode, tariff) {
+  const text = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  const period = tariff.period && text.periods[tariff.period];
+  if (mode === "tempo" && tariff.color) {
+    const color = text.colors[tariff.color];
+    return period ? `${period} · ${color}` : color;
+  }
+  if (mode === "hchp" && period) {
+    return period;
+  }
+  return "";
 }
 
 /**
@@ -406,6 +430,7 @@ class LittleMonkeyCard extends HTMLElement {
         .value { font-size: 21px; font-weight: 400; }
         .apparent { font-size: 7.5px; opacity: 0.85; }
         .message { font-size: 5.5px; }
+        .tariff { font-size: 6px; letter-spacing: 0.3px; opacity: 0.9; }
         .trend { fill: none; stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; }
         .hidden { display: none; }
       </style>
@@ -434,6 +459,7 @@ class LittleMonkeyCard extends HTMLElement {
             <text class="value" x="100" y="96"></text>
             <text class="apparent" x="100" y="110"></text>
             <text class="message hidden" x="100" y="96"></text>
+            <text class="tariff" x="100" y="140"></text>
             <path class="trend" d="" />
           </g>
         </svg>
@@ -447,6 +473,7 @@ class LittleMonkeyCard extends HTMLElement {
       content: root.querySelector(".content"),
       value: root.querySelector(".value"),
       apparent: root.querySelector(".apparent"),
+      tariff: root.querySelector(".tariff"),
       message: root.querySelector(".message"),
       trend: root.querySelector(".trend"),
     };
@@ -484,6 +511,7 @@ class LittleMonkeyCard extends HTMLElement {
       tariff.color = parsed.color || tariff.color;
     }
     const color = discColor(mode, tariff);
+    el.tariff.textContent = tariffLabel(this._language, mode, tariff);
     const light = LIGHT_COLORS.has(color);
     el.disc.setAttribute("fill", color);
     el.content.setAttribute("fill", light ? "#212121" : "#ffffff");
