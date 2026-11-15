@@ -5,13 +5,14 @@ from typing import Any
 
 from homeassistant.components.diagnostics import async_redact_data
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 
 from .const import VERSION
 
-# The title and the unique id of the entry are the ecojoko username
-TO_REDACT = {CONF_USERNAME, CONF_PASSWORD, "title", "unique_id"}
+# The title and the unique id of the entry are the ecojoko username. The name
+# is a free text chosen by the user, which may be personal.
+TO_REDACT = {CONF_NAME, CONF_USERNAME, CONF_PASSWORD, "title", "unique_id"}
 
 
 async def async_get_config_entry_diagnostics(
