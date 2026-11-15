@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import types
 from unittest.mock import patch
 
 from homeassistant import config_entries, data_entry_flow
@@ -25,6 +26,7 @@ from custom_components.little_monkey import (
     api as lm_api,
     async_remove_config_entry_device,
     config_flow,
+    coordinator as lm_coordinator,
 )
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
@@ -267,20 +269,57 @@ async def test_renaming_keeps_entities(hass, fake_api):
 
 
 async def test_unavailable_when_api_fails_then_recovers(hass, fake_api):
-    """Entities are unavailable while the API fails, then come back."""
+    """Entities are unavailable when the API fails for long, then come back."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    coordinator = entry.runtime_data
+    clock = {"now": 1000.0}
+
+    # Only the clock of the coordinator: the event loop keeps the real one
+    fake_time = types.SimpleNamespace(monotonic=lambda: clock["now"])
+    with patch.object(lm_coordinator, "time", fake_time):
+        # A brief failure keeps the last values
+        fake_api.data_error = lm_api.LittleMonkeyApiClientCommunicationError("down")
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+        assert hass.states.get(REALTIME).state == "512"
+        assert coordinator.last_update_success
+
+        clock["now"] += 119
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+        assert hass.states.get(REALTIME).state == "512"
+
+        # After two minutes the sensors become unavailable
+        clock["now"] += 1
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+        assert hass.states.get(REALTIME).state == "unavailable"
+
+        fake_api.data_error = None
+        fake_api.values["_realtime_conso"] = 640
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+        assert hass.states.get(REALTIME).state == "640"
+
+        # The delay starts again with the next failure
+        clock["now"] += 3600
+        fake_api.data_error = lm_api.LittleMonkeyApiClientCommunicationError("down")
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+        assert hass.states.get(REALTIME).state == "640"
+
+
+async def test_unexpected_answer_is_not_a_brief_failure(hass, fake_api):
+    """Only communication failures keep the last values."""
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     coordinator = entry.runtime_data
 
-    fake_api.data_error = lm_api.LittleMonkeyApiClientCommunicationError("down")
+    fake_api.data_error = lm_api.LittleMonkeyApiClientError("unexpected data")
     await coordinator.async_refresh()
     await hass.async_block_till_done()
     assert hass.states.get(REALTIME).state == "unavailable"
-
-    fake_api.data_error = None
-    await coordinator.async_refresh()
-    await hass.async_block_till_done()
-    assert hass.states.get(REALTIME).state == "512"
 
 
 # --- Energy totals never decrease during a day

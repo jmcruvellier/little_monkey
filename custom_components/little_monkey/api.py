@@ -107,6 +107,8 @@ class LittleMonkeyApiClient:
         }
         # APIs whose failure has already been logged as a warning
         self._warned = set()
+        # Statistics APIs that failed once to answer, not yet a warning
+        self._failed_once = set()
         # Day (in Paris) the energy properties belong to
         self._stat_date = None
 
@@ -216,7 +218,7 @@ class LittleMonkeyApiClient:
                 name: None if last is None else round(now - last, 1)
                 for name, last in self._last_stat_refresh.items()
             },
-            "failing_apis": sorted(self._warned),
+            "failing_apis": sorted(self._warned | self._failed_once),
         }
 
     async def async_get_cookiesdata(self) -> None:
@@ -304,9 +306,21 @@ class LittleMonkeyApiClient:
             ) from exception
 
     def _warn_once(self, name, error) -> None:
-        """Log an API failure as a warning once, then as debug until it recovers."""
+        """Log an API failure as a warning once, then as debug until it recovers.
+
+        A communication failure (timeout, network) is a warning only when it
+        happens twice in a row: a single one is usual and the API is called
+        again after the usual delay.
+        """
         if name in self._warned:
             LOGGER.debug("API %s still failing: %r", name, error)
+            return
+        if (
+            isinstance(error, LittleMonkeyApiClientCommunicationError)
+            and name not in self._failed_once
+        ):
+            self._failed_once.add(name)
+            LOGGER.debug("API %s failed once: %r", name, error)
             return
         self._warned.add(name)
         LOGGER.warning(
@@ -315,6 +329,7 @@ class LittleMonkeyApiClient:
 
     def _clear_warning(self, name) -> None:
         """Log that an API works again."""
+        self._failed_once.discard(name)
         if name in self._warned:
             self._warned.discard(name)
             LOGGER.info("API %s is back to normal", name)
@@ -459,9 +474,12 @@ class LittleMonkeyApiClient:
         if results[2] is not None:
             try:
                 # 101 bug fix
-                last = results[2]['stat']['data'][-1]
-                self._indoor_temp = round_value(last['value'])
-                self._outdoor_temp = round_value(last['ext_value'])
+                data = results[2]['stat']['data']
+                # No measure yet just after midnight: the values are kept
+                if len(data) > 0:
+                    last = data[-1]
+                    self._indoor_temp = round_value(last['value'])
+                    self._outdoor_temp = round_value(last['ext_value'])
             except PARSE_ERRORS as exception:
                 self._warn_once(apis[2]['name'], exception)
             else:
@@ -470,9 +488,12 @@ class LittleMonkeyApiClient:
         if results[3] is not None:
             try:
                 # 101 bug fix
-                last = results[3]['stat']['data'][-1]
-                self._indoor_hum = round_value(last['value'])
-                self._outdoor_hum = round_value(last['ext_value'])
+                data = results[3]['stat']['data']
+                # No measure yet just after midnight: the values are kept
+                if len(data) > 0:
+                    last = data[-1]
+                    self._indoor_hum = round_value(last['value'])
+                    self._outdoor_hum = round_value(last['ext_value'])
             except PARSE_ERRORS as exception:
                 self._warn_once(apis[3]['name'], exception)
             else:

@@ -386,11 +386,11 @@ def test_session_still_rejected_after_login(api):
     assert session.calls.count("login") == 2
 
 
-# --- Statistics errors: the update succeeds, a warning is logged once
+# --- Statistics errors: the update succeeds, a lasting failure warns once
 
 
 def test_powerstat_network_error(api, caplog):
-    """A failing statistic keeps the real-time value and warns once."""
+    """A failing statistic keeps the real-time value, without a warning yet."""
     session = Session(powerstat=aiohttp.ClientError("boom"))
     client = make_client(api, session)
 
@@ -404,8 +404,52 @@ def test_powerstat_network_error(api, caplog):
     assert client.kwh is None
     # Called again after the usual delay only, not at each poll
     assert session.calls.count("powerstat") == 1
-    warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
-    assert len(warnings) == 1
+    # A single network failure is usual: it is not worth a warning
+    assert [r for r in caplog.records if r.levelno >= logging.WARNING] == []
+
+
+def test_powerstat_network_error_twice_in_a_row_warns_once(api, caplog):
+    """A statistic that fails again at its next call warns, only once."""
+    session = Session(powerstat=aiohttp.ClientError("boom"))
+    client = make_client(api, session)
+
+    async def scenario():
+        for _ in range(3):
+            client._last_stat_refresh["powerstat"] = None
+            await client.async_get_data()
+        session.routes["powerstat"] = Response(payload=powerstat(9))
+        client._last_stat_refresh["powerstat"] = None
+        await client.async_get_data()
+        # After a recovery, a single failure is silent again
+        session.routes["powerstat"] = aiohttp.ClientError("boom")
+        client._last_stat_refresh["powerstat"] = None
+        await client.async_get_data()
+
+    with caplog.at_level(logging.INFO):
+        run(scenario())
+    assert session.calls.count("powerstat") == 5
+    levels = [r.levelno for r in caplog.records]
+    assert levels == [logging.WARNING, logging.INFO]
+
+
+@pytest.mark.parametrize("name", ["tempstat", "humstat"])
+def test_no_measure_yet_keeps_the_values_without_warning(api, caplog, name):
+    """Just after midnight the list of the day is empty: nothing is wrong."""
+    session = Session()
+    client = make_client(api, session, poll=60, temphum=True)
+
+    async def scenario():
+        await client.async_get_data()
+        session.routes[name] = Response(payload={"stat": {"data": []}})
+        client._last_stat_refresh[name] = None
+        await client.async_get_data()
+
+    with caplog.at_level(logging.INFO):
+        run(scenario())
+    assert session.calls.count(name) == 2
+    assert (client.indoor_temp, client.outdoor_temp) == (20, 8)
+    assert (client.indoor_hum, client.outdoor_hum) == (50, 80)
+    assert caplog.records == []
 
 
 def test_powerstat_unexpected_format_then_recovery(api, caplog):
