@@ -12,7 +12,7 @@
                     "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
                     "use_temphum_feature": "Capteurs d'humidité et de température",
                     "use_prod_feature": "Capteur de production",
-                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)"
+                    "poll_interval": "Fréquence de rafraîchissement des données (en secondes)"
                 }
             },
             "reauth_confirm": {
@@ -44,7 +44,7 @@
                     "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
                     "use_temphum_feature": "Capteurs d'humidité et de température",
                     "use_prod_feature": "Capteur de production",
-                    "poll_interval": "Fréquence de raffraichissement des données (en secondes)"
+                    "poll_interval": "Fréquence de rafraîchissement des données (en secondes)"
                 }
             }
         },

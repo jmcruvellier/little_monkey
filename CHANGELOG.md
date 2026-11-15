@@ -26,50 +26,50 @@
 - Fix URL dans le json des traductions (nouvelle règle de validation de la qualité du code)
 
 ## 1.2.4
-- Bug fix [#101](https://github.com/jmcruvellier/little_monkey/issues/101)
+- Correction du bug [#101](https://github.com/jmcruvellier/little_monkey/issues/101)
 
 ## 1.2.3
-- Bug fix [#93](https://github.com/jmcruvellier/little_monkey/issues/93)
-- Addition of Portuguese to the list of available languages [#80](https://github.com/jmcruvellier/little_monkey/pull/80) [#88](https://github.com/jmcruvellier/little_monkey/pull/88) [#89](https://github.com/jmcruvellier/little_monkey/pull/89)
+- Correction du bug [#93](https://github.com/jmcruvellier/little_monkey/issues/93)
+- Ajout du portugais à la liste des langues disponibles [#80](https://github.com/jmcruvellier/little_monkey/pull/80) [#88](https://github.com/jmcruvellier/little_monkey/pull/88) [#89](https://github.com/jmcruvellier/little_monkey/pull/89)
 
 ## 1.2.2
-- Bug fix [#74](https://github.com/jmcruvellier/little_monkey/issues/74)
+- Correction du bug [#74](https://github.com/jmcruvellier/little_monkey/issues/74)
 
 ## 1.2.1
-- Bug fix [#78](https://github.com/jmcruvellier/little_monkey/issues/78)
+- Correction du bug [#78](https://github.com/jmcruvellier/little_monkey/issues/78)
 
 ## 1.2.0
-- Major code and performance optimization
-- Removed sensors introduced in v1.1.0 based on ecojoko Measurements APIs
-- Bug fix [#58](https://github.com/jmcruvellier/little_monkey/issues/58)
+- Optimisation majeure du code et des performances
+- Suppression des capteurs introduits en v1.1.0, basés sur les APIs Measurements d'ecojoko
+- Correction du bug [#58](https://github.com/jmcruvellier/little_monkey/issues/58)
 
 ## 1.1.0
-- New sensors based on ecojoko Measurements APIs
-- Some performance improvement and minor bug fixes
-- Bug fix [#58](https://github.com/jmcruvellier/little_monkey/issues/58)
-- Bug fix [#71](https://github.com/jmcruvellier/little_monkey/issues/71)
+- Nouveaux capteurs basés sur les APIs Measurements d'ecojoko
+- Améliorations de performance et corrections de bugs mineurs
+- Correction du bug [#58](https://github.com/jmcruvellier/little_monkey/issues/58)
+- Correction du bug [#71](https://github.com/jmcruvellier/little_monkey/issues/71)
 
 ## 1.0.1
 
-- Bug fix [#67](https://github.com/jmcruvellier/little_monkey/issues/67)
-- Bug fix [#68](https://github.com/jmcruvellier/little_monkey/issues/68)
+- Correction du bug [#67](https://github.com/jmcruvellier/little_monkey/issues/67)
+- Correction du bug [#68](https://github.com/jmcruvellier/little_monkey/issues/68)
 
 ## 1.0.0
 
-- HACS country by @jmcruvellier in https://github.com/jmcruvellier/little_monkey/pull/66
-- Ready for publication in Home Assistant Community Store https://github.com/hacs/default/pull/2162
+- Pays HACS, par @jmcruvellier dans https://github.com/jmcruvellier/little_monkey/pull/66
+- Prêt pour la publication dans le Home Assistant Community Store https://github.com/hacs/default/pull/2162
 
 ## 0.1.3
 
-- Bug fix [#63](https://github.com/jmcruvellier/little_monkey/issues/63)
+- Correction du bug [#63](https://github.com/jmcruvellier/little_monkey/issues/63)
 
 ## 0.1.2
 
-- Bug fix [#63](https://github.com/jmcruvellier/little_monkey/issues/63)
+- Correction du bug [#63](https://github.com/jmcruvellier/little_monkey/issues/63)
 
 ## 0.1.1
 
-- Bug fix [#59](https://github.com/jmcruvellier/little_monkey/issues/59)
+- Correction du bug [#59](https://github.com/jmcruvellier/little_monkey/issues/59)
 
 ## 0.1.0
 
