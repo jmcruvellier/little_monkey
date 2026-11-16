@@ -83,7 +83,7 @@ const TRANSLATIONS = {
       title: "Titre",
     },
     detail: {
-      name: "Little Monkey : détail des économies",
+      name: "Petit Singe : détail des économies",
       description: "Vos économies par jour, semaine ou mois, comme dans l'application ecojoko.",
       title: "Économies en détail",
       periods: { week: "Semaine", month: "Mois", year: "Année" },
