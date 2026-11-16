@@ -44,6 +44,16 @@ const TRANSLATIONS = {
       trend_minutes: "Duration of the curve (3 min by default)",
       savings_entity: "Savings over 7 days (optional)",
       return_seconds: "Back to the real-time power after (s)",
+      relief: "Relief of the dial",
+      dial_mode: "Background of the dial",
+      dial_modes: {
+        default: "Default (shade of the theme)",
+        none: "Transparent",
+        palette: "Home Assistant palette",
+        custom: "Custom color",
+      },
+      dial_color: "Color of the palette",
+      dial_rgb: "Custom color",
       return_helper: "After another face of the disc was chosen. 0 to stay on it.",
       tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. By default, the Current Tariff Period sensor of Little Monkey.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
@@ -77,6 +87,16 @@ const TRANSLATIONS = {
       trend_minutes: "Durée de la courbe (3 min par défaut)",
       savings_entity: "Économies sur 7 jours (facultatif)",
       return_seconds: "Retour à la puissance temps réel après (s)",
+      relief: "Relief du cadran",
+      dial_mode: "Fond du cadran",
+      dial_modes: {
+        default: "Par défaut (teinte du thème)",
+        none: "Transparent",
+        palette: "Palette de Home Assistant",
+        custom: "Couleur libre",
+      },
+      dial_color: "Couleur de la palette",
+      dial_rgb: "Couleur libre",
       return_helper: "Après le choix d'une autre face du disque. 0 pour y rester.",
       tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Par défaut, le capteur Période Tarifaire en Cours de Little Monkey.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
@@ -106,8 +126,10 @@ const SAVINGS_COLOR = "#6dcfd9";
 const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 
 // Radii, in a 200 x 200 view box centered on (100, 100)
-const R_BEZEL = 98;
-const R_LABELS = 89;
+// The bezel goes a little beyond the 200 x 200 box: the view box is wider
+const R_BEZEL = 108;
+// Graduations, beyond the rounded tips of the needles and away from the rim
+const R_LABELS = 90;
 const R_TRACK = 79;
 const R_DISC = 64;
 // Legends WATTS and %, halfway between the disc and the inner edge of the arcs
@@ -413,6 +435,128 @@ export function trendMinutes(config) {
   return Number.isFinite(minutes) && minutes >= 1 ? Math.min(minutes, 60) : DEFAULT_TREND_MINUTES;
 }
 
+// Colors of the palette of Home Assistant, used when the theme does not
+// define them
+const PALETTE = {
+  primary: "#03a9f4", accent: "#ff9800", red: "#f44336", pink: "#e91e63",
+  purple: "#926bc7", "deep-purple": "#6e41ab", indigo: "#3f51b5", blue: "#2196f3",
+  "light-blue": "#03a9f4", cyan: "#00bcd4", teal: "#009688", green: "#4caf50",
+  "light-green": "#8bc34a", lime: "#cddc39", yellow: "#ffeb3b", amber: "#ffc107",
+  orange: "#ff9800", "deep-orange": "#ff6f22", brown: "#795548",
+  "light-grey": "#bdbdbd", grey: "#9e9e9e", "dark-grey": "#606060",
+  "blue-grey": "#607d8b", black: "#000000", white: "#ffffff",
+};
+// Graduations on a colored dial: dark or light, whichever reads better
+const DARK_LABEL = "rgba(0, 0, 0, 0.7)";
+const LIGHT_LABEL = "rgba(255, 255, 255, 0.85)";
+
+/** Return a CSS color "#rrggbb", "#rgb" or "rgb(r, g, b)" as [r, g, b]. */
+export function parseColor(color) {
+  const text = String(color || "").trim().toLowerCase();
+  let match = text.match(/^#([0-9a-f]{3})$/);
+  if (match) {
+    return [...match[1]].map((digit) => parseInt(digit + digit, 16));
+  }
+  match = text.match(/^#([0-9a-f]{6})$/);
+  if (match) {
+    return [0, 2, 4].map((index) => parseInt(match[1].slice(index, index + 2), 16));
+  }
+  match = text.match(/^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/);
+  return match ? match.slice(1, 4).map(Number) : null;
+}
+
+/**
+ * Return the color of the graduations on a dial of a given color: the one,
+ * dark or light, with the best contrast (WCAG relative luminance).
+ */
+export function labelColor(rgb) {
+  const channel = (value) => {
+    const c = value / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  const [r, g, b] = rgb.map(channel);
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // Contrast with black: (L + 0.05) / 0.05; with white: 1.05 / (L + 0.05)
+  return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? DARK_LABEL : LIGHT_LABEL;
+}
+
+/** Return the kind of a dial_color: "default", "none", "palette" or "custom". */
+export function dialMode(dialColor) {
+  if (dialColor === undefined || dialColor === null || dialColor === "" || dialColor === "default") {
+    return "default";
+  }
+  if (dialColor === "none" || dialColor === "transparent") {
+    return "none";
+  }
+  return Array.isArray(dialColor) || parseColor(dialColor) ? "custom" : "palette";
+}
+
+/**
+ * Return the fill of the inside of the dial.
+ *
+ * dial_color: "default" (or absent) for a shade of the theme, a little
+ * lighter than the card in a dark theme and a little greyer in a light one;
+ * "none" or "transparent" for the background of the card; a color of the
+ * Home Assistant palette (red, light-blue...), which follows the theme; or a
+ * custom color, [r, g, b] as given by the color picker, "#rrggbb" or
+ * "rgb(r, g, b)".
+ */
+export function dialFill(dialColor) {
+  const mode = dialMode(dialColor);
+  if (mode === "default") {
+    return "color-mix(in srgb, var(--primary-text-color, #212121) 7%, var(--lm-background))";
+  }
+  if (mode === "none") {
+    return "none";
+  }
+  if (mode === "custom") {
+    const rgb = Array.isArray(dialColor) ? dialColor.map(Number) : parseColor(dialColor);
+    if (rgb.length === 3 && rgb.every((value) => Number.isFinite(value))) {
+      return `rgb(${rgb.map((value) => Math.round(Math.min(Math.max(value, 0), 255))).join(", ")})`;
+    }
+    return dialFill("default");
+  }
+  // A name of the palette is a CSS variable of the theme
+  return `var(--${String(dialColor).replace(/[^a-z0-9-]/gi, "")}-color)`;
+}
+
+/** Return the values shown by the editor: the background as a menu. */
+export function formData(config) {
+  const data = { ...config };
+  const mode = dialMode(config.dial_color);
+  delete data.dial_color;
+  data.dial_mode = mode;
+  if (mode === "palette") {
+    data.dial_color = config.dial_color;
+  } else if (mode === "custom") {
+    data.dial_rgb = Array.isArray(config.dial_color)
+      ? config.dial_color
+      : parseColor(config.dial_color);
+  }
+  return data;
+}
+
+/** Return the configuration from the values of the editor. */
+export function fromFormData(previous, value) {
+  const config = { ...value };
+  const mode = config.dial_mode || "default";
+  const color = config.dial_color;
+  const rgb = config.dial_rgb;
+  delete config.dial_mode;
+  delete config.dial_rgb;
+  delete config.dial_color;
+  if (mode === "none") {
+    config.dial_color = "none";
+  } else if (mode === "palette") {
+    // The color chosen in the palette, the previous one, or blue
+    const kept = dialMode(previous.dial_color) === "palette" ? previous.dial_color : "blue";
+    config.dial_color = color || kept;
+  } else if (mode === "custom") {
+    config.dial_color = Array.isArray(rgb) ? rgb : [240, 240, 240];
+  }
+  return config;
+}
+
 /**
  * Return the faces of the disc that have their sensors, in their order.
  *
@@ -591,6 +735,29 @@ export function editorSchema(hass, config) {
     selector: { number: { min: 0, max: 600, step: 5, mode: "box", unit_of_measurement: "s" } },
   });
   schema.push({
+    name: "relief",
+    default: true,
+    selector: { boolean: {} },
+  });
+  const background = dialMode(config.dial_color);
+  schema.push({
+    name: "dial_mode",
+    selector: {
+      select: {
+        mode: "dropdown",
+        options: ["default", "none", "palette", "custom"].map((value) => ({
+          value,
+          label: (TRANSLATIONS[language(hass)] || TRANSLATIONS.en).editor.dial_modes[value],
+        })),
+      },
+    },
+  });
+  if (background === "palette") {
+    schema.push({ name: "dial_color", selector: { ui_color: {} } });
+  } else if (background === "custom") {
+    schema.push({ name: "dial_rgb", selector: { color_rgb: {} } });
+  }
+  schema.push({
     name: "trend_minutes",
     selector: { number: { min: 1, max: 60, step: 1, mode: "slider", unit_of_measurement: "min" } },
   });
@@ -687,20 +854,24 @@ class LittleMonkeyCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         ha-card { padding: 16px; display: flex; justify-content: center; }
-        svg { width: 100%; max-width: 360px; display: block; }
+        svg { width: 100%; max-width: 360px; display: block; overflow: visible; }
         .bezel { fill: var(--lm-background); stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
-        .bezel-inner { fill: none; stroke: var(--divider-color, #e0e0e0); stroke-width: 0.6; }
+        .bezel-inner { stroke: var(--divider-color, #e0e0e0); stroke-width: 0.6; transition: fill 0.5s; }
+        .relief .bezel { filter: url(#lm-outer-shadow); }
+        .relief .disc { filter: url(#lm-shadow); }
+        .inner-shadow { display: none; }
+        .relief .inner-shadow { display: inline; }
         :host { --lm-background: var(--ha-card-background, var(--card-background-color, #fff)); }
         .track { fill: none; stroke-width: 5; }
-        .labels text { fill: var(--secondary-text-color, #727272); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
-        .unit { fill: var(--secondary-text-color, #727272); font-size: 6px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
+        .labels text { fill: var(--lm-label-color, var(--secondary-text-color, #727272)); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
+        .unit { fill: var(--lm-label-color, var(--secondary-text-color, #727272)); font-size: 6px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
         .needle { transition: transform 0.8s ease-out; }
         .needle line { stroke-linecap: round; transition: stroke 0.5s; }
         .needle-body { stroke-width: 6; }
         .needle-outline { stroke-width: 7.4; stroke: #9e9e9e; }
         .savings-needle { transition: transform 0.8s ease-out; }
         .savings-needle line { stroke-linecap: round; stroke-width: 6; }
-        .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; filter: url(#lm-shadow); }
+        .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; }
         .content text { text-anchor: middle; dominant-baseline: central; }
         .title { font-size: 8.5px; font-weight: 400; letter-spacing: 0.2px; }
         .value { font-size: 21px; font-weight: 400; }
@@ -717,14 +888,26 @@ class LittleMonkeyCard extends HTMLElement {
         .hidden { display: none; }
       </style>
       <ha-card>
-        <svg viewBox="0 0 200 200" role="img" aria-label="${text.title.join(" ")}">
+        <svg viewBox="-10 -10 220 220" role="img" aria-label="${text.title.join(" ")}">
           <defs>
+            <filter id="lm-outer-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.5" />
+            </filter>
+            <filter id="lm-blur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.1" />
+            </filter>
+            <clipPath id="lm-inside">
+              <circle cx="100" cy="100" r="${R_BEZEL - 4}" />
+            </clipPath>
             <filter id="lm-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.35" />
+              <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.45" />
             </filter>
           </defs>
           <circle class="bezel" cx="100" cy="100" r="${R_BEZEL}" />
           <circle class="bezel-inner" cx="100" cy="100" r="${R_BEZEL - 4}" />
+          <g class="inner-shadow" clip-path="url(#lm-inside)">
+            <circle cx="100" cy="101.5" r="${R_BEZEL - 4}" fill="none" stroke="rgba(0, 0, 0, 0.5)" stroke-width="2.6" filter="url(#lm-blur)" />
+          </g>
           ${segmentedArc(R_TRACK, powerZoneAngles, POWER_ZONE_COLORS, "track")}
           ${segmentedArc(R_TRACK, lowerAngles, LOWER_COLORS, "track")}
           <g class="labels">${ticks}${lowerTicks}</g>
@@ -802,6 +985,8 @@ class LittleMonkeyCard extends HTMLElement {
       maxYear: root.querySelector(".max-year"),
       maxAlltime: root.querySelector(".max-alltime"),
       dots: root.querySelector(".dots"),
+      svg: root.querySelector("svg"),
+      dial: root.querySelector(".bezel-inner"),
     };
     this._dotsKey = null;
     // Swipe to the next or to the previous face
@@ -862,6 +1047,11 @@ class LittleMonkeyCard extends HTMLElement {
       line.textContent = powerTitle[index];
     });
 
+    // Relief and color of the dial
+    el.svg.classList.toggle("relief", config.relief !== false);
+    el.dial.setAttribute("fill", dialFill(config.dial_color));
+    this._updateLabelColor(config.dial_color);
+
     // Faces of the disc: the first one has the color of the tariff period,
     // and the power needle keeps it on the other faces
     const savingsEntity = config.savings_entity || sensors.savings_7_days;
@@ -912,6 +1102,28 @@ class LittleMonkeyCard extends HTMLElement {
     this._renderFaces(savings);
 
     this._updateTrend(power);
+  }
+
+  /**
+   * Give the graduations a color that reads on the dial: the color of the
+   * theme on the default or transparent dial, dark or light on a custom
+   * color or on a color of the palette, as defined by the theme.
+   */
+  _updateLabelColor(dialColor) {
+    const fill = dialFill(dialColor);
+    let label = "";
+    if (fill.startsWith("var(")) {
+      const name = fill.slice(6, -7);
+      const themed = getComputedStyle(this).getPropertyValue(`--${name}-color`);
+      const rgb = parseColor(themed) || parseColor(PALETTE[name]);
+      label = rgb ? labelColor(rgb) : "";
+    } else if (fill.startsWith("rgb(")) {
+      label = labelColor(parseColor(fill));
+    }
+    if (label !== this._labelColor) {
+      this._labelColor = label;
+      this._elements.svg.style.setProperty("--lm-label-color", label || null);
+    }
   }
 
   /** Fill the faces other than the real-time power. */
@@ -1090,7 +1302,7 @@ class LittleMonkeyCardEditor extends HTMLElement {
       this.appendChild(this._form);
     }
     this._form.hass = this._hass;
-    this._form.data = this._config;
+    this._form.data = formData(this._config);
     this._form.schema = editorSchema(this._hass, this._config);
   }
 
@@ -1100,7 +1312,8 @@ class LittleMonkeyCardEditor extends HTMLElement {
 
   _changed(event) {
     event.stopPropagation();
-    const config = editedConfig(this._hass, this._config, event.detail.value);
+    const config = editedConfig(
+      this._hass, this._config, fromFormData(this._config, event.detail.value));
     this._config = config;
     this._render();
     this.dispatchEvent(new CustomEvent("config-changed", {
