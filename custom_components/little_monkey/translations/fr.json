@@ -176,6 +176,120 @@
             },
             "max_power_alltime": {
                 "name": "Puissance Max Depuis le Début"
+            },
+            "consumption_cost_12_months": {
+                "name": "Coût de la Consommation sur 12 Mois",
+                "state_attributes": {
+                    "consumption": {
+                        "name": "Consommation"
+                    }
+                }
+            },
+            "reference_cost_12_months": {
+                "name": "Coût de Référence sur 12 Mois",
+                "state_attributes": {
+                    "reference_consumption": {
+                        "name": "Consommation de référence"
+                    }
+                }
+            },
+            "savings_12_months": {
+                "name": "Économies sur 12 Mois",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Économies en kWh"
+                    },
+                    "level": {
+                        "name": "Niveau"
+                    }
+                }
+            },
+            "savings_week": {
+                "name": "Économies de la Semaine",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Économies en kWh"
+                    },
+                    "cost": {
+                        "name": "Coût de la consommation"
+                    },
+                    "consumption": {
+                        "name": "Consommation"
+                    },
+                    "reference_cost": {
+                        "name": "Coût de référence"
+                    },
+                    "reference_consumption": {
+                        "name": "Consommation de référence"
+                    },
+                    "start": {
+                        "name": "Début de la période"
+                    },
+                    "missing_data": {
+                        "name": "Données manquantes"
+                    },
+                    "bars": {
+                        "name": "Détail"
+                    }
+                }
+            },
+            "savings_month": {
+                "name": "Économies du Mois",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Économies en kWh"
+                    },
+                    "cost": {
+                        "name": "Coût de la consommation"
+                    },
+                    "consumption": {
+                        "name": "Consommation"
+                    },
+                    "reference_cost": {
+                        "name": "Coût de référence"
+                    },
+                    "reference_consumption": {
+                        "name": "Consommation de référence"
+                    },
+                    "start": {
+                        "name": "Début de la période"
+                    },
+                    "missing_data": {
+                        "name": "Données manquantes"
+                    },
+                    "bars": {
+                        "name": "Détail"
+                    }
+                }
+            },
+            "savings_year": {
+                "name": "Économies de l'Année",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Économies en kWh"
+                    },
+                    "cost": {
+                        "name": "Coût de la consommation"
+                    },
+                    "consumption": {
+                        "name": "Consommation"
+                    },
+                    "reference_cost": {
+                        "name": "Coût de référence"
+                    },
+                    "reference_consumption": {
+                        "name": "Consommation de référence"
+                    },
+                    "start": {
+                        "name": "Début de la période"
+                    },
+                    "missing_data": {
+                        "name": "Données manquantes"
+                    },
+                    "bars": {
+                        "name": "Détail"
+                    }
+                }
             }
         }
     },

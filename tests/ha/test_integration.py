@@ -96,6 +96,15 @@ ACTIVITY_KEYS = [
     "max_power_year",
     "max_power_alltime",
 ]
+# Sensors of the savings of the account, created for every entry
+SAVINGS_KEYS = [
+    "consumption_cost_12_months",
+    "reference_cost_12_months",
+    "savings_12_months",
+    "savings_week",
+    "savings_month",
+    "savings_year",
+]
 REALTIME = "sensor.ecojoko_real_time_consumption"
 GRID = "sensor.ecojoko_grid_consumption"
 FORM = data_entry_flow.FlowResultType.FORM
@@ -202,7 +211,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     # Same entity ids, new unique ids, nothing duplicated; only the sensors
     # added by 1.3.0 are created
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS)
+    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
     assert not [e.entity_id for e in entities if e.entity_id.endswith("_2")]
     assert entity_registry.async_get(entity_ids["main"]).unique_id == entry.entry_id
     for key in [*ENABLED, "production_surplus"]:
@@ -231,7 +240,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS)
+    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
 
 
@@ -276,7 +285,7 @@ async def test_new_install_entities(hass, fake_api):
 
     entity_registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    keys = [*ENABLED, "current_tariff_period", *ACTIVITY_KEYS]
+    keys = [*ENABLED, "current_tariff_period", *ACTIVITY_KEYS, *SAVINGS_KEYS]
     expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in keys]]
     assert sorted(e.unique_id for e in entities) == sorted(expected)
 
@@ -1171,6 +1180,64 @@ async def test_activity_in_diagnostics(hass, fake_api):
     diagnostics = await async_get_config_entry_diagnostics(hass, entry)
     assert diagnostics["activity"]["last_update_success"] is True
     assert diagnostics["activity"]["data"]["savings_7_days"] == -3
+
+
+# --- Savings of the account
+
+
+WEEK = "sensor.ecojoko_savings_this_week"
+
+
+async def test_savings_sensors(hass, fake_api):
+    """The savings of the account give their sensors."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    savings = hass.states.get("sensor.ecojoko_savings_over_12_months")
+    assert savings.state == "337.63"
+    assert savings.attributes["unit_of_measurement"] == "EUR"
+    assert savings.attributes["device_class"] == "monetary"
+    assert savings.attributes["savings_kwh"] == 1617.28
+    assert savings.attributes["level"] == 5
+    cost = hass.states.get("sensor.ecojoko_consumption_cost_over_12_months")
+    assert cost.state == "483.6"
+    assert cost.attributes["consumption"] == 1701.72
+    reference = hass.states.get("sensor.ecojoko_reference_cost_over_12_months")
+    assert reference.state == "821.23"
+    assert reference.attributes["reference_consumption"] == 3319
+
+    week = hass.states.get(WEEK)
+    assert week.state == "-0.35"
+    assert week.attributes["savings_kwh"] == -2.58
+    assert week.attributes["start"] == "2026-11-16"
+    assert week.attributes["bars"][0]["savings"] == -0.35
+    assert week.attributes["bars"][1]["savings"] is None
+    assert hass.states.get("sensor.ecojoko_savings_this_month").state == "-8.69"
+    assert hass.states.get("sensor.ecojoko_savings_this_year").state == "322.32"
+
+
+async def test_savings_failure_does_not_stop_the_polls(hass, fake_api):
+    """The savings sensors fail alone; the real-time ones go on."""
+    fake_api.savings_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get(WEEK).state == "unavailable"
+    assert hass.states.get(REALTIME).state == "512"
+    assert hass.states.get(SAVINGS).state == "-3"
+
+    fake_api.savings_error = None
+    await entry.runtime_data.savings.async_refresh()
+    await hass.async_block_till_done()
+    assert hass.states.get(WEEK).state == "-0.35"
+
+
+async def test_savings_in_diagnostics(hass, fake_api):
+    """Diagnostics show the state of the savings."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    diagnostics = await async_get_config_entry_diagnostics(hass, entry)
+    assert diagnostics["savings"]["last_update_success"] is True
+    assert diagnostics["savings"]["data"]["savings_12_months"] == 337.63
 
 
 # --- Current tariff band

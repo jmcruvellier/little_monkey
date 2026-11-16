@@ -104,6 +104,81 @@ def parse_activity(payload) -> dict:
     }
 
 
+def parse_savings_summary(payload) -> dict:
+    """Return the savings over the last 12 months, by key.
+
+    In euros: the cost of the consumption, the cost of the reference
+    consumption and their difference, the savings; in kWh: the consumption,
+    the reference one and their difference. The level of the savings goes
+    from 1 to 5.
+    """
+    savings = payload["savings"]
+    mine = (savings.get("savings") or {}).get("me") or {}
+    consumption = finite_number(savings.get("kwh"))
+    reference = finite_number(savings.get("profil_initial_kwh"))
+    return {
+        "consumption_cost_12_months": finite_number(savings.get("conso")),
+        "reference_cost_12_months": finite_number(savings.get("profil_initial")),
+        "savings_12_months": finite_number(mine.get("data")),
+        "consumption_12_months": consumption,
+        "reference_consumption_12_months": reference,
+        "savings_kwh_12_months": (
+            None if consumption is None or reference is None
+            else round_value(reference - consumption)),
+        "savings_level": finite_number(mine.get("level")),
+    }
+
+
+def _savings_values(item) -> dict:
+    """Return the savings of a period or of a bar of savingstat.
+
+    ecojoko gives the savings in euros with their sign, negative for an
+    overconsumption, but in kWh without it: the sign of the euros is given
+    to the kWh.
+    """
+    savings = finite_number(item.get("val"))
+    savings_kwh = finite_number(item.get("val_kwh"))
+    if savings_kwh is not None and savings is not None and savings < 0:
+        savings_kwh = -abs(savings_kwh)
+    return {
+        "savings": savings,
+        "savings_kwh": savings_kwh,
+        "cost": finite_number(item.get("price", item.get("conso"))),
+        "consumption": finite_number(item.get("kwh", item.get("conso_kwh"))),
+        "reference_cost": finite_number(item.get("ref")),
+        "reference_consumption": finite_number(item.get("ref_kwh")),
+    }
+
+
+def parse_savingstat(payload, today) -> dict:
+    """Return the savings of a week, a month or a year, and their bars.
+
+    The bars are the days of a week, the weeks of a month or the months of
+    a year. A bar after today has no value yet: ecojoko gives zeros, which
+    are replaced by None.
+    """
+    stat = payload["stat"]
+    period = stat["period"]
+    start = local_date(period.get("this"))
+    bars = []
+    for item in stat["data"]:
+        day = local_date(item.get("time"))
+        values = _savings_values(item)
+        if day is None or day > today:
+            values = dict.fromkeys(values)
+        bars.append({"date": None if day is None else day.isoformat(), **values})
+    return {
+        **_savings_values(period),
+        "start": None if start is None else start.isoformat(),
+        "missing_data": bool(period.get("missing_data")),
+        "bars": bars,
+    }
+
+
+# Periods of the detail of the savings, and their letter in the ecojoko URL
+SAVINGS_PERIODS = {"week": "w", "month": "m", "year": "y"}
+
+
 class LittleMonkeyApiClient:
     """API Client to retrieve ecojoko data."""
 
@@ -427,6 +502,54 @@ class LittleMonkeyApiClient:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API activity: {exception!r}"
             ) from exception
+
+    def _check_slow_api(self, name) -> None:
+        """Fail when an API read apart from the polls cannot be called yet.
+
+        Such an API does not log in: before the first login, or when the
+        session has expired, it fails and the next poll logs in again.
+        """
+        if self._cookies is None or self._gateway_id is None or self._power_meter_id is None:
+            raise LittleMonkeyApiClientCommunicationError(
+                f"API {name} not called: not logged in")
+
+    async def async_get_savings_period(self, period, day) -> dict:
+        """Return the savings of the week, month or year holding a day."""
+        self._check_slow_api("savingstat")
+        url = (f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}"
+               f"/device/{self._power_meter_id}"
+               f"/savingstat/{SAVINGS_PERIODS[period]}/{day.isoformat()}")
+        payload, _cookies = await self._async_request(
+            f"savingstat ({SAVINGS_PERIODS[period]})", url, cookies=self._cookies,
+            timeout=CONF_API_ACTIVITY_TIMEOUT)
+        try:
+            return parse_savingstat(payload, get_current_date(TZ))
+        except PARSE_ERRORS as exception:
+            raise LittleMonkeyApiClientError(
+                f"Unexpected data from API savingstat: {exception!r}"
+            ) from exception
+
+    async def async_get_savings(self) -> dict:
+        """Return the savings over 12 months, this week, month and year.
+
+        Called apart from the polls, like the activity.
+        """
+        self._check_slow_api("savings")
+        payload, _cookies = await self._async_request(
+            "savings", f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}/savings/m/12",
+            cookies=self._cookies, timeout=CONF_API_ACTIVITY_TIMEOUT)
+        try:
+            data = parse_savings_summary(payload)
+        except PARSE_ERRORS as exception:
+            raise LittleMonkeyApiClientError(
+                f"Unexpected data from API savings: {exception!r}"
+            ) from exception
+        today = get_current_date(TZ)
+        periods = await asyncio.gather(*(
+            self.async_get_savings_period(period, today)
+            for period in SAVINGS_PERIODS))
+        data.update(zip(SAVINGS_PERIODS, periods))
+        return data
 
     async def _async_request(self, name, url, method="GET", timeout=None,
                              **kwargs):

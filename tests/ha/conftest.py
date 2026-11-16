@@ -6,6 +6,7 @@ the network.
 """
 from __future__ import annotations
 
+import copy
 import datetime as dt
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
@@ -42,6 +43,40 @@ ACTIVITY = {
 }
 
 
+# What the patched client reports for the savings of the account
+WEEK_BARS = [
+    {"date": "2026-11-16", "savings": -0.35, "savings_kwh": -2.58, "cost": 1.8,
+     "consumption": 7.58, "reference_cost": 1.45, "reference_consumption": 5.01},
+] + [
+    {"date": f"2026-11-{day}", "savings": None, "savings_kwh": None, "cost": None,
+     "consumption": None, "reference_cost": None, "reference_consumption": None}
+    for day in range(17, 23)
+]
+
+
+def savings_period(savings, start, bars):
+    """Return the savings of a period as the patched client reports them."""
+    return {
+        "savings": savings, "savings_kwh": -2.58, "cost": 1.8, "consumption": 7.58,
+        "reference_cost": 1.45, "reference_consumption": 5.01,
+        "start": start, "missing_data": False, "bars": bars,
+    }
+
+
+SAVINGS = {
+    "consumption_cost_12_months": 483.6,
+    "reference_cost_12_months": 821.23,
+    "savings_12_months": 337.63,
+    "consumption_12_months": 1701.72,
+    "reference_consumption_12_months": 3319,
+    "savings_kwh_12_months": 1617.28,
+    "savings_level": 5,
+    "week": savings_period(-0.35, "2026-11-16", WEEK_BARS),
+    "month": savings_period(-8.69, "2026-11-02", WEEK_BARS[:5]),
+    "year": savings_period(322.32, "2026-01-01", WEEK_BARS[:1] * 12),
+}
+
+
 @pytest.fixture(autouse=True)
 def _enable_custom_integrations(enable_custom_integrations):
     """Let Home Assistant load the integration from custom_components."""
@@ -70,6 +105,11 @@ class FakeApi:
         self.activity = dict(ACTIVITY)
         self.activity_error = None
         self.activity_calls = 0
+        # Savings of the account, or the error to raise
+        self.savings = copy.deepcopy(SAVINGS)
+        self.savings_error = None
+        # Savings of the past periods asked for: (period, day)
+        self.savings_periods = []
 
 
 @pytest.fixture
@@ -103,9 +143,20 @@ def fake_api():
             raise state.activity_error
         return dict(state.activity)
 
+    async def get_savings(self):
+        if state.savings_error:
+            raise state.savings_error
+        return copy.deepcopy(state.savings)
+
+    async def get_savings_period(self, period, day):
+        state.savings_periods.append((period, day))
+        if state.savings_error:
+            raise state.savings_error
+        return copy.deepcopy(state.savings[period])
+
     client = lm_api.LittleMonkeyApiClient
     with patch.object(client, "async_get_cookiesdata", login), \
             patch.object(client, "async_get_gatewaydata", gateway), \
             patch.object(client, "async_get_data", get_data), \
-            patch.object(client, "async_get_tariff_setup", tariff_setup),             patch.object(client, "async_get_activity", get_activity):
+            patch.object(client, "async_get_tariff_setup", tariff_setup),             patch.object(client, "async_get_activity", get_activity),             patch.object(client, "async_get_savings", get_savings),             patch.object(client, "async_get_savings_period", get_savings_period):
         yield state

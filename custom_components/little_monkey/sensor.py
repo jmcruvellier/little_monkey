@@ -18,6 +18,7 @@ from .entity import (
     EcojokoActivitySensor,
     EcojokoEntity,
     EcojokoPeriodSensor,
+    EcojokoSavingsSensor,
     EcojokoSensor,
 )
 from .tariff import KNOWN_BANDS, TEMPO_BANDS, band_key, has_sensor
@@ -118,6 +119,17 @@ ACTIVITY_SENSORS = (
     ("max_power_alltime", MAX_POWER),
 )
 
+SAVINGS_COST = (None, SensorDeviceClass.MONETARY, "EUR", "mdi:piggy-bank-outline")
+# Sensors of the savings of the account, read apart from the polls
+SAVINGS_SENSORS = (
+    ("consumption_cost_12_months", COST),
+    ("reference_cost_12_months", COST),
+    ("savings_12_months", SAVINGS_COST),
+    ("savings_week", SAVINGS_COST),
+    ("savings_month", SAVINGS_COST),
+    ("savings_year", SAVINGS_COST),
+)
+
 # Option that enables a sensor: None (always), one option, or several (any)
 
 
@@ -170,5 +182,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for key, kind in ACTIVITY_SENSORS:
         main_device.add_child_entity(
             EcojokoActivitySensor(main_device, coordinator.activity, key, *kind))
+    for key, kind in SAVINGS_SENSORS:
+        main_device.add_child_entity(
+            EcojokoSavingsSensor(main_device, coordinator.savings, key, *kind))
 
     async_add_entities([main_device] + main_device.child_entities)
