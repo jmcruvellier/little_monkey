@@ -429,6 +429,51 @@ export function trendMinutes(config) {
  * "none" or "transparent" for the background of the card; otherwise a color
  * of the Home Assistant palette (red, light-blue...), which follows the theme.
  */
+// Colors of the palette of Home Assistant, used when the theme does not
+// define them
+const PALETTE = {
+  primary: "#03a9f4", accent: "#ff9800", red: "#f44336", pink: "#e91e63",
+  purple: "#926bc7", "deep-purple": "#6e41ab", indigo: "#3f51b5", blue: "#2196f3",
+  "light-blue": "#03a9f4", cyan: "#00bcd4", teal: "#009688", green: "#4caf50",
+  "light-green": "#8bc34a", lime: "#cddc39", yellow: "#ffeb3b", amber: "#ffc107",
+  orange: "#ff9800", "deep-orange": "#ff6f22", brown: "#795548",
+  "light-grey": "#bdbdbd", grey: "#9e9e9e", "dark-grey": "#606060",
+  "blue-grey": "#607d8b", black: "#000000", white: "#ffffff",
+};
+// Graduations on a colored dial: dark or light, whichever reads better
+const DARK_LABEL = "rgba(0, 0, 0, 0.7)";
+const LIGHT_LABEL = "rgba(255, 255, 255, 0.85)";
+
+/** Return a CSS color "#rrggbb", "#rgb" or "rgb(r, g, b)" as [r, g, b]. */
+export function parseColor(color) {
+  const text = String(color || "").trim().toLowerCase();
+  let match = text.match(/^#([0-9a-f]{3})$/);
+  if (match) {
+    return [...match[1]].map((digit) => parseInt(digit + digit, 16));
+  }
+  match = text.match(/^#([0-9a-f]{6})$/);
+  if (match) {
+    return [0, 2, 4].map((index) => parseInt(match[1].slice(index, index + 2), 16));
+  }
+  match = text.match(/^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)/);
+  return match ? match.slice(1, 4).map(Number) : null;
+}
+
+/**
+ * Return the color of the graduations on a dial of a given color: the one,
+ * dark or light, with the best contrast (WCAG relative luminance).
+ */
+export function labelColor(rgb) {
+  const channel = (value) => {
+    const c = value / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  const [r, g, b] = rgb.map(channel);
+  const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  // Contrast with black: (L + 0.05) / 0.05; with white: 1.05 / (L + 0.05)
+  return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? DARK_LABEL : LIGHT_LABEL;
+}
+
 export function dialFill(dialColor) {
   if (dialColor === undefined || dialColor === null || dialColor === "" || dialColor === "default") {
     return "color-mix(in srgb, var(--primary-text-color, #212121) 7%, var(--lm-background))";
@@ -732,8 +777,8 @@ class LittleMonkeyCard extends HTMLElement {
         .relief .inner-shadow { display: inline; }
         :host { --lm-background: var(--ha-card-background, var(--card-background-color, #fff)); }
         .track { fill: none; stroke-width: 5; }
-        .labels text { fill: var(--secondary-text-color, #727272); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
-        .unit { fill: var(--secondary-text-color, #727272); font-size: 6px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
+        .labels text { fill: var(--lm-label-color, var(--secondary-text-color, #727272)); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
+        .unit { fill: var(--lm-label-color, var(--secondary-text-color, #727272)); font-size: 6px; letter-spacing: 0.3px; text-anchor: middle; dominant-baseline: central; }
         .needle { transition: transform 0.8s ease-out; }
         .needle line { stroke-linecap: round; transition: stroke 0.5s; }
         .needle-body { stroke-width: 6; }
@@ -919,6 +964,7 @@ class LittleMonkeyCard extends HTMLElement {
     // Relief and color of the dial
     el.svg.classList.toggle("relief", config.relief !== false);
     el.dial.setAttribute("fill", dialFill(config.dial_color));
+    this._updateLabelColor(config.dial_color);
 
     // Faces of the disc: the first one has the color of the tariff period,
     // and the power needle keeps it on the other faces
@@ -970,6 +1016,26 @@ class LittleMonkeyCard extends HTMLElement {
     this._renderFaces(savings);
 
     this._updateTrend(power);
+  }
+
+  /**
+   * Give the graduations a color that reads on the dial: the color of the
+   * theme on the default or transparent dial, dark or light on a color of
+   * the palette, as defined by the theme.
+   */
+  _updateLabelColor(dialColor) {
+    const fill = dialFill(dialColor);
+    let label = "";
+    if (fill.startsWith("var(")) {
+      const name = fill.slice(6, -7);
+      const themed = getComputedStyle(this).getPropertyValue(`--${name}-color`);
+      const rgb = parseColor(themed) || parseColor(PALETTE[name]);
+      label = rgb ? labelColor(rgb) : "";
+    }
+    if (label !== this._labelColor) {
+      this._labelColor = label;
+      this._elements.svg.style.setProperty("--lm-label-color", label || null);
+    }
   }
 
   /** Fill the faces other than the real-time power. */

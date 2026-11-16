@@ -307,3 +307,26 @@ test("the inside of the dial has a shade of the theme by default", () => {
   // A name is never more than a CSS variable name
   assert.equal(card.dialFill("red;}x{"), "var(--redx-color)");
 });
+
+test("colors of the theme are read in their CSS forms", () => {
+  assert.deepEqual(card.parseColor("#03a9f4"), [3, 169, 244]);
+  assert.deepEqual(card.parseColor(" #FFF "), [255, 255, 255]);
+  assert.deepEqual(card.parseColor("rgb(76, 175, 80)"), [76, 175, 80]);
+  assert.deepEqual(card.parseColor("rgba(0, 188, 212, 0.5)"), [0, 188, 212]);
+  assert.equal(card.parseColor("var(--x)"), null);
+  assert.equal(card.parseColor(""), null);
+});
+
+test("the graduations stay readable on a colored dial", () => {
+  const dark = "rgba(0, 0, 0, 0.7)";
+  const light = "rgba(255, 255, 255, 0.85)";
+  // Grey, cyan and green of the palette: dark graduations
+  assert.equal(card.labelColor([158, 158, 158]), dark);
+  assert.equal(card.labelColor([0, 188, 212]), dark);
+  assert.equal(card.labelColor([76, 175, 80]), dark);
+  assert.equal(card.labelColor([255, 235, 59]), dark);
+  // Indigo, brown, black: light graduations
+  assert.equal(card.labelColor([63, 81, 181]), light);
+  assert.equal(card.labelColor([121, 85, 72]), light);
+  assert.equal(card.labelColor([0, 0, 0]), light);
+});
