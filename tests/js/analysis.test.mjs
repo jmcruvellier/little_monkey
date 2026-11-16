@@ -92,3 +92,33 @@ test("a new analysis card takes a sensor of the first device", () => {
     "entity", "period", "title",
   ]);
 });
+
+// --- History of a category
+
+test("the history has a bar a week, from zero", () => {
+  const box = { width: 100, height: 110, left: 0, right: 0, top: 0, bottom: 10 };
+  const { bars, ticks, zero } = cards.historyGeometry([0, 0.5, 1.2, null], box);
+  assert.equal(zero, 100);
+  assert.equal(bars.length, 4);
+  assert.equal(bars[0].height, 0);
+  assert.equal(bars[3].value, null);
+  // 1.2 on a scale up to 1.5
+  assert.equal(bars[2].height.toFixed(3), ((1.2 / 1.5) * 100).toFixed(3));
+  assert.deepEqual(ticks.map((tick) => tick.value), [0, 0.5, 1, 1.5]);
+  assert.deepEqual(cards.historyGeometry([0, 0], box).ticks.map((tick) => tick.value), [0, 0.5, 1]);
+});
+
+test("the totals of the history", () => {
+  assert.deepEqual(
+    cards.historyTotals([{ cost: 0.11, consumption: 0.67 }, { cost: 0.12, consumption: 0.78 }, {}]),
+    { cost: 0.23, consumption: 1.45 },
+  );
+  assert.deepEqual(cards.historyTotals(undefined), { cost: 0, consumption: 0 });
+});
+
+test("the months are written under their first week", () => {
+  const bars = ["2026-01-05", "2026-01-12", "2026-02-02", "2026-02-09", "2026-03-02"].map((date) => ({ date }));
+  assert.deepEqual(cards.monthLabels("fr", bars), [
+    { index: 0, label: "J" }, { index: 2, label: "F" }, { index: 4, label: "M" },
+  ]);
+});

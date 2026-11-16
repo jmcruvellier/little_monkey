@@ -9,7 +9,8 @@
  * The "analysis of your consumption" page of the ecojoko application:
  * - little-monkey-analysis-card: the consumption of a week, a month or a
  *   year by category (standby, lighting, cooling...), read with the
- *   get_consumption_analysis service.
+ *   get_consumption_analysis service; a category shows its history, week
+ *   by week over a year (get_category_history service).
  */
 
 const DOMAIN = "little_monkey";
@@ -31,6 +32,11 @@ const TRANSLATIONS = {
       missing: "Little Monkey sensor not found",
       up: "Up on the previous period",
       down: "Down on the previous period",
+      back: "Back to the categories",
+      history: "History of the category",
+      history_error: "The history of this category could not be read",
+      week_of: "Week of {date}",
+      bar: "{name}: {cost} · {energy}",
     },
     categories: {
       1: "Heating", 2: "Electric vehicle", 3: "Hot water", 4: "Cooking", 5: "Large appliances",
@@ -55,6 +61,11 @@ const TRANSLATIONS = {
       missing: "Capteur Little Monkey introuvable",
       up: "En hausse par rapport à la période précédente",
       down: "En baisse par rapport à la période précédente",
+      back: "Retour aux postes",
+      history: "Historique du poste",
+      history_error: "L'historique de ce poste n'a pas pu être lu",
+      week_of: "Semaine du {date}",
+      bar: "{name} : {cost} · {energy}",
     },
     categories: {},
     editor: {
@@ -233,6 +244,65 @@ export function ringArcs(categories, ring = RING) {
   return arcs;
 }
 
+// Bars of the history, in the units of the SVG
+const HISTORY = { width: 280, height: 150, left: 40, right: 4, top: 8, bottom: 18 };
+
+/** Return a round step above a value: 1, 2, 2.5 or 5 times a power of ten. */
+function niceStep(value) {
+  const power = 10 ** Math.floor(Math.log10(value));
+  const factor = [1, 2, 2.5, 5, 10].find((candidate) => candidate * power >= value * (1 - 1e-9));
+  return factor * power;
+}
+
+/**
+ * Return the bars of the history of a category and its graduations, in the
+ * units of the SVG: one bar a week, from zero.
+ */
+export function historyGeometry(values, box = HISTORY) {
+  const known = values.filter((value) => Number.isFinite(value));
+  const top = Math.max(0, ...known);
+  const step = top > 0 ? niceStep(top / 4) : 0.5;
+  const max = top > 0 ? Math.ceil(top / step - 1e-9) * step : 1;
+  const plotHeight = box.height - box.top - box.bottom;
+  const plotWidth = box.width - box.left - box.right;
+  const y = (value) => box.top + ((max - value) / max) * plotHeight;
+  const slot = plotWidth / Math.max(values.length, 1);
+  const width = Math.max(slot * 0.7, 0.5);
+  const bars = values.map((value, index) => {
+    const x = box.left + slot * index + (slot - width) / 2;
+    const height = Number.isFinite(value) && value > 0 ? Math.max(y(0) - y(value), 0.8) : 0;
+    return { x, width, slot, height, y: y(0) - height, value: Number.isFinite(value) ? value : null };
+  });
+  const ticks = [];
+  for (let value = 0; value <= max + step / 1000; value += step) {
+    ticks.push({ value: Math.round(value * 1000) / 1000, y: y(value) });
+  }
+  return { bars, ticks, zero: y(0) };
+}
+
+/** Return the totals of the history of a category: cost and energy. */
+export function historyTotals(bars) {
+  const sum = (key) => (bars || []).reduce((total, bar) => total + (Number(bar?.[key]) || 0), 0);
+  return { cost: Math.round(sum("cost") * 100) / 100, consumption: Math.round(sum("consumption") * 100) / 100 };
+}
+
+/** Return the labels of the months under the bars of a year of weeks. */
+export function monthLabels(locale, bars) {
+  const labels = [];
+  let month = null;
+  (bars || []).forEach((bar, index) => {
+    const current = bar?.date?.slice(0, 7);
+    if (current && current !== month) {
+      month = current;
+      labels.push({
+        index,
+        label: new Intl.DateTimeFormat(locale, { month: "narrow", timeZone: "UTC" }).format(utcDate(`${current}-01`)),
+      });
+    }
+  });
+  return labels;
+}
+
 /** Return the sensors of the Little Monkey device of an entity, by key. */
 function deviceEntities(hass, entityId) {
   const entities = hass?.entities || {};
@@ -348,6 +418,9 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     this._pending = new Set();
     this._errors = new Set();
     this._open = new Set();
+    // Category whose history is shown, and the year shown
+    this._history = null;
+    this._selected = null;
     this._built = false;
     this._signature = null;
     this._render();
@@ -391,11 +464,68 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
   _choose(period) {
     this._period = period;
     this._start = null;
+    this._history = null;
     this._render();
+  }
+
+  /** Show the history of a category, for the year of the period shown. */
+  _showHistory(category, year) {
+    this._history = { category, year };
+    this._selected = null;
+    this._signature = null;
+    this._render();
+  }
+
+  /** Return the history shown, reading it when needed. */
+  _historyData() {
+    const { category, year } = this._history;
+    const key = `history:${category.id}:${year}`;
+    if (this._errors.has(key)) {
+      return { error: true };
+    }
+    if (!this._cache.has(key)) {
+      this._fetchHistory(category.id, year, key);
+      return { loading: true };
+    }
+    return this._cache.get(key);
+  }
+
+  async _fetchHistory(id, year, key) {
+    if (this._pending.has(key)) {
+      return;
+    }
+    this._pending.add(key);
+    // The current year up to today, a past year as a whole
+    const thisYear = new Date().getFullYear();
+    const date = year >= thisYear ? undefined : `${year}-12-31`;
+    try {
+      const data = { category: Number(id) };
+      if (date) {
+        data.date = date;
+      }
+      this._cache.set(key, await callService(this._hass, this._config.entity, "get_category_history", data));
+    } catch (error) {
+      console.debug("Little Monkey card: history not read", error);
+      this._errors.add(key);
+    } finally {
+      this._pending.delete(key);
+      this._signature = null;
+      this._render();
+    }
   }
 
   /** Show the period before (-1) or after (+1). */
   _go(step) {
+    if (this._history) {
+      const year = this._history.year + step;
+      if (year <= new Date().getFullYear()) {
+        this._history = { ...this._history, year };
+        this._selected = null;
+        this._errors.delete(`history:${this._history.category.id}:${year}`);
+        this._render();
+      }
+      return;
+    }
     const shown = this._cache.get(this._key());
     const from = this._start || shown?.start || this._latest[this._period];
     if (!from) {
@@ -469,7 +599,23 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
         .rows { display: flex; flex-direction: column; }
         .row { display: flex; align-items: center; gap: 10px; padding: 6px 4px; border-radius: 8px; }
         .row.child { padding-left: 32px; }
-        .row.parent { cursor: pointer; }
+        .row { cursor: pointer; }
+        .row:hover { background: var(--secondary-background-color, rgba(127, 127, 127, 0.08)); }
+        .toggle { cursor: pointer; padding: 6px 0; font-size: 1.2em; text-align: center; }
+        .history-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .back { border: none; background: none; color: var(--primary-text-color); cursor: pointer; font-size: 1.3em; padding: 2px 6px; }
+        .history-head .label { flex: 1; color: var(--primary-text-color); font-weight: 500; }
+        .history-total { font-size: 0.95em; color: var(--secondary-text-color); margin: 2px 0 4px; }
+        .history-total .cost { color: var(--primary-text-color); font-weight: 600; }
+        .details { min-height: 1.4em; font-size: 0.9em; color: var(--secondary-text-color); text-align: center; }
+        .chart { width: 100%; display: block; touch-action: pan-y; user-select: none; }
+        .chart .tick { fill: var(--secondary-text-color, #727272); font-size: 9.5px; text-anchor: end; dominant-baseline: central; }
+        .chart .month { fill: var(--secondary-text-color, #727272); font-size: 9.5px; text-anchor: start; }
+        .chart .grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 0.5; }
+        .chart .zero { stroke: var(--secondary-text-color, #727272); stroke-width: 0.6; }
+        .chart .hit { fill: transparent; }
+        .chart .bar { cursor: pointer; }
+        .chart .bar.selected rect.value { stroke: var(--primary-text-color); stroke-width: 0.8; }
         .icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
         .icon ha-icon { --mdc-icon-size: 18px; }
         .row.child .icon { width: 24px; height: 24px; }
@@ -516,20 +662,50 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     this._built = true;
   }
 
-  /** Open or close the sub-categories of a category. */
+  /**
+   * Open the history of a category, open or close its sub-categories with
+   * its chevron, go back to the categories, or select a bar of the history.
+   */
   _clicked(event) {
-    const row = event.target.closest?.(".row.parent");
+    const target = event.target;
+    if (target.closest?.(".back")) {
+      this._history = null;
+      this._signature = null;
+      this._render();
+      return;
+    }
+    const bar = target.closest?.(".bar");
+    if (bar) {
+      const index = Number(bar.dataset.index);
+      this._selected = this._selected === index ? null : index;
+      this._signature = null;
+      this._render();
+      return;
+    }
+    const row = target.closest?.(".row");
     if (!row) {
       return;
     }
     const id = row.dataset.id;
-    if (this._open.has(id)) {
-      this._open.delete(id);
-    } else {
-      this._open.add(id);
+    if (target.closest(".toggle")) {
+      if (this._open.has(id)) {
+        this._open.delete(id);
+      } else {
+        this._open.add(id);
+      }
+      this._signature = null;
+      this._render();
+      return;
     }
-    this._signature = null;
-    this._render();
+    const analysis = this._cache.get(this._key());
+    const categories = (analysis?.categories || []).flatMap((category) => [
+      category, ...(category.children || []).map((child) => ({ ...child, color: child.color || category.color })),
+    ]);
+    const category = categories.find((item) => String(item.id) === id);
+    if (category) {
+      const start = this._start || analysis.start || "";
+      this._showHistory(category, Number(start.slice(0, 4)) || new Date().getFullYear());
+    }
   }
 
   _render() {
@@ -541,8 +717,10 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     }
     const text = this._text();
     const locale = this._locale();
-    const analysis = this._analysis();
-    const signature = JSON.stringify([this._period, this._start, analysis, [...this._open], this._config.title, locale]);
+    const analysis = this._history ? this._historyData() : this._analysis();
+    const signature = JSON.stringify([
+      this._period, this._start, this._history, this._selected, analysis, [...this._open], this._config.title, locale,
+    ]);
     if (signature === this._signature) {
       return;
     }
@@ -554,7 +732,14 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     warning.textContent = missing ? text.missing : "";
     warning.style.display = missing ? "" : "none";
     for (const button of root.querySelectorAll(".period")) {
-      button.classList.toggle("active", button.dataset.period === this._period);
+      button.classList.toggle("active", !this._history && button.dataset.period === this._period);
+    }
+    if (this._history) {
+      root.querySelector(".name").textContent = String(this._history.year);
+      root.querySelector(".previous").disabled = false;
+      root.querySelector(".next").disabled = this._history.year >= new Date().getFullYear();
+      root.querySelector(".body").innerHTML = this._historyBody(analysis, locale, text);
+      return;
     }
     const start = this._start || analysis.start || this._latest[this._period];
     root.querySelector(".name").textContent = start ? periodLabel(locale, this._period, start) : "";
@@ -592,7 +777,7 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
       const trend = category.trend
         ? `<span class="trend" title="${escapeHtml(text[category.trend])}" style="color: ${TREND_COLORS[category.trend]}">${category.trend === "up" ? "↑" : "↓"}</span>`
         : `<span class="trend"></span>`;
-      const chevron = children.length ? `<span class="chevron">›</span>` : `<span class="chevron"></span>`;
+      const chevron = children.length ? `<span class="chevron toggle" role="button">›</span>` : `<span class="chevron"></span>`;
       const parent = this._row(category, lang, locale, children.length ? "parent" : "", open, trend + chevron);
       const details = open
         ? children.map((child) => this._row({ ...child, color: child.color || category.color }, lang, locale, "child", false, `<span class="trend"></span><span class="chevron"></span>`)).join("")
@@ -600,6 +785,54 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
       return parent + details;
     }).join("");
     return `${ring}<div class="rows">${rows}</div>`;
+  }
+
+  /** Return the HTML of the history of a category: a bar a week. */
+  _historyBody(history, locale, text) {
+    const lang = language(this._hass);
+    const category = this._history.category;
+    const head = `
+      <div class="history-head">
+        <button class="back" aria-label="${escapeHtml(text.back)}">‹</button>
+        <div class="icon" style="background: ${escapeHtml(category.color || "#9e9e9e")}; color: ${iconColor(category.color)}"><ha-icon icon="${categoryIcon(category)}"></ha-icon></div>
+        <div class="label">${escapeHtml(categoryName(lang, category))}</div>
+      </div>`;
+    if (history.loading) {
+      return `${head}<div class="message">…</div>`;
+    }
+    if (history.error) {
+      return `${head}<div class="message">${escapeHtml(text.history_error)}</div>`;
+    }
+    const bars = history.bars || [];
+    const totals = historyTotals(bars);
+    const { bars: rects, ticks, zero } = historyGeometry(bars.map((bar) => bar.cost));
+    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
+    const color = escapeHtml(category.color || "#9e9e9e");
+    const grid = ticks.map((tick) => `
+      <line class="grid" x1="${HISTORY.left}" x2="${HISTORY.width - HISTORY.right}" y1="${tick.y}" y2="${tick.y}" />
+      <text class="tick" x="${HISTORY.left - 4}" y="${tick.y}">${escapeHtml(`${format.format(tick.value)} €`)}</text>`).join("");
+    const columns = rects.map((rect, index) => `
+      <g class="bar${index === this._selected ? " selected" : ""}" data-index="${index}">
+        <rect class="hit" x="${rect.x - (rect.slot - rect.width) / 2}" y="${HISTORY.top}" width="${rect.slot}" height="${zero - HISTORY.top}" />
+        <rect class="value" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" fill="${color}" />
+      </g>`).join("");
+    const months = monthLabels(locale, bars).map((month) =>
+      `<text class="month" x="${rects[month.index]?.x ?? 0}" y="${HISTORY.height - 4}">${escapeHtml(month.label)}</text>`).join("");
+    const bar = this._selected === null ? null : bars[this._selected];
+    const details = bar
+      ? text.bar
+        .replace("{name}", text.week_of.replace("{date}", new Intl.DateTimeFormat(locale, {
+          day: "numeric", month: "long", timeZone: "UTC",
+        }).format(utcDate(bar.date))))
+        .replace("{cost}", formatValue(locale, bar.cost, "eur"))
+        .replace("{energy}", formatValue(locale, bar.consumption, "kwh"))
+      : "";
+    return `${head}
+      <div class="history-total"><span class="cost">${escapeHtml(formatValue(locale, totals.cost, "eur"))}</span> | ${escapeHtml(formatValue(locale, totals.consumption, "kwh"))}</div>
+      <div class="details">${escapeHtml(details)}</div>
+      <svg class="chart" viewBox="0 0 ${HISTORY.width} ${HISTORY.height}" role="img" aria-label="${escapeHtml(text.history)}">
+        ${grid}<line class="zero" x1="${HISTORY.left}" x2="${HISTORY.width - HISTORY.right}" y1="${zero}" y2="${zero}" />${columns}${months}
+      </svg>`;
   }
 
   /** Return the HTML of a row of a category. */
