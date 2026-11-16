@@ -204,3 +204,13 @@ response_variable: economies
 
 La réponse reprend les attributs des capteurs Économies de la Semaine / du Mois / de l'Année : `savings` (en euros, négatives en cas de surconsommation), `savings_kwh`, `cost`, `consumption`, `reference_cost`, `reference_consumption`, `start`, `missing_data`, et `bars`, le détail par jour, semaine ou mois.
 
+## Services de l'analyse de la consommation
+
+Trois services renvoient les données de la page « Analyse de votre conso » d'ecojoko. Les cartes de l'analyse s'en servent ; vous pouvez aussi les appeler depuis un script ou une automatisation (`response_variable`). Comme pour les autres services, `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
+
+| Service | Champs | Réponse |
+|---|---|---|
+| `little_monkey.get_consumption_analysis` | `period` (`week`, `month` ou `year`), `date` facultative | La répartition de la consommation par poste (talon, éclairage, froid…) : `cost`, `consumption`, et `categories`, chacune avec `id`, `name`, `color`, `cost`, `consumption`, `percentage`, `trend` (`up` ou `down`) et ses sous-postes (`children`). Sans date, la dernière période analysée par ecojoko. Une période pas encore analysée renvoie `available: false` et le message d'ecojoko (`message`) |
+| `little_monkey.get_category_history` | `category` (l'`id` d'un poste), `date` facultative | La consommation du poste semaine par semaine sur l'année de la date (`bars` : `date`, `cost`, `consumption`, `percentage`) |
+| `little_monkey.get_activations` | `page` facultative (0 par défaut) | Les démarrages d'appareils détectés sur 48 heures (page 0 : les 48 dernières heures, page 1 : les 48 heures précédentes…) : `activations`, chacune avec `start`, `end`, `power` (W moyen), `energy` (kWh) et la forme dessinée par ecojoko (`shape`) |
+

@@ -17,3 +17,51 @@ get_savings:
     date:
       selector:
         date:
+get_consumption_analysis:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: little_monkey
+    period:
+      required: true
+      default: week
+      selector:
+        select:
+          translation_key: savings_period
+          options:
+            - week
+            - month
+            - year
+    date:
+      selector:
+        date:
+get_category_history:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: little_monkey
+    category:
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 1000
+          mode: box
+    date:
+      selector:
+        date:
+get_activations:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: little_monkey
+    page:
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 365
+          mode: box

@@ -110,6 +110,10 @@ class FakeApi:
         self.savings_error = None
         # Savings of the past periods asked for: (period, day)
         self.savings_periods = []
+        # Analysis of the consumption, and the calls of its services
+        self.analysis = {"available": True, "start": "2026-11-02", "cost": 14.46,
+                         "consumption": 60.6, "categories": []}
+        self.analysis_calls = []
 
 
 @pytest.fixture
@@ -154,9 +158,26 @@ def fake_api():
             raise state.savings_error
         return copy.deepcopy(state.savings[period])
 
+    async def get_analysis(self, period, day=None):
+        state.analysis_calls.append(("analysis", period, day))
+        if state.savings_error:
+            raise state.savings_error
+        return dict(state.analysis)
+
+    async def get_category_history(self, category, day):
+        state.analysis_calls.append(("history", category, day))
+        return {"category": {"id": category}, "start": "2026-01-05", "bars": []}
+
+    async def get_activations(self, page=0):
+        state.analysis_calls.append(("activations", page))
+        return {"start": None, "end": None, "pending": False, "activations": []}
+
     client = lm_api.LittleMonkeyApiClient
     with patch.object(client, "async_get_cookiesdata", login), \
             patch.object(client, "async_get_gatewaydata", gateway), \
             patch.object(client, "async_get_data", get_data), \
-            patch.object(client, "async_get_tariff_setup", tariff_setup),             patch.object(client, "async_get_activity", get_activity),             patch.object(client, "async_get_savings", get_savings),             patch.object(client, "async_get_savings_period", get_savings_period):
+            patch.object(client, "async_get_tariff_setup", tariff_setup),             patch.object(client, "async_get_activity", get_activity),             patch.object(client, "async_get_savings", get_savings),             patch.object(client, "async_get_savings_period", get_savings_period), \
+            patch.object(client, "async_get_analysis", get_analysis), \
+            patch.object(client, "async_get_category_history", get_category_history), \
+            patch.object(client, "async_get_activations", get_activations):
         yield state

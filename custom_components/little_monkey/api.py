@@ -178,6 +178,128 @@ def parse_savingstat(payload, today) -> dict:
 # Periods of the detail of the savings, and their letter in the ecojoko URL
 SAVINGS_PERIODS = {"week": "w", "month": "m", "year": "y"}
 
+# Trend of a category of the analysis, from its evol_status
+ANALYSIS_TRENDS = {1: "up", 2: "down"}
+
+
+def _iso_day(milliseconds) -> str | None:
+    """Return a time in milliseconds as an ISO date in Paris, or None."""
+    day = local_date(milliseconds)
+    return None if day is None else day.isoformat()
+
+
+def _iso_time(seconds, scale=1) -> str | None:
+    """Return a time as an ISO date and time in Paris, or None.
+
+    The time is in seconds, or in milliseconds with a scale of 1000.
+    """
+    number = finite_number(seconds)
+    if number is None:
+        return None
+    return dt.datetime.fromtimestamp(number / scale, TZ).isoformat()
+
+
+def _analysis_category(item, children=True) -> dict:
+    """Return a category of the analysis of the consumption."""
+    category = item.get("category") or {}
+    result = {
+        "id": category.get("id"),
+        "name": category.get("name"),
+        "color": category.get("color"),
+        "cost": finite_number(item.get("price")),
+        "consumption": finite_number(item.get("kwh")),
+        "percentage": finite_number(item.get("percentage")),
+    }
+    if children:
+        result["trend"] = ANALYSIS_TRENDS.get(item.get("evol_status"))
+        result["beta"] = bool(item.get("is_beta"))
+        result["children"] = [
+            _analysis_category(child, children=False)
+            for child in item.get("usage_childrens") or []
+        ]
+    return result
+
+
+def parse_analysis(payload) -> dict:
+    """Return the analysis of the consumption of a period, by category.
+
+    ecojoko analyses a period once it is over: before, it answers with an
+    error and its explanation, returned as unavailable with its message.
+    """
+    if payload.get("error_id"):
+        period = (payload.get("stat") or {}).get("period") or payload.get("period") or {}
+        return {
+            "available": False,
+            "message": payload.get("error_desc"),
+            "start": _iso_day(period.get("this")),
+        }
+    stat = payload["stat"]
+    period = stat["period"]
+    return {
+        "available": True,
+        "start": _iso_day(period.get("this")),
+        "cost": finite_number(period.get("price")),
+        "consumption": finite_number(period.get("kwh")),
+        "categories": [_analysis_category(item) for item in stat["data"]],
+    }
+
+
+def parse_category_history(payload) -> dict:
+    """Return the consumption of a category, week by week over a year.
+
+    ecojoko gives two points a week, its start and its end, for a chart in
+    steps: one bar a week is kept.
+    """
+    history = payload["usage_history"]
+    category = history.get("category") or {}
+    weeks = {}
+    for item in history["data"]:
+        week = item.get("dtime", item.get("time"))
+        if week not in weeks:
+            weeks[week] = {
+                "date": _iso_day(week),
+                "cost": finite_number(item.get("price")),
+                "consumption": finite_number(item.get("kwh")),
+                "percentage": finite_number(item.get("percentage")),
+            }
+    return {
+        "category": {
+            "id": category.get("id"),
+            "name": category.get("name"),
+            "color": category.get("color"),
+        },
+        "start": _iso_day((history.get("period") or {}).get("this")),
+        "bars": list(weeks.values()),
+    }
+
+
+def parse_activations(payload) -> dict:
+    """Return the activations of the appliances detected over 48 hours.
+
+    Each one has its start, its end, its mean power, its energy and the
+    shape ecojoko draws for it: width, height and color.
+    """
+    activations = []
+    for item in payload["appliances"]:
+        picto = item.get("picto") or {}
+        activations.append({
+            "start": _iso_time(item.get("start_date"), 1000),
+            "end": _iso_time(item.get("end_date"), 1000),
+            "power": finite_number(item.get("power")),
+            "energy": finite_number(item.get("kwh")),
+            "shape": {
+                "width": finite_number(picto.get("w")),
+                "height": finite_number(picto.get("h")),
+                "color": picto.get("color"),
+            },
+        })
+    return {
+        "start": _iso_time(payload.get("start_time")),
+        "end": _iso_time(payload.get("stop_time")),
+        "pending": bool(payload.get("is_pending")),
+        "activations": activations,
+    }
+
 
 class LittleMonkeyApiClient:
     """API Client to retrieve ecojoko data."""
@@ -529,6 +651,46 @@ class LittleMonkeyApiClient:
                 f"Unexpected data from API savingstat: {exception!r}"
             ) from exception
 
+    async def _async_get_slow(self, name, path, parse, error_payload=False):
+        """Read an API of the power meter apart from the polls, and parse it."""
+        self._check_slow_api(name)
+        url = (f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}"
+               f"/device/{self._power_meter_id}/{path}")
+        payload, _cookies = await self._async_request(
+            name, url, cookies=self._cookies, timeout=CONF_API_ACTIVITY_TIMEOUT,
+            error_payload=error_payload)
+        try:
+            return parse(payload)
+        except PARSE_ERRORS as exception:
+            raise LittleMonkeyApiClientError(
+                f"Unexpected data from API {name}: {exception!r}"
+            ) from exception
+
+    async def async_get_analysis(self, period, day=None) -> dict:
+        """Return the analysis of the consumption of a week, month or year.
+
+        Without a day, the last period analysed by ecojoko.
+        """
+        path = f"ia/conso/{SAVINGS_PERIODS[period]}"
+        if day is not None:
+            path += f"/{day.isoformat()}"
+        return await self._async_get_slow(
+            "analysis", path, parse_analysis, error_payload=True)
+
+    async def async_get_category_history(self, category, day) -> dict:
+        """Return the consumption of a category, week by week over a year."""
+        return await self._async_get_slow(
+            "category history", f"usage/{int(category)}/history/y/{day.isoformat()}",
+            parse_category_history)
+
+    async def async_get_activations(self, page=0) -> dict:
+        """Return the activations of the appliances over 48 hours.
+
+        Page 0 for the last 48 hours, 1 for the 48 hours before, and so on.
+        """
+        return await self._async_get_slow(
+            "activations", f"ia/appliances/0/{int(page)}", parse_activations)
+
     async def async_get_savings(self) -> dict:
         """Return the savings over 12 months, this week, month and year.
 
@@ -552,13 +714,14 @@ class LittleMonkeyApiClient:
         return data
 
     async def _async_request(self, name, url, method="GET", timeout=None,
-                             **kwargs):
+                             error_payload=False, **kwargs):
         """Send a request to ecojoko.
 
         Return the JSON payload (None when the answer is not JSON) and the
         cookies of the response. The timeout (CONF_API_TIMEOUT by default)
         covers the whole exchange, body included, and the connection is
-        always released.
+        always released. With error_payload, an answer HTTP 400 in JSON is
+        returned: ecojoko explains in it why it has no data.
         """
         try:
             async with asyncio.timeout(timeout or CONF_API_TIMEOUT):
@@ -584,12 +747,18 @@ class LittleMonkeyApiClient:
                             f"API {name} rejected the request "
                             f"(HTTP {response.status})",
                         )
+                    content_type = response.headers.get("Content-Type", "")
+                    if (
+                        error_payload
+                        and response.status == 400
+                        and "application/json" in content_type
+                    ):
+                        return await response.json(), response.cookies
                     if response.status >= 400:
                         raise LittleMonkeyApiClientCommunicationError(
                             f"API {name} returned HTTP {response.status}",
                         )
                     payload = None
-                    content_type = response.headers.get("Content-Type", "")
                     if "application/json" in content_type:
                         payload = await response.json()
                     return payload, response.cookies
