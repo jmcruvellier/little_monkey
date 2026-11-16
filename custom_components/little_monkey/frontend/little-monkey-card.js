@@ -113,9 +113,9 @@ const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 
 // Radii, in a 200 x 200 view box centered on (100, 100)
 // The bezel goes a little beyond the 200 x 200 box: the view box is wider
-const R_BEZEL = 102;
+const R_BEZEL = 104;
 // Graduations, beyond the rounded tips of the needles and away from the rim
-const R_LABELS = 90;
+const R_LABELS = 91.5;
 const R_TRACK = 79;
 const R_DISC = 64;
 // Legends WATTS and %, halfway between the disc and the inner edge of the arcs
@@ -757,7 +757,7 @@ class LittleMonkeyCard extends HTMLElement {
         .hidden { display: none; }
       </style>
       <ha-card>
-        <svg viewBox="-4 -4 208 208" role="img" aria-label="${text.title.join(" ")}">
+        <svg viewBox="-6 -6 212 212" role="img" aria-label="${text.title.join(" ")}">
           <defs>
             <filter id="lm-outer-shadow" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35" />
