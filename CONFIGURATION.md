@@ -210,7 +210,7 @@ Ces cartes reprennent la page « Analyse de votre conso » de l'application ecoj
 
 ### Analyse de la conso
 
-La consommation d'une semaine, d'un mois ou d'une année par poste : un anneau coloré avec le total au centre, puis la liste des postes (talon de consommation, éclairage, froid, cuisson…) avec leur part, leur coût, leur énergie et une flèche quand ils sont en hausse ou en baisse par rapport à la période précédente. Toucher « Gros électroménager » affiche son détail (lave-vaisselle, lavage et séchage du linge).
+La consommation d'une semaine, d'un mois ou d'une année par poste : un anneau coloré avec le total au centre, puis la liste des postes (talon de consommation, éclairage, froid, cuisson…) avec leur part, leur coût, leur énergie et une flèche quand ils sont en hausse ou en baisse par rapport à la période précédente. La flèche › de « Gros électroménager » affiche son détail (lave-vaisselle, lavage et séchage du linge). Toucher un poste affiche son historique : sa consommation semaine par semaine sur l'année, avec le total ; les flèches changent d'année, toucher une barre affiche sa semaine, et ‹ revient aux postes.
 
 ecojoko analyse une période une fois qu'elle est terminée : la carte s'ouvre sur la dernière semaine (ou le dernier mois) analysée, et les flèches ou un glissement du doigt remontent dans le temps. Une période pas encore analysée affiche l'explication d'ecojoko.
 
