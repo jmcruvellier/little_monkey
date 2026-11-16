@@ -113,8 +113,9 @@ const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 
 // Radii, in a 200 x 200 view box centered on (100, 100)
 const R_BEZEL = 98;
-// Graduations, halfway between the outer edge of the arcs and the rim
-const R_LABELS = 87;
+// Graduations, close to the outer edge of the arcs: the rim and its shadow
+// keep their distance
+const R_LABELS = 85.5;
 const R_TRACK = 79;
 const R_DISC = 64;
 // Legends WATTS and %, halfway between the disc and the inner edge of the arcs
@@ -762,7 +763,7 @@ class LittleMonkeyCard extends HTMLElement {
               <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35" />
             </filter>
             <filter id="lm-blur" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="1.6" />
+              <feGaussianBlur stdDeviation="1.1" />
             </filter>
             <clipPath id="lm-inside">
               <circle cx="100" cy="100" r="${R_BEZEL - 4}" />
@@ -774,7 +775,7 @@ class LittleMonkeyCard extends HTMLElement {
           <circle class="bezel" cx="100" cy="100" r="${R_BEZEL}" />
           <circle class="bezel-inner" cx="100" cy="100" r="${R_BEZEL - 4}" />
           <g class="inner-shadow" clip-path="url(#lm-inside)">
-            <circle cx="100" cy="101.5" r="${R_BEZEL - 4}" fill="none" stroke="rgba(0, 0, 0, 0.35)" stroke-width="4" filter="url(#lm-blur)" />
+            <circle cx="100" cy="101.5" r="${R_BEZEL - 4}" fill="none" stroke="rgba(0, 0, 0, 0.35)" stroke-width="2.6" filter="url(#lm-blur)" />
           </g>
           ${segmentedArc(R_TRACK, powerZoneAngles, POWER_ZONE_COLORS, "track")}
           ${segmentedArc(R_TRACK, lowerAngles, LOWER_COLORS, "track")}
