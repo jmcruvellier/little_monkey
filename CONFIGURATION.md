@@ -204,6 +204,29 @@ response_variable: economies
 
 La réponse reprend les attributs des capteurs Économies de la Semaine / du Mois / de l'Année : `savings` (en euros, négatives en cas de surconsommation), `savings_kwh`, `cost`, `consumption`, `reference_cost`, `reference_consumption`, `start`, `missing_data`, et `bars`, le détail par jour, semaine ou mois.
 
+## Cartes de l'analyse de la consommation
+
+Ces cartes reprennent la page « Analyse de votre conso » de l'application ecojoko<sup>©️</sup>. Chargées automatiquement comme les autres, elles se trouvent en cherchant « Petit Singe » (« Little Monkey » en anglais) ou « analyse » dans le choix des cartes. Elles lisent leurs données chez ecojoko à l'affichage, avec les services décrits plus bas : elles ne créent pas de capteur.
+
+### Analyse de la conso
+
+La consommation d'une semaine, d'un mois ou d'une année par poste : un anneau coloré avec le total au centre, puis la liste des postes (talon de consommation, éclairage, froid, cuisson…) avec leur part, leur coût, leur énergie et une flèche quand ils sont en hausse ou en baisse par rapport à la période précédente. Toucher « Gros électroménager » affiche son détail (lave-vaisselle, lavage et séchage du linge).
+
+ecojoko analyse une période une fois qu'elle est terminée : la carte s'ouvre sur la dernière semaine (ou le dernier mois) analysée, et les flèches ou un glissement du doigt remontent dans le temps. Une période pas encore analysée affiche l'explication d'ecojoko.
+
+```yaml
+type: custom:little-monkey-analysis-card
+entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : période affichée d'abord, week (par défaut), month ou year
+period: week
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
+| `period` | Non | `week` (par défaut), `month` ou `year` |
+| `title` | Non | Titre de la carte |
+
 ## Services de l'analyse de la consommation
 
 Trois services renvoient les données de la page « Analyse de votre conso » d'ecojoko. Les cartes de l'analyse s'en servent ; vous pouvez aussi les appeler depuis un script ou une automatisation (`response_variable`). Comme pour les autres services, `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.

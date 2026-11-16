@@ -33,6 +33,7 @@ async def test_card_is_served_and_loaded(hass):
     assert [call.args for call in add_extra_js_url.call_args_list] == [
         (hass, card.card_url()),
         (hass, f"/little_monkey_card/little-monkey-savings-cards.js?v={const.VERSION}"),
+        (hass, f"/little_monkey_card/little-monkey-analysis-cards.js?v={const.VERSION}"),
     ]
 
 
