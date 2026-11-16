@@ -215,7 +215,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     # Same entity ids, new unique ids, nothing duplicated; only the sensors
     # added by 1.3.0 are created
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
+    assert len(entities) == count_before + 2 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
     assert not [e.entity_id for e in entities if e.entity_id.endswith("_2")]
     assert entity_registry.async_get(entity_ids["main"]).unique_id == entry.entry_id
     for key in [*ENABLED, "production_surplus"]:
@@ -244,7 +244,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 1 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
+    assert len(entities) == count_before + 2 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
 
 
@@ -289,7 +289,7 @@ async def test_new_install_entities(hass, fake_api):
 
     entity_registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    keys = [*ENABLED, "current_tariff_period", *ACTIVITY_KEYS, *SAVINGS_KEYS]
+    keys = [*ENABLED, "current_tariff_period", "contract", *ACTIVITY_KEYS, *SAVINGS_KEYS]
     expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in keys]]
     assert sorted(e.unique_id for e in entities) == sorted(expected)
 
@@ -1316,6 +1316,33 @@ async def test_analysis_services(hass, fake_api):
         await call_service(hass, "get_consumption_analysis", period="week")
     with pytest.raises(vol.Invalid):
         await call_service(hass, "get_activations", page=-1)
+
+
+async def test_contract_sensor(hass, fake_api):
+    """The contract sensor gives the offer and its details."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    state = hass.states.get("sensor.ecojoko_contract")
+    assert state.state == "Zen Fixe - Option HP/HC"
+    assert state.attributes["supplier"] == "EDF"
+    assert state.attributes["power"] == 9
+    assert state.attributes["subscription_price"] == 24.77
+    assert state.attributes["start_date"] == "2026-08-04"
+    assert state.attributes["off_peak_timeslots"][1] == {"start": "14:00", "stop": "16:30"}
+    assert [band["key"] for band in state.attributes["bands"]] == [
+        band["key"] for band in entry.data["tariff_bands"]]
+    entity = er.async_get(hass).async_get("sensor.ecojoko_contract")
+    assert entity.entity_category == "diagnostic"
+
+
+async def test_contract_unknown_until_read(hass, fake_api):
+    """Before ecojoko gives the contract, its sensor is unknown."""
+    fake_api.values["_contract"] = None
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    state = hass.states.get("sensor.ecojoko_contract")
+    assert state.state == "unknown"
+    assert state.attributes["off_peak_timeslots"] == []
 
 
 # --- Current tariff band

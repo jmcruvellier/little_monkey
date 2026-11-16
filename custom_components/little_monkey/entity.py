@@ -1,6 +1,7 @@
 """LittleMonkeyEntity class."""
 from __future__ import annotations
 
+from homeassistant.const import EntityCategory
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.sensor import (
@@ -195,6 +196,56 @@ class EcojokoPeriodSensor(EcojokoSensor):
         """Return the current tariff band (Semaine, Week-end...), if known."""
         band = (self.coordinator.data or {}).get("current_tariff_band")
         return None if band is None else {"tariff_band": band}
+
+
+class EcojokoContractSensor(EcojokoSensor):
+    """Contract of the installation: its offer, with its details as attributes.
+
+    The contract is read every six hours; the last one is kept meanwhile.
+    """
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    def __init__(self, main_device, sensor_name, bands, icon="mdi:file-document-outline"):
+        """Initialize the sensor with the configured tariff bands."""
+        super().__init__(main_device, sensor_name, None, None, None, icon)
+        # Bands of the contract: sensor key, name and total (hc or hp)
+        self._bands = [
+            {
+                "key": band.get("key"),
+                "name": band.get("name") or band.get("label"),
+                "category": band.get("category"),
+            }
+            for band in bands
+        ]
+
+    def _contract(self) -> dict | None:
+        """Return the contract read from ecojoko, None until it is read."""
+        contract = (self.coordinator.data or {}).get("contract")
+        return contract if isinstance(contract, dict) else None
+
+    @property
+    def native_value(self):
+        """Return the name of the offer, as ecojoko gives it."""
+        contract = self._contract()
+        if contract is None or not contract.get("offer_name"):
+            return None
+        # A state is at most 255 characters long
+        return str(contract["offer_name"])[:255]
+
+    @property
+    def extra_state_attributes(self):
+        """Return the details of the contract and its tariff bands."""
+        contract = self._contract() or {}
+        return {
+            "supplier": contract.get("supplier_name"),
+            "offer_type": contract.get("offer_type"),
+            "power": contract.get("power"),
+            "subscription_price": contract.get("subscription_price"),
+            "start_date": contract.get("start_date"),
+            "off_peak_timeslots": contract.get("off_peak_timeslots") or [],
+            "bands": self._bands,
+        }
 
 
 class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):

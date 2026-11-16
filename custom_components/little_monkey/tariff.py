@@ -27,6 +27,9 @@ CONTRACT_FIELDS = (
     "offer_type",
     "is_hchp",
     "special_day",
+    # Subscribed power in kVA, and price of the subscription
+    "power",
+    "subscription_price",
 )
 
 

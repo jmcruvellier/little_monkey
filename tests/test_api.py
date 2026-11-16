@@ -922,7 +922,10 @@ def test_options_off_ignore_extra_data(api):
 
 
 def test_contract_is_read_without_prices(api):
-    """The active contract is read, without prices or subscription ids."""
+    """The active contract is read with its subscription, without the ids.
+
+    The diagnostics leave out the price of the subscription.
+    """
     session = Session()
     client = make_client(api, session)
     assert client.contract is None
@@ -934,6 +937,8 @@ def test_contract_is_read_without_prices(api):
         "offer_type": "HP/HC",
         "is_hchp": 1,
         "special_day": 1,
+        "power": 9,
+        "subscription_price": 24.77,
         "off_peak_timeslots": [
             {"start": "01:30", "stop": "07:00"},
             {"start": "14:00", "stop": "16:30"},
@@ -941,7 +946,8 @@ def test_contract_is_read_without_prices(api):
         "start_date": "2026-08-05",
     }
     diagnostics = client.diagnostics()
-    assert diagnostics["contract"] == client.contract
+    assert diagnostics["contract"] == {
+        key: value for key, value in client.contract.items() if key != "subscription_price"}
     assert "24.77" not in repr(diagnostics)
     assert "283901" not in repr(diagnostics)
 
