@@ -9,11 +9,15 @@
  * The savings tab of the ecojoko application:
  * - little-monkey-savings-summary-card: over the last 12 months, the cost of
  *   the consumption, the cost of the reference consumption and the savings.
+ * - little-monkey-savings-detail-card: the savings of a week, a month or a
+ *   year in bars, with the previous periods read by the get_savings service.
  */
 
 const DOMAIN = "little_monkey";
 const SUMMARY_TYPE = "little-monkey-savings-summary-card";
 const SUMMARY_EDITOR_TYPE = "little-monkey-savings-summary-card-editor";
+const DETAIL_TYPE = "little-monkey-savings-detail-card";
+const DETAIL_EDITOR_TYPE = "little-monkey-savings-detail-card-editor";
 const DOCUMENTATION =
   "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies";
 
@@ -38,6 +42,24 @@ const TRANSLATIONS = {
       units: { eur: "Euros", kwh: "kWh" },
       title: "Title",
     },
+    detail: {
+      name: "Little Monkey savings in detail",
+      description: "Your savings by day, week or month, as in the ecojoko application.",
+      title: "Savings in detail",
+      periods: { week: "Week", month: "Month", year: "Year" },
+      previous: "Previous period",
+      next: "Next period",
+      bar: "{name}: {savings} · {energy}",
+      error: "The savings of this period could not be read",
+      missing: "Savings sensor not found",
+    },
+    detail_editor: {
+      entity: "Savings this week (or month, or year)",
+      period: "Period shown first",
+      unit: "Unit of the bars",
+      units: { eur: "Euros", kwh: "kWh" },
+      title: "Title",
+    },
   },
   fr: {
     summary: {
@@ -56,6 +78,24 @@ const TRANSLATIONS = {
       consumption_entity: "Coût de la consommation sur 12 mois",
       reference_entity: "Coût de référence sur 12 mois",
       unit: "Unité",
+      units: { eur: "Euros", kwh: "kWh" },
+      title: "Titre",
+    },
+    detail: {
+      name: "Petit Singe : détail des économies",
+      description: "Vos économies par jour, semaine ou mois, comme dans l'application ecojoko.",
+      title: "Économies en détail",
+      periods: { week: "Semaine", month: "Mois", year: "Année" },
+      previous: "Période précédente",
+      next: "Période suivante",
+      bar: "{name} : {savings} · {energy}",
+      error: "Les économies de cette période n'ont pas pu être lues",
+      missing: "Capteur des économies introuvable",
+    },
+    detail_editor: {
+      entity: "Économies de la semaine (ou du mois, ou de l'année)",
+      period: "Période affichée d'abord",
+      unit: "Unité des barres",
       units: { eur: "Euros", kwh: "kWh" },
       title: "Titre",
     },
@@ -115,7 +155,7 @@ export function formatValue(locale, value, unit) {
     return "—";
   }
   if (unit === "kwh") {
-    const digits = Math.abs(value) >= 100 ? 0 : 1;
+    const digits = Math.abs(value) >= 100 ? 0 : Math.abs(value) >= 10 ? 1 : 2;
     return `${new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value)} kWh`;
   }
   return new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(value);
@@ -266,6 +306,255 @@ export function summarySchema(hass) {
         select: {
           mode: "dropdown",
           options: ["eur", "kwh"].map((value) => ({ value, label: text.units[value] })),
+        },
+      },
+    },
+    { name: "title", selector: { text: {} } },
+  ];
+}
+
+// --- Detail of the savings
+
+export const PERIODS = ["week", "month", "year"];
+// Sensor of the current period, by period
+const PERIOD_SENSORS = { week: "savings_week", month: "savings_month", year: "savings_year" };
+// Bars: savings in green, overconsumption in grey blue, as in ecojoko
+export const DETAIL_COLORS = { savings: "#5fdcab", overconsumption: "#a9bfd0" };
+// Drawing of the bars, in the units of the SVG
+const CHART = { width: 280, height: 160, left: 40, right: 4, top: 8, bottom: 20 };
+// Distance of a swipe that changes the period, in pixels
+const SWIPE_DISTANCE = 40;
+
+/** Return an ISO date "YYYY-MM-DD" as a date at midnight UTC. */
+function utcDate(iso) {
+  return new Date(`${iso}T00:00:00Z`);
+}
+
+/** Return a date at midnight UTC as an ISO date "YYYY-MM-DD". */
+function isoDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+/** Return today as an ISO date, in the time zone of the browser. */
+export function today(now = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}
+
+/** Return the first day of the week (Monday), month or year of a day. */
+export function periodStart(period, iso) {
+  if (period === "year") {
+    return `${iso.slice(0, 4)}-01-01`;
+  }
+  if (period === "month") {
+    return `${iso.slice(0, 7)}-01`;
+  }
+  const date = utcDate(iso);
+  date.setUTCDate(date.getUTCDate() - ((date.getUTCDay() + 6) % 7));
+  return isoDate(date);
+}
+
+/** Return the first day of the period before (step -1) or after (+1). */
+export function shiftPeriod(period, iso, step) {
+  const date = utcDate(periodStart(period, iso));
+  if (period === "year") {
+    date.setUTCFullYear(date.getUTCFullYear() + step);
+  } else if (period === "month") {
+    date.setUTCMonth(date.getUTCMonth() + step);
+  } else {
+    date.setUTCDate(date.getUTCDate() + 7 * step);
+  }
+  return isoDate(date);
+}
+
+/** Return the name of a period: its days, its month or its year. */
+export function periodLabel(locale, period, iso) {
+  const start = utcDate(periodStart(period, iso));
+  if (period === "year") {
+    return String(start.getUTCFullYear());
+  }
+  if (period === "month") {
+    const text = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(start);
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 6);
+  // Short enough for a narrow card: "9–15 nov. 2026", "Nov 9 – 15, 2026"
+  return new Intl.DateTimeFormat(locale, {
+    day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
+  }).formatRange(start, end);
+}
+
+/** Return the label of a bar: a day of the week, the days of a week, a month. */
+export function barLabel(locale, period, iso) {
+  if (!iso) {
+    return "";
+  }
+  const date = utcDate(iso);
+  if (period === "year") {
+    // The initial of the month: twelve short names do not fit on a card
+    return new Intl.DateTimeFormat(locale, { month: "narrow", timeZone: "UTC" }).format(date);
+  }
+  if (period === "month") {
+    const end = new Date(date);
+    end.setUTCDate(end.getUTCDate() + 6);
+    return `${date.getUTCDate()}–${end.getUTCDate()}`;
+  }
+  return new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" }).format(date);
+}
+
+/** Return the long label of a bar, for its details. */
+export function barTitle(locale, period, iso) {
+  if (!iso) {
+    return "";
+  }
+  const date = utcDate(iso);
+  if (period === "year") {
+    return periodLabel(locale, "month", iso);
+  }
+  if (period === "month") {
+    return periodLabel(locale, "week", iso);
+  }
+  const text = new Intl.DateTimeFormat(locale, {
+    weekday: "long", day: "numeric", month: "long", timeZone: "UTC",
+  }).format(date);
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Return a round step above a value: 1, 2, 2.5 or 5 times a power of ten. */
+function niceStep(value) {
+  const power = 10 ** Math.floor(Math.log10(value));
+  const factor = [1, 2, 2.5, 5, 10].find((candidate) => candidate * power >= value * (1 - 1e-9));
+  return factor * power;
+}
+
+/**
+ * Return the scale of the bars: its bottom, its top and its step.
+ *
+ * It shows zero, and the negative side only with an overconsumption, with
+ * at most four graduations on the longest side.
+ */
+export function chartScale(values) {
+  const known = values.filter((value) => Number.isFinite(value));
+  const top = Math.max(0, ...known);
+  const bottom = Math.min(0, ...known);
+  const longest = Math.max(top, -bottom);
+  if (longest === 0) {
+    return { min: 0, max: 1, step: 0.5 };
+  }
+  const step = niceStep(longest / 4);
+  const max = Math.ceil(top / step - 1e-9) * step;
+  return {
+    min: -Math.ceil(-bottom / step - 1e-9) * step || 0,
+    max: max || (bottom < 0 ? 0 : step),
+    step,
+  };
+}
+
+/** Return the values of the bars, in euros or in kWh. */
+export function barValues(bars, unit) {
+  return (bars || []).map((bar) => {
+    const value = unit === "kwh" ? bar?.savings_kwh : bar?.savings;
+    return Number.isFinite(value) ? value : null;
+  });
+}
+
+/**
+ * Return the rectangles of the bars and the graduations of the scale, in
+ * the units of the SVG.
+ */
+export function chartGeometry(values, box = CHART) {
+  const scale = chartScale(values);
+  const plotHeight = box.height - box.top - box.bottom;
+  const plotWidth = box.width - box.left - box.right;
+  const y = (value) => box.top + ((scale.max - value) / (scale.max - scale.min)) * plotHeight;
+  const slot = plotWidth / Math.max(values.length, 1);
+  const width = Math.min(slot * 0.62, 36);
+  const zero = y(0);
+  const rects = values.map((value, index) => {
+    const x = box.left + slot * index + (slot - width) / 2;
+    const rect = { x, width, center: x + width / 2, slot, value };
+    if (value === null) {
+      return rect;
+    }
+    const height = Math.abs(y(value) - zero);
+    return {
+      ...rect,
+      y: Math.min(y(value), zero),
+      // A small saving stays visible
+      height: value === 0 ? 0 : Math.max(height, 1),
+      color: DETAIL_COLORS[value < 0 ? "overconsumption" : "savings"],
+    };
+  });
+  const ticks = [];
+  for (let value = scale.min; value <= scale.max + scale.step / 1000; value += scale.step) {
+    // No "-0" at zero
+    ticks.push({ value: Math.round(value * 1000) / 1000 || 0, y: y(value) });
+  }
+  return { rects, ticks, zero, scale };
+}
+
+/** Return the sensors of the current periods of the device of an entity. */
+export function periodEntities(hass, entityId) {
+  const sensors = deviceEntities(hass, entityId);
+  return Object.fromEntries(PERIODS.map((period) => [period, sensors[PERIOD_SENSORS[period]]]));
+}
+
+/** Return the savings of a current period, as given by its sensor. */
+export function sensorSavings(hass, entityId) {
+  const state = entityId && hass?.states?.[entityId];
+  if (!state || UNKNOWN_STATES.has(state.state) || !Array.isArray(state.attributes?.bars)) {
+    return null;
+  }
+  return { ...state.attributes, savings: asNumber(state.state) };
+}
+
+/** Return the config entry of the device of an entity, when there is one. */
+export function configEntryId(hass, entityId) {
+  const deviceId = hass?.entities?.[entityId]?.device_id;
+  const entries = hass?.devices?.[deviceId]?.config_entries || [];
+  return entries.length === 1 ? entries[0] : undefined;
+}
+
+/** Return the period shown first by a card: week by default. */
+export function initialPeriod(config) {
+  return PERIODS.includes(config?.period) ? config.period : "week";
+}
+
+/** Return the configuration of a new detail card, on the first device. */
+export function detailStubConfig(hass) {
+  const config = { type: `custom:${DETAIL_TYPE}` };
+  const entity = findEntity(hass, "savings_week");
+  if (entity) {
+    config.entity = entity;
+  }
+  return config;
+}
+
+/** Return the fields of the editor of the detail. */
+export function detailSchema(hass) {
+  const text = TRANSLATIONS[language(hass)];
+  return [
+    {
+      name: "entity",
+      required: true,
+      selector: { entity: { filter: { integration: DOMAIN, domain: "sensor", device_class: "monetary" } } },
+    },
+    {
+      name: "period",
+      selector: {
+        select: {
+          mode: "dropdown",
+          options: PERIODS.map((value) => ({ value, label: text.detail.periods[value] })),
+        },
+      },
+    },
+    {
+      name: "unit",
+      selector: {
+        select: {
+          mode: "dropdown",
+          options: ["eur", "kwh"].map((value) => ({ value, label: text.detail_editor.units[value] })),
         },
       },
     },
@@ -441,6 +730,10 @@ class SavingsEditor extends HTMLElement {
     return {};
   }
 
+  _labels() {
+    return "editor";
+  }
+
   _render() {
     if (!this._config || !this._hass) {
       return;
@@ -448,7 +741,7 @@ class SavingsEditor extends HTMLElement {
     if (!this._form) {
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (field) =>
-        TRANSLATIONS[language(this._hass)].editor[field.name] || field.name;
+        TRANSLATIONS[language(this._hass)][this._labels()][field.name] || field.name;
       this._form.addEventListener("value-changed", (event) => this._changed(event));
       this.appendChild(this._form);
     }
@@ -478,6 +771,299 @@ class LittleMonkeySavingsSummaryCardEditor extends SavingsEditor {
   }
 }
 
+/** Escape a text for the HTML of a card. */
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
+}
+
+class LittleMonkeySavingsDetailCard extends HTMLElement {
+  setConfig(config) {
+    if (!config) {
+      throw new Error("Invalid configuration");
+    }
+    this._config = { ...config };
+    this._period = initialPeriod(this._config);
+    this._start = null;
+    this._selected = null;
+    // Savings of the past periods, read by the service: by "period:start"
+    this._cache = new Map();
+    this._pending = new Set();
+    this._errors = new Set();
+    this._built = false;
+    this._signature = null;
+    this._render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  getCardSize() {
+    return 5;
+  }
+
+  getGridOptions() {
+    // Height of the content: a fixed number of rows would cut it
+    return { columns: 6, min_columns: 4 };
+  }
+
+  static getConfigElement() {
+    return document.createElement(DETAIL_EDITOR_TYPE);
+  }
+
+  static getStubConfig(hass) {
+    return detailStubConfig(hass);
+  }
+
+  _text() {
+    return TRANSLATIONS[language(this._hass)].detail;
+  }
+
+  _locale() {
+    return this._hass.locale?.language || this._hass.language;
+  }
+
+  /** Return the first day of the current period. */
+  _current() {
+    return periodStart(this._period, today());
+  }
+
+  /** Show another period: week, month or year, from the current one. */
+  _choose(period) {
+    this._period = period;
+    this._start = null;
+    this._selected = null;
+    this._render();
+  }
+
+  /** Show the period before (-1) or after (+1). */
+  _go(step) {
+    const start = shiftPeriod(this._period, this._start || this._current(), step);
+    if (start > this._current()) {
+      return;
+    }
+    this._start = start === this._current() ? null : start;
+    this._selected = null;
+    this._errors.delete(`${this._period}:${start}`);
+    this._render();
+  }
+
+  /** Return the savings shown: from the sensor now, from the service before. */
+  _savings() {
+    const start = this._start || this._current();
+    if (!this._start) {
+      const sensor = periodEntities(this._hass, this._config.entity)[this._period];
+      const savings = sensorSavings(this._hass, sensor);
+      if (savings) {
+        return { savings, start };
+      }
+    }
+    const key = `${this._period}:${start}`;
+    if (this._errors.has(key)) {
+      return { error: true, start };
+    }
+    if (!this._cache.has(key)) {
+      this._fetch(this._period, start);
+      return { loading: true, start };
+    }
+    return { savings: this._cache.get(key), start };
+  }
+
+  /** Read the savings of a period with the get_savings service. */
+  async _fetch(period, start) {
+    const key = `${period}:${start}`;
+    if (this._pending.has(key)) {
+      return;
+    }
+    this._pending.add(key);
+    const data = { period, date: start };
+    const entry = configEntryId(this._hass, this._config.entity);
+    if (entry) {
+      data.config_entry_id = entry;
+    }
+    try {
+      const result = await this._hass.callWS({
+        type: "call_service",
+        domain: DOMAIN,
+        service: "get_savings",
+        service_data: data,
+        return_response: true,
+      });
+      this._cache.set(key, result.response);
+    } catch (error) {
+      console.debug("Little Monkey card: savings not read", error);
+      this._errors.add(key);
+    } finally {
+      this._pending.delete(key);
+      this._signature = null;
+      this._render();
+    }
+  }
+
+  /** Build the card once; the updates redraw its bars. */
+  _build() {
+    if (!this.shadowRoot) {
+      this.attachShadow({ mode: "open" });
+    }
+    const text = this._text();
+    const buttons = PERIODS.map((period) =>
+      `<button class="period" data-period="${period}">${escapeHtml(text.periods[period])}</button>`).join("");
+    this.shadowRoot.innerHTML = `
+      <style>
+        ${STYLES}
+        .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+        .periods { display: inline-flex; border: 1px solid var(--divider-color, #e0e0e0); border-radius: 18px; overflow: hidden; }
+        .period { border: none; background: none; color: var(--primary-text-color); font: inherit; font-size: 0.9em; padding: 6px 12px; cursor: pointer; }
+        .period.active { background: var(--primary-color, #03a9f4); color: var(--text-primary-color, #fff); }
+        .total { font-size: 0.95em; white-space: nowrap; }
+        .total .money { font-weight: 600; }
+        .total .energy { color: var(--secondary-text-color); }
+        .details { min-height: 1.4em; font-size: 0.9em; color: var(--secondary-text-color); text-align: center; }
+        svg { width: 100%; display: block; touch-action: pan-y; user-select: none; }
+        .tick { fill: var(--secondary-text-color, #727272); font-size: 9.5px; text-anchor: end; dominant-baseline: central; }
+        .grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 0.5; }
+        .zero { stroke: var(--secondary-text-color, #727272); stroke-width: 0.6; }
+        .label { fill: var(--secondary-text-color, #727272); font-size: 9.5px; text-anchor: middle; }
+        .bar { cursor: pointer; }
+        .bar rect.hit { fill: transparent; }
+        .bar.selected rect.value { stroke: var(--primary-text-color); stroke-width: 1; }
+        .message { fill: var(--secondary-text-color, #727272); font-size: 10px; text-anchor: middle; }
+        .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .nav button { border: none; background: none; color: var(--primary-text-color); cursor: pointer; padding: 4px 10px; font-size: 1.4em; line-height: 1; border-radius: 50%; }
+        .nav button:disabled { visibility: hidden; }
+        .nav .name { font-size: 0.95em; color: var(--primary-text-color); text-align: center; }
+      </style>
+      <ha-card>
+        <div class="header"><div class="title"></div></div>
+        <div class="warning"></div>
+        <div class="top"><div class="periods">${buttons}</div><div class="total"></div></div>
+        <div class="details"></div>
+        <svg viewBox="0 0 ${CHART.width} ${CHART.height}" role="img"></svg>
+        <div class="nav">
+          <button class="previous" aria-label="${escapeHtml(text.previous)}">‹</button>
+          <div class="name"></div>
+          <button class="next" aria-label="${escapeHtml(text.next)}">›</button>
+        </div>
+      </ha-card>`;
+    const root = this.shadowRoot;
+    for (const button of root.querySelectorAll(".period")) {
+      button.addEventListener("click", () => this._choose(button.dataset.period));
+    }
+    root.querySelector(".previous").addEventListener("click", () => this._go(-1));
+    root.querySelector(".next").addEventListener("click", () => this._go(1));
+    const svg = root.querySelector("svg");
+    svg.addEventListener("click", (event) => {
+      const bar = event.target.closest?.(".bar");
+      if (bar) {
+        const index = Number(bar.dataset.index);
+        this._selected = this._selected === index ? null : index;
+        this._signature = null;
+        this._render();
+      }
+    });
+    // Swipe to the previous or next period
+    svg.addEventListener("pointerdown", (event) => {
+      this._swipeStart = event.clientX;
+    });
+    svg.addEventListener("pointerup", (event) => {
+      const distance = event.clientX - (this._swipeStart ?? event.clientX);
+      this._swipeStart = null;
+      if (Math.abs(distance) >= SWIPE_DISTANCE) {
+        this._go(distance > 0 ? -1 : 1);
+      }
+    });
+    this._built = true;
+  }
+
+  _render() {
+    if (!this._config || !this._hass) {
+      return;
+    }
+    if (!this._built) {
+      this._build();
+    }
+    const text = this._text();
+    const locale = this._locale();
+    const unit = this._config.unit === "kwh" ? "kwh" : "eur";
+    const shown = this._savings();
+    const signature = JSON.stringify([this._period, shown, this._selected, unit, this._config.title, locale]);
+    if (signature === this._signature) {
+      return;
+    }
+    this._signature = signature;
+    const root = this.shadowRoot;
+    root.querySelector(".title").textContent = this._config.title || text.title;
+    const missing = !this._config.entity || !this._hass.states[this._config.entity];
+    const warning = root.querySelector(".warning");
+    warning.textContent = missing ? text.missing : "";
+    warning.style.display = missing ? "" : "none";
+    for (const button of root.querySelectorAll(".period")) {
+      button.classList.toggle("active", button.dataset.period === this._period);
+    }
+    root.querySelector(".name").textContent = periodLabel(locale, this._period, shown.start);
+    root.querySelector(".next").disabled = shown.start >= this._current();
+
+    const savings = shown.savings;
+    const total = root.querySelector(".total");
+    if (savings && savings.savings !== null && savings.savings !== undefined) {
+      const color = DETAIL_COLORS[savings.savings < 0 ? "overconsumption" : "savings"];
+      total.innerHTML = `<span class="money" style="color: color-mix(in srgb, ${color} 65%, var(--primary-text-color, #212121))">${
+        escapeHtml(formatValue(locale, savings.savings, "eur"))}</span> <span class="energy">| ${
+        escapeHtml(formatValue(locale, savings.savings_kwh, "kwh"))}</span>`;
+    } else {
+      total.textContent = "";
+    }
+
+    const bars = savings?.bars || [];
+    const details = root.querySelector(".details");
+    const bar = this._selected === null ? null : bars[this._selected];
+    if (bar && bar.savings !== null && bar.savings !== undefined) {
+      details.textContent = text.bar
+        .replace("{name}", barTitle(locale, this._period, bar.date))
+        .replace("{savings}", formatValue(locale, bar.savings, "eur"))
+        .replace("{energy}", formatValue(locale, bar.savings_kwh, "kwh"));
+    } else {
+      details.textContent = "";
+    }
+    root.querySelector("svg").innerHTML = this._chart(shown, bars, unit, locale, text);
+  }
+
+  /** Return the SVG of the bars, their scale and their labels. */
+  _chart(shown, bars, unit, locale, text) {
+    if (shown.loading || shown.error || !bars.length) {
+      const message = shown.error ? text.error : "…";
+      return `<text class="message" x="${CHART.width / 2}" y="${CHART.height / 2}">${escapeHtml(message)}</text>`;
+    }
+    const { rects, ticks, zero } = chartGeometry(barValues(bars, unit));
+    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
+    const suffix = unit === "kwh" ? "" : " €";
+    const grid = ticks.map((tick) => `
+      <line class="grid" x1="${CHART.left}" x2="${CHART.width - CHART.right}" y1="${tick.y}" y2="${tick.y}" />
+      <text class="tick" x="${CHART.left - 4}" y="${tick.y}">${escapeHtml(format.format(tick.value) + suffix)}</text>`).join("");
+    const columns = rects.map((rect, index) => {
+      const value = rect.value === null ? "" : `<rect class="value" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" rx="1.5" fill="${rect.color}" />`;
+      const selected = index === this._selected ? " selected" : "";
+      return `<g class="bar${selected}" data-index="${index}">
+        <rect class="hit" x="${rect.center - rect.slot / 2}" y="${CHART.top}" width="${rect.slot}" height="${CHART.height - CHART.top}" />
+        ${value}
+        <text class="label" x="${rect.center}" y="${CHART.height - 4}">${escapeHtml(barLabel(locale, this._period, bars[index]?.date))}</text>
+      </g>`;
+    }).join("");
+    return `${grid}<line class="zero" x1="${CHART.left}" x2="${CHART.width - CHART.right}" y1="${zero}" y2="${zero}" />${columns}`;
+  }
+}
+
+class LittleMonkeySavingsDetailCardEditor extends SavingsEditor {
+  _schema() {
+    return detailSchema(this._hass);
+  }
+
+  _labels() {
+    return "detail_editor";
+  }
+}
+
 /** Define a card and its editor, and show the card in the card picker. */
 function defineCard(type, card, editorType, editor, key) {
   if (!customElements.get(editorType)) {
@@ -500,4 +1086,8 @@ function defineCard(type, card, editorType, editor, key) {
 defineCard(
   SUMMARY_TYPE, LittleMonkeySavingsSummaryCard,
   SUMMARY_EDITOR_TYPE, LittleMonkeySavingsSummaryCardEditor, "summary",
+);
+defineCard(
+  DETAIL_TYPE, LittleMonkeySavingsDetailCard,
+  DETAIL_EDITOR_TYPE, LittleMonkeySavingsDetailCardEditor, "detail",
 );

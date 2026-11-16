@@ -165,6 +165,30 @@ title: Économies
 | `unit` | Non | `eur` (par défaut) ou `kwh` |
 | `title` | Non | Titre de la carte |
 
+### Détail des économies
+
+Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou d'une année (mois par mois), en barres : vertes pour une économie, gris-bleu pour une surconsommation.
+
+- les boutons Semaine / Mois / Année changent de période ; le total de la période, en euros et en kWh, s'affiche à côté ;
+- les flèches en bas, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; la période en cours vient des capteurs, les précédentes sont lues chez ecojoko par le service `little_monkey.get_savings` ;
+- toucher une barre affiche son détail (par exemple « Lundi 16 novembre : -0,35 € · -2,58 kWh ») ; une semaine est nommée par ses jours, par exemple « 9–15 nov. 2026 ».
+
+```yaml
+type: custom:little-monkey-savings-detail-card
+entity: sensor.ecojoko_economies_de_la_semaine
+# Facultatif : période affichée d'abord, week (par défaut), month ou year
+period: week
+# Facultatif : unité des barres, euros (eur, par défaut) ou kWh (kwh)
+unit: eur
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Capteur Économies de la Semaine (ou du Mois, ou de l'Année) : la carte trouve les deux autres sur le même appareil Little Monkey |
+| `period` | Non | `week` (par défaut), `month` ou `year` |
+| `unit` | Non | Unité des barres : `eur` (par défaut) ou `kwh` |
+| `title` | Non | Titre de la carte |
+
 ## Service « Lire les économies »
 
 Le service `little_monkey.get_savings` renvoie les économies d'une semaine, d'un mois ou d'une année, comme la page « Détail des économies » d'ecojoko. La carte « Détail des économies » s'en sert pour remonter dans le temps ; vous pouvez aussi l'appeler depuis un script ou une automatisation :
