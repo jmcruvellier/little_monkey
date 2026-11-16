@@ -217,12 +217,12 @@ test("empty options are removed", () => {
 
 test("the editor asks for the tariff period only with the HC/HP or Tempo option", () => {
   const names = (hass) => card.editorSchema(hass, { entity: "sensor.home_realtime_consumption" }).map((field) => field.name);
-  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "max_power", "trend_minutes"]);
+  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "trend_minutes"]);
   assert.deepEqual(names(hassWith(["home", [POWER, "hc_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "max_power", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "trend_minutes",
   ]);
   assert.deepEqual(names(hassWith(["home", [POWER, "red_hp_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "max_power", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "trend_minutes",
   ]);
 });
 
@@ -240,4 +240,22 @@ test("the period sensor of the integration is chosen automatically", () => {
     card.editedConfig(hass, chosen, { ...chosen, entity: "sensor.barn_realtime_consumption" }).tariff_entity,
     "binary_sensor.heures_creuses",
   );
+});
+
+test("the savings needle goes from -20 % (green side) to +20 %", () => {
+  assert.equal(card.savingsAngle(0), 180);
+  assert.equal(card.savingsAngle(-20), 235);
+  assert.equal(card.savingsAngle(20), 125);
+  assert.equal(card.savingsAngle(-10), 207.5);
+  // Beyond 20 %, the needle stays at the end of the arc
+  assert.equal(card.savingsAngle(-45), 235);
+  assert.equal(card.savingsAngle(60), 125);
+});
+
+test("the savings sensor of the integration is chosen automatically", () => {
+  const hass = hassWith(["home", [POWER, "savings_7_days"]], ["barn", [POWER]]);
+  assert.equal(card.stubConfig(hass).savings_entity, "sensor.home_savings_7_days");
+  const previous = card.stubConfig(hass);
+  const moved = card.editedConfig(hass, previous, { ...previous, entity: "sensor.barn_realtime_consumption" });
+  assert.equal("savings_entity" in moved, false);
 });
