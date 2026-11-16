@@ -38,14 +38,16 @@ async def async_get_config_entry_diagnostics(
         "last_exception": None if last_exception is None else str(last_exception),
     }
     diagnostics["data"] = coordinator.data
-    activity = getattr(coordinator, "activity", None)
-    if activity is not None:
-        diagnostics["activity"] = {
-            "last_update_success": activity.last_update_success,
-            "last_exception": (
-                None if activity.last_exception is None
-                else str(activity.last_exception)),
-            "data": activity.data,
-        }
+    # Data read apart from the polls
+    for name in ("activity", "savings"):
+        slow = getattr(coordinator, name, None)
+        if slow is not None:
+            diagnostics[name] = {
+                "last_update_success": slow.last_update_success,
+                "last_exception": (
+                    None if slow.last_exception is None
+                    else str(slow.last_exception)),
+                "data": slow.data,
+            }
     diagnostics["client"] = coordinator.client.diagnostics()
     return diagnostics

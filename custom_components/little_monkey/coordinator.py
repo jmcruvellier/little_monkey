@@ -23,6 +23,7 @@ from .const import (
     CONF_API_ACTIVITY_GRACE,
     CONF_API_ACTIVITY_REFRESH,
     CONF_API_FAILURE_GRACE,
+    CONF_API_SAVINGS_REFRESH,
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
     POLL_INTERVAL,
@@ -187,16 +188,18 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         }
 
 
-class LittleMonkeyActivityCoordinator(DataUpdateCoordinator):
-    """Fetch the activity of the account (savings over 7 days...).
+class LittleMonkeySlowCoordinator(DataUpdateCoordinator):
+    """Fetch data of the account that ecojoko is slow to compute.
 
-    It is apart from the polls: ecojoko is slow to compute it, and its
-    values change slowly. A failure never makes the real-time sensors
-    unavailable, and the last values are kept for CONF_API_ACTIVITY_GRACE
-    seconds.
+    It is apart from the polls, and its values change slowly. A failure
+    never makes the real-time sensors unavailable, and the last values are
+    kept for CONF_API_ACTIVITY_GRACE seconds.
     """
 
     config_entry: ConfigEntry
+    # Name of the data, in the logs, and seconds between two readings
+    KIND = ""
+    REFRESH = CONF_API_ACTIVITY_REFRESH
 
     def __init__(
         self,
@@ -212,14 +215,18 @@ class LittleMonkeyActivityCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass=hass,
             logger=LOGGER,
-            name=f"{DOMAIN} activity",
-            update_interval=timedelta(seconds=CONF_API_ACTIVITY_REFRESH),
+            name=f"{DOMAIN} {self.KIND}",
+            update_interval=timedelta(seconds=self.REFRESH),
         )
 
+    async def _async_fetch(self) -> dict:
+        """Read the data from ecojoko."""
+        raise NotImplementedError
+
     async def _async_update_data(self):
-        """Read the activity of the account."""
+        """Read the data, or keep the last values during a short failure."""
         try:
-            data = await self.client.async_get_activity()
+            data = await self._async_fetch()
         except LittleMonkeyApiClientError as exception:
             if (
                 self.data is not None
@@ -227,9 +234,30 @@ class LittleMonkeyActivityCoordinator(DataUpdateCoordinator):
                 and time.monotonic() - self._last_success < CONF_API_ACTIVITY_GRACE
             ):
                 LOGGER.debug(
-                    "ecojoko activity not read, the last values are kept: %s",
-                    exception)
+                    "ecojoko %s not read, the last values are kept: %s",
+                    self.KIND, exception)
                 return self.data
             raise UpdateFailed(exception) from exception
         self._last_success = time.monotonic()
         return data
+
+
+class LittleMonkeyActivityCoordinator(LittleMonkeySlowCoordinator):
+    """Fetch the activity of the account (savings over 7 days...)."""
+
+    KIND = "activity"
+
+    async def _async_fetch(self) -> dict:
+        """Read the activity of the account."""
+        return await self.client.async_get_activity()
+
+
+class LittleMonkeySavingsCoordinator(LittleMonkeySlowCoordinator):
+    """Fetch the savings: over 12 months, this week, month and year."""
+
+    KIND = "savings"
+    REFRESH = CONF_API_SAVINGS_REFRESH
+
+    async def _async_fetch(self) -> dict:
+        """Read the savings of the account."""
+        return await self.client.async_get_savings()

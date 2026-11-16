@@ -27,6 +27,12 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Puissance Max du Mois | Puissance | W | Permanent | |
 | 1.3.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
 | 1.3.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
+| 1.3.0 | Coût de la Consommation sur 12 Mois | Monétaire | EUR | Permanent | Coût de la consommation des 12 derniers mois (« Conso en cours » du résumé des économies d'ecojoko) ; consommation en kWh en attribut |
+| 1.3.0 | Coût de Référence sur 12 Mois | Monétaire | EUR | Permanent | Coût de votre consommation de référence sur 12 mois ; consommation de référence en kWh en attribut |
+| 1.3.0 | Économies sur 12 Mois | Monétaire | EUR | Permanent | Différence entre les deux, négative en cas de surconsommation ; économies en kWh et niveau (1 à 5) en attribut |
+| 1.3.0 | Économies de la Semaine | Monétaire | EUR | Permanent | Économies de la semaine en cours (du lundi au dimanche), négatives en cas de surconsommation ; en attribut, les économies en kWh, les coûts et consommations réels et de référence, et le détail de chaque jour (`bars`, non historisé) |
+| 1.3.0 | Économies du Mois | Monétaire | EUR | Permanent | Idem pour le mois en cours, détaillé par semaine |
+| 1.3.0 | Économies de l'Année | Monétaire | EUR | Permanent | Idem pour l'année en cours, détaillée par mois |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |

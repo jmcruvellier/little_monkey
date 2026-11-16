@@ -101,6 +101,39 @@ ACTIVITY = {
 }
 
 
+# Answers of the savings APIs observed on 16/11/2026, a Monday
+SAVINGS_SUMMARY = {
+    "savings": {
+        "conso": 483.6, "profil_initial": 821.23, "best": 816.28, "home": 1256,
+        "unit": "EUR", "kwh": 1701.7201000000011, "kwh_with_ref": 1693.222,
+        "profil_initial_kwh": 3319, "week_reference": 1,
+        "savings": {"me": {"level": 5, "data": 337.63},
+                    "best": {"level": 1, "data": -335.6}},
+    }
+}
+SAVINGS_DAY = dt.date(2026, 11, 16)
+SAVINGSTAT_WEEK = {
+    "stat": {
+        "period": {
+            "this": 1794783600000, "prev": 1794178800000, "measure_unit": "EUR",
+            "veille_price": 0.5824, "veille_kwh": 7, "missing_data": 0,
+            "ref": 1.45, "ref_kwh": 5.01, "val": -0.35, "val_kwh": 2.58,
+            "price": 1.8, "kwh": 7.58,
+        },
+        "data": [
+            {"time": 1794783600000, "conso": 1.8, "val": -0.35, "ref": 1.45,
+             "conso_kwh": 7.58, "ref_kwh": 5.01, "val_kwh": 2.58},
+        ] + [
+            {"time": 1794783600000 + day * 86400000, "conso": 0, "val": 0,
+             "val_kwh": 0, "ref": 0, "conso_kwh": 0, "ref_kwh": 0}
+            for day in range(1, 7)
+        ],
+        "pricing_details": [],
+        "axis": {"y": {"max": 5, "min": -5}},
+    }
+}
+
+
 def powerstat(kwh=4.2, **today):
     """Return a powerstat response whose current day holds the given values."""
     data = [{"kwh": 0} for _ in range(7)]
@@ -189,6 +222,8 @@ class Session:
             ),
             "suppliers": Response(payload=SUPPLIERS),
             "activity": Response(payload=ACTIVITY),
+            "savings/m": Response(payload=SAVINGS_SUMMARY),
+            "savingstat": Response(payload=SAVINGSTAT_WEEK),
             **overrides,
         }
         self.calls = []
@@ -1369,3 +1404,96 @@ def test_activity_without_daily_values(api, data):
     values = run(client.async_get_activity())
     assert values["daily_consumption_7_days"] is None
     assert values["consumption_7_days"] == 74.33
+
+
+# --- Savings of the account
+
+
+@pytest.fixture
+def savings_day(api, monkeypatch):
+    """Make the day of the observed savings today."""
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: SAVINGS_DAY)
+
+
+WEEK = {
+    "savings": -0.35, "savings_kwh": -2.58, "cost": 1.8, "consumption": 7.58,
+    "reference_cost": 1.45, "reference_consumption": 5.01,
+}
+EMPTY_BAR = dict.fromkeys(WEEK)
+
+
+def test_savings(api, savings_day):
+    """The savings over 12 months, this week, month and year."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    values = run(client.async_get_savings())
+    assert {key: value for key, value in values.items()
+            if key not in api.SAVINGS_PERIODS} == {
+        "consumption_cost_12_months": 483.6,
+        "reference_cost_12_months": 821.23,
+        "savings_12_months": 337.63,
+        "consumption_12_months": 1701.72,
+        "reference_consumption_12_months": 3319,
+        "savings_kwh_12_months": 1617.28,
+        "savings_level": 5,
+    }
+    assert values["week"] == {
+        **WEEK,
+        "start": "2026-11-16",
+        "missing_data": False,
+        "bars": [{"date": "2026-11-16", **WEEK}] + [
+            {"date": f"2026-11-{day}", **EMPTY_BAR} for day in range(17, 23)],
+    }
+    urls = [url for _method, url, _kwargs in session.requests[-4:]]
+    assert urls == [
+        "https://service.ecojoko.com/gateway/1/savings/m/12",
+        "https://service.ecojoko.com/gateway/1/device/2/savingstat/w/2026-11-16",
+        "https://service.ecojoko.com/gateway/1/device/2/savingstat/m/2026-11-16",
+        "https://service.ecojoko.com/gateway/1/device/2/savingstat/y/2026-11-16",
+    ]
+
+
+def test_savings_of_a_past_period(api, savings_day):
+    """The savings of any week, month or year, for the history of the card."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    values = run(client.async_get_savings_period("year", dt.date(2025, 3, 4)))
+    assert values["savings"] == -0.35
+    assert session.requests[-1][1].endswith("/savingstat/y/2025-03-04")
+
+
+def test_saving_in_kwh_is_positive(api, savings_day):
+    """A saving keeps its kWh positive."""
+    answer = json.loads(json.dumps(SAVINGSTAT_WEEK))
+    answer["stat"]["period"].update(val=25.85, val_kwh=67.62, is_saving=1)
+    client = make_client(api, Session(savingstat=Response(payload=answer)))
+    run(client.async_get_data())
+    values = run(client.async_get_savings_period("week", SAVINGS_DAY))
+    assert (values["savings"], values["savings_kwh"]) == (25.85, 67.62)
+
+
+def test_savings_need_a_login(api):
+    """The savings APIs do not log in: the polls do it."""
+    session = Session()
+    client = make_client(api, session)
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_savings())
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_savings_period("week", SAVINGS_DAY))
+    assert session.calls == []
+
+
+@pytest.mark.parametrize("route", ["savings/m", "savingstat"])
+@pytest.mark.parametrize("answer", [
+    Response(payload={"error": "unknown"}),
+    Response(payload=None, is_json=False),
+    Response(status=500),
+])
+def test_savings_unexpected_answer(api, route, answer):
+    """An unexpected answer is an error of the savings only."""
+    client = make_client(api, Session(**{route: answer}))
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_get_savings())

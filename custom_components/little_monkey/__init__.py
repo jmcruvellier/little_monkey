@@ -33,6 +33,7 @@ from .const import (
 from .coordinator import (
     LittleMonkeyActivityCoordinator,
     LittleMonkeyDataUpdateCoordinator,
+    LittleMonkeySavingsCoordinator,
 )
 from .sensor import SENSOR_KEYS
 from .tariff import legacy_bands
@@ -83,6 +84,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass=hass, entry=entry, client=coordinator.client)
     entry.async_create_background_task(
         hass, coordinator.activity.async_refresh(), "little_monkey activity")
+    # Savings of the account, read the same way
+    coordinator.savings = LittleMonkeySavingsCoordinator(
+        hass=hass, entry=entry, client=coordinator.client)
+    entry.async_create_background_task(
+        hass, coordinator.savings.async_refresh(), "little_monkey savings")
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 

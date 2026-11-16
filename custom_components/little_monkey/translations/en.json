@@ -176,6 +176,120 @@
             },
             "max_power_alltime": {
                 "name": "Max Power Since the Start"
+            },
+            "consumption_cost_12_months": {
+                "name": "Consumption Cost over 12 Months",
+                "state_attributes": {
+                    "consumption": {
+                        "name": "Consumption"
+                    }
+                }
+            },
+            "reference_cost_12_months": {
+                "name": "Reference Cost over 12 Months",
+                "state_attributes": {
+                    "reference_consumption": {
+                        "name": "Reference consumption"
+                    }
+                }
+            },
+            "savings_12_months": {
+                "name": "Savings over 12 Months",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Savings in kWh"
+                    },
+                    "level": {
+                        "name": "Level"
+                    }
+                }
+            },
+            "savings_week": {
+                "name": "Savings This Week",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Savings in kWh"
+                    },
+                    "cost": {
+                        "name": "Consumption cost"
+                    },
+                    "consumption": {
+                        "name": "Consumption"
+                    },
+                    "reference_cost": {
+                        "name": "Reference cost"
+                    },
+                    "reference_consumption": {
+                        "name": "Reference consumption"
+                    },
+                    "start": {
+                        "name": "Start of the period"
+                    },
+                    "missing_data": {
+                        "name": "Missing data"
+                    },
+                    "bars": {
+                        "name": "Detail"
+                    }
+                }
+            },
+            "savings_month": {
+                "name": "Savings This Month",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Savings in kWh"
+                    },
+                    "cost": {
+                        "name": "Consumption cost"
+                    },
+                    "consumption": {
+                        "name": "Consumption"
+                    },
+                    "reference_cost": {
+                        "name": "Reference cost"
+                    },
+                    "reference_consumption": {
+                        "name": "Reference consumption"
+                    },
+                    "start": {
+                        "name": "Start of the period"
+                    },
+                    "missing_data": {
+                        "name": "Missing data"
+                    },
+                    "bars": {
+                        "name": "Detail"
+                    }
+                }
+            },
+            "savings_year": {
+                "name": "Savings This Year",
+                "state_attributes": {
+                    "savings_kwh": {
+                        "name": "Savings in kWh"
+                    },
+                    "cost": {
+                        "name": "Consumption cost"
+                    },
+                    "consumption": {
+                        "name": "Consumption"
+                    },
+                    "reference_cost": {
+                        "name": "Reference cost"
+                    },
+                    "reference_consumption": {
+                        "name": "Reference consumption"
+                    },
+                    "start": {
+                        "name": "Start of the period"
+                    },
+                    "missing_data": {
+                        "name": "Missing data"
+                    },
+                    "bars": {
+                        "name": "Detail"
+                    }
+                }
             }
         }
     },

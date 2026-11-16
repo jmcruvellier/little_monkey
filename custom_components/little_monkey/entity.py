@@ -236,3 +236,51 @@ class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
             return None
         data = self.coordinator.data or {}
         return {name: data.get(key) for name, key in attributes.items()}
+
+
+# Attributes of the savings sensors over 12 months: name and key of the data
+SAVINGS_ATTRIBUTES = {
+    "consumption_cost_12_months": {"consumption": "consumption_12_months"},
+    "reference_cost_12_months": {
+        "reference_consumption": "reference_consumption_12_months"},
+    "savings_12_months": {
+        "savings_kwh": "savings_kwh_12_months", "level": "savings_level"},
+}
+# Savings sensors of the current week, month and year: key of their data
+SAVINGS_PERIOD_SENSORS = {
+    "savings_week": "week",
+    "savings_month": "month",
+    "savings_year": "year",
+}
+
+
+class EcojokoSavingsSensor(EcojokoActivitySensor):
+    """Sensor of the savings: over 12 months, this week, month or year."""
+
+    # The bars of the period are for the card: kept out of the history
+    _unrecorded_attributes = frozenset({"bars"})
+
+    def _period(self) -> dict | None:
+        """Return the savings of the period of the sensor, None if not one."""
+        period = SAVINGS_PERIOD_SENSORS.get(self._sensor_name)
+        if period is None:
+            return None
+        return (self.coordinator.data or {}).get(period) or {}
+
+    @property
+    def native_value(self):
+        """Return the savings, in euros."""
+        period = self._period()
+        if period is None:
+            return super().native_value
+        return period.get("savings")
+
+    @property
+    def extra_state_attributes(self):
+        """Return the details of the savings: kWh, costs, bars..."""
+        period = self._period()
+        if period is not None:
+            return {key: value for key, value in period.items() if key != "savings"}
+        data = self.coordinator.data or {}
+        attributes = SAVINGS_ATTRIBUTES.get(self._sensor_name, {})
+        return {name: data.get(key) for name, key in attributes.items()}
