@@ -43,7 +43,7 @@ DATA = {
     "use_prod_feature": False,
     "poll_interval": 5,
 }
-# Sensors created with the options of DATA
+# Sensors created with the options of DATA by 1.2.7
 ENABLED = [
     "realtime_consumption",
     "grid_consumption",
@@ -152,9 +152,10 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert entry.data["name"] == "Ecojoko"
     assert entry.unique_id == "user@example.com"
 
-    # Same entity ids, new unique ids, nothing created, nothing duplicated
+    # Same entity ids, new unique ids, nothing duplicated; only the sensor
+    # added by 1.3.0 is created
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before
+    assert len(entities) == count_before + 1
     assert not [e.entity_id for e in entities if e.entity_id.endswith("_2")]
     assert entity_registry.async_get(entity_ids["main"]).unique_id == entry.entry_id
     for key in [*ENABLED, "production_surplus"]:
@@ -183,7 +184,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before
+    assert len(entities) == count_before + 1
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
 
 
@@ -228,7 +229,8 @@ async def test_new_install_entities(hass, fake_api):
 
     entity_registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in ENABLED]]
+    keys = [*ENABLED, "current_tariff_period"]
+    expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in keys]]
     assert sorted(e.unique_id for e in entities) == sorted(expected)
 
     # The test instance is in English; the name is prefixed by the device name
@@ -696,3 +698,71 @@ async def test_apparent_power_sensor_of_a_patched_1_2_7_is_kept(hass, fake_api):
 
     assert apparent_power_entity(hass, entry) == patched
     assert hass.states.get(patched).state == "640"
+
+
+# --- Current tariff period
+
+
+def period_entity(hass, entry):
+    """Return the entity id of the current tariff period sensor, if any."""
+    return er.async_get(hass).async_get_entity_id(
+        "sensor", DOMAIN, f"{entry.entry_id}_current_tariff_period")
+
+
+async def test_tariff_period_follows_the_counter_that_increases(hass, fake_api):
+    """With the HC/HP option, the period is the one whose counter increased."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    entity_id = period_entity(hass, entry)
+    state = hass.states.get(entity_id)
+    # Not known before a counter increases
+    assert state.state == "unknown"
+    assert state.attributes["device_class"] == "enum"
+    assert state.attributes["options"] == ["hc", "hp"]
+    assert state.attributes["friendly_name"] == "Ecojoko Current Tariff Period"
+
+    fake_api.values["_kwh_hp_ns"] = 2.6
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hp"
+    # Kept while no counter increases
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hp"
+    fake_api.values["_kwh_hc_ns"] = 1.6
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hc"
+
+
+async def test_tariff_period_with_tempo(hass, fake_api):
+    """With the Tempo option, the period gives the color of the day."""
+    fake_api.values.update({"_tempo_hc_red": 0.5, "_tempo_hp_red": 1.0})
+    entry = add_entry(hass, data={**DATA, "use_hchp_feature": False, "use_tempo_feature": True})
+    assert await setup_entry(hass, entry)
+    entity_id = period_entity(hass, entry)
+    assert hass.states.get(entity_id).attributes["options"] == [
+        "hc_blue", "hp_blue", "hc_white", "hp_white", "hc_red", "hp_red"]
+
+    fake_api.values["_tempo_hp_red"] = 1.1
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hp_red"
+
+
+async def test_no_tariff_period_without_option(hass, fake_api):
+    """Without the HC/HP nor the Tempo option, the sensor is not created."""
+    entry = add_entry(hass, data={**DATA, "use_hchp_feature": False})
+    assert await setup_entry(hass, entry)
+    assert period_entity(hass, entry) is None
+
+
+async def test_tariff_period_is_restored_after_a_restart(hass, fake_api):
+    """The last period is shown until the counters tell the current one."""
+    entity_id = "sensor.ecojoko_current_tariff_period"
+    mock_restore_cache_with_extra_data(
+        hass, ((State(entity_id, "hc"), {"native_value": "hc"}),))
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert period_entity(hass, entry) == entity_id
+    assert hass.states.get(entity_id).state == "hc"
+
+    fake_api.values["_kwh_hp_ns"] = 2.6
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hp"

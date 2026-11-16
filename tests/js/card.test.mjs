@@ -225,3 +225,19 @@ test("the editor asks for the tariff period only with the HC/HP or Tempo option"
     "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "max_power", "trend_minutes",
   ]);
 });
+
+test("the period sensor of the integration is chosen automatically", () => {
+  const hass = hassWith(["home", [POWER, "current_tariff_period"]], ["barn", [POWER]]);
+  assert.equal(card.stubConfig(hass).tariff_entity, "sensor.home_current_tariff_period");
+  const previous = card.stubConfig(hass);
+  assert.equal(
+    "tariff_entity" in card.editedConfig(hass, previous, { ...previous, entity: "sensor.barn_realtime_consumption" }),
+    false,
+  );
+  // An entity chosen by hand is kept
+  const chosen = { ...previous, tariff_entity: "binary_sensor.heures_creuses" };
+  assert.equal(
+    card.editedConfig(hass, chosen, { ...chosen, entity: "sensor.barn_realtime_consumption" }).tariff_entity,
+    "binary_sensor.heures_creuses",
+  );
+});

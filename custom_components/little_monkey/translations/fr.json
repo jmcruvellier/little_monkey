@@ -91,6 +91,19 @@
             "red_hp_grid_consumption": {
                 "name": "Consommation HP Rouge Réseau"
             },
+            "current_tariff_period": {
+                "name": "Période Tarifaire en Cours",
+                "state": {
+                    "hc": "Heures Creuses",
+                    "hp": "Heures Pleines",
+                    "hc_blue": "HC Bleu",
+                    "hp_blue": "HP Bleu",
+                    "hc_white": "HC Blanc",
+                    "hp_white": "HP Blanc",
+                    "hc_red": "HC Rouge",
+                    "hp_red": "HP Rouge"
+                }
+            },
             "production_surplus": {
                 "name": "Surplus de Production"
             },

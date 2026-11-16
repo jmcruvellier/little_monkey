@@ -23,8 +23,11 @@ from .const import (
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
     POLL_INTERVAL,
-    LOGGER
+    LOGGER,
+    TEMPO_PERIODS,
+    tariff_periods,
 )
+from .utils import TariffPeriod
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
 
@@ -46,6 +49,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self.client = client
         # Monotonic time of the first failure of the current series
         self._failing_since = None
+        self._periods = tariff_periods(entry.data)
+        self._tariff_period = TariffPeriod()
 
         super().__init__(
             hass=hass,
@@ -70,6 +75,24 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             self._failing_since = now
         return now - self._failing_since < CONF_API_FAILURE_GRACE
 
+    def _current_tariff_period(self):
+        """Return the current tariff period, None without HC/HP nor Tempo option."""
+        if self._periods is None:
+            return None
+        client = self.client
+        if self._periods == TEMPO_PERIODS:
+            counters = {
+                "hc_blue": client.tempo_hc_blue,
+                "hp_blue": client.tempo_hp_blue,
+                "hc_white": client.tempo_hc_white,
+                "hp_white": client.tempo_hp_white,
+                "hc_red": client.tempo_hc_red,
+                "hp_red": client.tempo_hp_red,
+            }
+        else:
+            counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
+        return self._tariff_period.update(client.stat_date, counters)
+
     async def _async_update_data(self):
         """Update data via library."""
         try:
@@ -89,6 +112,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(exception) from exception
         self._failing_since = None
         return {
+            "current_tariff_period": self._current_tariff_period(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,

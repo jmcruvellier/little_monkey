@@ -17,6 +17,20 @@ CONF_USE_TEMPO_FEATURE = "use_tempo_feature"
 CONF_USE_TEMPHUM_FEATURE = "use_temphum_feature"
 CONF_USE_PROD_FEATURE = "use_prod_feature"
 
+# Values of the current tariff period sensor, by tariff option
+HCHP_PERIODS = ["hc", "hp"]
+TEMPO_PERIODS = ["hc_blue", "hp_blue", "hc_white", "hp_white", "hc_red", "hp_red"]
+
+
+def tariff_periods(data):
+    """Return the periods of the tariff option of a config entry, or None."""
+    if data.get(CONF_USE_TEMPO_FEATURE) is True:
+        return TEMPO_PERIODS
+    if data.get(CONF_USE_HCHP_FEATURE) is True:
+        return HCHP_PERIODS
+    return None
+
+
 # APIs
 CONF_API_TIMEOUT = 3
 CONF_API_STAT_REFRESH = 30

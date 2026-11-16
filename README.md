@@ -22,6 +22,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Consommation HP Blanc Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
 | 1.0.0 | Consommation HC Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
 | 1.0.0 | Consommation HP Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.3.0 | Période Tarifaire en Cours | Énumération | | Optionnel | Si l'option HC/HP ou Tempo est cochée : HC / HP, ou période et couleur Tempo (HC Bleu, HP Rouge...), déduite du compteur qui augmente |
 | 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |

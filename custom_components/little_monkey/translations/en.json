@@ -91,6 +91,19 @@
             "red_hp_grid_consumption": {
                 "name": "HP Red Grid Consumption"
             },
+            "current_tariff_period": {
+                "name": "Current Tariff Period",
+                "state": {
+                    "hc": "Off-peak hours",
+                    "hp": "Peak hours",
+                    "hc_blue": "Off-peak Blue",
+                    "hp_blue": "Peak Blue",
+                    "hc_white": "Off-peak White",
+                    "hp_white": "Peak White",
+                    "hc_red": "Off-peak Red",
+                    "hp_red": "Peak Red"
+                }
+            },
             "production_surplus": {
                 "name": "Production Surplus"
             },

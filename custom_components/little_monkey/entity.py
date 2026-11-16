@@ -140,3 +140,35 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
                 self._sensor_name, value, published)
         self._holding = holding
         return published
+
+
+class EcojokoPeriodSensor(EcojokoSensor):
+    """Current tariff period, deduced from the daily counters of the periods."""
+
+    def __init__(self, main_device, sensor_name, state_class, device_class,
+                 unit_of_measurement, icon, options):
+        """Initialize the sensor with its possible values."""
+        super().__init__(main_device, sensor_name, state_class, device_class,
+                         unit_of_measurement, icon)
+        self._attr_options = list(options)
+        self._restored = None
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the period published before a restart of Home Assistant.
+
+        The period is deduced from the counters a few minutes after the
+        start: the last one is shown meanwhile.
+        """
+        await super().async_added_to_hass()
+        last_state = await self.async_get_last_state()
+        if last_state is not None and last_state.state in self._attr_options:
+            self._restored = last_state.state
+
+    @property
+    def native_value(self):
+        """Return the current period, the restored one while it is not known."""
+        value = (self.coordinator.data or {}).get(self._sensor_name)
+        if value in self._attr_options:
+            self._restored = None
+            return value
+        return self._restored
