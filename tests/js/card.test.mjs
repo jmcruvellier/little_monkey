@@ -217,12 +217,12 @@ test("empty options are removed", () => {
 
 test("the editor asks for the tariff period only with the HC/HP or Tempo option", () => {
   const names = (hass) => card.editorSchema(hass, { entity: "sensor.home_realtime_consumption" }).map((field) => field.name);
-  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "trend_minutes"]);
+  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "return_seconds", "trend_minutes"]);
   assert.deepEqual(names(hassWith(["home", [POWER, "hc_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "return_seconds", "trend_minutes",
   ]);
   assert.deepEqual(names(hassWith(["home", [POWER, "red_hp_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "return_seconds", "trend_minutes",
   ]);
 });
 
@@ -258,4 +258,41 @@ test("the savings sensor of the integration is chosen automatically", () => {
   const previous = card.stubConfig(hass);
   const moved = card.editedConfig(hass, previous, { ...previous, entity: "sensor.barn_realtime_consumption" });
   assert.equal("savings_entity" in moved, false);
+});
+
+test("the faces of the disc need their sensors", () => {
+  assert.deepEqual(card.availableFaces({}, undefined), ["power"]);
+  assert.deepEqual(card.availableFaces({ cost_7_days: "sensor.cost" }, "sensor.savings"), ["power", "savings", "cost"]);
+  assert.deepEqual(
+    card.availableFaces({ consumption_7_days: "sensor.c", max_power_year: "sensor.m" }, undefined),
+    ["power", "cost", "max"],
+  );
+});
+
+test("the faces follow each other in a loop", () => {
+  const faces = ["power", "savings", "cost", "max"];
+  assert.equal(card.nextFace(faces, "power", 1), "savings");
+  assert.equal(card.nextFace(faces, "max", 1), "power");
+  assert.equal(card.nextFace(faces, "power", -1), "max");
+  // A face that is no longer there starts from the first one
+  assert.equal(card.nextFace(["power", "cost"], "savings", 1), "cost");
+});
+
+test("the disc comes back to the power after 30 s by default", () => {
+  assert.equal(card.returnSeconds({}), 30);
+  assert.equal(card.returnSeconds({ return_seconds: 0 }), 0);
+  assert.equal(card.returnSeconds({ return_seconds: 120 }), 120);
+  assert.equal(card.returnSeconds({ return_seconds: -5 }), 30);
+});
+
+test("the histogram has one bar per day, from zero to the highest day", () => {
+  const box = { left: 0, top: 0, width: 70, height: 10 };
+  const path = card.histogramPath([5, 10, 0], box);
+  const bars = path.split("Z").filter((bar) => bar.trim());
+  assert.equal(bars.length, 3);
+  // Heights: half, full, none
+  const heights = bars.map((bar) => Number(bar.match(/v (-?[\d.]+)/)[1]));
+  assert.deepEqual(heights, [5, 10, 0]);
+  assert.equal(card.histogramPath(undefined), "");
+  assert.equal(card.histogramPath([]), "");
 });

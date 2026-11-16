@@ -20,6 +20,16 @@ const TRANSLATIONS = {
     name: "Little Monkey",
     description: "Real-time power dial of the ecojoko box",
     title: ["REAL-TIME", "POWER"],
+    injection_title: ["GRID", "INJECTION"],
+    savings_title: ["SAVING", "OVER 7 DAYS"],
+    overconsumption_title: ["OVERCONSUMPTION", "OVER 7 DAYS"],
+    savings_reference: ["COMPARED WITH THE", "REFERENCE CONSUMPTION"],
+    savings_need_7d: "NEEDS 7 DAYS OF MEASURES",
+    over_7_days: "OVER 7 DAYS",
+    max_title: "MAX POWER",
+    max_month: "THIS MONTH",
+    max_year: "THIS YEAR",
+    max_alltime: "SINCE THE START",
     watts: "WATTS",
     no_entity: "Choose the real-time consumption sensor of Little Monkey",
     unavailable: "Unavailable",
@@ -33,6 +43,8 @@ const TRANSLATIONS = {
       max_power: "Power of the MAX graduation",
       trend_minutes: "Duration of the curve (3 min by default)",
       savings_entity: "Savings over 7 days (optional)",
+      return_seconds: "Back to the real-time power after (s)",
+      return_helper: "After another face of the disc was chosen. 0 to stay on it.",
       tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. By default, the Current Tariff Period sensor of Little Monkey.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
     },
@@ -41,6 +53,16 @@ const TRANSLATIONS = {
     name: "Petit Singe",
     description: "Cadran de puissance en temps réel du boîtier ecojoko",
     title: ["PUISSANCE", "TEMPS RÉEL"],
+    injection_title: ["INJECTION", "RÉSEAU"],
+    savings_title: ["ÉCONOMIE", "SUR 7 JOURS"],
+    overconsumption_title: ["SURCONSOMMATION", "SUR 7 JOURS"],
+    savings_reference: ["PAR RAPPORT À LA CONSOMMATION", "DE RÉFÉRENCE"],
+    savings_need_7d: "NÉCESSITE 7 JOURS DE MESURES",
+    over_7_days: "SUR 7 JOURS",
+    max_title: "PUISSANCE MAX",
+    max_month: "MOIS EN COURS",
+    max_year: "ANNÉE EN COURS",
+    max_alltime: "DEPUIS DÉBUT",
     watts: "WATTS",
     no_entity: "Choisissez le capteur Consommation Temps Réel de Little Monkey",
     unavailable: "Indisponible",
@@ -54,6 +76,8 @@ const TRANSLATIONS = {
       max_power: "Puissance de la graduation MAX",
       trend_minutes: "Durée de la courbe (3 min par défaut)",
       savings_entity: "Économies sur 7 jours (facultatif)",
+      return_seconds: "Retour à la puissance temps réel après (s)",
+      return_helper: "Après le choix d'une autre face du disque. 0 pour y rester.",
       tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Par défaut, le capteur Période Tarifaire en Cours de Little Monkey.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
     },
@@ -101,6 +125,17 @@ const TEMPO_COLORS = {
   red: { hc: "#8B0000", hp: "#FF0000" },
 };
 const LIGHT_COLORS = new Set(["#D3D3D3", "#FFFFFF"]);
+
+// Faces of the central disc, in their order, and the color of the disc on
+// each of them; the first one takes the color of the tariff period
+const FACES = ["power", "savings", "cost", "max"];
+const FACE_COLORS = { savings: "#4fb8cf", cost: "#3fae5c", max: "#6fc0d8" };
+// Back to the first face after this many seconds by default
+const DEFAULT_RETURN_SECONDS = 30;
+// Box of the histogram of the last 7 days, on the cost face
+const HISTOGRAM_BOX = { left: 74, top: 96, width: 52, height: 28 };
+// Horizontal move, in pixels, that changes the face
+const SWIPE_DISTANCE = 30;
 
 // Sensors of the integration, by translation key
 const TEMPO_KEYS = [
@@ -378,6 +413,59 @@ export function trendMinutes(config) {
   return Number.isFinite(minutes) && minutes >= 1 ? Math.min(minutes, 60) : DEFAULT_TREND_MINUTES;
 }
 
+/**
+ * Return the faces of the disc that have their sensors, in their order.
+ *
+ * The real-time power is always there; the other faces need the sensors of
+ * the activity of the account (integration 1.3.0 or later).
+ */
+export function availableFaces(sensors, savingsEntity) {
+  const faces = ["power"];
+  if (savingsEntity) {
+    faces.push("savings");
+  }
+  if (sensors.cost_7_days || sensors.consumption_7_days) {
+    faces.push("cost");
+  }
+  if (sensors.max_power_month || sensors.max_power_year || sensors.max_power_alltime) {
+    faces.push("max");
+  }
+  return faces;
+}
+
+/** Return the face reached by a step (+1 or -1) from a face, in a loop. */
+export function nextFace(faces, face, step) {
+  const index = Math.max(faces.indexOf(face), 0);
+  return faces[(index + step + faces.length) % faces.length];
+}
+
+/** Return the seconds before going back to the first face (0: never). */
+export function returnSeconds(config) {
+  const seconds = Number(config.return_seconds);
+  return Number.isFinite(seconds) && seconds >= 0 ? seconds : DEFAULT_RETURN_SECONDS;
+}
+
+/**
+ * Return the path of the histogram of the last 7 days: one bar per day,
+ * from zero to the highest day, like the ecojoko dial. Empty without values.
+ */
+export function histogramPath(values, box = HISTOGRAM_BOX) {
+  if (!Array.isArray(values) || values.length === 0) {
+    return "";
+  }
+  const numbers = values.map((value) => Math.max(Number(value) || 0, 0));
+  const high = Math.max(...numbers);
+  const step = box.width / numbers.length;
+  const width = step * 0.6;
+  const format = (number) => number.toFixed(2);
+  return numbers.map((value, index) => {
+    const height = high > 0 ? (box.height * value) / high : 0;
+    const x = box.left + step * index + (step - width) / 2;
+    const y = box.top + box.height - height;
+    return `M ${format(x)} ${format(y)} h ${format(width)} v ${format(height)} h ${format(-width)} Z`;
+  }).join(" ");
+}
+
 /** Return the sensors of the Little Monkey device of an entity, by key. */
 function deviceEntities(hass, entityId) {
   const entities = hass?.entities || {};
@@ -499,6 +587,10 @@ export function editorSchema(hass, config) {
     selector: { number: { min: 10001, max: 100000, step: 1, mode: "box", unit_of_measurement: "W" } },
   });
   schema.push({
+    name: "return_seconds",
+    selector: { number: { min: 0, max: 600, step: 5, mode: "box", unit_of_measurement: "s" } },
+  });
+  schema.push({
     name: "trend_minutes",
     selector: { number: { min: 1, max: 60, step: 1, mode: "slider", unit_of_measurement: "min" } },
   });
@@ -522,6 +614,8 @@ class LittleMonkeyCard extends HTMLElement {
     }
     this._config = { ...config };
     this._built = false;
+    this._face = "power";
+    this._faces = ["power"];
     this._trend = [];
     this._trendEntity = null;
     this._render();
@@ -534,6 +628,21 @@ class LittleMonkeyCard extends HTMLElement {
 
   getCardSize() {
     return 6;
+  }
+
+  disconnectedCallback() {
+    clearTimeout(this._returnTimer);
+  }
+
+  /** Show a face of the disc; the first one comes back after a while. */
+  _showFace(face) {
+    this._face = face;
+    clearTimeout(this._returnTimer);
+    const seconds = returnSeconds(this._config);
+    if (face !== "power" && seconds > 0) {
+      this._returnTimer = setTimeout(() => this._showFace("power"), seconds * 1000);
+    }
+    this._render();
   }
 
   static getConfigElement() {
@@ -599,6 +708,12 @@ class LittleMonkeyCard extends HTMLElement {
         .message { font-size: 5.5px; }
         .tariff { font-size: 6px; letter-spacing: 0.3px; opacity: 0.9; }
         .trend { fill: none; stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; }
+        svg { touch-action: pan-y; user-select: none; }
+        .small { font-size: 6px; letter-spacing: 0.3px; }
+        .medium { font-size: 8px; }
+        .large { font-size: 17px; font-weight: 400; }
+        .dot { cursor: pointer; }
+        .dot circle.mark { stroke-width: 0.6; }
         .hidden { display: none; }
       </style>
       <ha-card>
@@ -624,13 +739,39 @@ class LittleMonkeyCard extends HTMLElement {
           </g>
           <circle class="disc" cx="100" cy="100" r="${R_DISC}" fill="${DEFAULT_COLOR}" />
           <g class="content">
-            <text class="title" x="100" y="63">${text.title[0]}</text>
-            <text class="title" x="100" y="74">${text.title[1]}</text>
-            <text class="value" x="100" y="96"></text>
-            <text class="apparent" x="100" y="110"></text>
-            <text class="message hidden" x="100" y="96"></text>
-            <text class="tariff" x="100" y="140"></text>
-            <path class="trend" d="" />
+            <g class="face" data-face="power">
+              <text class="title power-title" x="100" y="63">${text.title[0]}</text>
+              <text class="title power-title" x="100" y="74">${text.title[1]}</text>
+              <text class="value" x="100" y="96"></text>
+              <text class="apparent" x="100" y="110"></text>
+              <text class="message hidden" x="100" y="96"></text>
+              <text class="tariff" x="100" y="140"></text>
+              <path class="trend" d="" />
+            </g>
+            <g class="face hidden" data-face="savings">
+              <text class="title savings-title" x="100" y="64"></text>
+              <text class="title savings-title" x="100" y="75"></text>
+              <text class="value savings-value" x="100" y="97"></text>
+              <text class="small savings-message hidden" x="100" y="97">${text.savings_need_7d}</text>
+              <text class="small" x="100" y="117">${text.savings_reference[0]}</text>
+              <text class="small" x="100" y="125">${text.savings_reference[1]}</text>
+            </g>
+            <g class="face hidden" data-face="cost">
+              <text class="large cost-value" x="100" y="71"></text>
+              <text class="medium cost-energy" x="100" y="86"></text>
+              <path class="histogram" d="" />
+              <text class="small" x="100" y="135">${text.over_7_days}</text>
+            </g>
+            <g class="face hidden" data-face="max">
+              <text class="title" x="100" y="61">${text.max_title}</text>
+              <text class="small" x="100" y="75">${text.max_month}</text>
+              <text class="medium max-month" x="100" y="84"></text>
+              <text class="small" x="100" y="97">${text.max_year}</text>
+              <text class="medium max-year" x="100" y="106"></text>
+              <text class="small" x="100" y="119">${text.max_alltime}</text>
+              <text class="medium max-alltime" x="100" y="128"></text>
+            </g>
+            <g class="dots"></g>
           </g>
         </svg>
       </ha-card>`;
@@ -647,7 +788,37 @@ class LittleMonkeyCard extends HTMLElement {
       tariff: root.querySelector(".tariff"),
       message: root.querySelector(".message"),
       trend: root.querySelector(".trend"),
+      faces: Object.fromEntries(
+        [...root.querySelectorAll(".face")].map((face) => [face.dataset.face, face]),
+      ),
+      powerTitle: [...root.querySelectorAll(".power-title")],
+      savingsTitle: [...root.querySelectorAll(".savings-title")],
+      savingsValue: root.querySelector(".savings-value"),
+      savingsMessage: root.querySelector(".savings-message"),
+      costValue: root.querySelector(".cost-value"),
+      costEnergy: root.querySelector(".cost-energy"),
+      histogram: root.querySelector(".histogram"),
+      maxMonth: root.querySelector(".max-month"),
+      maxYear: root.querySelector(".max-year"),
+      maxAlltime: root.querySelector(".max-alltime"),
+      dots: root.querySelector(".dots"),
     };
+    this._dotsKey = null;
+    // Swipe to the next or to the previous face
+    const svg = root.querySelector("svg");
+    svg.addEventListener("pointerdown", (event) => {
+      this._swipeStart = event.clientX;
+    });
+    svg.addEventListener("pointerup", (event) => {
+      if (this._swipeStart === undefined || this._faces.length < 2) {
+        return;
+      }
+      const distance = event.clientX - this._swipeStart;
+      this._swipeStart = undefined;
+      if (Math.abs(distance) >= SWIPE_DISTANCE) {
+        this._showFace(nextFace(this._faces, this._face, distance < 0 ? 1 : -1));
+      }
+    });
     this._language = language(this._hass);
     this._built = true;
   }
@@ -686,13 +857,30 @@ class LittleMonkeyCard extends HTMLElement {
     const power = numericState(hass, config.entity);
     const color = discColor(mode, tariff, power);
     el.tariff.textContent = tariffLabel(this._language, mode, tariff);
-    const light = LIGHT_COLORS.has(color);
-    el.disc.setAttribute("fill", color);
+    const powerTitle = power !== null && power < 0 ? text.injection_title : text.title;
+    el.powerTitle.forEach((line, index) => {
+      line.textContent = powerTitle[index];
+    });
+
+    // Faces of the disc: the first one has the color of the tariff period,
+    // and the power needle keeps it on the other faces
+    const savingsEntity = config.savings_entity || sensors.savings_7_days;
+    this._faces = availableFaces(sensors, savingsEntity);
+    if (!this._faces.includes(this._face)) {
+      this._face = "power";
+    }
+    const face = this._face;
+    const light = face === "power" && LIGHT_COLORS.has(color);
+    el.disc.setAttribute("fill", face === "power" ? color : FACE_COLORS[face]);
     el.content.setAttribute("fill", light ? "#212121" : "#ffffff");
     el.trend.setAttribute("stroke", light ? "#212121" : "#ffffff");
-    // The needle has the color of the disc, outlined when it is light
+    for (const [name, group] of Object.entries(el.faces)) {
+      group.classList.toggle("hidden", name !== face);
+    }
+    this._drawDots(light);
+    // The needle has the color of the first face, outlined when it is light
     el.needleBody.setAttribute("stroke", color);
-    el.needleOutline.classList.toggle("hidden", !light);
+    el.needleOutline.classList.toggle("hidden", !LIGHT_COLORS.has(color));
 
     // Power and apparent power
     const apparentEntity = config.apparent_power_entity || sensors.realtime_apparent_power;
@@ -715,14 +903,80 @@ class LittleMonkeyCard extends HTMLElement {
     }
 
     // Savings over 7 days on the lower arc, by default the sensor of the device
-    const savings = numericState(hass, config.savings_entity || sensors.savings_7_days);
+    const savings = numericState(hass, savingsEntity);
     el.savingsNeedle.classList.toggle("hidden", savings === null);
     if (savings !== null) {
       el.savingsNeedle.style.transformOrigin = "100px 100px";
       el.savingsNeedle.style.transform = `rotate(${savingsAngle(savings)}deg)`;
     }
+    this._renderFaces(savings);
 
     this._updateTrend(power);
+  }
+
+  /** Fill the faces other than the real-time power. */
+  _renderFaces(savings) {
+    const hass = this._hass;
+    const sensors = this._sensors;
+    const text = TRANSLATIONS[this._language];
+    const el = this._elements;
+    const locale = hass.locale?.language || this._language;
+    const number = (value, digits = 0) =>
+      new Intl.NumberFormat(locale, { maximumFractionDigits: digits, minimumFractionDigits: digits }).format(value);
+    const shown = (value, write) => (value === null ? "—" : write(value));
+
+    // Savings over 7 days: unknown until ecojoko has a reference week
+    const savingsTitle = savings !== null && savings > 0 ? text.overconsumption_title : text.savings_title;
+    el.savingsTitle.forEach((line, index) => {
+      line.textContent = savingsTitle[index];
+    });
+    el.savingsValue.textContent = savings === null ? "" : `${number(savings)} %`;
+    el.savingsMessage.classList.toggle("hidden", savings !== null);
+
+    // Cost and consumption over 7 days, with the consumption of each day
+    const cost = numericState(hass, sensors.cost_7_days);
+    const energy = numericState(hass, sensors.consumption_7_days);
+    el.costValue.textContent = shown(cost, (value) => `${number(value, 2)} €`);
+    el.costEnergy.textContent = shown(energy, (value) => `${number(value, 1)} kWh`);
+    const daily = hass.states[sensors.consumption_7_days]?.attributes?.daily_consumption;
+    el.histogram.setAttribute("d", histogramPath(daily));
+
+    // Max power of the month, of the year and since the start
+    const watts = (key) => shown(numericState(hass, sensors[key]), (value) => `${number(value)} W`);
+    el.maxMonth.textContent = watts("max_power_month");
+    el.maxYear.textContent = watts("max_power_year");
+    el.maxAlltime.textContent = watts("max_power_alltime");
+  }
+
+  /** Draw one dot per face at the bottom of the disc, the current one filled. */
+  _drawDots(light) {
+    const faces = this._faces;
+    const key = faces.join(" ");
+    if (this._dotsKey !== key) {
+      this._dotsKey = key;
+      const spacing = 7;
+      const first = 100 - (spacing * (faces.length - 1)) / 2;
+      // A single face needs no dot
+      this._elements.dots.innerHTML = faces.length < 2 ? "" : faces.map((face, index) => `
+        <g class="dot" data-face="${face}">
+          <circle cx="${first + spacing * index}" cy="150" r="3.5" fill="transparent" />
+          <circle class="mark" cx="${first + spacing * index}" cy="150" r="1.6" />
+        </g>`).join("");
+      for (const dot of this._elements.dots.querySelectorAll(".dot")) {
+        dot.addEventListener("pointerup", (event) => {
+          // Not a swipe: the dot shows its face
+          event.stopPropagation();
+          this._swipeStart = undefined;
+          this._showFace(dot.dataset.face);
+        });
+      }
+    }
+    const ink = light ? "#212121" : "#ffffff";
+    for (const mark of this._elements.dots.querySelectorAll(".mark")) {
+      const current = mark.parentElement.dataset.face === this._face;
+      mark.setAttribute("fill", current ? ink : "none");
+      mark.setAttribute("stroke", ink);
+    }
   }
 
   /** Keep the values of the trend period and draw them in the disc. */
@@ -827,8 +1081,11 @@ class LittleMonkeyCardEditor extends HTMLElement {
     if (!this._form) {
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (field) => this._text().editor[field.name] || field.name;
-      this._form.computeHelper = (field) =>
-        ({ tariff_entity: this._text().editor.tariff_helper, tempo_color_entity: this._text().editor.tempo_helper })[field.name];
+      this._form.computeHelper = (field) => ({
+        tariff_entity: this._text().editor.tariff_helper,
+        tempo_color_entity: this._text().editor.tempo_helper,
+        return_seconds: this._text().editor.return_helper,
+      })[field.name];
       this._form.addEventListener("value-changed", (event) => this._changed(event));
       this.appendChild(this._form);
     }
