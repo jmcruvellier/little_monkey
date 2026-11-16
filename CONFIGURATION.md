@@ -189,6 +189,24 @@ unit: eur
 | `unit` | Non | Unité des barres : `eur` (par défaut) ou `kwh` |
 | `title` | Non | Titre de la carte |
 
+## Carte du contrat
+
+La carte « Petit Singe : contrat » (« Little Monkey contract » en anglais) résume votre contrat d'électricité d'après le capteur Contrat :
+
+- le fournisseur, l'offre, sa date de début et la puissance souscrite ;
+- un cadran des 24 heures avec les heures creuses du contrat et une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:00, dans 1 h 45 ») ; avec un contrat Tempo, le cadran prend la couleur du jour (bleu, blanc ou rouge, plus foncée en heures creuses) ;
+- les tranches tarifaires configurées, avec leur badge HC ou HP et leur consommation du jour (toucher une tranche ouvre son capteur), et l'abonnement mensuel.
+
+```yaml
+type: custom:little-monkey-contract-card
+entity: sensor.ecojoko_contrat
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Capteur Contrat de l'appareil Little Monkey |
+| `title` | Non | Titre affiché au-dessus du contrat |
+
 ## Service « Lire les économies »
 
 Le service `little_monkey.get_savings` renvoie les économies d'une semaine, d'un mois ou d'une année, comme la page « Détail des économies » d'ecojoko. La carte « Détail des économies » s'en sert pour remonter dans le temps ; vous pouvez aussi l'appeler depuis un script ou une automatisation :
