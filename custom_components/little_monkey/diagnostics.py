@@ -38,5 +38,14 @@ async def async_get_config_entry_diagnostics(
         "last_exception": None if last_exception is None else str(last_exception),
     }
     diagnostics["data"] = coordinator.data
+    activity = getattr(coordinator, "activity", None)
+    if activity is not None:
+        diagnostics["activity"] = {
+            "last_update_success": activity.last_update_success,
+            "last_exception": (
+                None if activity.last_exception is None
+                else str(activity.last_exception)),
+            "data": activity.data,
+        }
     diagnostics["client"] = coordinator.client.diagnostics()
     return diagnostics

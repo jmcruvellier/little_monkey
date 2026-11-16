@@ -36,6 +36,29 @@ GATEWAYS_WITHOUT_TEMP_HUM = {
     ]
 }
 STAT_APIS = ("powerstat", "tempstat", "humstat")
+# Answer of the activity API observed on 15/11/2026
+ACTIVITY = {
+    "activity": {
+        "savings_7j": {"value": -3, "degree": 180, "ref_kwh": 74.4},
+        "conso_7j": {
+            "value": 16.6, "kwh": 74.33, "kwh_with_ref": 74.33, "unit": "EUR",
+            "unit_str": "€", "conso_unit_str": "kWh",
+            "data": [381, 519, 398, 518, 515, 330, 432],
+        },
+        "conso_all": {"value": 393.83, "unit": "EUR", "unit_str": "€"},
+        "classement": 1,
+        "co2_emis": 74.3,
+        "week_reference": 1,
+        "max_power": {
+            "month": 4290, "year": 6260, "alltime": 7386, "injection_month": 342,
+            "injection_year": 2111, "injection_alltime": 2111, "unit_str": "W",
+        },
+        "ecowatt_signal": "#c4fbdb",
+        "ecowatt_signal_val": 0,
+        "max_injection": 1600,
+        "max_consumption": 7386,
+    }
+}
 
 
 def powerstat(kwh=4.2, **today):
@@ -124,6 +147,7 @@ class Session:
             "humstat": Response(
                 payload={"stat": {"data": [{"value": 50, "ext_value": 80}]}}
             ),
+            "activity": Response(payload=ACTIVITY),
             **overrides,
         }
         self.calls = []
@@ -874,3 +898,81 @@ def test_round_value_leaves_other_values_alone(utils):
     assert utils.round_value("1.239") == "1.239"
     assert utils.round_value(True) is True
     assert utils.round_value(1.239) == 1.24
+
+
+# --- Activity of the account
+
+
+def test_activity(api):
+    """The activity API gives the savings and the values of the last 7 days."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert run(client.async_get_activity()) == {
+        "savings_7_days": -3,
+        "reference_consumption_7_days": 74.4,
+        "consumption_7_days": 74.33,
+        "cost_7_days": 16.6,
+        "total_savings": 393.83,
+        "max_power_month": 4290,
+        "max_power_year": 6260,
+        "max_power_alltime": 7386,
+    }
+    method, url, kwargs = session.requests[-1]
+    assert (method, url) == ("GET", "https://service.ecojoko.com/user/activity")
+    assert kwargs["cookies"] == {"session": "abc"}
+
+
+def test_activity_without_reference_week(api):
+    """Without a reference week, ecojoko gives no savings."""
+    answer = json.loads(json.dumps(ACTIVITY))
+    answer["activity"]["week_reference"] = 0
+    client = make_client(api, Session(activity=Response(payload=answer)))
+    run(client.async_get_data())
+    values = run(client.async_get_activity())
+    assert values["savings_7_days"] is None
+    assert values["reference_consumption_7_days"] is None
+    assert values["consumption_7_days"] == 74.33
+
+
+def test_activity_needs_a_login(api):
+    """The activity API does not log in: the polls do it."""
+    session = Session()
+    client = make_client(api, session)
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_activity())
+    assert session.calls == []
+
+
+def test_activity_has_a_longer_timeout(api, monkeypatch):
+    """The activity is slow to compute: it has its own timeout."""
+    monkeypatch.setattr(api, "CONF_API_TIMEOUT", 0.01)
+    client = make_client(api, Session(activity=Response(payload=ACTIVITY, delay=0.1)))
+    run(client.async_get_data())
+    assert run(client.async_get_activity())["cost_7_days"] == 16.6
+
+    monkeypatch.setattr(api, "CONF_API_ACTIVITY_TIMEOUT", 0.01)
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_activity())
+
+
+def test_activity_session_expired(api):
+    """A rejected session is left to the next poll, which logs in again."""
+    client = make_client(api, Session(activity=Response(status=401)))
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientAuthenticationError):
+        run(client.async_get_activity())
+    assert client.diagnostics()["logged_in"] is False
+
+
+@pytest.mark.parametrize("answer", [
+    Response(payload={"error": "unknown"}),
+    Response(payload=None, is_json=False),
+    Response(payload={"activity": None}),
+])
+def test_activity_unexpected_answer(api, answer):
+    """An unexpected answer is an error of the activity only."""
+    client = make_client(api, Session(activity=answer))
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_get_activity())

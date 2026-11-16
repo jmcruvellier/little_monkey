@@ -118,6 +118,32 @@
             },
             "outdoor_hum": {
                 "name": "Humidité Extérieure"
+            },
+            "savings_7_days": {
+                "name": "Économies sur 7 Jours",
+                "state_attributes": {
+                    "reference_consumption": {
+                        "name": "Consommation de référence"
+                    }
+                }
+            },
+            "consumption_7_days": {
+                "name": "Consommation sur 7 Jours"
+            },
+            "cost_7_days": {
+                "name": "Coût sur 7 Jours"
+            },
+            "total_savings": {
+                "name": "Économies Cumulées"
+            },
+            "max_power_month": {
+                "name": "Puissance Max du Mois"
+            },
+            "max_power_year": {
+                "name": "Puissance Max de l'Année"
+            },
+            "max_power_alltime": {
+                "name": "Puissance Max Depuis le Début"
             }
         }
     }

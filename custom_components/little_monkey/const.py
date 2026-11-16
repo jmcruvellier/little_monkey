@@ -44,7 +44,15 @@ CONF_API_KEEP_LIVE = 300
 # and after this many seconds when this reading failed
 CONF_API_KEEP_LIVE_RETRY = 30
 
+# Activity of the account (savings over 7 days...): ecojoko computes it
+# slowly, its web application waits 30 seconds for it and asks for it at most
+# every ten minutes. Its last values are kept during an hour of failures
+CONF_API_ACTIVITY_TIMEOUT = 30
+CONF_API_ACTIVITY_REFRESH = 600
+CONF_API_ACTIVITY_GRACE = 3600
+
 # URLs
 ECOJOKO_LOGIN_URL = "https://service.ecojoko.com/login"
 ECOJOKO_GATEWAYS_URL = "https://service.ecojoko.com/gateways"
 ECOJOKO_GATEWAY_URL = "https://service.ecojoko.com/gateway"
+ECOJOKO_ACTIVITY_URL = "https://service.ecojoko.com/user/activity"

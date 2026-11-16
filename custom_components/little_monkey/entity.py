@@ -3,7 +3,11 @@ from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.components.sensor import RestoreSensor, SensorStateClass
+from homeassistant.components.sensor import (
+    RestoreSensor,
+    SensorEntity,
+    SensorStateClass,
+)
 
 from .const import ATTRIBUTION, DOMAIN, LOGGER, MANUFACTURER, MODEL, VERSION
 from .utils import DailyCounter, get_paris_timezone
@@ -172,3 +176,43 @@ class EcojokoPeriodSensor(EcojokoSensor):
             self._restored = None
             return value
         return self._restored
+
+
+class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
+    """Sensor of the activity of the account: savings, last 7 days..."""
+
+    def __init__(self, main_device, activity, sensor_name, state_class,
+                 device_class, unit_of_measurement, icon):
+        """Initialize the sensor, updated by the activity coordinator."""
+        super().__init__(activity)
+        self._main_device = main_device
+        self._sensor_name = sensor_name
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_icon = icon
+        self._attr_has_entity_name = True
+        self._attr_translation_key = sensor_name
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device information of the parent Ecojoko device."""
+        return self._main_device.device_info
+
+    @property
+    def unique_id(self):
+        """Return a unique ID for the sensor."""
+        return f"{self._main_device.unique_id}_{self._sensor_name}"
+
+    @property
+    def native_value(self):
+        """Return the value of the sensor, in its native unit."""
+        return (self.coordinator.data or {}).get(self._sensor_name)
+
+    @property
+    def extra_state_attributes(self):
+        """Return the reference consumption with the savings over 7 days."""
+        if self._sensor_name != "savings_7_days":
+            return None
+        data = self.coordinator.data or {}
+        return {"reference_consumption": data.get("reference_consumption_7_days")}

@@ -28,6 +28,19 @@ VALUES = {
 }
 
 
+# What the patched client reports for the activity of the account
+ACTIVITY = {
+    "savings_7_days": -3,
+    "reference_consumption_7_days": 74.4,
+    "consumption_7_days": 74.33,
+    "cost_7_days": 16.6,
+    "total_savings": 393.83,
+    "max_power_month": 4290,
+    "max_power_year": 6260,
+    "max_power_alltime": 7386,
+}
+
+
 @pytest.fixture(autouse=True)
 def _enable_custom_integrations(enable_custom_integrations):
     """Let Home Assistant load the integration from custom_components."""
@@ -45,6 +58,10 @@ class FakeApi:
         # Values reported by the client, and the day they belong to
         self.values = dict(VALUES)
         self.stat_date = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+        # Values of the activity of the account, or the error to raise
+        self.activity = dict(ACTIVITY)
+        self.activity_error = None
+        self.activity_calls = 0
 
 
 @pytest.fixture
@@ -67,8 +84,15 @@ def fake_api():
             setattr(self, name, value)
         self._stat_date = state.stat_date
 
+    async def get_activity(self):
+        state.activity_calls += 1
+        if state.activity_error:
+            raise state.activity_error
+        return dict(state.activity)
+
     client = lm_api.LittleMonkeyApiClient
     with patch.object(client, "async_get_cookiesdata", login), \
             patch.object(client, "async_get_gatewaydata", gateway), \
-            patch.object(client, "async_get_data", get_data):
+            patch.object(client, "async_get_data", get_data), \
+            patch.object(client, "async_get_activity", get_activity):
         yield state
