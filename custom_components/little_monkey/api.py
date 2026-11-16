@@ -9,12 +9,14 @@ import socket
 import time
 import aiohttp
 from .const import (
+    CONF_API_ACTIVITY_TIMEOUT,
     CONF_API_TIMEOUT,
     CONF_API_STAT_REFRESH,
     CONF_API_KEEP_LIVE,
     CONF_API_KEEP_LIVE_RETRY,
     CONF_API_CONTRACT_REFRESH,
     CONF_API_CONTRACT_RETRY,
+    ECOJOKO_ACTIVITY_URL,
     ECOJOKO_LOGIN_URL,
     ECOJOKO_GATEWAYS_URL,
     ECOJOKO_GATEWAY_URL,
@@ -59,6 +61,47 @@ class LittleMonkeyApiClientAuthenticationError(
     LittleMonkeyApiClientError
 ):
     """Exception to indicate an authentication error."""
+
+
+def _daily_consumption(data) -> list | None:
+    """Return the consumption of each of the last 7 days, in kWh.
+
+    ecojoko gives the mean power of each day, in W, the oldest first.
+    """
+    if not isinstance(data, list):
+        return None
+    days = [finite_number(power) for power in data]
+    if any(power is None for power in days):
+        return None
+    return [round_value(power * 24 / 1000) for power in days]
+
+
+def parse_activity(payload) -> dict:
+    """Return the values of an answer of the activity API, by sensor key.
+
+    savings_7_days: gap in % between the consumption of the last 7 days and
+    the reference consumption, negative for a saving. ecojoko gives it only
+    once a reference week is known: None before.
+    """
+    activity = payload["activity"]
+    savings = activity.get("savings_7j") or {}
+    consumption = activity.get("conso_7j") or {}
+    max_power = activity.get("max_power") or {}
+    reference_week = activity.get("week_reference") == 1
+    return {
+        "savings_7_days": (
+            finite_number(savings.get("value")) if reference_week else None),
+        "reference_consumption_7_days": (
+            finite_number(savings.get("ref_kwh")) if reference_week else None),
+        "consumption_7_days": finite_number(consumption.get("kwh")),
+        "daily_consumption_7_days": _daily_consumption(consumption.get("data")),
+        "cost_7_days": finite_number(consumption.get("value")),
+        "total_savings": finite_number(
+            (activity.get("conso_all") or {}).get("value")),
+        "max_power_month": finite_number(max_power.get("month")),
+        "max_power_year": finite_number(max_power.get("year")),
+        "max_power_alltime": finite_number(max_power.get("alltime")),
+    }
 
 
 class LittleMonkeyApiClient:
@@ -365,15 +408,37 @@ class LittleMonkeyApiClient:
             api['name'], api['url'], cookies=self._cookies)
         return payload
 
-    async def _async_request(self, name, url, method="GET", **kwargs):
+    async def async_get_activity(self) -> dict:
+        """Return the activity of the account: savings, last 7 days...
+
+        Called apart from the polls, with its own timeout. It does not log
+        in: before the first login, or when the session has expired, it
+        fails and the next poll logs in again.
+        """
+        if self._cookies is None:
+            raise LittleMonkeyApiClientCommunicationError(
+                "API activity not called: not logged in")
+        payload, _cookies = await self._async_request(
+            "activity", ECOJOKO_ACTIVITY_URL, cookies=self._cookies,
+            timeout=CONF_API_ACTIVITY_TIMEOUT)
+        try:
+            return parse_activity(payload)
+        except PARSE_ERRORS as exception:
+            raise LittleMonkeyApiClientError(
+                f"Unexpected data from API activity: {exception!r}"
+            ) from exception
+
+    async def _async_request(self, name, url, method="GET", timeout=None,
+                             **kwargs):
         """Send a request to ecojoko.
 
         Return the JSON payload (None when the answer is not JSON) and the
-        cookies of the response. The timeout covers the whole exchange,
-        body included, and the connection is always released.
+        cookies of the response. The timeout (CONF_API_TIMEOUT by default)
+        covers the whole exchange, body included, and the connection is
+        always released.
         """
         try:
-            async with asyncio.timeout(CONF_API_TIMEOUT):
+            async with asyncio.timeout(timeout or CONF_API_TIMEOUT):
                 async with self._session.request(
                     method,
                     url,

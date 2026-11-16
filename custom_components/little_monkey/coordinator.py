@@ -20,12 +20,19 @@ from .api import (
     LittleMonkeyApiClientError,
 )
 from .const import (
+    CONF_API_ACTIVITY_GRACE,
+    CONF_API_ACTIVITY_REFRESH,
     CONF_API_FAILURE_GRACE,
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
     POLL_INTERVAL,
-    LOGGER
+    LOGGER,
+    TEMPO_BAND_PERIODS,
+    TEMPO_PERIODS,
+    tariff_periods,
 )
+from .tariff import band_key
+from .utils import TariffPeriod
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
 
@@ -47,6 +54,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self.client = client
         # Monotonic time of the first failure of the current series
         self._failing_since = None
+        self._periods = tariff_periods(entry.data)
+        self._tariff_period = TariffPeriod()
 
         super().__init__(
             hass=hass,
@@ -107,6 +116,21 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             },
         )
 
+    def _current_tariff_period(self):
+        """Return the current tariff period, None without HC/HP nor Tempo option."""
+        if self._periods is None:
+            return None
+        client = self.client
+        if self._periods == TEMPO_PERIODS:
+            values = client.band_values
+            counters = {
+                period: values.get(band_key(band_id))
+                for band_id, period in TEMPO_BAND_PERIODS.items()
+            }
+        else:
+            counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
+        return self._tariff_period.update(client.stat_date, counters)
+
     async def _async_update_data(self):
         """Update data via library."""
         try:
@@ -129,6 +153,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         return {
             # Energy of the tariff bands, by key of their sensor
             **self.client.band_values,
+            "current_tariff_period": self._current_tariff_period(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
@@ -142,3 +167,51 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "indoor_hum": self.client.indoor_hum,
             "outdoor_hum": self.client.outdoor_hum,
         }
+
+
+class LittleMonkeyActivityCoordinator(DataUpdateCoordinator):
+    """Fetch the activity of the account (savings over 7 days...).
+
+    It is apart from the polls: ecojoko is slow to compute it, and its
+    values change slowly. A failure never makes the real-time sensors
+    unavailable, and the last values are kept for CONF_API_ACTIVITY_GRACE
+    seconds.
+    """
+
+    config_entry: ConfigEntry
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        entry: ConfigEntry,
+        client: LittleMonkeyApiClient,
+    ) -> None:
+        """Initialize."""
+        self.config_entry = entry
+        self.client = client
+        # Monotonic time of the last successful reading
+        self._last_success = None
+        super().__init__(
+            hass=hass,
+            logger=LOGGER,
+            name=f"{DOMAIN} activity",
+            update_interval=timedelta(seconds=CONF_API_ACTIVITY_REFRESH),
+        )
+
+    async def _async_update_data(self):
+        """Read the activity of the account."""
+        try:
+            data = await self.client.async_get_activity()
+        except LittleMonkeyApiClientError as exception:
+            if (
+                self.data is not None
+                and self._last_success is not None
+                and time.monotonic() - self._last_success < CONF_API_ACTIVITY_GRACE
+            ):
+                LOGGER.debug(
+                    "ecojoko activity not read, the last values are kept: %s",
+                    exception)
+                return self.data
+            raise UpdateFailed(exception) from exception
+        self._last_success = time.monotonic()
+        return data

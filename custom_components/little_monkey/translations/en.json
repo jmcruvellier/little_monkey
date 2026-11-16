@@ -113,6 +113,19 @@
             "red_hp_grid_consumption": {
                 "name": "HP Red Grid Consumption"
             },
+            "current_tariff_period": {
+                "name": "Current Tariff Period",
+                "state": {
+                    "hc": "Off-peak hours",
+                    "hp": "Peak hours",
+                    "hc_blue": "Off-peak Blue",
+                    "hp_blue": "Peak Blue",
+                    "hc_white": "Off-peak White",
+                    "hp_white": "Peak White",
+                    "hc_red": "Off-peak Red",
+                    "hp_red": "Peak Red"
+                }
+            },
             "production_surplus": {
                 "name": "Production Surplus"
             },
@@ -127,6 +140,37 @@
             },
             "outdoor_hum": {
                 "name": "Outdoor Humidity"
+            },
+            "savings_7_days": {
+                "name": "Savings over 7 Days",
+                "state_attributes": {
+                    "reference_consumption": {
+                        "name": "Reference consumption"
+                    }
+                }
+            },
+            "consumption_7_days": {
+                "name": "Consumption over 7 Days",
+                "state_attributes": {
+                    "daily_consumption": {
+                        "name": "Daily consumption"
+                    }
+                }
+            },
+            "cost_7_days": {
+                "name": "Cost over 7 Days"
+            },
+            "total_savings": {
+                "name": "Total Savings"
+            },
+            "max_power_month": {
+                "name": "Max Power of the Month"
+            },
+            "max_power_year": {
+                "name": "Max Power of the Year"
+            },
+            "max_power_alltime": {
+                "name": "Max Power Since the Start"
             }
         }
     },

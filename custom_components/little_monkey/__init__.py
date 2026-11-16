@@ -8,10 +8,16 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
+from homeassistant.helpers.typing import ConfigType
 
 from .api import LittleMonkeyApiClient
+from .card import async_register_card
 from .const import (
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
@@ -24,13 +30,25 @@ from .const import (
     CONF_USE_PROD_FEATURE,
     CONF_TARIFF_BANDS,
 )
-from .coordinator import LittleMonkeyDataUpdateCoordinator
+from .coordinator import (
+    LittleMonkeyActivityCoordinator,
+    LittleMonkeyDataUpdateCoordinator,
+)
 from .sensor import SENSOR_KEYS
 from .tariff import legacy_bands
 from .utils import account_unique_id
 
 # Version of the config entries, see EcojokoFlowHandler.VERSION
 ENTRY_VERSION = 3
+
+# Configured from the user interface only
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the integration, once for all its entries."""
+    await async_register_card(hass)
+    return True
 
 
 # https://developers.home-assistant.io/docs/config_entries_index/#setting-up-an-entry
@@ -58,6 +76,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
     # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
     await coordinator.async_config_entry_first_refresh()
+
+    # Activity of the account, read apart from the polls: ecojoko is slow to
+    # answer, the setup does not wait for it
+    coordinator.activity = LittleMonkeyActivityCoordinator(
+        hass=hass, entry=entry, client=coordinator.client)
+    entry.async_create_background_task(
+        hass, coordinator.activity.async_refresh(), "little_monkey activity")
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
