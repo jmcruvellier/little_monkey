@@ -217,12 +217,12 @@ test("empty options are removed", () => {
 
 test("the editor asks for the tariff period only with the HC/HP or Tempo option", () => {
   const names = (hass) => card.editorSchema(hass, { entity: "sensor.home_realtime_consumption" }).map((field) => field.name);
-  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "return_seconds", "trend_minutes"]);
+  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_color", "trend_minutes"]);
   assert.deepEqual(names(hassWith(["home", [POWER, "hc_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "return_seconds", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_color", "trend_minutes",
   ]);
   assert.deepEqual(names(hassWith(["home", [POWER, "red_hp_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "return_seconds", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_color", "trend_minutes",
   ]);
 });
 
@@ -295,4 +295,15 @@ test("the histogram has one bar per day, from zero to the highest day", () => {
   assert.deepEqual(heights, [5, 10, 0]);
   assert.equal(card.histogramPath(undefined), "");
   assert.equal(card.histogramPath([]), "");
+});
+
+test("the inside of the dial has a shade of the theme by default", () => {
+  const shade = card.dialFill(undefined);
+  assert.match(shade, /^color-mix\(/);
+  assert.equal(card.dialFill("default"), shade);
+  assert.equal(card.dialFill("none"), "none");
+  assert.equal(card.dialFill("transparent"), "none");
+  assert.equal(card.dialFill("light-blue"), "var(--light-blue-color)");
+  // A name is never more than a CSS variable name
+  assert.equal(card.dialFill("red;}x{"), "var(--redx-color)");
 });

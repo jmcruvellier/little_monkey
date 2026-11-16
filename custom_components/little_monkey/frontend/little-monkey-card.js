@@ -44,6 +44,9 @@ const TRANSLATIONS = {
       trend_minutes: "Duration of the curve (3 min by default)",
       savings_entity: "Savings over 7 days (optional)",
       return_seconds: "Back to the real-time power after (s)",
+      relief: "Relief of the dial",
+      dial_color: "Color inside the dial",
+      dial_color_helper: "Default: a shade of the theme. None: transparent.",
       return_helper: "After another face of the disc was chosen. 0 to stay on it.",
       tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. By default, the Current Tariff Period sensor of Little Monkey.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
@@ -77,6 +80,9 @@ const TRANSLATIONS = {
       trend_minutes: "Durée de la courbe (3 min par défaut)",
       savings_entity: "Économies sur 7 jours (facultatif)",
       return_seconds: "Retour à la puissance temps réel après (s)",
+      relief: "Relief du cadran",
+      dial_color: "Couleur de l'intérieur du cadran",
+      dial_color_helper: "Par défaut : une teinte du thème. Aucune : transparent.",
       return_helper: "Après le choix d'une autre face du disque. 0 pour y rester.",
       tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Par défaut, le capteur Période Tarifaire en Cours de Little Monkey.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
@@ -414,6 +420,25 @@ export function trendMinutes(config) {
 }
 
 /**
+ * Return the fill of the inside of the dial.
+ *
+ * dial_color: "default" (or absent) for a shade of the theme, a little
+ * lighter than the card in a dark theme and a little greyer in a light one;
+ * "none" or "transparent" for the background of the card; otherwise a color
+ * of the Home Assistant palette (red, light-blue...), which follows the theme.
+ */
+export function dialFill(dialColor) {
+  if (dialColor === undefined || dialColor === null || dialColor === "" || dialColor === "default") {
+    return "color-mix(in srgb, var(--primary-text-color, #212121) 7%, var(--lm-background))";
+  }
+  if (dialColor === "none" || dialColor === "transparent") {
+    return "none";
+  }
+  // A name of the palette is a CSS variable of the theme
+  return `var(--${String(dialColor).replace(/[^a-z0-9-]/gi, "")}-color)`;
+}
+
+/**
  * Return the faces of the disc that have their sensors, in their order.
  *
  * The real-time power is always there; the other faces need the sensors of
@@ -591,6 +616,15 @@ export function editorSchema(hass, config) {
     selector: { number: { min: 0, max: 600, step: 5, mode: "box", unit_of_measurement: "s" } },
   });
   schema.push({
+    name: "relief",
+    default: true,
+    selector: { boolean: {} },
+  });
+  schema.push({
+    name: "dial_color",
+    selector: { ui_color: { default_color: "default", include_none: true } },
+  });
+  schema.push({
     name: "trend_minutes",
     selector: { number: { min: 1, max: 60, step: 1, mode: "slider", unit_of_measurement: "min" } },
   });
@@ -687,9 +721,13 @@ class LittleMonkeyCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         ha-card { padding: 16px; display: flex; justify-content: center; }
-        svg { width: 100%; max-width: 360px; display: block; }
+        svg { width: 100%; max-width: 360px; display: block; overflow: visible; }
         .bezel { fill: var(--lm-background); stroke: var(--divider-color, #e0e0e0); stroke-width: 1; }
-        .bezel-inner { fill: none; stroke: var(--divider-color, #e0e0e0); stroke-width: 0.6; }
+        .bezel-inner { stroke: var(--divider-color, #e0e0e0); stroke-width: 0.6; transition: fill 0.5s; }
+        .relief .bezel { filter: url(#lm-outer-shadow); }
+        .relief .disc { filter: url(#lm-shadow); }
+        .inner-shadow { display: none; }
+        .relief .inner-shadow { display: inline; }
         :host { --lm-background: var(--ha-card-background, var(--card-background-color, #fff)); }
         .track { fill: none; stroke-width: 5; }
         .labels text { fill: var(--secondary-text-color, #727272); font-size: 7.5px; text-anchor: middle; dominant-baseline: central; }
@@ -700,7 +738,7 @@ class LittleMonkeyCard extends HTMLElement {
         .needle-outline { stroke-width: 7.4; stroke: #9e9e9e; }
         .savings-needle { transition: transform 0.8s ease-out; }
         .savings-needle line { stroke-linecap: round; stroke-width: 6; }
-        .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; filter: url(#lm-shadow); }
+        .disc { stroke: rgba(0, 0, 0, 0.12); stroke-width: 0.6; transition: fill 0.5s; }
         .content text { text-anchor: middle; dominant-baseline: central; }
         .title { font-size: 8.5px; font-weight: 400; letter-spacing: 0.2px; }
         .value { font-size: 21px; font-weight: 400; }
@@ -719,12 +757,24 @@ class LittleMonkeyCard extends HTMLElement {
       <ha-card>
         <svg viewBox="0 0 200 200" role="img" aria-label="${text.title.join(" ")}">
           <defs>
+            <filter id="lm-outer-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35" />
+            </filter>
+            <filter id="lm-blur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.6" />
+            </filter>
+            <clipPath id="lm-inside">
+              <circle cx="100" cy="100" r="${R_BEZEL - 4}" />
+            </clipPath>
             <filter id="lm-shadow" x="-20%" y="-20%" width="140%" height="140%">
               <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.35" />
             </filter>
           </defs>
           <circle class="bezel" cx="100" cy="100" r="${R_BEZEL}" />
           <circle class="bezel-inner" cx="100" cy="100" r="${R_BEZEL - 4}" />
+          <g class="inner-shadow" clip-path="url(#lm-inside)">
+            <circle cx="100" cy="101.5" r="${R_BEZEL - 4}" fill="none" stroke="rgba(0, 0, 0, 0.35)" stroke-width="4" filter="url(#lm-blur)" />
+          </g>
           ${segmentedArc(R_TRACK, powerZoneAngles, POWER_ZONE_COLORS, "track")}
           ${segmentedArc(R_TRACK, lowerAngles, LOWER_COLORS, "track")}
           <g class="labels">${ticks}${lowerTicks}</g>
@@ -802,6 +852,8 @@ class LittleMonkeyCard extends HTMLElement {
       maxYear: root.querySelector(".max-year"),
       maxAlltime: root.querySelector(".max-alltime"),
       dots: root.querySelector(".dots"),
+      svg: root.querySelector("svg"),
+      dial: root.querySelector(".bezel-inner"),
     };
     this._dotsKey = null;
     // Swipe to the next or to the previous face
@@ -861,6 +913,10 @@ class LittleMonkeyCard extends HTMLElement {
     el.powerTitle.forEach((line, index) => {
       line.textContent = powerTitle[index];
     });
+
+    // Relief and color of the dial
+    el.svg.classList.toggle("relief", config.relief !== false);
+    el.dial.setAttribute("fill", dialFill(config.dial_color));
 
     // Faces of the disc: the first one has the color of the tariff period,
     // and the power needle keeps it on the other faces
@@ -1085,6 +1141,7 @@ class LittleMonkeyCardEditor extends HTMLElement {
         tariff_entity: this._text().editor.tariff_helper,
         tempo_color_entity: this._text().editor.tempo_helper,
         return_seconds: this._text().editor.return_helper,
+        dial_color: this._text().editor.dial_color_helper,
       })[field.name];
       this._form.addEventListener("value-changed", (event) => this._changed(event));
       this.appendChild(this._form);
