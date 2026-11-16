@@ -122,3 +122,61 @@ test("the months are written under their first week", () => {
     { index: 0, label: "J" }, { index: 2, label: "F" }, { index: 4, label: "M" },
   ]);
 });
+
+// --- Activations of the appliances
+
+const ACTIVATIONS = [
+  { start: "2026-11-16T00:03:00+01:00", end: "2026-11-16T02:29:00+01:00", power: 694, energy: 1.69,
+    shape: { width: 96, height: 16, color: "#FA6200" } },
+  { start: "2026-11-15T20:15:00+01:00", end: "2026-11-15T20:15:30+01:00", power: 1260, energy: 0.01,
+    shape: { width: 3, height: 29, color: "#5FC2FF" } },
+  { start: "2026-11-15T14:38:00+01:00", end: "2026-11-15T14:51:00+01:00", power: 496, energy: 0.11,
+    shape: { width: 22, height: 12, color: "#5FC2FF" } },
+];
+
+test("the pages of activations are merged, the most recent first", () => {
+  const merged = cards.mergeActivations([
+    { activations: [ACTIVATIONS[0], ACTIVATIONS[1]] },
+    undefined,
+    { activations: [ACTIVATIONS[1], ACTIVATIONS[2]] },
+  ]);
+  assert.deepEqual(merged.map((activation) => activation.power), [694, 1260, 496]);
+});
+
+test("the activations are grouped by day", () => {
+  const days = cards.groupByDay(ACTIVATIONS);
+  assert.deepEqual(days.map((day) => [day.day, day.activations.length]), [
+    ["2026-11-16", 1], ["2026-11-15", 2],
+  ]);
+  assert.equal(cards.dayLabel("fr", "2026-11-16"), "Lundi 16 novembre 2026");
+  assert.equal(cards.dayLabel("en", "2026-11-16"), "Monday, November 16, 2026");
+});
+
+test("the hours and the duration of an activation", () => {
+  const text = { seconds: "{n} s", minutes: "{n} min", hours: "{h} h {m} min" };
+  assert.equal(cards.timeRange(ACTIVATIONS[0]), "00:03 – 02:29");
+  assert.equal(cards.durationLabel(text, ACTIVATIONS[0]), "2 h 26 min");
+  assert.equal(cards.durationLabel(text, ACTIVATIONS[1]), "30 s");
+  assert.equal(cards.durationLabel(text, ACTIVATIONS[2]), "13 min");
+});
+
+test("the shape of an activation is a pulse on a baseline", () => {
+  assert.match(cards.shapeSvg(ACTIVATIONS[0].shape), /d="M 0 42 H 4 V 26 H 100 V 42 H 104"/);
+  assert.match(cards.shapeSvg(ACTIVATIONS[0].shape), /stroke="#FA6200"/);
+  // Shapes stay in their box, and an unexpected color is not written
+  assert.match(cards.shapeSvg({ width: 500, height: 90, color: "red;" }), /V 2 H 100 V 42 H 104" fill="none" stroke="#5fc2ff"/);
+});
+
+test("a new activations card takes a sensor of the first device", () => {
+  const hass = {
+    entities: {
+      "sensor.eco_power": {
+        entity_id: "sensor.eco_power", platform: "little_monkey", translation_key: "realtime_consumption",
+      },
+    },
+  };
+  assert.deepEqual(cards.activationsStubConfig(hass), {
+    type: "custom:little-monkey-activations-card", entity: "sensor.eco_power",
+  });
+  assert.deepEqual(cards.activationsSchema().map((field) => field.name), ["entity", "title"]);
+});

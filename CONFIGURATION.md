@@ -227,6 +227,20 @@ period: week
 | `period` | Non | `week` (par défaut), `month` ou `year` |
 | `title` | Non | Titre de la carte |
 
+### Activations des appareils
+
+Les démarrages d'appareils détectés par ecojoko, du plus récent au plus ancien et groupés par jour : pour chacun, les heures de début et de fin, la durée, l'énergie, la puissance moyenne et la forme qu'ecojoko dessine pour lui (plus large quand il dure, plus haute quand il consomme). La carte montre les 48 dernières heures, se met à jour toutes les dix minutes, et « Charger les suivantes » remonte de 48 heures en 48 heures.
+
+```yaml
+type: custom:little-monkey-activations-card
+entity: sensor.ecojoko_consommation_temps_reel
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
+| `title` | Non | Titre de la carte |
+
 ## Services de l'analyse de la consommation
 
 Trois services renvoient les données de la page « Analyse de votre conso » d'ecojoko. Les cartes de l'analyse s'en servent ; vous pouvez aussi les appeler depuis un script ou une automatisation (`response_variable`). Comme pour les autres services, `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
