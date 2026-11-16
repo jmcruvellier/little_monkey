@@ -340,6 +340,56 @@
                     "description": "Um dia do período; hoje por omissão."
                 }
             }
+        },
+        "get_consumption_analysis": {
+            "name": "Ler a análise do consumo",
+            "description": "Devolve a repartição do consumo de uma semana, de um mês ou de um ano por categoria (consumo de base, iluminação, frio…), como a página “Análise do seu consumo” do ecojoko.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Instalação",
+                    "description": "Instalação Little Monkey; opcional se houver apenas uma."
+                },
+                "period": {
+                    "name": "Período",
+                    "description": "Semana, mês ou ano."
+                },
+                "date": {
+                    "name": "Data",
+                    "description": "Um dia do período; por omissão, o último período analisado pelo ecojoko."
+                }
+            }
+        },
+        "get_category_history": {
+            "name": "Ler o histórico de uma categoria",
+            "description": "Devolve o consumo de uma categoria semana a semana ao longo de um ano.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Instalação",
+                    "description": "Instalação Little Monkey; opcional se houver apenas uma."
+                },
+                "category": {
+                    "name": "Categoria",
+                    "description": "Identificador da categoria, dado pela análise do consumo."
+                },
+                "date": {
+                    "name": "Data",
+                    "description": "Um dia do ano; hoje por omissão."
+                }
+            }
+        },
+        "get_activations": {
+            "name": "Ler as ativações dos aparelhos",
+            "description": "Devolve os arranques de aparelhos detetados pelo ecojoko em 48 horas.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Instalação",
+                    "description": "Instalação Little Monkey; opcional se houver apenas uma."
+                },
+                "page": {
+                    "name": "Página",
+                    "description": "0 para as últimas 48 horas, 1 para as 48 horas anteriores, etc."
+                }
+            }
         }
     },
     "exceptions": {
@@ -349,8 +399,8 @@
         "entry_required": {
             "message": "Várias instalações Little Monkey: indique qual (config_entry_id)."
         },
-        "savings_not_read": {
-            "message": "Não foi possível ler a poupança no ecojoko: {error}"
+        "data_not_read": {
+            "message": "Não foi possível ler os dados no ecojoko: {error}"
         }
     }
 }

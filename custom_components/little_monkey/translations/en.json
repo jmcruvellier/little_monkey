@@ -340,6 +340,56 @@
                     "description": "A day of the period; today by default."
                 }
             }
+        },
+        "get_consumption_analysis": {
+            "name": "Get consumption analysis",
+            "description": "Returns the breakdown of the consumption of a week, a month or a year by category (standby, lighting, cooling…), as the “Analysis of your consumption” page of ecojoko.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Installation",
+                    "description": "Little Monkey installation; optional when there is only one."
+                },
+                "period": {
+                    "name": "Period",
+                    "description": "Week, month or year."
+                },
+                "date": {
+                    "name": "Date",
+                    "description": "A day of the period; by default, the last period analysed by ecojoko."
+                }
+            }
+        },
+        "get_category_history": {
+            "name": "Get category history",
+            "description": "Returns the consumption of a category week by week over a year.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Installation",
+                    "description": "Little Monkey installation; optional when there is only one."
+                },
+                "category": {
+                    "name": "Category",
+                    "description": "Identifier of the category, given by the consumption analysis."
+                },
+                "date": {
+                    "name": "Date",
+                    "description": "A day of the year; today by default."
+                }
+            }
+        },
+        "get_activations": {
+            "name": "Get appliance activations",
+            "description": "Returns the appliance starts detected by ecojoko over 48 hours.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Installation",
+                    "description": "Little Monkey installation; optional when there is only one."
+                },
+                "page": {
+                    "name": "Page",
+                    "description": "0 for the last 48 hours, 1 for the 48 hours before, and so on."
+                }
+            }
         }
     },
     "exceptions": {
@@ -349,8 +399,8 @@
         "entry_required": {
             "message": "Several Little Monkey installations: tell which one (config_entry_id)."
         },
-        "savings_not_read": {
-            "message": "The savings could not be read from ecojoko: {error}"
+        "data_not_read": {
+            "message": "The data could not be read from ecojoko: {error}"
         }
     }
 }

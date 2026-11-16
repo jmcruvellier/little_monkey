@@ -134,6 +134,59 @@ SAVINGSTAT_WEEK = {
 }
 
 
+# Answers of the analysis APIs observed on 16/11/2026
+ANALYSIS_WEEK = {
+    "stat": {
+        "period": {"this": 1793574000000, "prev": 1792969200000, "next": 1794178800000,
+                   "measure_unit": "EUR", "price": 14.46, "kwh": 60.6},
+        "data": [
+            {"kwh": 37.1, "price": 5.03, "percentage": 61, "evol_status": 1,
+             "category": {"id": 7, "name": "Talon de consommation", "color": "#022469"}},
+            {"kwh": 1.78, "price": 0.71, "percentage": 3, "evol_status": 1, "is_beta": True,
+             "category": {"id": 5, "name": "Gros électroménager", "color": "#05a1fb"},
+             "usage_childrens": [
+                 {"kwh": 0.73, "price": 0.29, "percentage": 1,
+                  "category": {"id": 12, "name": "Lave-vaisselle", "color": "#05a1fb",
+                               "image_link": "https://service.ecojoko.com/x.webp"}},
+             ]},
+            {"kwh": 12.4, "price": 4.95, "percentage": 20, "evol_status": 2,
+             "category": {"id": 9, "name": "Autres appareils", "color": "#acc5cf"}},
+        ],
+    }
+}
+ANALYSIS_PENDING = {
+    "error_id": 300,
+    "stat": {"period": {"this": 1794178800000, "prev": 1794118320000}},
+    "error_desc": "Vos données sont en cours d’analyse.",
+}
+CATEGORY_HISTORY = {
+    "usage_history": {
+        "period": {"this": 1767567600000, "prev": 1736031600000, "measure_unit": "EUR"},
+        "category": {"id": 8, "name": "Éclairage", "color": "#ffed21"},
+        "data": [
+            {"time": 1767567600000, "kwh": 0, "price": 0, "percentage": 0, "dtime": 1767567600000},
+            {"time": 1768168080000, "kwh": 0, "price": 0, "percentage": 0, "dtime": 1767567600000},
+            {"time": 1768172400000, "kwh": 0.67, "price": 0.11, "percentage": 0.8,
+             "dtime": 1768172400000},
+            {"time": 1768772880000, "kwh": 0.67, "price": 0.11, "percentage": 0.8,
+             "dtime": 1768172400000},
+        ],
+    }
+}
+ACTIVATIONS = {
+    "error_id": 0,
+    "is_pending": 0,
+    "start_time": 1794625200,
+    "stop_time": 1794798000,
+    "appliances": [
+        {"id": 1794783780, "start_date": 1794783780000, "end_date": 1794792540000,
+         "power": 694, "kwh": 1.69, "picto": {"w": 96, "h": 16, "color": "#FA6200"}},
+        {"id": 1794770140, "start_date": 1794770140000, "end_date": 1794770170000,
+         "power": 1260, "kwh": 0.01, "picto": {"w": 3, "h": 29, "color": "#5FC2FF"}},
+    ],
+}
+
+
 def powerstat(kwh=4.2, **today):
     """Return a powerstat response whose current day holds the given values."""
     data = [{"kwh": 0} for _ in range(7)]
@@ -224,6 +277,9 @@ class Session:
             "activity": Response(payload=ACTIVITY),
             "savings/m": Response(payload=SAVINGS_SUMMARY),
             "savingstat": Response(payload=SAVINGSTAT_WEEK),
+            "ia/conso": Response(payload=ANALYSIS_WEEK),
+            "history": Response(payload=CATEGORY_HISTORY),
+            "ia/appliances": Response(payload=ACTIVATIONS),
             **overrides,
         }
         self.calls = []
@@ -1497,3 +1553,120 @@ def test_savings_unexpected_answer(api, route, answer):
     run(client.async_get_data())
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(client.async_get_savings())
+
+
+# --- Analysis of the consumption
+
+
+def test_analysis(api):
+    """The analysis gives the categories of the consumption of a period."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    analysis = run(client.async_get_analysis("week"))
+    assert session.requests[-1][1] == (
+        "https://service.ecojoko.com/gateway/1/device/2/ia/conso/w")
+    assert analysis == {
+        "available": True,
+        "start": "2026-11-02",
+        "cost": 14.46,
+        "consumption": 60.6,
+        "categories": [
+            {"id": 7, "name": "Talon de consommation", "color": "#022469", "cost": 5.03,
+             "consumption": 37.1, "percentage": 61, "trend": "up", "beta": False,
+             "children": []},
+            {"id": 5, "name": "Gros électroménager", "color": "#05a1fb", "cost": 0.71,
+             "consumption": 1.78, "percentage": 3, "trend": "up", "beta": True,
+             "children": [{"id": 12, "name": "Lave-vaisselle", "color": "#05a1fb",
+                           "cost": 0.29, "consumption": 0.73, "percentage": 1}]},
+            {"id": 9, "name": "Autres appareils", "color": "#acc5cf", "cost": 4.95,
+             "consumption": 12.4, "percentage": 20, "trend": "down", "beta": False,
+             "children": []},
+        ],
+    }
+    run(client.async_get_analysis("month", dt.date(2026, 10, 15)))
+    assert session.requests[-1][1].endswith("/ia/conso/m/2026-10-15")
+
+
+def test_analysis_not_ready(api):
+    """A period not analysed yet gives the explanation of ecojoko."""
+    client = make_client(api, Session(**{"ia/conso": Response(status=400, payload=ANALYSIS_PENDING)}))
+    run(client.async_get_data())
+    assert run(client.async_get_analysis("week", dt.date(2026, 11, 9))) == {
+        "available": False,
+        "message": "Vos données sont en cours d’analyse.",
+        "start": "2026-11-09",
+    }
+
+
+def test_analysis_other_errors_are_errors(api):
+    """Only an answer HTTP 400 in JSON is an explanation."""
+    client = make_client(api, Session(**{"ia/conso": Response(status=500, payload={})}))
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_analysis("week"))
+    client = make_client(api, Session(**{"ia/conso": Response(status=400, is_json=False)}))
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+        run(client.async_get_analysis("week"))
+
+
+def test_category_history(api):
+    """The history of a category keeps one bar a week."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    history = run(client.async_get_category_history(8, dt.date(2026, 11, 16)))
+    assert session.requests[-1][1].endswith("/usage/8/history/y/2026-11-16")
+    assert history == {
+        "category": {"id": 8, "name": "Éclairage", "color": "#ffed21"},
+        "start": "2026-01-05",
+        "bars": [
+            {"date": "2026-01-05", "cost": 0, "consumption": 0, "percentage": 0},
+            {"date": "2026-01-12", "cost": 0.11, "consumption": 0.67, "percentage": 0.8},
+        ],
+    }
+
+
+def test_activations(api):
+    """The activations of the appliances, 48 hours a page."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    activations = run(client.async_get_activations(2))
+    assert session.requests[-1][1].endswith("/ia/appliances/0/2")
+    assert activations["start"] == "2026-11-14T04:00:00+01:00"
+    assert activations["end"] == "2026-11-16T04:00:00+01:00"
+    assert activations["pending"] is False
+    assert activations["activations"][0] == {
+        "start": "2026-11-16T00:03:00+01:00",
+        "end": "2026-11-16T02:29:00+01:00",
+        "power": 694,
+        "energy": 1.69,
+        "shape": {"width": 96, "height": 16, "color": "#FA6200"},
+    }
+
+
+def test_analysis_apis_need_a_login(api):
+    """The analysis APIs do not log in: the polls do it."""
+    session = Session()
+    client = make_client(api, session)
+    for call in (client.async_get_analysis("week"),
+                 client.async_get_category_history(8, dt.date(2026, 11, 16)),
+                 client.async_get_activations()):
+        with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+            run(call)
+    assert session.calls == []
+
+
+@pytest.mark.parametrize("route, read", [
+    ("ia/conso", lambda client: client.async_get_analysis("week")),
+    ("history", lambda client: client.async_get_category_history(8, dt.date(2026, 11, 16))),
+    ("ia/appliances", lambda client: client.async_get_activations()),
+])
+def test_analysis_unexpected_answer(api, route, read):
+    """An unexpected answer is an error."""
+    client = make_client(api, Session(**{route: Response(payload={"x": 1})}))
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(read(client))

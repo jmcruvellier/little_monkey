@@ -1283,6 +1283,41 @@ async def test_savings_service_errors(hass, fake_api):
         await get_savings(hass, period="week")
 
 
+async def call_service(hass, service, **data):
+    """Call a service of the integration and return its answer."""
+    return await hass.services.async_call(
+        DOMAIN, service, data, blocking=True, return_response=True)
+
+
+async def test_analysis_services(hass, fake_api):
+    """The services of the analysis of the consumption."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    answer = await call_service(hass, "get_consumption_analysis", period="week")
+    assert answer["period"] == "week"
+    assert answer["cost"] == 14.46
+    await call_service(hass, "get_consumption_analysis", period="month", date="2026-10-15")
+    answer = await call_service(hass, "get_category_history", category=8, date="2026-03-04")
+    assert answer["category"] == {"id": 8}
+    answer = await call_service(hass, "get_activations")
+    assert answer["page"] == 0
+    await call_service(hass, "get_activations", page=3)
+    assert fake_api.analysis_calls == [
+        ("analysis", "week", None),
+        ("analysis", "month", dt.date(2026, 10, 15)),
+        ("history", 8, dt.date(2026, 3, 4)),
+        ("activations", 0),
+        ("activations", 3),
+    ]
+
+    fake_api.savings_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
+    with pytest.raises(HomeAssistantError):
+        await call_service(hass, "get_consumption_analysis", period="week")
+    with pytest.raises(vol.Invalid):
+        await call_service(hass, "get_activations", page=-1)
+
+
 # --- Current tariff band
 
 ZEN_WEEKEND_PLUS = [
