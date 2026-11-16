@@ -124,6 +124,11 @@
                     "hp_white": "Cheias Branco",
                     "hc_red": "Vazio Vermelho",
                     "hp_red": "Cheias Vermelho"
+                },
+                "state_attributes": {
+                    "tariff_band": {
+                        "name": "Período tarifário"
+                    }
                 }
             },
             "production_surplus": {

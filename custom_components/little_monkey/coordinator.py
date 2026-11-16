@@ -27,6 +27,7 @@ from .const import (
     DOMAIN,
     POLL_INTERVAL,
     LOGGER,
+    CONF_TARIFF_BANDS,
     TEMPO_BAND_PERIODS,
     TEMPO_PERIODS,
     tariff_periods,
@@ -56,6 +57,13 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self._failing_since = None
         self._periods = tariff_periods(entry.data)
         self._tariff_period = TariffPeriod()
+        # Current tariff band (Semaine, Week-end, Jour Spécial...), deduced
+        # the same way from the counters of the configured bands
+        self._band_names = {
+            band["key"]: band.get("name") or band.get("label")
+            for band in entry.data.get(CONF_TARIFF_BANDS) or []
+        }
+        self._tariff_band = TariffPeriod()
 
         super().__init__(
             hass=hass,
@@ -131,6 +139,15 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
         return self._tariff_period.update(client.stat_date, counters)
 
+    def _current_tariff_band(self):
+        """Return the name of the current tariff band, None if not known."""
+        if not self._band_names:
+            return None
+        values = self.client.band_values
+        key = self._tariff_band.update(self.client.stat_date, {
+            key: values.get(key) for key in self._band_names})
+        return self._band_names.get(key)
+
     async def _async_update_data(self):
         """Update data via library."""
         try:
@@ -154,6 +171,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             # Energy of the tariff bands, by key of their sensor
             **self.client.band_values,
             "current_tariff_period": self._current_tariff_period(),
+            "current_tariff_band": self._current_tariff_band(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,

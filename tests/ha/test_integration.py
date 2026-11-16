@@ -1171,3 +1171,56 @@ async def test_activity_in_diagnostics(hass, fake_api):
     diagnostics = await async_get_config_entry_diagnostics(hass, entry)
     assert diagnostics["activity"]["last_update_success"] is True
     assert diagnostics["activity"]["data"]["savings_7_days"] == -3
+
+
+# --- Current tariff band
+
+ZEN_WEEKEND_PLUS = [
+    {"id": band_id, "label": label, "key": f"band_{band_id}", "name": None,
+     "category": "hc" if label.startswith("HC") else "hp"}
+    for band_id, label in (
+        (8, "HP Semaine"), (9, "HC Semaine"),
+        (10, "HP Jour Sp\u00e9cial"), (11, "HC Jour Sp\u00e9cial"),
+        (6, "HP Weekend"), (7, "HC Weekend"),
+    )
+]
+
+
+async def test_tariff_band_of_a_special_day(hass, fake_api):
+    """The period sensor tells the band of the day whose counter increases."""
+    bands = [*HCHP_BANDS, *ZEN_WEEKEND_PLUS]
+    bands[5] = {**bands[5], "name": "HC jour sp\u00e9cial"}
+    values = {band["key"]: 0 for band in ZEN_WEEKEND_PLUS}
+    fake_api.values.update({
+        "_band_values": {**values, "band_10": 1.0, "band_11": 0.5},
+        "_kwh_hp_ns": 1.0, "_kwh_hc_ns": 0.5,
+    })
+    entry = add_entry(hass, data={**DATA, "tariff_bands": bands})
+    assert await setup_entry(hass, entry)
+    entity_id = period_entity(hass, entry)
+
+    fake_api.values.update({
+        "_band_values": {**values, "band_10": 1.0, "band_11": 0.7},
+        "_kwh_hc_ns": 0.7,
+    })
+    await refresh(hass, entry)
+    state = hass.states.get(entity_id)
+    assert state.state == "hc"
+    assert state.attributes["tariff_band"] == "HC jour sp\u00e9cial"
+
+    fake_api.values.update({
+        "_band_values": {**values, "band_10": 1.2, "band_11": 0.7},
+        "_kwh_hp_ns": 1.2,
+    })
+    await refresh(hass, entry)
+    state = hass.states.get(entity_id)
+    assert state.state == "hp"
+    assert state.attributes["tariff_band"] == "HP Jour Sp\u00e9cial"
+
+
+async def test_tariff_band_unknown_at_first(hass, fake_api):
+    """The band is unknown until a counter increases."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    state = hass.states.get(period_entity(hass, entry))
+    assert "tariff_band" not in state.attributes

@@ -124,6 +124,11 @@
                     "hp_white": "Peak White",
                     "hc_red": "Off-peak Red",
                     "hp_red": "Peak Red"
+                },
+                "state_attributes": {
+                    "tariff_band": {
+                        "name": "Tariff band"
+                    }
                 }
             },
             "production_surplus": {
