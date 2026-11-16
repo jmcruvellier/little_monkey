@@ -195,7 +195,7 @@ La carte « Petit Singe : contrat » (« Little Monkey contract » en anglais) r
 
 - le fournisseur, l'offre, sa date de début et la puissance souscrite ;
 - un cadran des 24 heures avec les heures creuses du contrat et une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:00, dans 1 h 45 ») ; avec un contrat Tempo, le cadran prend la couleur du jour (bleu, blanc ou rouge, plus foncée en heures creuses) ;
-- les tranches tarifaires configurées, avec leur badge HC ou HP et leur consommation du jour (toucher une tranche ouvre son capteur), et l'abonnement.
+- les tranches tarifaires configurées, avec leur badge HC ou HP et leur consommation du jour (toucher une tranche ouvre son capteur), et l'abonnement mensuel.
 
 ```yaml
 type: custom:little-monkey-contract-card

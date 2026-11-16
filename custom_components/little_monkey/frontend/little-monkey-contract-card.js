@@ -33,6 +33,7 @@ const TRANSLATIONS = {
     minutes: "{m} min",
     tempo: { blue: "Blue day", white: "White day", red: "Red day" },
     subscription: "Subscription",
+    per_month: "{price} / month",
     off_peak_legend: "Off-peak hours",
     unknown: "Contract not read yet",
     missing: "Contract sensor not found",
@@ -52,6 +53,7 @@ const TRANSLATIONS = {
     minutes: "{m} min",
     tempo: { blue: "Jour bleu", white: "Jour blanc", red: "Jour rouge" },
     subscription: "Abonnement",
+    per_month: "{price} / mois",
     off_peak_legend: "Heures creuses",
     unknown: "Contrat pas encore lu",
     missing: "Capteur Contrat introuvable",
@@ -414,7 +416,8 @@ class LittleMonkeyContractCard extends HTMLElement {
     }).join("");
     const subscription = Number.isFinite(Number(view.subscription)) && view.subscription !== null
       ? `<div class="row subscription"><span class="label">${escapeHtml(text.subscription)}</span><span class="value">${
-        escapeHtml(new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(view.subscription))}</span></div>`
+        escapeHtml(text.per_month.replace(
+          "{price}", new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(view.subscription)))}</span></div>`
       : "";
     const rows = bands || subscription ? `<div class="rows">${bands}${subscription}</div>` : "";
     return `
