@@ -138,5 +138,18 @@
                 "none": "Ni HC ni HP"
             }
         }
+    },
+    "issues": {
+        "unknown_bands": {
+            "title": "Nouvelles tranches tarifaires pour {name}",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Ajouter les tranches tarifaires",
+                        "description": "ecojoko indique des tranches de votre contrat qui n'ont pas encore de capteur : {bands}. C'est le cas après un changement de contrat.\n\nValider crée leurs capteurs, avec leur nom ecojoko et le total HC ou HP déduit de leur nom. Vous pourrez ensuite les renommer et changer leur total dans les options de l'intégration."
+                    }
+                }
+            }
+        }
     }
 }

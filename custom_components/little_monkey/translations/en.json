@@ -138,5 +138,18 @@
                 "none": "Neither HC nor HP"
             }
         }
+    },
+    "issues": {
+        "unknown_bands": {
+            "title": "New tariff bands for {name}",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Add the tariff bands",
+                        "description": "ecojoko reports bands of your contract without a sensor yet: {bands}. This happens after a change of contract.\n\nSubmit creates their sensors, with their ecojoko name and the HC or HP total deduced from it. You can then rename them and change their total in the options of the integration."
+                    }
+                }
+            }
+        }
     }
 }

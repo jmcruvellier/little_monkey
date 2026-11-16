@@ -138,5 +138,18 @@
                 "none": "Nem HC nem HP"
             }
         }
+    },
+    "issues": {
+        "unknown_bands": {
+            "title": "Novos períodos tarifários para {name}",
+            "fix_flow": {
+                "step": {
+                    "confirm": {
+                        "title": "Adicionar os períodos tarifários",
+                        "description": "O ecojoko indica períodos do seu contrato ainda sem sensor: {bands}. Acontece após uma mudança de contrato.\n\nSubmeter cria os sensores, com o nome ecojoko e o total HC ou HP deduzido do nome. Pode depois renomeá-los e mudar o total nas opções da integração."
+                    }
+                }
+            }
+        }
     }
 }

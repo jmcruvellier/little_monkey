@@ -11,6 +11,7 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.helpers import issue_registry as ir
 
 from .api import (
     LittleMonkeyApiClient,
@@ -70,6 +71,42 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             self._failing_since = now
         return now - self._failing_since < CONF_API_FAILURE_GRACE
 
+    @property
+    def unknown_bands_issue_id(self) -> str:
+        """Return the id of the repair issue of the bands not configured."""
+        return f"unknown_bands_{self.config_entry.entry_id}"
+
+    def _check_unknown_bands(self) -> None:
+        """Report the tariff bands of the contract not configured yet.
+
+        They appear after a change of contract, or in an entry migrated from
+        the HC/HP and Tempo options with another contract. The repair adds
+        them; the issue disappears once every band of the day is configured.
+        """
+        unknown = self.client.unknown_bands
+        if unknown is None:
+            return
+        issue_id = self.unknown_bands_issue_id
+        if not unknown:
+            ir.async_delete_issue(self.hass, DOMAIN, issue_id)
+            return
+        ir.async_create_issue(
+            self.hass,
+            DOMAIN,
+            issue_id,
+            is_fixable=True,
+            severity=ir.IssueSeverity.WARNING,
+            translation_key="unknown_bands",
+            translation_placeholders={
+                "name": str(self.config_entry.title),
+                "bands": ", ".join(sorted(unknown.values())),
+            },
+            data={
+                "entry_id": self.config_entry.entry_id,
+                "bands": {str(band_id): label for band_id, label in unknown.items()},
+            },
+        )
+
     async def _async_update_data(self):
         """Update data via library."""
         try:
@@ -88,6 +125,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         except Exception as exception:  # pylint: disable=broad-except
             raise UpdateFailed(exception) from exception
         self._failing_since = None
+        self._check_unknown_bands()
         return {
             # Energy of the tariff bands, by key of their sensor
             **self.client.band_values,
