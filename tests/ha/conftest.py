@@ -26,6 +26,18 @@ VALUES = {
     "_outdoor_temp": 8.5,
     "_indoor_hum": 50,
     "_outdoor_hum": 80,
+    "_contract": {
+        "supplier_name": "EDF",
+        "offer_id": 5480,
+        "offer_name": "Zen Fixe - Option HP/HC",
+        "offer_type": "HP/HC",
+        "is_hchp": 1,
+        "special_day": 1,
+        "power": 9,
+        "subscription_price": 24.77,
+        "off_peak_timeslots": [{"start": "01:30", "stop": "07:00"}, {"start": "14:00", "stop": "16:30"}],
+        "start_date": "2026-08-04",
+    },
 }
 
 

@@ -290,6 +290,32 @@
                         "name": "Detalhe"
                     }
                 }
+            },
+            "contract": {
+                "name": "Contrato",
+                "state_attributes": {
+                    "supplier": {
+                        "name": "Fornecedor"
+                    },
+                    "offer_type": {
+                        "name": "Tipo de oferta"
+                    },
+                    "power": {
+                        "name": "Potência contratada"
+                    },
+                    "subscription_price": {
+                        "name": "Assinatura"
+                    },
+                    "start_date": {
+                        "name": "Data de início"
+                    },
+                    "off_peak_timeslots": {
+                        "name": "Horas de vazio"
+                    },
+                    "bands": {
+                        "name": "Escalões tarifários"
+                    }
+                }
             }
         }
     },

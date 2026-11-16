@@ -290,6 +290,32 @@
                         "name": "Detail"
                     }
                 }
+            },
+            "contract": {
+                "name": "Contract",
+                "state_attributes": {
+                    "supplier": {
+                        "name": "Supplier"
+                    },
+                    "offer_type": {
+                        "name": "Offer type"
+                    },
+                    "power": {
+                        "name": "Subscribed power"
+                    },
+                    "subscription_price": {
+                        "name": "Subscription"
+                    },
+                    "start_date": {
+                        "name": "Start date"
+                    },
+                    "off_peak_timeslots": {
+                        "name": "Off-peak hours"
+                    },
+                    "bands": {
+                        "name": "Tariff bands"
+                    }
+                }
             }
         }
     },

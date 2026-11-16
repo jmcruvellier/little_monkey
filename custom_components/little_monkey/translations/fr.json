@@ -290,6 +290,32 @@
                         "name": "Détail"
                     }
                 }
+            },
+            "contract": {
+                "name": "Contrat",
+                "state_attributes": {
+                    "supplier": {
+                        "name": "Fournisseur"
+                    },
+                    "offer_type": {
+                        "name": "Type d'offre"
+                    },
+                    "power": {
+                        "name": "Puissance souscrite"
+                    },
+                    "subscription_price": {
+                        "name": "Abonnement"
+                    },
+                    "start_date": {
+                        "name": "Date de début"
+                    },
+                    "off_peak_timeslots": {
+                        "name": "Heures creuses"
+                    },
+                    "bands": {
+                        "name": "Tranches tarifaires"
+                    }
+                }
             }
         }
     },

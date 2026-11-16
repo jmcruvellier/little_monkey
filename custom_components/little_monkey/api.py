@@ -496,7 +496,10 @@ class LittleMonkeyApiClient:
                 for name, last in self._last_stat_refresh.items()
             },
             "failing_apis": sorted(self._warned | self._failed_once),
-            "contract": self._contract,
+            # Without its price
+            "contract": None if self._contract is None else {
+                key: value for key, value in self._contract.items()
+                if key != "subscription_price"},
             "tariff_bands": {
                 str(band_id): label
                 for band_id, label in sorted(self._bands.items())

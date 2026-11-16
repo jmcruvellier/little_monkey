@@ -16,6 +16,7 @@ from homeassistant.const import (
 
 from .entity import (
     EcojokoActivitySensor,
+    EcojokoContractSensor,
     EcojokoEntity,
     EcojokoPeriodSensor,
     EcojokoSavingsSensor,
@@ -178,6 +179,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 name = band.get("label")
             main_device.add_child_entity(EcojokoSensor(
                 main_device, band["key"], *ENERGY, name=name))
+
+    # Contract of the installation, with its tariff bands
+    main_device.add_child_entity(EcojokoContractSensor(
+        main_device, "contract", config_entry.data.get(CONF_TARIFF_BANDS) or []))
 
     for key, kind in ACTIVITY_SENSORS:
         main_device.add_child_entity(

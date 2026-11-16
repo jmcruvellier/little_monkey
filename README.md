@@ -27,6 +27,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Puissance Max du Mois | Puissance | W | Permanent | |
 | 1.3.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
 | 1.3.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
+| 1.3.0 | Contrat | Texte | | Permanent (diagnostic) | Nom de l'offre lue chez ecojoko ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement, la date de début, les plages d'heures creuses et les tranches tarifaires configurées |
 | 1.3.0 | Coût de la Consommation sur 12 Mois | Monétaire | EUR | Permanent | Coût de la consommation des 12 derniers mois (« Conso en cours » du résumé des économies d'ecojoko) ; consommation en kWh en attribut |
 | 1.3.0 | Coût de Référence sur 12 Mois | Monétaire | EUR | Permanent | Coût de votre consommation de référence sur 12 mois ; consommation de référence en kWh en attribut |
 | 1.3.0 | Économies sur 12 Mois | Monétaire | EUR | Permanent | Différence entre les deux, négative en cas de surconsommation ; économies en kWh et niveau (1 à 5) en attribut |
