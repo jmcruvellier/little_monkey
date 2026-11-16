@@ -760,7 +760,7 @@ class LittleMonkeyCard extends HTMLElement {
         <svg viewBox="-10 -10 220 220" role="img" aria-label="${text.title.join(" ")}">
           <defs>
             <filter id="lm-outer-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35" />
+              <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.5" />
             </filter>
             <filter id="lm-blur" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="1.1" />
@@ -769,13 +769,13 @@ class LittleMonkeyCard extends HTMLElement {
               <circle cx="100" cy="100" r="${R_BEZEL - 4}" />
             </clipPath>
             <filter id="lm-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.35" />
+              <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-opacity="0.45" />
             </filter>
           </defs>
           <circle class="bezel" cx="100" cy="100" r="${R_BEZEL}" />
           <circle class="bezel-inner" cx="100" cy="100" r="${R_BEZEL - 4}" />
           <g class="inner-shadow" clip-path="url(#lm-inside)">
-            <circle cx="100" cy="101.5" r="${R_BEZEL - 4}" fill="none" stroke="rgba(0, 0, 0, 0.35)" stroke-width="2.6" filter="url(#lm-blur)" />
+            <circle cx="100" cy="101.5" r="${R_BEZEL - 4}" fill="none" stroke="rgba(0, 0, 0, 0.5)" stroke-width="2.6" filter="url(#lm-blur)" />
           </g>
           ${segmentedArc(R_TRACK, powerZoneAngles, POWER_ZONE_COLORS, "track")}
           ${segmentedArc(R_TRACK, lowerAngles, LOWER_COLORS, "track")}
