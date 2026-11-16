@@ -124,6 +124,11 @@
                     "hp_white": "HP Blanc",
                     "hc_red": "HC Rouge",
                     "hp_red": "HP Rouge"
+                },
+                "state_attributes": {
+                    "tariff_band": {
+                        "name": "Tranche tarifaire"
+                    }
                 }
             },
             "production_surplus": {

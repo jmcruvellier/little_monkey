@@ -190,6 +190,12 @@ class EcojokoPeriodSensor(EcojokoSensor):
             return value
         return self._restored
 
+    @property
+    def extra_state_attributes(self):
+        """Return the current tariff band (Semaine, Week-end...), if known."""
+        band = (self.coordinator.data or {}).get("current_tariff_band")
+        return None if band is None else {"tariff_band": band}
+
 
 class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
     """Sensor of the activity of the account: savings, last 7 days..."""
