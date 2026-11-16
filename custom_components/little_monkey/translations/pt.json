@@ -300,6 +300,13 @@
                 "hp": "Horas de ponta (HP)",
                 "none": "Nem HC nem HP"
             }
+        },
+        "savings_period": {
+            "options": {
+                "week": "Semana",
+                "month": "Mês",
+                "year": "Ano"
+            }
         }
     },
     "issues": {
@@ -313,6 +320,37 @@
                     }
                 }
             }
+        }
+    },
+    "services": {
+        "get_savings": {
+            "name": "Ler a poupança",
+            "description": "Devolve a poupança de uma semana, de um mês ou de um ano, detalhada por dia, semana ou mês, como a página \"Detalhe da poupança\" do ecojoko.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Instalação",
+                    "description": "Instalação Little Monkey; opcional se houver apenas uma."
+                },
+                "period": {
+                    "name": "Período",
+                    "description": "Semana, mês ou ano."
+                },
+                "date": {
+                    "name": "Data",
+                    "description": "Um dia do período; hoje por omissão."
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "entry_not_found": {
+            "message": "Nenhuma instalação Little Monkey carregada corresponde."
+        },
+        "entry_required": {
+            "message": "Várias instalações Little Monkey: indique qual (config_entry_id)."
+        },
+        "savings_not_read": {
+            "message": "Não foi possível ler a poupança no ecojoko: {error}"
         }
     }
 }

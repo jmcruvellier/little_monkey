@@ -9,11 +9,15 @@ from __future__ import annotations
 import datetime as dt
 import json
 import types
+
+import voluptuous as vol
 from unittest.mock import patch
 
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import State
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+import pytest
 from homeassistant.helpers import (
     device_registry as dr,
     entity_registry as er,
@@ -1238,6 +1242,45 @@ async def test_savings_in_diagnostics(hass, fake_api):
     diagnostics = await async_get_config_entry_diagnostics(hass, entry)
     assert diagnostics["savings"]["last_update_success"] is True
     assert diagnostics["savings"]["data"]["savings_12_months"] == 337.63
+
+
+async def get_savings(hass, **data):
+    """Call the service of the savings and return its answer."""
+    return await hass.services.async_call(
+        DOMAIN, "get_savings", data, blocking=True, return_response=True)
+
+
+async def test_savings_service(hass, fake_api):
+    """The service gives the savings of any week, month or year."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    answer = await get_savings(hass, period="year", date="2025-03-04")
+    assert fake_api.savings_periods == [("year", dt.date(2025, 3, 4))]
+    assert answer["period"] == "year"
+    assert answer["date"] == "2025-03-04"
+    assert answer["savings"] == 322.32
+    assert len(answer["bars"]) == 12
+
+    # Today by default, and the entry can be given
+    answer = await get_savings(hass, period="week", config_entry_id=entry.entry_id)
+    assert fake_api.savings_periods[-1] == (
+        "week", dt_util.now().astimezone(dt_util.get_time_zone("Europe/Paris")).date())
+    assert answer["bars"][0]["savings"] == -0.35
+
+
+async def test_savings_service_errors(hass, fake_api):
+    """The service tells which installation is missing, or ecojoko's error."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    with pytest.raises(ServiceValidationError):
+        await get_savings(hass, period="week", config_entry_id="unknown")
+    with pytest.raises(vol.Invalid):
+        await get_savings(hass, period="day")
+
+    fake_api.savings_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
+    with pytest.raises(HomeAssistantError):
+        await get_savings(hass, period="week")
 
 
 # --- Current tariff band

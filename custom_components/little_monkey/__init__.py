@@ -36,6 +36,7 @@ from .coordinator import (
     LittleMonkeySavingsCoordinator,
 )
 from .sensor import SENSOR_KEYS
+from .services import async_register_services
 from .tariff import legacy_bands
 from .utils import account_unique_id
 
@@ -49,6 +50,7 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the integration, once for all its entries."""
     await async_register_card(hass)
+    async_register_services(hass)
     return True
 
 

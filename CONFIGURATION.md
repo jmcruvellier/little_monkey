@@ -139,3 +139,19 @@ La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du mê
 
 > [!TIP]
 > Après une mise à jour de l'intégration, si la carte n'apparaît pas ou n'a pas changé, actualisez la page en vidant le cache du navigateur (Ctrl+F5), et sur l'application mobile videz le cache du frontend depuis les paramètres de l'application.
+
+## Service « Lire les économies »
+
+Le service `little_monkey.get_savings` renvoie les économies d'une semaine, d'un mois ou d'une année, comme la page « Détail des économies » d'ecojoko. La carte « Détail des économies » s'en sert pour remonter dans le temps ; vous pouvez aussi l'appeler depuis un script ou une automatisation :
+
+```yaml
+action: little_monkey.get_savings
+data:
+  period: month        # week, month ou year
+  date: "2026-10-15"   # facultatif : un jour de la période, aujourd'hui par défaut
+  # config_entry_id: … # facultatif s'il n'y a qu'une installation Little Monkey
+response_variable: economies
+```
+
+La réponse reprend les attributs des capteurs Économies de la Semaine / du Mois / de l'Année : `savings` (en euros, négatives en cas de surconsommation), `savings_kwh`, `cost`, `consumption`, `reference_cost`, `reference_consumption`, `start`, `missing_data`, et `bars`, le détail par jour, semaine ou mois.
+

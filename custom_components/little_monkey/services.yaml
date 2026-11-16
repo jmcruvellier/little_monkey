@@ -1,0 +1,19 @@
+get_savings:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: little_monkey
+    period:
+      required: true
+      default: week
+      selector:
+        select:
+          translation_key: savings_period
+          options:
+            - week
+            - month
+            - year
+    date:
+      selector:
+        date:
