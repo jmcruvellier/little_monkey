@@ -179,6 +179,11 @@ class Session:
         return Request(self.routes[name])
 
 
+def tariff_module(api):
+    """Return the tariff module loaded with the api module."""
+    return sys.modules[api.__package__ + ".tariff"]
+
+
 def make_client(api, session, poll=5, hchp=False, tempo=False,
                 temphum=False, prod=False):
     """Return an API client using the fake session."""
@@ -187,7 +192,7 @@ def make_client(api, session, poll=5, hchp=False, tempo=False,
         password="secret",
         poll_interval=poll,
         use_hchp=hchp,
-        use_tempo=tempo,
+        bands=tariff_module(api).legacy_bands(hchp, tempo),
         use_temphum=temphum,
         use_prod=prod,
         session=session,
@@ -678,22 +683,25 @@ def test_hchp(api):
 
 
 def test_tempo(api):
-    """Tempo values are read by label and summed for HC/HP."""
+    """Tempo bands are read by id, keep their sensors and add up in HC/HP."""
     payload = powerstat(subconsumption=[
-        {"label": "HC Bleu", "kwh": 1},
-        {"label": "HP Bleu", "kwh": 2},
-        {"label": "HC Blanc", "kwh": 3},
-        {"label": "HP Rouge", "kwh": 4},
+        {"id": 19, "label": "HC Bleu", "kwh": 1},
+        {"id": 18, "label": "HP Bleu", "kwh": 2},
+        {"id": 21, "label": "HC Blanc", "kwh": 3},
+        # A renamed band is still found by its id
+        {"id": 22, "label": "HP Jour Rouge", "kwh": 4},
     ])
     session = Session(powerstat=Response(payload=payload))
     client = make_client(api, session, hchp=True, tempo=True)
     run(client.async_get_data())
-    assert client.tempo_hc_blue == 1
-    assert client.tempo_hp_blue == 2
-    assert client.tempo_hc_white == 3
-    assert client.tempo_hp_white is None
-    assert client.tempo_hc_red is None
-    assert client.tempo_hp_red == 4
+    values = client.band_values
+    assert values["blue_hc_grid_consumption"] == 1
+    assert values["blue_hp_grid_consumption"] == 2
+    assert values["white_hc_grid_consumption"] == 3
+    # A band absent from the day counts 0
+    assert values["white_hp_grid_consumption"] == 0
+    assert values["red_hc_grid_consumption"] == 0
+    assert values["red_hp_grid_consumption"] == 4
     assert (client.kwh_hc_ns, client.kwh_hp_ns) == (4, 6)
 
 
@@ -770,7 +778,7 @@ def test_unclassified_band_is_logged_once(api, monkeypatch, caplog):
 ])
 def test_category_of(api, label, category):
     """The category of a band is deduced from the first words of its label."""
-    assert sys.modules[api.__package__ + ".tariff"].category_of(label) == category
+    assert tariff_module(api).category_of(label) == category
 
 
 @pytest.mark.parametrize(("raw", "expected"), [(-1.5, 1.5), ("0", 0), (2, 2)])
@@ -791,7 +799,7 @@ def test_options_off_ignore_extra_data(api):
     client = make_client(api, session)
     run(client.async_get_data())
     assert client.kwh_prod is None
-    assert client.tempo_hc_blue is None
+    assert client.band_values == {}
     assert client.kwh_hc_ns is None
 
 
@@ -815,7 +823,7 @@ def test_contract_is_read_without_prices(api):
             {"start": "01:30", "stop": "07:00"},
             {"start": "14:00", "stop": "16:30"},
         ],
-        "start_date": "2026-08-04",
+        "start_date": "2026-08-05",
     }
     diagnostics = client.diagnostics()
     assert diagnostics["contract"] == client.contract
@@ -1022,9 +1030,9 @@ def test_no_temphum_device(api, monkeypatch):
 def test_values_are_rounded_to_two_decimals(api):
     """Float noise from ecojoko or from a sum does not reach the sensors."""
     payload = powerstat(kwh=22.920000000000002, subconsumption=[
-        {"label": "HC Bleu", "kwh": 0.1},
-        {"label": "HC Blanc", "kwh": 0.2},
-        {"label": "HP Bleu", "kwh": 7.4399999999999995},
+        {"id": 19, "label": "HC Bleu", "kwh": 0.1},
+        {"id": 21, "label": "HC Blanc", "kwh": 0.2},
+        {"id": 18, "label": "HP Bleu", "kwh": 7.4399999999999995},
     ])
     session = Session(
         powerstat=Response(payload=payload),
@@ -1039,7 +1047,7 @@ def test_values_are_rounded_to_two_decimals(api):
     run(client.async_get_data())
     assert client.kwh == 22.92
     assert (client.kwh_hc_ns, client.kwh_hp_ns) == (0.3, 7.44)
-    assert client.tempo_hp_blue == 7.44
+    assert client.band_values["blue_hp_grid_consumption"] == 7.44
     assert (client.indoor_temp, client.outdoor_temp) == (19.9, 9.92)
     assert (client.indoor_hum, client.outdoor_hum) == (46, 58.6)
     assert isinstance(client.indoor_hum, int)
@@ -1086,3 +1094,130 @@ def test_round_value_leaves_other_values_alone(utils):
     assert utils.round_value("1.239") == "1.239"
     assert utils.round_value(True) is True
     assert utils.round_value(1.239) == 1.24
+
+
+# --- Tariff bands configured in the entry
+
+
+def test_unconfigured_band_is_classified_by_its_label(api):
+    """A band of the contract not configured yet still counts in HC/HP."""
+    payload = powerstat(subconsumption=[
+        {"id": 8, "label": "HP Semaine", "kwh": 6.43},
+        {"id": 9, "label": "HC Semaine", "kwh": 18.29},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    # An entry migrated from the HC/HP option only knows bands 2 and 3
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == (18.29, 6.43)
+
+
+def test_configured_category_wins_over_the_label(api):
+    """The category chosen by the user decides, and each band has its value."""
+    tariff = tariff_module(api)
+    weekend = {**tariff.new_band(13, "Heures Weekend"), "category": "hc"}
+    weekday_hc = tariff.new_band(9, "HC Semaine")
+    payload = powerstat(subconsumption=[
+        {"id": 13, "label": "Heures Weekend", "kwh": 26.19},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = api.LittleMonkeyApiClient(
+        username="user", password="secret", poll_interval=5, use_hchp=True,
+        use_temphum=False, use_prod=False, session=session,
+        bands=[weekend, weekday_hc])
+    run(client.async_get_data())
+    assert client.band_values == {"band_13": 26.19, "band_9": 0}
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == (26.19, 0)
+
+
+def test_legacy_bands_keep_the_sensor_keys(api):
+    """The bands of the old options keep the keys of their sensors."""
+    tariff = tariff_module(api)
+    assert tariff.legacy_bands(False, False) == []
+    assert [b["key"] for b in tariff.legacy_bands(True, False)] == [
+        "hp_grid_consumption", "hc_grid_consumption"]
+    tempo = tariff.legacy_bands(False, True)
+    assert [(b["id"], b["key"], b["category"]) for b in tempo] == [
+        (18, "blue_hp_grid_consumption", "hp"),
+        (19, "blue_hc_grid_consumption", "hc"),
+        (20, "white_hp_grid_consumption", "hp"),
+        (21, "white_hc_grid_consumption", "hc"),
+        (22, "red_hp_grid_consumption", "hp"),
+        (23, "red_hc_grid_consumption", "hc"),
+    ]
+    assert not any(tariff.has_sensor(b) for b in tariff.legacy_bands(True, False))
+    assert all(tariff.has_sensor(b) for b in tempo)
+
+
+def day_item(day, *bands):
+    """Return the item of a day in a weekly powerstat response."""
+    midnight = dt.datetime.combine(day, dt.time(), ZoneInfo("Europe/Paris"))
+    return {
+        "time": int(midnight.timestamp() * 1000),
+        "kwh": 1,
+        "subconsumption": [
+            {"id": band_id, "label": label, "kwh": 0.5} for band_id, label in bands
+        ],
+    }
+
+
+def test_tariff_setup_of_a_tempo_contract(api, monkeypatch):
+    """A Tempo contract gets its six bands, even without a red day seen."""
+    today = dt.date(2026, 7, 15)
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: today)
+    week_payload = {"stat": {"data": [
+        day_item(today, (18, "HP Bleu"), (19, "HC Bleu")),
+    ]}}
+    suppliers = {"suppliers": [{
+        "is_active": 1, "offer_type": "TEMPO", "offer_name": "TEMPO",
+        "supplier_name": "EDF", "start_date": 1690754400000,
+    }]}
+    session = Session(
+        suppliers=Response(payload=suppliers),
+        powerstat=Response(payload=week_payload),
+    )
+    client = make_client(api, session)
+    run(client.async_get_cookiesdata())
+    contract, bands = run(client.async_get_tariff_setup())
+    assert contract["offer_type"] == "TEMPO"
+    assert bands == {
+        18: "HP Bleu", 19: "HC Bleu", 20: "HP Blanc",
+        21: "HC Blanc", 22: "HP Rouge", 23: "HC Rouge",
+    }
+    assert session.calls.count("powerstat") == 4
+
+
+def test_tariff_setup_ignores_the_previous_contract(api, monkeypatch):
+    """Bands seen before the start of the contract are left out."""
+    today = dt.date(2026, 6, 14)
+    start = dt.date(2026, 6, 11)
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: today)
+    week_payload = {"stat": {"data": [
+        day_item(dt.date(2026, 6, 10), (18, "HP Bleu"), (19, "HC Bleu")),
+        day_item(start, (2, "Heures Pleines"), (3, "Heures Creuses")),
+        day_item(today, (2, "Heures Pleines"), (3, "Heures Creuses")),
+    ]}}
+    start_ms = int(dt.datetime.combine(
+        start, dt.time(), ZoneInfo("Europe/Paris")).timestamp() * 1000)
+    suppliers = {"suppliers": [
+        {"is_active": 1, "offer_type": "UNKNOWN TYPE", "start_date": start_ms},
+        {"offer_type": "TEMPO", "stop_date": start_ms},
+    ]}
+    session = Session(
+        suppliers=Response(payload=suppliers),
+        powerstat=Response(payload=week_payload),
+    )
+    client = make_client(api, session)
+    run(client.async_get_cookiesdata())
+    _contract, bands = run(client.async_get_tariff_setup())
+    assert bands == {2: "Heures Pleines", 3: "Heures Creuses"}
+    # The contract started this week: the weeks before are not read
+    assert session.calls.count("powerstat") == 1
+
+
+def test_tariff_setup_without_contract(api):
+    """The setup goes on without bands when the contract cannot be read."""
+    session = Session(suppliers=Response(status=500))
+    client = make_client(api, session)
+    run(client.async_get_cookiesdata())
+    assert run(client.async_get_tariff_setup()) == (None, {})

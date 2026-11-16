@@ -43,20 +43,31 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 
 ![Etape 9](/custom_components/little_monkey/res/install_step_09.png)
 
-2. Saisir et Sélectionner les options de configurations:
+2. Premier écran, votre compte :
   - Nom: nom qui sera utilisé pour préfixer les noms de tous les capteurs
   - Nom d'utilisateur et Mot de passe: vos identifiants ecojoko<sup>©️</sup>
-  - Capteurs HP/HC: à ne sélectionner que si vous avez renseigné un tarif d'électricité avec des Heures Creuses dans ecojoko<sup>©️</sup>
-  - Capteurs Tempo Bleu/Blanc/Rouge: à ne sélectionner que si vous avez renseigné un tarif d'électricité Tempo
-  - Capteurs d'humidité et de température: à ne sélectionner que si vous désirez remonter ces données depuis votre ecojoko<sup>©️</sup>
+
+  Le bouton Suivant vérifie vos identifiants et lit le contrat d'électricité renseigné dans ecojoko<sup>©️</sup>.
+
+3. Deuxième écran, les tranches tarifaires de votre contrat (Heures Pleines/Creuses, Tempo Bleu/Blanc/Rouge, Semaine/Week-end, Jour Spécial…), trouvées automatiquement :
+  - Capteurs totaux HC et HP: crée les capteurs « Consommation HC Réseau » et « Consommation HP Réseau », qui additionnent les tranches de chaque catégorie
+  - Pour chaque tranche : le nom de son capteur (prérempli) et le total dans lequel elle compte (Heures Creuses, Heures Pleines, ou aucun). Une tranche qu'ecojoko<sup>©️</sup> renomme garde son capteur et le nom que vous avez choisi
+
+4. Troisième écran, les autres capteurs :
   - Capteur de production: à ne sélectionner que si vous êtes producteur d'énergie solaire et que vous avez un capteur ecojoko<sup>©️</sup> ancienne génération
+  - Capteurs d'humidité et de température: à ne sélectionner que si vous désirez remonter ces données depuis votre ecojoko<sup>©️</sup>
   - Fréquence de rafraîchissement des données (en secondes): le minimum autorisé est de 3 secondes (afin de ne pas surcharger les serveurs d'ecojoko<sup>©️</sup>), et le maximum est de 60 secondes
+
+Les options reprennent les mêmes écrans : après un changement de contrat, ouvrez-les pour retrouver les tranches du nouveau contrat.
+
+> [!NOTE]
+> Une installation existante est convertie automatiquement : les capteurs HC/HP et Tempo gardent leurs identifiants, leur historique et leurs statistiques. Pour un autre contrat (Week-end, Jour Spécial…), ouvrez les options pour créer les capteurs de ses tranches.
 
 > [!IMPORTANT]
 > Un changement de nom après la première configuration renomme l'appareil et le nom affiché des capteurs. Depuis la version 1.2.8, les capteurs eux-mêmes sont conservés, avec leurs identifiants et leur historique
 
 > [!NOTE]
-> Les noms des capteurs suivent la langue de votre instance Home Assistant (français, anglais ou portugais ; anglais pour les autres langues). Depuis la version 1.2.8 il n'y a plus de choix de langue dans ce formulaire, contrairement à ce que montre la capture d'écran ci-dessous.
+> Les noms des capteurs suivent la langue de votre instance Home Assistant (français, anglais ou portugais ; anglais pour les autres langues). Depuis la version 1.2.8 il n'y a plus de choix de langue dans ce formulaire, et le formulaire tient désormais sur trois écrans, contrairement à ce que montre la capture d'écran ci-dessous.
 
 ![Etape 1](/custom_components/little_monkey/res/config_step_01.png)
 

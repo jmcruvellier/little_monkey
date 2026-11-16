@@ -16,12 +16,8 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Consommation Réseau | Energie | kWh | Permanent | |
 | 1.0.0 | Consommation HC Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
 | 1.0.0 | Consommation HP Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
-| 1.0.0 | Consommation HC Bleu Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
-| 1.0.0 | Consommation HP Bleu Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
-| 1.0.0 | Consommation HC Blanc Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
-| 1.0.0 | Consommation HP Blanc Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
-| 1.0.0 | Consommation HC Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
-| 1.0.0 | Consommation HP Rouge Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie Tempo |
+| 1.0.0 | Consommation HC/HP Bleu, Blanc, Rouge Réseau | Energie | kWh | Automatique | Une par tranche d'un contrat Tempo |
+| 1.3.0 | Consommation d'une tranche tarifaire | Energie | kWh | Automatique | Une par tranche du contrat (Semaine, Week-end, Jour Spécial…), nommée à la configuration |
 | 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |

@@ -89,6 +89,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(exception) from exception
         self._failing_since = None
         return {
+            # Energy of the tariff bands, by key of their sensor
+            **self.client.band_values,
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
@@ -96,12 +98,6 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "grid_consumption": self.client.kwh,
             "hc_grid_consumption": self.client.kwh_hc_ns,
             "hp_grid_consumption": self.client.kwh_hp_ns,
-            "blue_hc_grid_consumption": self.client.tempo_hc_blue,
-            "blue_hp_grid_consumption": self.client.tempo_hp_blue,
-            "white_hc_grid_consumption": self.client.tempo_hc_white,
-            "white_hp_grid_consumption": self.client.tempo_hp_white,
-            "red_hc_grid_consumption": self.client.tempo_hc_red,
-            "red_hp_grid_consumption": self.client.tempo_hp_red,
             "production_surplus": self.client.kwh_prod,
             "indoor_temp": self.client.indoor_temp,
             "outdoor_temp": self.client.outdoor_temp,

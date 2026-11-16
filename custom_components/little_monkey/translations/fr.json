@@ -3,15 +3,26 @@
     "config": {
         "step": {
             "user": {
-                "description": "Si vous avez besoin d'aide pour la configuration, allez voir la documentation",
+                "description": "Saisissez les identifiants de votre compte ecojoko. Le bouton Suivant les vérifie et lit votre contrat d'électricité.",
                 "data": {
                     "name": "Nom",
                     "username": "Nom d'utilisateur",
-                    "password": "Mot de passe",
-                    "use_hchp_feature": "Capteurs HP/HC",
-                    "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
-                    "use_temphum_feature": "Capteurs d'humidité et de température",
+                    "password": "Mot de passe"
+                }
+            },
+            "bands": {
+                "title": "Tranches tarifaires",
+                "description": "Contrat détecté : {contract}.\n\nPour chaque tranche de votre contrat, choisissez le nom de son capteur et le total dans lequel elle compte (HC, HP ou aucun).",
+                "data": {
+                    "use_hchp_feature": "Capteurs totaux HC et HP"
+                }
+            },
+            "settings": {
+                "title": "Autres capteurs",
+                "description": "Choisissez les autres capteurs et la fréquence de rafraîchissement.",
+                "data": {
                     "use_prod_feature": "Capteur de production",
+                    "use_temphum_feature": "Capteurs d'humidité et de température",
                     "poll_interval": "Fréquence de rafraîchissement des données (en secondes)"
                 }
             },
@@ -36,15 +47,26 @@
     "options": {
         "step": {
             "init": {
-                "description": "Si vous avez besoin d'aide pour la configuration, allez voir la documentation",
+                "description": "Saisissez les identifiants de votre compte ecojoko. Le bouton Suivant les vérifie et lit votre contrat d'électricité.",
                 "data": {
                     "name": "Nom",
                     "username": "Nom d'utilisateur",
-                    "password": "Mot de passe",
-                    "use_hchp_feature": "Capteurs HP/HC",
-                    "use_tempo_feature": "Capteurs Tempo Bleu/Blanc/Rouge",
-                    "use_temphum_feature": "Capteurs d'humidité et de température",
+                    "password": "Mot de passe"
+                }
+            },
+            "bands": {
+                "title": "Tranches tarifaires",
+                "description": "Contrat détecté : {contract}.\n\nPour chaque tranche de votre contrat, choisissez le nom de son capteur et le total dans lequel elle compte (HC, HP ou aucun).",
+                "data": {
+                    "use_hchp_feature": "Capteurs totaux HC et HP"
+                }
+            },
+            "settings": {
+                "title": "Autres capteurs",
+                "description": "Choisissez les autres capteurs et la fréquence de rafraîchissement.",
+                "data": {
                     "use_prod_feature": "Capteur de production",
+                    "use_temphum_feature": "Capteurs d'humidité et de température",
                     "poll_interval": "Fréquence de rafraîchissement des données (en secondes)"
                 }
             }
@@ -105,6 +127,15 @@
             },
             "outdoor_hum": {
                 "name": "Humidité Extérieure"
+            }
+        }
+    },
+    "selector": {
+        "category": {
+            "options": {
+                "hc": "Heures Creuses (HC)",
+                "hp": "Heures Pleines (HP)",
+                "none": "Ni HC ni HP"
             }
         }
     }

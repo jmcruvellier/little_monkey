@@ -13,9 +13,12 @@ DEFAULT_POLL_INTERVAL = 5
 
 PLATFORMS = ['sensor']
 CONF_USE_HCHP_FEATURE = "use_hchp_feature"
+# Replaced by the tariff bands in version 3 of the config entries
 CONF_USE_TEMPO_FEATURE = "use_tempo_feature"
 CONF_USE_TEMPHUM_FEATURE = "use_temphum_feature"
 CONF_USE_PROD_FEATURE = "use_prod_feature"
+# Tariff bands of the contract and their settings (see tariff.py)
+CONF_TARIFF_BANDS = "tariff_bands"
 
 # APIs
 CONF_API_TIMEOUT = 3

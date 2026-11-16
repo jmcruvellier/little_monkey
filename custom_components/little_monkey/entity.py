@@ -77,7 +77,8 @@ class EcojokoEntity(CoordinatorEntity):
 class EcojokoSensor(CoordinatorEntity, RestoreSensor):
     """Representation of an Ecojoko sensor."""
 
-    def __init__(self, main_device, sensor_name, state_class, device_class, unit_of_measurement, icon):
+    def __init__(self, main_device, sensor_name, state_class, device_class,
+                 unit_of_measurement, icon, name=None):
         """Initialize the sensor."""
         super().__init__(main_device.coordinator)
         self._main_device = main_device
@@ -89,7 +90,11 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
         # The name comes from the Home Assistant translations
         # (entity.sensor.<key>.name), prefixed by the device name
         self._attr_has_entity_name = True
-        self._attr_translation_key = sensor_name
+        if name:
+            # Name of a tariff band, chosen by the user
+            self._attr_name = name
+        else:
+            self._attr_translation_key = sensor_name
         # The daily energy totals never decrease during a day (see DailyCounter)
         self._daily_counter = (
             DailyCounter()

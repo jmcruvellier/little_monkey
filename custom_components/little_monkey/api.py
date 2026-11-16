@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime as dt
 import json
 import math
 import socket
@@ -23,7 +24,6 @@ from .const import (
 from .utils import (
     get_current_date,
     get_paris_timezone,
-    get_value_from_json_array,
     finite_number,
     round_value)
 from .tariff import (
@@ -31,7 +31,9 @@ from .tariff import (
     PEAK,
     active_contract,
     bands_of,
-    totals_by_category)
+    bands_of_offer,
+    day_values,
+    local_date)
 
 TZ = get_paris_timezone()
 
@@ -67,17 +69,18 @@ class LittleMonkeyApiClient:
         password: str,
         poll_interval: int,
         use_hchp: bool,
-        use_tempo: bool,
         use_temphum: bool,
         use_prod: bool,
         session: aiohttp.ClientSession,
+        bands: list | None = None,
     ) -> None:
         """Initialize."""
         self._username = username
         self._password = password
         self._poll_interval = poll_interval
         self._use_hchp = use_hchp
-        self._use_tempo = use_tempo
+        # Configured tariff bands (see tariff.py)
+        self._configured_bands = list(bands or [])
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
@@ -98,12 +101,8 @@ class LittleMonkeyApiClient:
         self._kwh = None
         self._kwh_hc_ns = None
         self._kwh_hp_ns = None
-        self._tempo_hc_blue = None
-        self._tempo_hp_blue = None
-        self._tempo_hc_white = None
-        self._tempo_hp_white = None
-        self._tempo_hc_red = None
-        self._tempo_hp_red = None
+        # Energy of the day by sensor key of the configured bands
+        self._band_values = {}
         self._kwh_prod = None
         self._indoor_temp = None
         self._outdoor_temp = None
@@ -192,34 +191,9 @@ class LittleMonkeyApiClient:
         return self._kwh_hp_ns
 
     @property
-    def tempo_hc_blue(self) -> float | None:
-        """Return the Blue HC consumption."""
-        return self._tempo_hc_blue
-
-    @property
-    def tempo_hp_blue(self) -> float | None:
-        """Return the Blue HP consumption."""
-        return self._tempo_hp_blue
-
-    @property
-    def tempo_hc_white(self) -> float | None:
-        """Return the White HC consumption."""
-        return self._tempo_hc_white
-
-    @property
-    def tempo_hp_white(self) -> float | None:
-        """Return the White HP consumption."""
-        return self._tempo_hp_white
-
-    @property
-    def tempo_hc_red(self) -> float | None:
-        """Return the Red HC consumption."""
-        return self._tempo_hc_red
-
-    @property
-    def tempo_hp_red(self) -> float | None:
-        """Return the Red HP consumption."""
-        return self._tempo_hp_red
+    def band_values(self) -> dict:
+        """Return the energy of the day by sensor key of the configured bands."""
+        return dict(self._band_values)
 
     @property
     def kwh_prod(self) -> float | None:
@@ -322,6 +296,54 @@ class LittleMonkeyApiClient:
             raise LittleMonkeyApiClientError(
                 "No ecojoko gateway or power meter found for this account"
             )
+
+    async def async_get_tariff_setup(self, weeks=4):
+        """Return the active contract and its tariff bands, for the setup.
+
+        The bands {id: label} are the ones of the offer type, completed by
+        the ones met in the statistics of the last weeks since the start of
+        the contract. The contract is None and the bands are empty when
+        ecojoko does not give them: the setup goes on without them.
+        Must be called after a successful login.
+        """
+        if self._gateway_id is None:
+            await self.async_get_gatewaydata()
+        gateway_url = f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}"
+        try:
+            payload, _cookies = await self._async_request(
+                "suppliers", f"{gateway_url}/suppliers", cookies=self._cookies)
+            contract = None if payload is None else active_contract(payload)
+        except LittleMonkeyApiClientAuthenticationError:
+            raise
+        except (LittleMonkeyApiClientError, *PARSE_ERRORS) as exception:
+            LOGGER.warning("The ecojoko contract was not read: %r", exception)
+            return None, {}
+        start = None
+        if contract is not None and contract.get("start_date"):
+            start = dt.date.fromisoformat(contract["start_date"])
+        today = get_current_date(TZ)
+        observed = {}
+        for week in range(weeks):
+            day = today - dt.timedelta(weeks=week)
+            sunday = day + dt.timedelta(days=6 - day.weekday())
+            if start is not None and sunday < start:
+                break
+            url = (f"{gateway_url}/device/{self._power_meter_id}"
+                   f"/powerstat/w/{day.isoformat()}")
+            try:
+                payload, _cookies = await self._async_request(
+                    "powerstat (w)", url, cookies=self._cookies)
+                for item in payload['stat']['data']:
+                    item_day = local_date(item.get('time'))
+                    if start is not None and (item_day is None or item_day < start):
+                        continue
+                    observed.update(bands_of({}, item))
+            except LittleMonkeyApiClientAuthenticationError:
+                raise
+            except (LittleMonkeyApiClientError, *PARSE_ERRORS) as exception:
+                LOGGER.debug("Statistics of %s not read: %r", day, exception)
+        offer_type = None if contract is None else contract.get("offer_type")
+        return contract, bands_of_offer(offer_type, observed)
 
     async def fetch_data(self, api):
         """Retrieve data from a given URL using aiohttp.
@@ -650,12 +672,7 @@ class LittleMonkeyApiClient:
             self._kwh_prod = None
             self._kwh_hc_ns = None
             self._kwh_hp_ns = None
-            self._tempo_hc_blue = None
-            self._tempo_hp_blue = None
-            self._tempo_hc_white = None
-            self._tempo_hp_white = None
-            self._tempo_hc_red = None
-            self._tempo_hp_red = None
+            self._band_values = {}
         self._kwh = round_value(kwh)
         self._stat_date = day
         # Surplus Production
@@ -666,45 +683,16 @@ class LittleMonkeyApiClient:
                     abs(float(data[week_day]['kwh_prod'])))
             else:
                 self._kwh_prod = 0
-        # Tempo option
+        # Tariff bands, and the HC/HP totals: every band of a category is
+        # added, whatever the contract (Tempo, week-end, special day...)
         # 78 bug fix
-        if self._use_tempo is True and 'subconsumption' in data[week_day]:
-            self._tempo_hc_blue = round_value(get_value_from_json_array(
-                data[week_day]['subconsumption'],
-                "label",
-                "HC Bleu",
-                "kwh"))
-            self._tempo_hp_blue = round_value(get_value_from_json_array(
-                data[week_day]['subconsumption'],
-                "label",
-                "HP Bleu",
-                "kwh"))
-            self._tempo_hc_white = round_value(get_value_from_json_array(
-                data[week_day]['subconsumption'],
-                "label",
-                "HC Blanc",
-                "kwh"))
-            self._tempo_hp_white = round_value(get_value_from_json_array(
-                data[week_day]['subconsumption'],
-                "label",
-                "HP Blanc",
-                "kwh"))
-            self._tempo_hc_red = round_value(get_value_from_json_array(
-                data[week_day]['subconsumption'],
-                "label",
-                "HC Rouge",
-                "kwh"))
-            self._tempo_hp_red = round_value(get_value_from_json_array(
-                data[week_day]['subconsumption'],
-                "label",
-                "HP Rouge",
-                "kwh"))
-        # HC/HP option: every band of a category is added, whatever the
-        # contract (Tempo, week-end, special day...)
-        # 78 bug fix
-        if self._use_hchp is True and 'subconsumption' in data[week_day]:
-            totals, unclassified = totals_by_category(
-                data[week_day]['subconsumption'])
+        if 'subconsumption' not in data[week_day]:
+            return
+        values, totals, unclassified = day_values(
+            data[week_day]['subconsumption'], self._configured_bands)
+        self._band_values = {
+            key: round_value(value) for key, value in values.items()}
+        if self._use_hchp is True:
             self._kwh_hc_ns = round_value(totals[OFF_PEAK])
             self._kwh_hp_ns = round_value(totals[PEAK])
             for label in unclassified:

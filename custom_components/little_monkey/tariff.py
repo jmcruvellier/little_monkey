@@ -16,6 +16,7 @@ responses:
 from __future__ import annotations
 
 import datetime as dt
+from zoneinfo import ZoneInfo
 
 # Fields of a contract kept for the diagnostics: neither prices nor the
 # internal ids of the subscription
@@ -29,11 +30,24 @@ CONTRACT_FIELDS = (
 )
 
 
-def _iso_date(milliseconds):
-    """Return a time in milliseconds as an ISO date (UTC), or None."""
+PARIS = ZoneInfo("Europe/Paris")
+
+
+def local_date(milliseconds):
+    """Return the day in Paris of a time in milliseconds, or None.
+
+    ecojoko gives its days and contract dates as the time of midnight in
+    Paris.
+    """
     if isinstance(milliseconds, bool) or not isinstance(milliseconds, int | float):
         return None
-    return dt.datetime.fromtimestamp(milliseconds / 1000, dt.UTC).date().isoformat()
+    return dt.datetime.fromtimestamp(milliseconds / 1000, PARIS).date()
+
+
+def _iso_date(milliseconds):
+    """Return a time in milliseconds as an ISO date in Paris, or None."""
+    day = local_date(milliseconds)
+    return None if day is None else day.isoformat()
 
 
 def active_contract(payload):
@@ -110,21 +124,123 @@ def category_of(label):
     return None
 
 
-def totals_by_category(subconsumption):
-    """Return the energy of a day by category, and the unclassified labels.
+# --- Tariff bands configured in a config entry
+#
+# The entry keeps a list of bands: {"id", "label", "key", "name",
+# "category"}. "id" identifies the band at ecojoko and never changes, while
+# its label may; "key" is the key of its sensor, which builds the unique id
+# of the entity; "name" is the name chosen by the user (None: the translated
+# name of a known sensor, or the label); "category" counts the band in the
+# HC or the HP total, or in neither (None).
 
-    Every band of a category is added: a Tempo day has up to two off peak
-    bands, a Zen Week-End Plus contract has three of each in a week. A
-    category without any band in the day counts 0.
+NO_CATEGORY = "none"
+
+# Bands having a sensor since the first versions: they keep its key, and so
+# the entity id, the history and the statistics of the installations
+KNOWN_BANDS = {
+    2: ("hp_grid_consumption", PEAK),
+    3: ("hc_grid_consumption", OFF_PEAK),
+    18: ("blue_hp_grid_consumption", PEAK),
+    19: ("blue_hc_grid_consumption", OFF_PEAK),
+    20: ("white_hp_grid_consumption", PEAK),
+    21: ("white_hc_grid_consumption", OFF_PEAK),
+    22: ("red_hp_grid_consumption", PEAK),
+    23: ("red_hc_grid_consumption", OFF_PEAK),
+}
+# Heures Pleines and Heures Creuses are the HP and HC totals themselves:
+# they have no sensor of their own
+TOTAL_BANDS = {2, 3}
+TEMPO_BANDS = (18, 19, 20, 21, 22, 23)
+
+# Bands of an offer, by offer type, as observed. The statistics only give
+# the bands met in a period (no red Tempo day in summer): the offer type
+# completes them
+OFFER_BANDS = {
+    "HP/HC": {2: "Heures Pleines", 3: "Heures Creuses"},
+    "TEMPO": {
+        18: "HP Bleu", 19: "HC Bleu",
+        20: "HP Blanc", 21: "HC Blanc",
+        22: "HP Rouge", 23: "HC Rouge",
+    },
+    "HC SEM WE LUNDI": {
+        8: "HP Semaine", 9: "HC Semaine",
+        10: "HP Jour Spécial", 11: "HC Jour Spécial",
+        6: "HP Weekend", 7: "HC Weekend",
+    },
+}
+
+
+def band_key(band_id):
+    """Return the key of the sensor of a band."""
+    known = KNOWN_BANDS.get(band_id)
+    return known[0] if known else f"band_{band_id}"
+
+
+def new_band(band_id, label):
+    """Return the configuration of a band with its default settings."""
+    known = KNOWN_BANDS.get(band_id)
+    return {
+        "id": band_id,
+        "label": label,
+        "key": band_key(band_id),
+        "name": None,
+        "category": known[1] if known else category_of(label),
+    }
+
+
+def bands_of_offer(offer_type, observed):
+    """Return the bands {id: label} of an offer: its type and what was seen.
+
+    observed: bands {id: label} met in the statistics of the contract.
     """
+    bands = dict(OFFER_BANDS.get(offer_type, {}))
+    bands.update(observed)
+    return dict(sorted(bands.items()))
+
+
+def legacy_bands(use_hchp, use_tempo):
+    """Return the bands of an entry created before the bands were configured.
+
+    Such an entry only knew the HC/HP and the Tempo options. Other bands of
+    its contract are counted by their label until the user configures them.
+    """
+    labels = {**OFFER_BANDS["HP/HC"], **OFFER_BANDS["TEMPO"]}
+    ids = []
+    if use_hchp:
+        ids += [2, 3]
+    if use_tempo:
+        ids += TEMPO_BANDS
+    return [new_band(band_id, labels[band_id]) for band_id in ids]
+
+
+def has_sensor(band):
+    """Tell whether a configured band has a sensor of its own."""
+    return band["id"] not in TOTAL_BANDS
+
+
+def day_values(subconsumption, bands):
+    """Return the energy of a day by band and by category.
+
+    bands: the configured bands. Returns the energy by sensor key of the
+    configured bands, the HC/HP totals and the labels of the bands counted
+    in neither. A configured band absent from the day counts 0; a band not
+    configured is classified by its label.
+    """
+    by_id = {band["id"]: band for band in bands}
+    values = {band["key"]: 0.0 for band in bands}
     totals = {OFF_PEAK: 0.0, PEAK: 0.0}
     unclassified = []
     for item in subconsumption:
-        label = item.get("label")
-        category = category_of(label)
-        if category is None:
-            unclassified.append(label)
-            continue
         kwh = item.get("kwh")
-        totals[category] += float(kwh) if kwh is not None else 0
-    return totals, unclassified
+        kwh = float(kwh) if kwh is not None else 0.0
+        band = by_id.get(item.get("id"))
+        if band is not None:
+            values[band["key"]] += kwh
+            category = band.get("category")
+        else:
+            category = category_of(item.get("label"))
+        if category in totals:
+            totals[category] += kwh
+        elif band is None:
+            unclassified.append(item.get("label"))
+    return values, totals, unclassified
