@@ -18,11 +18,21 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Consommation HP Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
 | 1.0.0 | Consommation HC/HP Bleu, Blanc, Rouge Réseau | Energie | kWh | Automatique | Une par tranche d'un contrat Tempo |
 | 1.3.0 | Consommation d'une tranche tarifaire | Energie | kWh | Automatique | Une par tranche du contrat (Semaine, Week-end, Jour Spécial…), nommée à la configuration |
+| 1.3.0 | Période Tarifaire en Cours | Énumération | | Optionnel | Avec les totaux HC/HP ou un contrat Tempo : HC / HP, ou période et couleur Tempo (HC Bleu, HP Rouge...), déduite du compteur qui augmente |
 | 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
+| 1.3.0 | Économies sur 7 Jours | Pourcentage | % | Permanent | Écart de la consommation des 7 derniers jours par rapport à votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
+| 1.3.0 | Consommation sur 7 Jours | Energie | kWh | Permanent | Consommation des 7 derniers jours ; celle de chaque jour, du plus ancien au plus récent, en attribut |
+| 1.3.0 | Coût sur 7 Jours | Monétaire | EUR | Permanent | Coût des 7 derniers jours, selon le tarif renseigné dans ecojoko |
+| 1.3.0 | Économies Cumulées | Monétaire | EUR | Permanent | Économies depuis le début, négatives en cas de surconsommation |
+| 1.3.0 | Puissance Max du Mois | Puissance | W | Permanent | |
+| 1.3.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
+| 1.3.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |
 | 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
+
+Elle fournit aussi une carte « Little Monkey » pour vos tableaux de bord, chargée automatiquement : voir [la configuration de la carte](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord).
 
 > [!IMPORTANT]
 > Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos données.**

@@ -30,6 +30,21 @@ jobs:
         - name: "Run"
           run: python3 -m pytest tests
 
+  card:
+    name: "Card"
+    runs-on: "ubuntu-latest"
+    steps:
+        - name: "Checkout the repository"
+          uses: "actions/checkout@v7"
+
+        - name: "Set up Node.js"
+          uses: actions/setup-node@v7
+          with:
+            node-version: "24"
+
+        - name: "Run"
+          run: node --test "tests/js/*.test.mjs"
+
   home-assistant:
     name: "Pytest in Home Assistant"
     runs-on: "ubuntu-latest"

@@ -3,12 +3,23 @@ from __future__ import annotations
 
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-from homeassistant.components.sensor import RestoreSensor, SensorStateClass
+from homeassistant.components.sensor import (
+    RestoreSensor,
+    SensorEntity,
+    SensorStateClass,
+)
 
 from .const import ATTRIBUTION, DOMAIN, LOGGER, MANUFACTURER, MODEL, VERSION
 from .utils import DailyCounter, get_paris_timezone
 
 TZ = get_paris_timezone()
+
+# Attributes of the activity sensors: name and key of the activity data
+ACTIVITY_ATTRIBUTES = {
+    "savings_7_days": {"reference_consumption": "reference_consumption_7_days"},
+    # Consumption of each of the last 7 days in kWh, the oldest first
+    "consumption_7_days": {"daily_consumption": "daily_consumption_7_days"},
+}
 
 
 def _as_number(value):
@@ -90,11 +101,12 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
         # The name comes from the Home Assistant translations
         # (entity.sensor.<key>.name), prefixed by the device name
         self._attr_has_entity_name = True
+        # The translation key also identifies the sensor, for the card
+        self._attr_translation_key = sensor_name
         if name:
-            # Name of a tariff band, chosen by the user
+            # Name of a tariff band, chosen by the user: it wins over the
+            # translation
             self._attr_name = name
-        else:
-            self._attr_translation_key = sensor_name
         # The daily energy totals never decrease during a day (see DailyCounter)
         self._daily_counter = (
             DailyCounter()
@@ -145,3 +157,76 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
                 self._sensor_name, value, published)
         self._holding = holding
         return published
+
+
+class EcojokoPeriodSensor(EcojokoSensor):
+    """Current tariff period, deduced from the daily counters of the periods."""
+
+    def __init__(self, main_device, sensor_name, state_class, device_class,
+                 unit_of_measurement, icon, options):
+        """Initialize the sensor with its possible values."""
+        super().__init__(main_device, sensor_name, state_class, device_class,
+                         unit_of_measurement, icon)
+        self._attr_options = list(options)
+        self._restored = None
+
+    async def async_added_to_hass(self) -> None:
+        """Restore the period published before a restart of Home Assistant.
+
+        The period is deduced from the counters a few minutes after the
+        start: the last one is shown meanwhile.
+        """
+        await super().async_added_to_hass()
+        last_state = await self.async_get_last_state()
+        if last_state is not None and last_state.state in self._attr_options:
+            self._restored = last_state.state
+
+    @property
+    def native_value(self):
+        """Return the current period, the restored one while it is not known."""
+        value = (self.coordinator.data or {}).get(self._sensor_name)
+        if value in self._attr_options:
+            self._restored = None
+            return value
+        return self._restored
+
+
+class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
+    """Sensor of the activity of the account: savings, last 7 days..."""
+
+    def __init__(self, main_device, activity, sensor_name, state_class,
+                 device_class, unit_of_measurement, icon):
+        """Initialize the sensor, updated by the activity coordinator."""
+        super().__init__(activity)
+        self._main_device = main_device
+        self._sensor_name = sensor_name
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_icon = icon
+        self._attr_has_entity_name = True
+        self._attr_translation_key = sensor_name
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device information of the parent Ecojoko device."""
+        return self._main_device.device_info
+
+    @property
+    def unique_id(self):
+        """Return a unique ID for the sensor."""
+        return f"{self._main_device.unique_id}_{self._sensor_name}"
+
+    @property
+    def native_value(self):
+        """Return the value of the sensor, in its native unit."""
+        return (self.coordinator.data or {}).get(self._sensor_name)
+
+    @property
+    def extra_state_attributes(self):
+        """Return the details of the savings and of the consumption over 7 days."""
+        attributes = ACTIVITY_ATTRIBUTES.get(self._sensor_name)
+        if attributes is None:
+            return None
+        data = self.coordinator.data or {}
+        return {name: data.get(key) for name, key in attributes.items()}
