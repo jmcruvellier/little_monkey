@@ -142,7 +142,7 @@ La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du mê
 
 ## Cartes des économies
 
-L'intégration fournit aussi deux cartes qui reprennent l'onglet « Économies » de l'application ecojoko<sup>©️</sup>. Comme la carte du cadran, elles sont chargées automatiquement : cherchez « Little Monkey » dans le choix des cartes. Elles s'appuient sur les capteurs des économies (Little Monkey 1.3.0 ou plus récent), que leur éditeur visuel choisit seul.
+L'intégration fournit aussi deux cartes qui reprennent l'onglet « Économies » de l'application ecojoko<sup>©️</sup>. Comme la carte du cadran, elles sont chargées automatiquement : cherchez « Petit Singe » (« Little Monkey » en anglais) ou « économies » dans le choix des cartes. Elles s'appuient sur les capteurs des économies (Little Monkey 1.3.0 ou plus récent), que leur éditeur visuel choisit seul.
 
 ### Résumé des économies
 

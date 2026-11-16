@@ -64,7 +64,7 @@ const TRANSLATIONS = {
   },
   fr: {
     summary: {
-      name: "Little Monkey : résumé des économies",
+      name: "Petit Singe : résumé des économies",
       description: "Vos économies sur les 12 derniers mois, comme dans l'application ecojoko.",
       title: "Économies",
       subtitle: "Sur les 12 derniers mois",
