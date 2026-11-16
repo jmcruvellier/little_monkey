@@ -3,15 +3,26 @@
     "config": {
         "step": {
             "user": {
-                "description": "If you need help with the configuration have a look to the documentation",
+                "description": "Enter the credentials of your ecojoko account. Next checks them and reads your electricity contract.",
                 "data": {
                     "name": "Name",
                     "username": "Username",
-                    "password": "Password",
-                    "use_hchp_feature": "HP/HC sensors",
-                    "use_tempo_feature": "Tempo Blue/White/Red sensors",
-                    "use_temphum_feature": "Humidity and temperature sensors",
+                    "password": "Password"
+                }
+            },
+            "bands": {
+                "title": "Tariff bands",
+                "description": "Contract found: {contract}.\n\nFor each band of your contract, choose the name of its sensor and the total it counts in (off-peak, peak or none).",
+                "data": {
+                    "use_hchp_feature": "HC and HP total sensors"
+                }
+            },
+            "settings": {
+                "title": "Other sensors",
+                "description": "Choose the other sensors and the refresh interval.",
+                "data": {
                     "use_prod_feature": "Production sensor",
+                    "use_temphum_feature": "Humidity and temperature sensors",
                     "poll_interval": "Poll interval (in seconds)"
                 }
             },
@@ -36,15 +47,26 @@
     "options": {
         "step": {
             "init": {
-                "description": "If you need help with the configuration have a look to the documentation",
+                "description": "Enter the credentials of your ecojoko account. Next checks them and reads your electricity contract.",
                 "data": {
                     "name": "Name",
                     "username": "Username",
-                    "password": "Password",
-                    "use_hchp_feature": "HP/HC sensors",
-                    "use_tempo_feature": "Tempo Blue/White/Red sensors",
-                    "use_temphum_feature": "Humidity and temperature sensors",
+                    "password": "Password"
+                }
+            },
+            "bands": {
+                "title": "Tariff bands",
+                "description": "Contract found: {contract}.\n\nFor each band of your contract, choose the name of its sensor and the total it counts in (off-peak, peak or none).",
+                "data": {
+                    "use_hchp_feature": "HC and HP total sensors"
+                }
+            },
+            "settings": {
+                "title": "Other sensors",
+                "description": "Choose the other sensors and the refresh interval.",
+                "data": {
                     "use_prod_feature": "Production sensor",
+                    "use_temphum_feature": "Humidity and temperature sensors",
                     "poll_interval": "Poll interval (in seconds)"
                 }
             }
@@ -149,6 +171,15 @@
             },
             "max_power_alltime": {
                 "name": "Max Power Since the Start"
+            }
+        }
+    },
+    "selector": {
+        "category": {
+            "options": {
+                "hc": "Off-peak hours (HC)",
+                "hp": "Peak hours (HP)",
+                "none": "Neither HC nor HP"
             }
         }
     }

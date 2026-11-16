@@ -3,15 +3,26 @@
     "config": {
         "step": {
             "user": {
-                "description": "Se precisar de ajuda com a configuração, veja documentação",
+                "description": "Introduza as credenciais da sua conta ecojoko. Seguinte verifica-as e lê o seu contrato de eletricidade.",
                 "data": {
                     "name": "Nome",
                     "username": "Nome de utilizador",
-                    "password": "Palavra-passe",
-                    "use_hchp_feature": "Sensores HP/HC",
-                    "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
-                    "use_temphum_feature": "Sensores de Humidade e Temperatura",
+                    "password": "Palavra-passe"
+                }
+            },
+            "bands": {
+                "title": "Períodos tarifários",
+                "description": "Contrato detetado: {contract}.\n\nPara cada período do seu contrato, escolha o nome do sensor e o total em que conta (vazio, ponta ou nenhum).",
+                "data": {
+                    "use_hchp_feature": "Sensores totais HC e HP"
+                }
+            },
+            "settings": {
+                "title": "Outros sensores",
+                "description": "Escolha os outros sensores e o intervalo de atualização.",
+                "data": {
                     "use_prod_feature": "Sensor de Produção",
+                    "use_temphum_feature": "Sensores de Humidade e Temperatura",
                     "poll_interval": "Intervalo de sondagem (em segundos)"
                 }
             },
@@ -36,15 +47,26 @@
     "options": {
         "step": {
             "init": {
-                "description": "Se precisar de ajuda com a configuração, veja documentação",
+                "description": "Introduza as credenciais da sua conta ecojoko. Seguinte verifica-as e lê o seu contrato de eletricidade.",
                 "data": {
                     "name": "Nome",
                     "username": "Nome de utilizador",
-                    "password": "Palavra-passe",
-                    "use_hchp_feature": "Sensores HP/HC",
-                    "use_tempo_feature": "Sensores Tempo Azul/Branco/Vermelho",
-                    "use_temphum_feature": "Sensores de Humidade e Temperatura",
+                    "password": "Palavra-passe"
+                }
+            },
+            "bands": {
+                "title": "Períodos tarifários",
+                "description": "Contrato detetado: {contract}.\n\nPara cada período do seu contrato, escolha o nome do sensor e o total em que conta (vazio, ponta ou nenhum).",
+                "data": {
+                    "use_hchp_feature": "Sensores totais HC e HP"
+                }
+            },
+            "settings": {
+                "title": "Outros sensores",
+                "description": "Escolha os outros sensores e o intervalo de atualização.",
+                "data": {
                     "use_prod_feature": "Sensor de Produção",
+                    "use_temphum_feature": "Sensores de Humidade e Temperatura",
                     "poll_interval": "Intervalo de sondagem (em segundos)"
                 }
             }
@@ -149,6 +171,15 @@
             },
             "max_power_alltime": {
                 "name": "Potência Máxima Desde o Início"
+            }
+        }
+    },
+    "selector": {
+        "category": {
+            "options": {
+                "hc": "Horas de vazio (HC)",
+                "hp": "Horas de ponta (HP)",
+                "none": "Nem HC nem HP"
             }
         }
     }

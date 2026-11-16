@@ -20,9 +20,10 @@ from .entity import (
     EcojokoPeriodSensor,
     EcojokoSensor,
 )
+from .tariff import KNOWN_BANDS, TEMPO_BANDS, band_key, has_sensor
 from .const import (
     CONF_USE_HCHP_FEATURE,
-    CONF_USE_TEMPO_FEATURE,
+    CONF_TARIFF_BANDS,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
     tariff_periods,
@@ -78,15 +79,9 @@ SENSORS = (
     # HC/HP grid consumption sensors
     ("hc_grid_consumption", ENERGY, CONF_USE_HCHP_FEATURE),
     ("hp_grid_consumption", ENERGY, CONF_USE_HCHP_FEATURE),
-    # Tempo grid consumption sensors
-    ("blue_hc_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
-    ("blue_hp_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
-    ("white_hc_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
-    ("white_hp_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
-    ("red_hc_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
-    ("red_hp_grid_consumption", ENERGY, CONF_USE_TEMPO_FEATURE),
-    # Current tariff period sensor, with the HC/HP or the Tempo option
-    ("current_tariff_period", PERIOD, (CONF_USE_HCHP_FEATURE, CONF_USE_TEMPO_FEATURE)),
+    # Current tariff period sensor, with the HC/HP totals or a Tempo
+    # contract (see tariff_periods)
+    ("current_tariff_period", PERIOD, None),
     # Production surplus sensor
     ("production_surplus", ENERGY, CONF_USE_PROD_FEATURE),
     # Temperature & Humidity sensors
@@ -95,6 +90,11 @@ SENSORS = (
     ("indoor_hum", HUMIDITY, CONF_USE_TEMPHUM_FEATURE),
     ("outdoor_hum", HUMIDITY, CONF_USE_TEMPHUM_FEATURE),
 )
+
+# Keys of every sensor ever created by an option, Tempo included: their
+# unique ids are rewritten by the migration of the 1.2.7 entries
+SENSOR_KEYS = [key for key, _kind, _option in SENSORS] + [
+    band_key(band_id) for band_id in TEMPO_BANDS]
 
 SAVINGS = (
     SensorStateClass.MEASUREMENT,
@@ -150,11 +150,22 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if not _enabled(option, config_entry.data):
             continue
         if kind is PERIOD:
-            sensor = EcojokoPeriodSensor(
-                main_device, key, *kind, tariff_periods(config_entry.data))
+            periods = tariff_periods(config_entry.data)
+            if periods is None:
+                continue
+            sensor = EcojokoPeriodSensor(main_device, key, *kind, periods)
         else:
             sensor = EcojokoSensor(main_device, key, *kind)
         main_device.add_child_entity(sensor)
+    # One sensor per tariff band of the contract
+    for band in config_entry.data.get(CONF_TARIFF_BANDS) or []:
+        if has_sensor(band):
+            # A known sensor without a chosen name keeps its translated name
+            name = band.get("name")
+            if not name and band["id"] not in KNOWN_BANDS:
+                name = band.get("label")
+            main_device.add_child_entity(EcojokoSensor(
+                main_device, band["key"], *ENERGY, name=name))
 
     for key, kind in ACTIVITY_SENSORS:
         main_device.add_child_entity(

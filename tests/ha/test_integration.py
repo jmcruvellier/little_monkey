@@ -33,7 +33,8 @@ from custom_components.little_monkey.diagnostics import (
 )
 
 DOMAIN = "little_monkey"
-DATA = {
+# Data of an entry of version 2 (1.2.8): HC/HP and Tempo options
+DATA_V2 = {
     "name": "Ecojoko",
     "username": "User@Example.com",
     "password": "pw",
@@ -43,6 +44,32 @@ DATA = {
     "use_prod_feature": False,
     "poll_interval": 5,
 }
+HCHP_BANDS = [
+    {"id": 2, "label": "Heures Pleines", "key": "hp_grid_consumption",
+     "name": None, "category": "hp"},
+    {"id": 3, "label": "Heures Creuses", "key": "hc_grid_consumption",
+     "name": None, "category": "hc"},
+]
+# Data of an entry of the current version: tariff bands
+DATA = {
+    "name": "Ecojoko",
+    "username": "User@Example.com",
+    "password": "pw",
+    "use_hchp_feature": True,
+    "use_temphum_feature": True,
+    "use_prod_feature": False,
+    "poll_interval": 5,
+    "tariff_bands": HCHP_BANDS,
+}
+# First screen of the setup and of the options
+ACCOUNT = {"name": "Ecojoko", "username": "User@Example.com", "password": "pw"}
+# Second screen with the bands of an HP/HC contract, and last screen
+HCHP_SCREEN = {
+    "use_hchp_feature": True,
+    "Heures Pleines – HC/HP": "hp",
+    "Heures Creuses – HC/HP": "hc",
+}
+SETTINGS = {"use_prod_feature": False, "use_temphum_feature": True, "poll_interval": 5}
 # Sensors created with the options of DATA by 1.2.7
 ENABLED = [
     "realtime_consumption",
@@ -74,7 +101,7 @@ CREATE_ENTRY = data_entry_flow.FlowResultType.CREATE_ENTRY
 def add_entry(hass, **kwargs):
     """Add a config entry of the current version to Home Assistant."""
     entry = MockConfigEntry(
-        **{"domain": DOMAIN, "title": "user", "version": 2, "data": DATA, **kwargs}
+        **{"domain": DOMAIN, "title": "user", "version": 3, "data": DATA, **kwargs}
     )
     entry.add_to_hass(hass)
     return entry
@@ -98,7 +125,7 @@ def add_1_2_7_install(hass):
     entry = add_entry(
         hass,
         version=1,
-        data={**DATA, "lang": "fr-FR"},
+        data={**DATA_V2, "lang": "fr-FR"},
         options={"lang": "fr-FR"},
     )
     entity_registry, device_registry = er.async_get(hass), dr.async_get(hass)
@@ -158,8 +185,10 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert await setup_entry(hass, entry)
 
     assert entry.state is ConfigEntryState.LOADED
-    assert entry.version == 2
+    assert entry.version == 3
     assert "lang" not in entry.data
+    assert "use_tempo_feature" not in entry.data
+    assert entry.data["tariff_bands"] == HCHP_BANDS
     assert entry.options == {}
     assert entry.data["password"] == "pw"
     assert entry.data["name"] == "Ecojoko"
@@ -454,7 +483,8 @@ async def test_form_validation_releases_its_session(hass, fake_api):
             DOMAIN, context={"source": config_entries.SOURCE_USER}
         )
         fake_api.login_error = lm_api.LittleMonkeyApiClientAuthenticationError("x")
-        await hass.config_entries.flow.async_configure(result["flow_id"], dict(DATA))
+        await hass.config_entries.flow.async_configure(
+            result["flow_id"], dict(ACCOUNT))
 
     assert len(created) == 1
     assert created[0].closed
@@ -565,19 +595,32 @@ async def test_user_flow(hass, fake_api):
     ):
         fake_api.login_error = error
         result = await hass.config_entries.flow.async_configure(
-            result["flow_id"], dict(DATA)
+            result["flow_id"], dict(ACCOUNT)
         )
         assert result["type"] == FORM, key
         assert result["errors"] == {"base": key}
 
     fake_api.login_error = None
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], dict(DATA)
+        result["flow_id"], dict(ACCOUNT)
+    )
+    assert result["type"] == FORM
+    assert result["step_id"] == "bands"
+    assert result["description_placeholders"] == {
+        "contract": "EDF – Zen Fixe - Option HP/HC"}
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], dict(HCHP_SCREEN)
+    )
+    assert result["type"] == FORM
+    assert result["step_id"] == "settings"
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], dict(SETTINGS)
     )
     await hass.async_block_till_done()
     assert result["type"] == CREATE_ENTRY
     entry = hass.config_entries.async_entries(DOMAIN)[0]
-    assert entry.version == 2
+    assert entry.version == 3
+    assert entry.data == {**DATA, "username": "User@Example.com"}
     assert entry.unique_id == "user@example.com"
     assert entry.options == {}
     assert entry.state is ConfigEntryState.LOADED
@@ -591,17 +634,16 @@ async def test_user_flow_requires_a_name(hass, fake_api):
     for name in ("", "   "):
         fake_api.login_error = AssertionError("ecojoko must not be contacted")
         result = await hass.config_entries.flow.async_configure(
-            result["flow_id"], {**DATA, "name": name}
+            result["flow_id"], {**ACCOUNT, "name": name}
         )
         assert result["type"] == FORM
         assert result["errors"] == {"name": "name_required"}
 
     fake_api.login_error = None
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], dict(DATA)
+        result["flow_id"], dict(ACCOUNT)
     )
-    await hass.async_block_till_done()
-    assert result["type"] == CREATE_ENTRY
+    assert result["step_id"] == "bands"
 
 
 async def test_options_flow_requires_a_name(hass, fake_api):
@@ -611,7 +653,7 @@ async def test_options_flow_requires_a_name(hass, fake_api):
 
     result = await hass.config_entries.options.async_init(entry.entry_id)
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {**DATA, "name": " "}
+        result["flow_id"], {**ACCOUNT, "name": " "}
     )
     assert result["type"] == FORM
     assert result["errors"] == {"name": "name_required"}
@@ -627,7 +669,7 @@ async def test_user_flow_refuses_an_account_twice(hass, fake_api):
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
     result = await hass.config_entries.flow.async_configure(
-        result["flow_id"], {**DATA, "username": " user@example.COM "}
+        result["flow_id"], {**ACCOUNT, "username": " user@example.COM "}
     )
     assert result["type"] == ABORT
     assert result["reason"] == "already_configured"
@@ -646,7 +688,7 @@ async def test_options_flow_validates_before_saving(hass, fake_api):
     # Rejected: nothing saved, no reload
     fake_api.login_error = lm_api.LittleMonkeyApiClientAuthenticationError("x")
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {**DATA, "password": "wrong", "poll_interval": 10}
+        result["flow_id"], {**ACCOUNT, "password": "wrong"}
     )
     await hass.async_block_till_done()
     assert result["type"] == FORM
@@ -658,7 +700,17 @@ async def test_options_flow_validates_before_saving(hass, fake_api):
     # Accepted: saved, reloaded exactly once
     fake_api.login_error = None
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], {**DATA, "password": "good", "poll_interval": 10}
+        result["flow_id"], {**ACCOUNT, "password": "good"}
+    )
+    assert result["step_id"] == "bands"
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(HCHP_SCREEN)
+    )
+    assert result["step_id"] == "settings"
+    # Nothing saved before the last screen
+    assert entry.data["password"] == "pw"
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**SETTINGS, "poll_interval": 10}
     )
     await hass.async_block_till_done()
     assert result["type"] == CREATE_ENTRY
@@ -713,6 +765,195 @@ async def test_apparent_power_sensor_of_a_patched_1_2_7_is_kept(hass, fake_api):
     assert hass.states.get(patched).state == "640"
 
 
+# --- Tariff bands
+
+TEMPO_KEYS = [
+    "blue_hp_grid_consumption", "blue_hc_grid_consumption",
+    "white_hp_grid_consumption", "white_hc_grid_consumption",
+    "red_hp_grid_consumption", "red_hc_grid_consumption",
+]
+TEMPO_FOUND = {
+    18: "HP Bleu", 19: "HC Bleu", 20: "HP Blanc",
+    21: "HC Blanc", 22: "HP Rouge", 23: "HC Rouge",
+}
+
+
+async def test_migration_of_a_tempo_entry_keeps_its_sensors(hass, fake_api):
+    """The Tempo option becomes six bands keeping the entities of the sensors."""
+    entry = add_entry(hass, version=2, data={**DATA_V2, "use_tempo_feature": True})
+    entity_registry = er.async_get(hass)
+    entity_ids = {
+        key: entity_registry.async_get_or_create(
+            "sensor", DOMAIN, f"{entry.entry_id}_{key}", config_entry=entry,
+            suggested_object_id=f"ecojoko_{key}",
+        ).entity_id
+        for key in TEMPO_KEYS
+    }
+    fake_api.values["_band_values"] = {"blue_hc_grid_consumption": 1.25}
+
+    assert await setup_entry(hass, entry)
+
+    assert entry.version == 3
+    assert "use_tempo_feature" not in entry.data
+    bands = entry.data["tariff_bands"]
+    assert [band["id"] for band in bands] == [2, 3, 18, 19, 20, 21, 22, 23]
+    for key, entity_id in entity_ids.items():
+        assert entity_registry.async_get_entity_id(
+            "sensor", DOMAIN, f"{entry.entry_id}_{key}") == entity_id
+    assert not [
+        e.entity_id
+        for e in er.async_entries_for_config_entry(entity_registry, entry.entry_id)
+        if e.entity_id.endswith("_2")
+    ]
+    state = hass.states.get(entity_ids["blue_hc_grid_consumption"])
+    assert state.state == "1.25"
+    assert state.attributes["friendly_name"] == "Ecojoko HC Blue Grid Consumption"
+
+
+async def start_setup(hass, fake_api, found, contract=None):
+    """Fill the first screen of the setup and return the bands screen."""
+    fake_api.bands = found
+    if contract is not None:
+        fake_api.contract = contract
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    return await hass.config_entries.flow.async_configure(
+        result["flow_id"], dict(ACCOUNT)
+    )
+
+
+def schema_defaults(result):
+    """Return the fields of a form and their default values."""
+    return {
+        str(key): key.default() if callable(key.default) else None
+        for key in result["data_schema"].schema
+    }
+
+
+async def test_setup_of_a_weekend_contract(hass, fake_api):
+    """Each band gets a named sensor and the category chosen by the user."""
+    found = {8: "HP Semaine", 9: "HC Semaine", 13: "Heures Weekend"}
+    result = await start_setup(hass, fake_api, found, contract={
+        "supplier_name": "EDF", "offer_name": "Vert Week-End - Option HC",
+        "offer_type": "HC SEM ET WE"})
+    assert result["step_id"] == "bands"
+    assert schema_defaults(result) == {
+        "use_hchp_feature": True,
+        "HP Semaine": "HP Semaine",
+        "HP Semaine – HC/HP": "hp",
+        "HC Semaine": "HC Semaine",
+        "HC Semaine – HC/HP": "hc",
+        "Heures Weekend": "Heures Weekend",
+        "Heures Weekend – HC/HP": "none",
+    }
+    result = await hass.config_entries.flow.async_configure(result["flow_id"], {
+        "use_hchp_feature": True,
+        "HP Semaine": "HP Semaine",
+        "HP Semaine – HC/HP": "hp",
+        "HC Semaine": "HC Semaine",
+        "HC Semaine – HC/HP": "hc",
+        "Heures Weekend": " Week-end ",
+        "Heures Weekend – HC/HP": "hc",
+    })
+    fake_api.values["_band_values"] = {
+        "band_8": 0, "band_9": 0, "band_13": 26.19}
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert result["type"] == CREATE_ENTRY
+    entry = hass.config_entries.async_entries(DOMAIN)[0]
+    assert entry.data["tariff_bands"] == [
+        {"id": 8, "label": "HP Semaine", "key": "band_8",
+         "name": "HP Semaine", "category": "hp"},
+        {"id": 9, "label": "HC Semaine", "key": "band_9",
+         "name": "HC Semaine", "category": "hc"},
+        {"id": 13, "label": "Heures Weekend", "key": "band_13",
+         "name": "Week-end", "category": "hc"},
+    ]
+    entity_registry = er.async_get(hass)
+    weekend = entity_registry.async_get_entity_id(
+        "sensor", DOMAIN, f"{entry.entry_id}_band_13")
+    state = hass.states.get(weekend)
+    assert state.state == "26.19"
+    assert state.attributes["friendly_name"] == "Ecojoko Week-end"
+    assert state.attributes["device_class"] == "energy"
+    assert state.attributes["state_class"] == "total_increasing"
+
+
+async def test_setup_of_a_tempo_contract_keeps_the_known_names(hass, fake_api):
+    """A known sensor shows its translated name and does not save it."""
+    result = await start_setup(hass, fake_api, dict(TEMPO_FOUND))
+    defaults = schema_defaults(result)
+    assert defaults["HC Bleu"] == "HC Blue Grid Consumption"
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], defaults)
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    entry = hass.config_entries.async_entries(DOMAIN)[0]
+    bands = entry.data["tariff_bands"]
+    assert [band["key"] for band in bands] == TEMPO_KEYS
+    assert all(band["name"] is None for band in bands)
+    entities = er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)
+    unique_ids = {e.unique_id for e in entities}
+    assert {f"{entry.entry_id}_{key}" for key in TEMPO_KEYS} <= unique_ids
+
+
+async def options_bands_screen(hass, entry, fake_api, found, contract="same"):
+    """Fill the first screen of the options and return the bands screen."""
+    fake_api.bands = found
+    if contract is None:
+        fake_api.contract = None
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    return await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(ACCOUNT)
+    )
+
+
+async def test_options_follow_a_new_contract(hass, fake_api):
+    """The bands of the previous contract are dropped, saved settings kept."""
+    data = {**DATA, "tariff_bands": [
+        *HCHP_BANDS,
+        {"id": 13, "label": "Heures Weekend", "key": "band_13",
+         "name": "Week-end", "category": "hc"},
+        {"id": 19, "label": "HC Bleu", "key": "blue_hc_grid_consumption",
+         "name": None, "category": "hc"},
+    ]}
+    entry = add_entry(hass, data=data)
+    assert await setup_entry(hass, entry)
+
+    # ecojoko renamed band 13; band 19 is no longer in the contract
+    renamed = "Week-end et jours fériés"
+    result = await options_bands_screen(
+        hass, entry, fake_api,
+        {2: "Heures Pleines", 3: "Heures Creuses", 13: renamed})
+    defaults = schema_defaults(result)
+    assert defaults[renamed] == "Week-end"
+    assert defaults[renamed + " – HC/HP"] == "hc"
+    assert not [key for key in defaults if "Bleu" in key]
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], defaults)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    bands = entry.data["tariff_bands"]
+    assert [(b["id"], b["key"], b["name"]) for b in bands] == [
+        (2, "hp_grid_consumption", None),
+        (3, "hc_grid_consumption", None),
+        (13, "band_13", "Week-end"),
+    ]
+
+
+async def test_options_keep_the_bands_when_the_contract_is_unknown(hass, fake_api):
+    """Without the contract, the configured bands are all kept."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    result = await options_bands_screen(hass, entry, fake_api, {}, contract=None)
+    assert result["description_placeholders"] == {"contract": "?"}
+    assert "Heures Creuses – HC/HP" in schema_defaults(result)
+
+
 # --- Current tariff period
 
 
@@ -746,15 +987,27 @@ async def test_tariff_period_follows_the_counter_that_increases(hass, fake_api):
 
 
 async def test_tariff_period_with_tempo(hass, fake_api):
-    """With the Tempo option, the period gives the color of the day."""
-    fake_api.values.update({"_tempo_hc_red": 0.5, "_tempo_hp_red": 1.0})
-    entry = add_entry(hass, data={**DATA, "use_hchp_feature": False, "use_tempo_feature": True})
+    """With a Tempo contract, the period gives the color of the day."""
+    values = dict.fromkeys(TEMPO_KEYS, 0)
+    fake_api.values["_band_values"] = {
+        **values, "red_hc_grid_consumption": 0.5, "red_hp_grid_consumption": 1.0}
+    tempo_bands = [
+        {"id": band_id, "label": label, "key": key, "name": None,
+         "category": "hc" if label.startswith("HC") else "hp"}
+        for (band_id, label), key in zip(TEMPO_FOUND.items(), [
+            "blue_hp_grid_consumption", "blue_hc_grid_consumption",
+            "white_hp_grid_consumption", "white_hc_grid_consumption",
+            "red_hp_grid_consumption", "red_hc_grid_consumption"])
+    ]
+    entry = add_entry(hass, data={
+        **DATA, "use_hchp_feature": False, "tariff_bands": tempo_bands})
     assert await setup_entry(hass, entry)
     entity_id = period_entity(hass, entry)
     assert hass.states.get(entity_id).attributes["options"] == [
         "hc_blue", "hp_blue", "hc_white", "hp_white", "hc_red", "hp_red"]
 
-    fake_api.values["_tempo_hp_red"] = 1.1
+    fake_api.values["_band_values"] = {
+        **values, "red_hc_grid_consumption": 0.5, "red_hp_grid_consumption": 1.1}
     await refresh(hass, entry)
     assert hass.states.get(entity_id).state == "hp_red"
 

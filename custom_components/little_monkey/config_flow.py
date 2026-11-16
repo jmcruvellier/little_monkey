@@ -11,6 +11,7 @@ from homeassistant.const import CONF_NAME, CONF_PASSWORD, CONF_USERNAME, UnitOfT
 from homeassistant.helpers import selector
 from homeassistant.helpers.selector import NumberSelectorMode
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
+from homeassistant.helpers.translation import async_get_translations
 
 from .api import (
     LittleMonkeyApiClient,
@@ -23,10 +24,18 @@ from .const import (
     POLL_INTERVAL,
     DEFAULT_POLL_INTERVAL,
     CONF_USE_HCHP_FEATURE,
-    CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
+    CONF_TARIFF_BANDS,
     LOGGER
+)
+from .tariff import (
+    KNOWN_BANDS,
+    NO_CATEGORY,
+    OFF_PEAK,
+    PEAK,
+    has_sensor,
+    new_band,
 )
 from .utils import account_unique_id
 
@@ -34,86 +43,65 @@ if TYPE_CHECKING:
     # Only for the annotations: this type exists since Home Assistant 2024.4
     from homeassistant.config_entries import ConfigFlowResult
 
-def _get_data_schema(config_entry: config_entries.ConfigEntry | None = None) -> vol.Schema:
-    """Get a schema with default values."""
-    if config_entry is None:
-        return vol.Schema(
-            {
-                vol.Required(CONF_NAME, default=""): cv.string,
-                vol.Required(CONF_USERNAME, default=""): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.TEXT
-                        ),
-                    ),
-                vol.Required(CONF_PASSWORD, default=""): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.PASSWORD
-                        ),
-                    ),
-                vol.Optional(
-                    CONF_USE_HCHP_FEATURE, default=False,
-                ): cv.boolean,
-                vol.Optional(
-                    CONF_USE_TEMPO_FEATURE, default=False,
-                ): cv.boolean,
-                vol.Optional(
-                    CONF_USE_PROD_FEATURE, default=False,
-                ): cv.boolean,
-                vol.Optional(
-                    CONF_USE_TEMPHUM_FEATURE, default=False,
-                ): cv.boolean,
-                vol.Required(POLL_INTERVAL, default=DEFAULT_POLL_INTERVAL): selector.NumberSelector(
-                        selector.NumberSelectorConfig(
-                            mode=NumberSelectorMode.BOX,
-                            unit_of_measurement=UnitOfTime.SECONDS,
-                            min=3,
-                            max=60
-                        ),
-                    ),
-            }
-        )
-    # Default values come from config entry
+PASSWORD_SELECTOR = selector.TextSelector(
+    selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
+)
+CATEGORY_SELECTOR = selector.SelectSelector(
+    selector.SelectSelectorConfig(
+        options=[OFF_PEAK, PEAK, NO_CATEGORY],
+        translation_key="category",
+        mode=selector.SelectSelectorMode.DROPDOWN,
+    )
+)
+# Settings of the last screen
+SETTINGS_KEYS = (CONF_USE_PROD_FEATURE, CONF_USE_TEMPHUM_FEATURE, POLL_INTERVAL)
+# Suffix of the field of the category of a band
+CATEGORY_SUFFIX = " – HC/HP"
+
+
+def _account_schema(defaults: Mapping[str, Any]) -> vol.Schema:
+    """Return the schema of the first screen: the ecojoko account."""
     return vol.Schema(
         {
-            vol.Required(CONF_NAME, default=config_entry.data.get(CONF_NAME)): cv.string,
+            vol.Required(CONF_NAME, default=defaults.get(CONF_NAME, "")): cv.string,
             vol.Required(
-                CONF_USERNAME, default=config_entry.data.get(CONF_USERNAME)
-                ): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.TEXT
-                        ),
-                    ),
+                CONF_USERNAME, default=defaults.get(CONF_USERNAME, "")
+            ): selector.TextSelector(
+                selector.TextSelectorConfig(type=selector.TextSelectorType.TEXT)
+            ),
             vol.Required(
-                CONF_PASSWORD, default=config_entry.data.get(CONF_PASSWORD)
-                ): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.PASSWORD
-                        ),
-                    ),
-            vol.Optional(
-                CONF_USE_HCHP_FEATURE, default=config_entry.data.get(CONF_USE_HCHP_FEATURE),
-            ): cv.boolean,
-            vol.Optional(
-                CONF_USE_TEMPO_FEATURE, default=config_entry.data.get(CONF_USE_TEMPO_FEATURE),
-            ): cv.boolean,
-            vol.Optional(
-                CONF_USE_PROD_FEATURE, default=config_entry.data.get(CONF_USE_PROD_FEATURE),
-            ): cv.boolean,
-            vol.Optional(
-                CONF_USE_TEMPHUM_FEATURE, default=config_entry.data.get(CONF_USE_TEMPHUM_FEATURE),
-            ): cv.boolean,
-            vol.Required(
-                POLL_INTERVAL, default=config_entry.data.get(POLL_INTERVAL)
-                ): selector.NumberSelector(
-                        selector.NumberSelectorConfig(
-                            mode=NumberSelectorMode.BOX,
-                            unit_of_measurement=UnitOfTime.SECONDS,
-                            min=3,
-                            max=60
-                        ),
-                    ),
+                CONF_PASSWORD, default=defaults.get(CONF_PASSWORD, "")
+            ): PASSWORD_SELECTOR,
         }
     )
+
+
+def _settings_schema(defaults: Mapping[str, Any]) -> vol.Schema:
+    """Return the schema of the last screen: the other sensors and the poll."""
+    return vol.Schema(
+        {
+            vol.Optional(
+                CONF_USE_PROD_FEATURE,
+                default=defaults.get(CONF_USE_PROD_FEATURE, False),
+            ): cv.boolean,
+            vol.Optional(
+                CONF_USE_TEMPHUM_FEATURE,
+                default=defaults.get(CONF_USE_TEMPHUM_FEATURE, False),
+            ): cv.boolean,
+            vol.Required(
+                POLL_INTERVAL,
+                default=defaults.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    mode=NumberSelectorMode.BOX,
+                    unit_of_measurement=UnitOfTime.SECONDS,
+                    min=3,
+                    max=60,
+                ),
+            ),
+        }
+    )
+
 
 def _name_errors(user_input: Mapping[str, Any]) -> dict[str, str]:
     """Return the form errors of the name, which names the device."""
@@ -126,53 +114,174 @@ async def _async_validate(
     hass: HomeAssistant,
     data: Mapping[str, Any],
     check_gateway: bool = False,
-) -> dict[str, str]:
-    """Try to log in to ecojoko and return the form errors, empty if it worked."""
+    discover: bool = False,
+) -> tuple[dict[str, str], dict | None, dict]:
+    """Log in to ecojoko and, if asked, read the contract and its bands.
+
+    Return the form errors (empty if it worked), the active contract and
+    its tariff bands {id: label}.
+    """
     # A session used for this check only, released as soon as it is done
     session = async_create_clientsession(hass, auto_cleanup=False)
     client = LittleMonkeyApiClient(
         username=data.get(CONF_USERNAME, ""),
         password=data.get(CONF_PASSWORD, ""),
         poll_interval=data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
-        use_hchp=data.get(CONF_USE_HCHP_FEATURE, False),
-        use_tempo=data.get(CONF_USE_TEMPO_FEATURE, False),
-        use_temphum=data.get(CONF_USE_TEMPHUM_FEATURE, False),
-        use_prod=data.get(CONF_USE_PROD_FEATURE, False),
+        use_hchp=False,
+        use_temphum=False,
+        use_prod=False,
         session=session,
     )
+    contract, bands = None, {}
     try:
         await client.async_get_cookiesdata()
-        if check_gateway:
+        if check_gateway or discover:
             await client.async_get_gatewaydata()
+        if discover:
+            contract, bands = await client.async_get_tariff_setup()
     except LittleMonkeyApiClientAuthenticationError as exception:
         LOGGER.warning(exception)
-        return {"base": "auth"}
+        return {"base": "auth"}, None, {}
     except LittleMonkeyApiClientCommunicationError as exception:
         LOGGER.error(exception)
-        return {"base": "connection"}
+        return {"base": "connection"}, None, {}
     except LittleMonkeyApiClientError as exception:
         LOGGER.exception(exception)
-        return {"base": "unknown"}
+        return {"base": "unknown"}, None, {}
     finally:
         session.detach()
-    return {}
+    return {}, contract, bands
 
 
-class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Ecojoko."""
+def merge_bands(configured: list, found: dict, contract_read: bool) -> list:
+    """Return the bands to show: the ones found, with their saved settings.
+
+    A band configured before keeps its key, name and category. A band no
+    longer found (previous contract) is dropped, unless the contract could
+    not be read.
+    """
+    saved = {band["id"]: band for band in configured}
+    bands = []
+    for band_id, label in found.items():
+        band = dict(saved.get(band_id) or new_band(band_id, label))
+        band["label"] = label
+        bands.append(band)
+    if not contract_read:
+        bands += [band for band_id, band in saved.items() if band_id not in found]
+    return bands
+
+
+def _band_fields(bands: list) -> list:
+    """Return the fields of each band: (band, name field, category field).
+
+    The fields are named after the label of the band, shown as it is: the
+    bands depend on the contract and have no translation.
+    """
+    fields, used = [], set()
+    for band in bands:
+        label = band.get("label") or f"#{band['id']}"
+        if label in used:
+            label = f"{label} (#{band['id']})"
+        used.add(label)
+        name_field = label if has_sensor(band) else None
+        fields.append((band, name_field, label + CATEGORY_SUFFIX))
+    return fields
+
+
+async def _async_default_names(hass: HomeAssistant, bands: list) -> dict:
+    """Return the name shown by default for the sensor of each band.
+
+    A known sensor keeps its translated name, another band takes its label.
+    """
+    translations = await async_get_translations(
+        hass, hass.config.language, "entity", [DOMAIN])
+    names = {}
+    for band in bands:
+        translated = translations.get(
+            f"component.{DOMAIN}.entity.sensor.{band['key']}.name")
+        names[band["id"]] = translated or band.get("label")
+    return names
+
+
+class _BandsSteps:
+    """Screens shared by the setup and the options: bands, then settings."""
+
+    _contract: dict | None = None
+    _bands: list = []
+    _default_names: dict = {}
+
+    def _init_bands(self, configured: list, contract, found: dict) -> None:
+        """Keep the contract and the bands to show."""
+        self._contract = contract
+        self._bands = merge_bands(configured, found, contract is not None)
+
+    def _contract_text(self) -> str:
+        """Return the contract as shown to the user."""
+        contract = self._contract or {}
+        parts = [contract.get("supplier_name"), contract.get("offer_name")]
+        return " – ".join(str(part) for part in parts if part) or "?"
+
+    async def _async_bands_form(self, step_id: str, use_hchp: bool):
+        """Show the bands found, with a name and a category for each."""
+        self._default_names = await _async_default_names(self.hass, self._bands)
+        schema = {
+            vol.Optional(CONF_USE_HCHP_FEATURE, default=use_hchp): cv.boolean,
+        }
+        for band, name_field, category_field in _band_fields(self._bands):
+            if name_field is not None:
+                schema[vol.Optional(
+                    name_field,
+                    default=band.get("name") or self._default_names[band["id"]],
+                )] = cv.string
+            schema[vol.Required(
+                category_field, default=band.get("category") or NO_CATEGORY
+            )] = CATEGORY_SELECTOR
+        return self.async_show_form(
+            step_id=step_id,
+            data_schema=vol.Schema(schema),
+            description_placeholders={"contract": self._contract_text()},
+        )
+
+    def _read_bands(self, user_input: Mapping[str, Any]) -> list:
+        """Return the bands with the names and categories chosen."""
+        bands = []
+        for band, name_field, category_field in _band_fields(self._bands):
+            chosen = {key: band[key] for key in ("id", "label", "key")}
+            name = None
+            if name_field is not None:
+                name = str(user_input.get(name_field) or "").strip()
+                default = self._default_names.get(band["id"])
+                if not name:
+                    name = default
+                # The translated name of a known sensor is not saved: it
+                # keeps following the language of Home Assistant. Another
+                # band keeps its name if ecojoko renames it
+                if band["id"] in KNOWN_BANDS and name == default:
+                    name = None
+            chosen["name"] = name
+            category = user_input.get(category_field)
+            chosen["category"] = category if category in (OFF_PEAK, PEAK) else None
+            bands.append(chosen)
+        return bands
+
+
+class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
+    """Config flow for Ecojoko: account, tariff bands, then settings."""
 
     # Version 2: unique ids based on the config entry (see async_migrate_entry)
-    VERSION = 2
+    # Version 3: tariff bands instead of the Tempo option
+    VERSION = 3
 
     def __init__(self) -> None:
         """Init EcojokoFlowHandler."""
         self._reauth_entry: config_entries.ConfigEntry | None = None
+        self._data: dict[str, Any] = {}
 
     async def async_step_user(
         self,
         user_input: dict | None = None,
     ) -> ConfigFlowResult:
-        """Handle a flow initialized by the user."""
+        """Ask for the ecojoko account, then read its contract."""
         _errors = {}
         if user_input is not None:
             # The same ecojoko account cannot be added twice
@@ -180,22 +289,52 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 account_unique_id(user_input[CONF_USERNAME])
             )
             self._abort_if_unique_id_configured()
-            _errors = _name_errors(user_input) or await _async_validate(
-                self.hass, user_input
-            )
+            _errors = _name_errors(user_input)
             if not _errors:
-                return self.async_create_entry(
-                    title=user_input[CONF_USERNAME],
-                    data=user_input
+                _errors, contract, found = await _async_validate(
+                    self.hass, user_input, discover=True
                 )
+            if not _errors:
+                self._data = dict(user_input)
+                self._init_bands([], contract, found)
+                return await self.async_step_bands()
 
         return self.async_show_form(
             step_id="user",
             # Keep what the user typed when the form is shown again
             data_schema=self.add_suggested_values_to_schema(
-                _get_data_schema(), user_input
+                _account_schema({}), user_input
             ),
             errors=_errors,
+        )
+
+    async def async_step_bands(
+        self,
+        user_input: dict | None = None,
+    ) -> ConfigFlowResult:
+        """Show the tariff bands of the contract."""
+        if user_input is not None:
+            self._data[CONF_USE_HCHP_FEATURE] = (
+                user_input.get(CONF_USE_HCHP_FEATURE) is True)
+            self._data[CONF_TARIFF_BANDS] = self._read_bands(user_input)
+            return await self.async_step_settings()
+        return await self._async_bands_form("bands", use_hchp=True)
+
+    async def async_step_settings(
+        self,
+        user_input: dict | None = None,
+    ) -> ConfigFlowResult:
+        """Ask for the other sensors and the poll interval."""
+        if user_input is not None:
+            self._data.update(
+                {key: user_input.get(key, False) for key in SETTINGS_KEYS})
+            return self.async_create_entry(
+                title=self._data[CONF_USERNAME],
+                data=self._data,
+            )
+        return self.async_show_form(
+            step_id="settings",
+            data_schema=_settings_schema({}),
         )
 
     async def async_step_reauth(
@@ -217,7 +356,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         _errors = {}
         if user_input is not None:
             data = {**entry.data, CONF_PASSWORD: user_input[CONF_PASSWORD]}
-            _errors = await _async_validate(self.hass, data)
+            _errors, _contract, _found = await _async_validate(self.hass, data)
             if not _errors:
                 self.hass.config_entries.async_update_entry(entry, data=data)
                 # A loaded entry is reloaded by its update listener
@@ -230,13 +369,7 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_show_form(
             step_id="reauth_confirm",
             data_schema=vol.Schema(
-                {
-                    vol.Required(CONF_PASSWORD): selector.TextSelector(
-                        selector.TextSelectorConfig(
-                            type=selector.TextSelectorType.PASSWORD
-                        ),
-                    ),
-                }
+                {vol.Required(CONF_PASSWORD): PASSWORD_SELECTOR}
             ),
             description_placeholders={
                 "username": entry.data.get(CONF_USERNAME, "")
@@ -252,42 +385,78 @@ class EcojokoFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Get the options flow for Ecojoko."""
         return EcojokoOptionsFlowHandler(config_entry)
 
-class EcojokoOptionsFlowHandler(config_entries.OptionsFlow):
-    """Options flow for Ecojoko component."""
+
+class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
+    """Options flow for Ecojoko: the same screens as the setup."""
 
     def __init__(self, config_entry: config_entries.ConfigEntry) -> None:
         """Initialize the Ecojoko OptionsFlow."""
         self._config_entry = config_entry
+        self._data: dict[str, Any] = {}
 
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
-        """Configure options for Ecojoko."""
+        """Change the ecojoko account, then read its contract again."""
         _errors = {}
         if user_input is not None:
-            # Nothing is saved until ecojoko has accepted the new settings
-            _errors = _name_errors(user_input) or await _async_validate(
-                self.hass, user_input, check_gateway=True
-            )
+            _errors = _name_errors(user_input)
             if not _errors:
-                # All the settings are kept in the entry data. Data and options
-                # are saved together: the entry is reloaded once, and
-                # async_create_entry below changes nothing more
-                self.hass.config_entries.async_update_entry(
-                    entry=self._config_entry,
-                    data=user_input,
-                    options={},
+                _errors, contract, found = await _async_validate(
+                    self.hass, user_input, discover=True
                 )
-                return self.async_create_entry(
-                    title=self._config_entry.title,
-                    data={}
+            if not _errors:
+                self._data = {**self._config_entry.data, **user_input}
+                self._init_bands(
+                    self._config_entry.data.get(CONF_TARIFF_BANDS) or [],
+                    contract,
+                    found,
                 )
+                return await self.async_step_bands()
 
         return self.async_show_form(
             step_id="init",
             # Keep what the user typed when the form is shown again
             data_schema=self.add_suggested_values_to_schema(
-                _get_data_schema(config_entry=self._config_entry), user_input
+                _account_schema(self._config_entry.data), user_input
             ),
             errors=_errors,
+        )
+
+    async def async_step_bands(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Show the tariff bands of the contract."""
+        if user_input is not None:
+            self._data[CONF_USE_HCHP_FEATURE] = (
+                user_input.get(CONF_USE_HCHP_FEATURE) is True)
+            self._data[CONF_TARIFF_BANDS] = self._read_bands(user_input)
+            return await self.async_step_settings()
+        return await self._async_bands_form(
+            "bands",
+            use_hchp=self._config_entry.data.get(CONF_USE_HCHP_FEATURE) is True,
+        )
+
+    async def async_step_settings(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Change the other sensors and the poll interval, then save."""
+        if user_input is not None:
+            self._data.update(
+                {key: user_input.get(key, False) for key in SETTINGS_KEYS})
+            # All the settings are kept in the entry data. Data and options
+            # are saved together: the entry is reloaded once, and
+            # async_create_entry below changes nothing more
+            self.hass.config_entries.async_update_entry(
+                entry=self._config_entry,
+                data=self._data,
+                options={},
+            )
+            return self.async_create_entry(
+                title=self._config_entry.title,
+                data={}
+            )
+        return self.async_show_form(
+            step_id="settings",
+            data_schema=_settings_schema(self._config_entry.data),
         )

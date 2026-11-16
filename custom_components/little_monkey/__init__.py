@@ -27,17 +27,19 @@ from .const import (
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
-    CONF_USE_PROD_FEATURE
+    CONF_USE_PROD_FEATURE,
+    CONF_TARIFF_BANDS,
 )
 from .coordinator import (
     LittleMonkeyActivityCoordinator,
     LittleMonkeyDataUpdateCoordinator,
 )
-from .sensor import SENSORS
+from .sensor import SENSOR_KEYS
+from .tariff import legacy_bands
 from .utils import account_unique_id
 
 # Version of the config entries, see EcojokoFlowHandler.VERSION
-ENTRY_VERSION = 2
+ENTRY_VERSION = 3
 
 # Configured from the user interface only
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
@@ -62,7 +64,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             password=entry.data.get(CONF_PASSWORD, ""),
             poll_interval=entry.data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
             use_hchp=entry.data.get(CONF_USE_HCHP_FEATURE, False),
-            use_tempo=entry.data.get(CONF_USE_TEMPO_FEATURE, False),
+            bands=entry.data.get(CONF_TARIFF_BANDS),
             use_temphum=entry.data.get(CONF_USE_TEMPHUM_FEATURE, False),
             use_prod=entry.data.get(CONF_USE_PROD_FEATURE, False),
             # A session of its own, with its own cookies: the ecojoko session
@@ -118,10 +120,21 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # The language option was removed in 1.2.8
         data = {key: value for key, value in entry.data.items() if key != "lang"}
         hass.config_entries.async_update_entry(
-            entry, data=data, options={}, version=ENTRY_VERSION
+            entry, data=data, options={}, version=2
         )
-        LOGGER.info("Config entry %s migrated to version %s",
-                    entry.title, ENTRY_VERSION)
+        LOGGER.info("Config entry %s migrated to version 2", entry.title)
+    if entry.version == 2:
+        # The Tempo option is replaced by the tariff bands. The bands of the
+        # HC/HP and Tempo options keep the keys of their sensors, and so
+        # their entity ids, history and statistics. No network here: other
+        # bands of the contract are counted by their label until the user
+        # configures them in the options
+        data = dict(entry.data)
+        use_tempo = data.pop(CONF_USE_TEMPO_FEATURE, False) is True
+        data[CONF_TARIFF_BANDS] = legacy_bands(
+            data.get(CONF_USE_HCHP_FEATURE) is True, use_tempo)
+        hass.config_entries.async_update_entry(entry, data=data, version=3)
+        LOGGER.info("Config entry %s migrated to version 3", entry.title)
     return True
 
 
@@ -137,7 +150,7 @@ def _migrate_unique_ids(hass: HomeAssistant, entry: ConfigEntry) -> None:
     old_base = f"{DOMAIN}_{entry.data.get(CONF_NAME)}"
     new_base = entry.entry_id
     new_unique_ids = {old_base: new_base}
-    for key, _kind, _option in SENSORS:
+    for key in SENSOR_KEYS:
         new_unique_ids[f"{old_base}_{key}"] = f"{new_base}_{key}"
 
     entity_registry = er.async_get(hass)

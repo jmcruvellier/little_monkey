@@ -26,9 +26,11 @@ from .const import (
     DOMAIN,
     POLL_INTERVAL,
     LOGGER,
+    TEMPO_BAND_PERIODS,
     TEMPO_PERIODS,
     tariff_periods,
 )
+from .tariff import band_key
 from .utils import TariffPeriod
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
@@ -83,13 +85,10 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             return None
         client = self.client
         if self._periods == TEMPO_PERIODS:
+            values = client.band_values
             counters = {
-                "hc_blue": client.tempo_hc_blue,
-                "hp_blue": client.tempo_hp_blue,
-                "hc_white": client.tempo_hc_white,
-                "hp_white": client.tempo_hp_white,
-                "hc_red": client.tempo_hc_red,
-                "hp_red": client.tempo_hp_red,
+                period: values.get(band_key(band_id))
+                for band_id, period in TEMPO_BAND_PERIODS.items()
             }
         else:
             counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
@@ -114,6 +113,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(exception) from exception
         self._failing_since = None
         return {
+            # Energy of the tariff bands, by key of their sensor
+            **self.client.band_values,
             "current_tariff_period": self._current_tariff_period(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "stat_date": self.client.stat_date,
@@ -122,12 +123,6 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "grid_consumption": self.client.kwh,
             "hc_grid_consumption": self.client.kwh_hc_ns,
             "hp_grid_consumption": self.client.kwh_hp_ns,
-            "blue_hc_grid_consumption": self.client.tempo_hc_blue,
-            "blue_hp_grid_consumption": self.client.tempo_hp_blue,
-            "white_hc_grid_consumption": self.client.tempo_hc_white,
-            "white_hp_grid_consumption": self.client.tempo_hp_white,
-            "red_hc_grid_consumption": self.client.tempo_hc_red,
-            "red_hp_grid_consumption": self.client.tempo_hp_red,
             "production_surplus": self.client.kwh_prod,
             "indoor_temp": self.client.indoor_temp,
             "outdoor_temp": self.client.outdoor_temp,

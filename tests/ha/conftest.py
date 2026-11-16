@@ -59,6 +59,13 @@ class FakeApi:
         # Values reported by the client, and the day they belong to
         self.values = dict(VALUES)
         self.stat_date = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+        # Contract and tariff bands read by the setup
+        self.contract = {
+            "supplier_name": "EDF",
+            "offer_name": "Zen Fixe - Option HP/HC",
+            "offer_type": "HP/HC",
+        }
+        self.bands = {2: "Heures Pleines", 3: "Heures Creuses"}
         # Values of the activity of the account, or the error to raise
         self.activity = dict(ACTIVITY)
         self.activity_error = None
@@ -76,6 +83,11 @@ def fake_api():
 
     async def gateway(self):
         return None
+
+    async def tariff_setup(self, weeks=4):
+        if state.login_error:
+            raise state.login_error
+        return state.contract, dict(state.bands)
 
     async def get_data(self):
         state.data_calls += 1
@@ -95,5 +107,5 @@ def fake_api():
     with patch.object(client, "async_get_cookiesdata", login), \
             patch.object(client, "async_get_gatewaydata", gateway), \
             patch.object(client, "async_get_data", get_data), \
-            patch.object(client, "async_get_activity", get_activity):
+            patch.object(client, "async_get_tariff_setup", tariff_setup),             patch.object(client, "async_get_activity", get_activity):
         yield state

@@ -13,18 +13,36 @@ DEFAULT_POLL_INTERVAL = 5
 
 PLATFORMS = ['sensor']
 CONF_USE_HCHP_FEATURE = "use_hchp_feature"
+# Replaced by the tariff bands in version 3 of the config entries
 CONF_USE_TEMPO_FEATURE = "use_tempo_feature"
 CONF_USE_TEMPHUM_FEATURE = "use_temphum_feature"
 CONF_USE_PROD_FEATURE = "use_prod_feature"
+# Tariff bands of the contract and their settings (see tariff.py)
+CONF_TARIFF_BANDS = "tariff_bands"
 
 # Values of the current tariff period sensor, by tariff option
 HCHP_PERIODS = ["hc", "hp"]
 TEMPO_PERIODS = ["hc_blue", "hp_blue", "hc_white", "hp_white", "hc_red", "hp_red"]
 
 
+# Tempo tariff bands, by id, and their period (see tariff.py)
+TEMPO_BAND_PERIODS = {
+    18: "hp_blue", 19: "hc_blue",
+    20: "hp_white", 21: "hc_white",
+    22: "hp_red", 23: "hc_red",
+}
+
+
 def tariff_periods(data):
-    """Return the periods of the tariff option of a config entry, or None."""
-    if data.get(CONF_USE_TEMPO_FEATURE) is True:
+    """Return the periods of the tariff option of a config entry, or None.
+
+    The Tempo periods come with the bands of a Tempo contract, the HC/HP
+    periods with the HC/HP totals.
+    """
+    bands = data.get(CONF_TARIFF_BANDS) or []
+    if data.get(CONF_USE_TEMPO_FEATURE) is True or any(
+        band.get("id") in TEMPO_BAND_PERIODS for band in bands
+    ):
         return TEMPO_PERIODS
     if data.get(CONF_USE_HCHP_FEATURE) is True:
         return HCHP_PERIODS
