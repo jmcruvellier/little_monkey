@@ -88,7 +88,9 @@ Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capt
 
 L'intégration ne connaît pas encore la période en cours : indiquez dans la carte une entité qui la donne. Sont compris les états `HC` / `HP` (ou « Heures Creuses », « off-peak »...), la couleur Tempo en français ou en anglais (`Bleu`, `white`...), les deux ensemble (`HC Bleu`, `hp_red`), les périodes du compteur Linky (`HCJB`, `HPJR`...) et un capteur binaire allumé pendant les heures creuses. Sans période connue, le disque reste bleu ecojoko<sup>©️</sup> ; une couleur Tempo connue sans période donne sa couleur HP. Sous la courbe, la carte affiche aussi le nom de la période en cours, par exemple « HEURES CREUSES » ou « HEURES PLEINES · JOUR ROUGE ».
 
-Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"), ou utiliser la configuration YAML suivante, en remplaçant les entités par les vôtres :
+Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"). L'éditeur visuel choisit automatiquement les capteurs Consommation Temps Réel et Puissance Apparente de votre appareil Little Monkey ; il ne propose la période tarifaire que si l'option HC/HP ou Tempo est cochée dans l'intégration, et la couleur Tempo que pour l'option Tempo.
+
+Vous pouvez aussi utiliser la configuration YAML suivante, en remplaçant les entités par les vôtres :
 
 ```yaml
 type: custom:little-monkey-card

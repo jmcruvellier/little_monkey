@@ -12,6 +12,7 @@
  */
 
 const CARD_TYPE = "little-monkey-card";
+const EDITOR_TYPE = "little-monkey-card-editor";
 const DOMAIN = "little_monkey";
 
 const TRANSLATIONS = {
@@ -24,6 +25,16 @@ const TRANSLATIONS = {
     unavailable: "Unavailable",
     periods: { hc: "OFF-PEAK HOURS", hp: "PEAK HOURS" },
     colors: { blue: "BLUE DAY", white: "WHITE DAY", red: "RED DAY" },
+    editor: {
+      entity: "Real-time consumption",
+      apparent_power_entity: "Apparent power (optional)",
+      tariff_entity: "Current tariff period (optional)",
+      tempo_color_entity: "Tempo color of the day (optional)",
+      max_power: "Power of the MAX graduation",
+      trend_minutes: "Duration of the curve (3 min by default)",
+      tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. Without it, the disc stays blue.",
+      tempo_helper: "Only when the entity above does not give the Tempo color.",
+    },
   },
   fr: {
     name: "Petit Singe",
@@ -34,6 +45,16 @@ const TRANSLATIONS = {
     unavailable: "Indisponible",
     periods: { hc: "HEURES CREUSES", hp: "HEURES PLEINES" },
     colors: { blue: "JOUR BLEU", white: "JOUR BLANC", red: "JOUR ROUGE" },
+    editor: {
+      entity: "Consommation temps réel",
+      apparent_power_entity: "Puissance apparente (facultatif)",
+      tariff_entity: "Période tarifaire en cours (facultatif)",
+      tempo_color_entity: "Couleur Tempo du jour (facultatif)",
+      max_power: "Puissance de la graduation MAX",
+      trend_minutes: "Durée de la courbe (3 min par défaut)",
+      tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Sans elle, le disque reste bleu.",
+      tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
+    },
   },
 };
 
@@ -367,6 +388,90 @@ function tariffMode(sensors) {
   return null;
 }
 
+/** Return the entity of the integration with a translation key, if any. */
+function findEntity(hass, translationKey) {
+  return Object.values(hass?.entities || {}).find(
+    (entity) => entity.platform === DOMAIN && entity.translation_key === translationKey,
+  )?.entity_id;
+}
+
+/**
+ * Return the configuration of a new card: the sensors of the first Little
+ * Monkey device, chosen automatically.
+ */
+export function stubConfig(hass) {
+  const config = { type: `custom:${CARD_TYPE}` };
+  const entity = findEntity(hass, "realtime_consumption");
+  if (entity) {
+    config.entity = entity;
+    const apparent = deviceEntities(hass, entity).realtime_apparent_power;
+    if (apparent) {
+      config.apparent_power_entity = apparent;
+    }
+  }
+  return config;
+}
+
+/**
+ * Return the configuration after a change in the editor.
+ *
+ * Choosing another Little Monkey device also takes its apparent power
+ * sensor, unless another sensor was chosen by hand. Empty options are
+ * removed from the configuration.
+ */
+export function editedConfig(hass, previous, value) {
+  const config = { ...value };
+  if (config.entity !== previous.entity) {
+    const before = deviceEntities(hass, previous.entity).realtime_apparent_power;
+    if (!config.apparent_power_entity || config.apparent_power_entity === before) {
+      config.apparent_power_entity = deviceEntities(hass, config.entity).realtime_apparent_power;
+    }
+  }
+  for (const [key, option] of Object.entries(config)) {
+    if (option === undefined || option === null || option === "") {
+      delete config[key];
+    }
+  }
+  return config;
+}
+
+/** Return the fields of the editor, depending on the options of the device. */
+export function editorSchema(hass, config) {
+  const mode = tariffMode(deviceEntities(hass, config.entity));
+  const schema = [
+    {
+      name: "entity",
+      required: true,
+      selector: { entity: { filter: { integration: DOMAIN, domain: "sensor", device_class: "power" } } },
+    },
+    {
+      name: "apparent_power_entity",
+      selector: { entity: { filter: { domain: "sensor", device_class: "apparent_power" } } },
+    },
+  ];
+  if (mode || config.tariff_entity) {
+    schema.push({
+      name: "tariff_entity",
+      selector: { entity: { filter: { domain: ["sensor", "binary_sensor", "input_select", "select"] } } },
+    });
+  }
+  if (mode === "tempo" || config.tempo_color_entity) {
+    schema.push({
+      name: "tempo_color_entity",
+      selector: { entity: { filter: { domain: ["sensor", "input_select", "select"] } } },
+    });
+  }
+  schema.push({
+    name: "max_power",
+    selector: { number: { min: 10001, max: 100000, step: 1, mode: "box", unit_of_measurement: "W" } },
+  });
+  schema.push({
+    name: "trend_minutes",
+    selector: { number: { min: 1, max: 60, step: 1, mode: "slider", unit_of_measurement: "min" } },
+  });
+  return schema;
+}
+
 /** Return the numeric value of an entity, null when it has none. */
 function numericState(hass, entityId) {
   const state = entityId && hass.states[entityId];
@@ -396,6 +501,14 @@ class LittleMonkeyCard extends HTMLElement {
 
   getCardSize() {
     return 6;
+  }
+
+  static getConfigElement() {
+    return document.createElement(EDITOR_TYPE);
+  }
+
+  static getStubConfig(hass) {
+    return stubConfig(hass);
   }
 
   getGridOptions() {
@@ -625,6 +738,73 @@ class LittleMonkeyCard extends HTMLElement {
   _drawTrend(now, period) {
     this._elements.trend.setAttribute("d", trendPath(this._trend, now, period));
   }
+}
+
+/** Visual editor of the card, built on the form of Home Assistant. */
+class LittleMonkeyCardEditor extends HTMLElement {
+  setConfig(config) {
+    this._config = { ...config };
+    this._render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+    this._render();
+  }
+
+  connectedCallback() {
+    this._loadForm();
+  }
+
+  /** Make sure the form and the entity pickers of Home Assistant are loaded. */
+  async _loadForm() {
+    if (customElements.get("ha-form") && customElements.get("ha-entity-picker")) {
+      return;
+    }
+    try {
+      // The editor of a core card loads them
+      const helpers = await window.loadCardHelpers();
+      const card = await helpers.createCardElement({ type: "entities", entities: [] });
+      await card.constructor.getConfigElement();
+    } catch (error) {
+      console.debug("Little Monkey card: form of Home Assistant not loaded", error);
+    }
+  }
+
+  _render() {
+    if (!this._config || !this._hass) {
+      return;
+    }
+    if (!this._form) {
+      this._form = document.createElement("ha-form");
+      this._form.computeLabel = (field) => this._text().editor[field.name] || field.name;
+      this._form.computeHelper = (field) =>
+        ({ tariff_entity: this._text().editor.tariff_helper, tempo_color_entity: this._text().editor.tempo_helper })[field.name];
+      this._form.addEventListener("value-changed", (event) => this._changed(event));
+      this.appendChild(this._form);
+    }
+    this._form.hass = this._hass;
+    this._form.data = this._config;
+    this._form.schema = editorSchema(this._hass, this._config);
+  }
+
+  _text() {
+    return TRANSLATIONS[language(this._hass)];
+  }
+
+  _changed(event) {
+    event.stopPropagation();
+    const config = editedConfig(this._hass, this._config, event.detail.value);
+    this._config = config;
+    this._render();
+    this.dispatchEvent(new CustomEvent("config-changed", {
+      detail: { config }, bubbles: true, composed: true,
+    }));
+  }
+}
+
+if (!customElements.get(EDITOR_TYPE)) {
+  customElements.define(EDITOR_TYPE, LittleMonkeyCardEditor);
 }
 
 if (!customElements.get(CARD_TYPE)) {

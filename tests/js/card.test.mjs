@@ -155,3 +155,73 @@ test("the disc is green while power is injected", () => {
     assert.notEqual(card.discColor(mode, tariff, 0), "#11AF00");
   }
 });
+
+// Entity registry of Home Assistant with two Little Monkey devices
+
+function hassWith(...devices) {
+  const entities = {};
+  for (const [deviceId, keys] of devices) {
+    for (const key of keys) {
+      const entityId = `sensor.${deviceId}_${key}`;
+      entities[entityId] = { entity_id: entityId, device_id: deviceId, platform: "little_monkey", translation_key: key };
+    }
+  }
+  entities["sensor.other_power"] = { entity_id: "sensor.other_power", device_id: "other", platform: "shelly" };
+  return { entities, states: {} };
+}
+
+const POWER = "realtime_consumption";
+
+const APPARENT = "realtime_apparent_power";
+
+test("a new card takes the sensors of the Little Monkey device", () => {
+  assert.deepEqual(card.stubConfig(hassWith(["home", [POWER, APPARENT]])), {
+    type: "custom:little-monkey-card",
+    entity: "sensor.home_realtime_consumption",
+    apparent_power_entity: "sensor.home_realtime_apparent_power",
+  });
+  assert.deepEqual(card.stubConfig(hassWith(["home", [POWER]])), {
+    type: "custom:little-monkey-card",
+    entity: "sensor.home_realtime_consumption",
+  });
+  assert.deepEqual(card.stubConfig({ entities: {} }), { type: "custom:little-monkey-card" });
+});
+
+test("choosing another device takes its apparent power sensor", () => {
+  const hass = hassWith(["home", [POWER, APPARENT]], ["barn", [POWER, APPARENT]], ["shed", [POWER]]);
+  const previous = { entity: "sensor.home_realtime_consumption", apparent_power_entity: "sensor.home_realtime_apparent_power" };
+  assert.equal(
+    card.editedConfig(hass, previous, { ...previous, entity: "sensor.barn_realtime_consumption" }).apparent_power_entity,
+    "sensor.barn_realtime_apparent_power",
+  );
+  // The device has none: the option is removed
+  assert.equal(
+    "apparent_power_entity" in card.editedConfig(hass, previous, { ...previous, entity: "sensor.shed_realtime_consumption" }),
+    false,
+  );
+  // A sensor chosen by hand is kept
+  const chosen = { ...previous, apparent_power_entity: "sensor.linky_va" };
+  assert.equal(
+    card.editedConfig(hass, chosen, { ...chosen, entity: "sensor.barn_realtime_consumption" }).apparent_power_entity,
+    "sensor.linky_va",
+  );
+});
+
+test("empty options are removed", () => {
+  const hass = hassWith(["home", [POWER]]);
+  const previous = { entity: "sensor.home_realtime_consumption", tariff_entity: "sensor.tempo" };
+  assert.deepEqual(card.editedConfig(hass, previous, { ...previous, tariff_entity: "", max_power: undefined }), {
+    entity: "sensor.home_realtime_consumption",
+  });
+});
+
+test("the editor asks for the tariff period only with the HC/HP or Tempo option", () => {
+  const names = (hass) => card.editorSchema(hass, { entity: "sensor.home_realtime_consumption" }).map((field) => field.name);
+  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "max_power", "trend_minutes"]);
+  assert.deepEqual(names(hassWith(["home", [POWER, "hc_grid_consumption"]])), [
+    "entity", "apparent_power_entity", "tariff_entity", "max_power", "trend_minutes",
+  ]);
+  assert.deepEqual(names(hassWith(["home", [POWER, "red_hp_grid_consumption"]])), [
+    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "max_power", "trend_minutes",
+  ]);
+});
