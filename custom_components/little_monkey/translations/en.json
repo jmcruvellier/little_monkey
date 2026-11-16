@@ -300,6 +300,13 @@
                 "hp": "Peak hours (HP)",
                 "none": "Neither HC nor HP"
             }
+        },
+        "savings_period": {
+            "options": {
+                "week": "Week",
+                "month": "Month",
+                "year": "Year"
+            }
         }
     },
     "issues": {
@@ -313,6 +320,37 @@
                     }
                 }
             }
+        }
+    },
+    "services": {
+        "get_savings": {
+            "name": "Get savings",
+            "description": "Returns the savings of a week, a month or a year, detailed by day, week or month, as the \"Savings in detail\" page of ecojoko.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Installation",
+                    "description": "Little Monkey installation; optional when there is only one."
+                },
+                "period": {
+                    "name": "Period",
+                    "description": "Week, month or year."
+                },
+                "date": {
+                    "name": "Date",
+                    "description": "A day of the period; today by default."
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "entry_not_found": {
+            "message": "No loaded Little Monkey installation matches."
+        },
+        "entry_required": {
+            "message": "Several Little Monkey installations: tell which one (config_entry_id)."
+        },
+        "savings_not_read": {
+            "message": "The savings could not be read from ecojoko: {error}"
         }
     }
 }

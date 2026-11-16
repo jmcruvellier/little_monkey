@@ -300,6 +300,13 @@
                 "hp": "Heures Pleines (HP)",
                 "none": "Ni HC ni HP"
             }
+        },
+        "savings_period": {
+            "options": {
+                "week": "Semaine",
+                "month": "Mois",
+                "year": "Année"
+            }
         }
     },
     "issues": {
@@ -313,6 +320,37 @@
                     }
                 }
             }
+        }
+    },
+    "services": {
+        "get_savings": {
+            "name": "Lire les économies",
+            "description": "Renvoie les économies d'une semaine, d'un mois ou d'une année, avec leur détail par jour, semaine ou mois, comme la page « Détail des économies » d'ecojoko.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Installation",
+                    "description": "Installation Little Monkey ; facultatif s'il n'y en a qu'une."
+                },
+                "period": {
+                    "name": "Période",
+                    "description": "Semaine, mois ou année."
+                },
+                "date": {
+                    "name": "Date",
+                    "description": "Un jour de la période ; aujourd'hui par défaut."
+                }
+            }
+        }
+    },
+    "exceptions": {
+        "entry_not_found": {
+            "message": "Aucune installation Little Monkey chargée ne correspond."
+        },
+        "entry_required": {
+            "message": "Plusieurs installations Little Monkey : indiquez laquelle (config_entry_id)."
+        },
+        "savings_not_read": {
+            "message": "Les économies n'ont pas pu être lues chez ecojoko : {error}"
         }
     }
 }
