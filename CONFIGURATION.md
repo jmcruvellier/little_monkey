@@ -72,12 +72,43 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 
 Depuis la version 1.3.0, l'intégration fournit la carte « Little Monkey ». Elle est chargée automatiquement par Home Assistant : il n'y a pas de ressource Lovelace à ajouter, ni de dépôt HACS supplémentaire à installer. Elle nécessite Home Assistant 2024.7 ou plus récent.
 
-Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"), ou utiliser la configuration YAML suivante, en remplaçant l'entité par votre capteur Consommation Temps Réel:
+Elle reprend le cadran du boîtier ecojoko<sup>©️</sup> :
+
+- l'arc supérieur montre la puissance en temps réel sur une échelle logarithmique (0, 50, 100, 500, 1K, 5K, 10K, MAX), en zones de plus en plus marquées (0-100 W, 100 W-1K, 1K-5K, 5K-MAX), avec une aiguille rattachée au disque et de sa couleur ;
+- le disque central affiche la puissance en W, la puissance apparente en VA en dessous quand le capteur Puissance Apparente existe, et la courbe des 3 dernières minutes (réglable), lissée ;
+- l'arc inférieur est pour l'instant décoratif.
+
+Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capteurs HP/HC ou Capteurs Tempo est cochée dans l'intégration, il prend la couleur de la période en cours :
+
+| Période | HC | HP |
+| ------- | -- | -- |
+| HC/HP (sans Tempo) et Tempo Bleu | bleu foncé `#00008B` | bleu `#0000FF` |
+| Tempo Blanc | gris clair `#D3D3D3` | blanc `#FFFFFF` |
+| Tempo Rouge | rouge foncé `#8B0000` | rouge `#FF0000` |
+
+L'intégration ne connaît pas encore la période en cours : indiquez dans la carte une entité qui la donne. Sont compris les états `HC` / `HP` (ou « Heures Creuses », « off-peak »...), la couleur Tempo en français ou en anglais (`Bleu`, `white`...), les deux ensemble (`HC Bleu`, `hp_red`), les périodes du compteur Linky (`HCJB`, `HPJR`...) et un capteur binaire allumé pendant les heures creuses. Sans période connue, le disque reste bleu ecojoko<sup>©️</sup> ; une couleur Tempo connue sans période donne sa couleur HP. Sous la courbe, la carte affiche aussi le nom de la période en cours, par exemple « HEURES CREUSES » ou « HEURES PLEINES · JOUR ROUGE ».
+
+Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"), ou utiliser la configuration YAML suivante, en remplaçant les entités par les vôtres :
 
 ```yaml
 type: custom:little-monkey-card
 entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : entité donnant la période en cours (HC/HP, Tempo, Linky)
+tariff_entity: binary_sensor.heures_creuses
+# Facultatif : entité donnant la couleur Tempo du jour, si tariff_entity ne la donne pas
+tempo_color_entity: sensor.couleur_tempo_actuelle
 ```
+
+| Option | Obligatoire | Description |
+| ------ | ----------- | ----------- |
+| `entity` | Oui | Capteur Consommation Temps Réel de Little Monkey |
+| `apparent_power_entity` | Non | Capteur de puissance apparente ; par défaut le capteur Puissance Apparente du même appareil Little Monkey, s'il existe |
+| `tariff_entity` | Non | Entité donnant la période en cours (HC/HP, et éventuellement la couleur Tempo) |
+| `tempo_color_entity` | Non | Entité donnant la couleur Tempo du jour, prioritaire sur `tariff_entity` pour la couleur |
+| `max_power` | Non | Puissance en W de la graduation MAX (12000 par défaut, au moins 10001) |
+| `trend_minutes` | Non | Durée de la courbe du disque central, en minutes (3 par défaut, comme le cadran d'ecojoko ; de 1 à 60) |
+
+La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du même appareil Little Monkey.
 
 > [!TIP]
 > Après une mise à jour de l'intégration, si la carte n'apparaît pas ou n'a pas changé, actualisez la page en vidant le cache du navigateur (Ctrl+F5), et sur l'application mobile videz le cache du frontend depuis les paramètres de l'application.
