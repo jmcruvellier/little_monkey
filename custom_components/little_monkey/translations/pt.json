@@ -128,7 +128,12 @@
                 }
             },
             "consumption_7_days": {
-                "name": "Consumo em 7 Dias"
+                "name": "Consumo em 7 Dias",
+                "state_attributes": {
+                    "daily_consumption": {
+                        "name": "Consumo diário"
+                    }
+                }
             },
             "cost_7_days": {
                 "name": "Custo em 7 Dias"

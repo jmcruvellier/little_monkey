@@ -53,6 +53,19 @@ class LittleMonkeyApiClientAuthenticationError(
     """Exception to indicate an authentication error."""
 
 
+def _daily_consumption(data) -> list | None:
+    """Return the consumption of each of the last 7 days, in kWh.
+
+    ecojoko gives the mean power of each day, in W, the oldest first.
+    """
+    if not isinstance(data, list):
+        return None
+    days = [finite_number(power) for power in data]
+    if any(power is None for power in days):
+        return None
+    return [round_value(power * 24 / 1000) for power in days]
+
+
 def parse_activity(payload) -> dict:
     """Return the values of an answer of the activity API, by sensor key.
 
@@ -71,6 +84,7 @@ def parse_activity(payload) -> dict:
         "reference_consumption_7_days": (
             finite_number(savings.get("ref_kwh")) if reference_week else None),
         "consumption_7_days": finite_number(consumption.get("kwh")),
+        "daily_consumption_7_days": _daily_consumption(consumption.get("data")),
         "cost_7_days": finite_number(consumption.get("value")),
         "total_savings": finite_number(
             (activity.get("conso_all") or {}).get("value")),

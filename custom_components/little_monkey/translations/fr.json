@@ -128,7 +128,12 @@
                 }
             },
             "consumption_7_days": {
-                "name": "Consommation sur 7 Jours"
+                "name": "Consommation sur 7 Jours",
+                "state_attributes": {
+                    "daily_consumption": {
+                        "name": "Consommation journalière"
+                    }
+                }
             },
             "cost_7_days": {
                 "name": "Coût sur 7 Jours"
