@@ -84,3 +84,47 @@ def bands_of(stat, day=None):
         if isinstance(label, str):
             bands[band_id] = label
     return bands
+
+
+# Categories of the HC/HP totals
+OFF_PEAK = "hc"
+PEAK = "hp"
+
+
+def category_of(label):
+    """Return the category deduced from the label of a band, or None.
+
+    "Heures Creuses", "HC Bleu", "HC Semaine", "HC Jour Spécial"... are off
+    peak, "Heures Pleines", "HP Rouge", "HP Weekend"... are peak. A band such
+    as "Heures Weekend" belongs to neither.
+    """
+    if not isinstance(label, str):
+        return None
+    words = label.strip().upper().split()
+    if not words:
+        return None
+    if words[0] == "HC" or words[:2] == ["HEURES", "CREUSES"]:
+        return OFF_PEAK
+    if words[0] == "HP" or words[:2] == ["HEURES", "PLEINES"]:
+        return PEAK
+    return None
+
+
+def totals_by_category(subconsumption):
+    """Return the energy of a day by category, and the unclassified labels.
+
+    Every band of a category is added: a Tempo day has up to two off peak
+    bands, a Zen Week-End Plus contract has three of each in a week. A
+    category without any band in the day counts 0.
+    """
+    totals = {OFF_PEAK: 0.0, PEAK: 0.0}
+    unclassified = []
+    for item in subconsumption:
+        label = item.get("label")
+        category = category_of(label)
+        if category is None:
+            unclassified.append(label)
+            continue
+        kwh = item.get("kwh")
+        totals[category] += float(kwh) if kwh is not None else 0
+    return totals, unclassified
