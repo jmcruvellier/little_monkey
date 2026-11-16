@@ -113,7 +113,8 @@ const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 
 // Radii, in a 200 x 200 view box centered on (100, 100)
 const R_BEZEL = 98;
-const R_LABELS = 89;
+// Graduations, halfway between the outer edge of the arcs and the rim
+const R_LABELS = 87;
 const R_TRACK = 79;
 const R_DISC = 64;
 // Legends WATTS and %, halfway between the disc and the inner edge of the arcs
