@@ -1,6 +1,8 @@
 """Services of little_monkey."""
 from __future__ import annotations
 
+from functools import partial
+
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigEntryState
@@ -45,14 +47,14 @@ def _loaded_entry(hass: HomeAssistant, entry_id: str | None):
     )
 
 
-async def _async_get_savings(call: ServiceCall) -> ServiceResponse:
+async def _async_get_savings(hass: HomeAssistant, call: ServiceCall) -> ServiceResponse:
     """Return the savings of the week, month or year holding a day.
 
     The day is today by default. The answer holds the savings of the period
     and its bars: the days of a week, the weeks of a month or the months of
     a year, as in the attributes of the savings sensors.
     """
-    entry = _loaded_entry(call.hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
+    entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
     period = call.data[ATTR_PERIOD]
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
     try:
@@ -68,10 +70,11 @@ async def _async_get_savings(call: ServiceCall) -> ServiceResponse:
 
 def async_register_services(hass: HomeAssistant) -> None:
     """Register the services of the integration, once for all its entries."""
+    # ServiceCall.hass appeared after Home Assistant 2024.7
     hass.services.async_register(
         DOMAIN,
         SERVICE_GET_SAVINGS,
-        _async_get_savings,
+        partial(_async_get_savings, hass),
         schema=GET_SAVINGS_SCHEMA,
         supports_response=SupportsResponse.ONLY,
     )
