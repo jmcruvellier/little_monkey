@@ -140,6 +140,31 @@ La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du mê
 > [!TIP]
 > Après une mise à jour de l'intégration, si la carte n'apparaît pas ou n'a pas changé, actualisez la page en vidant le cache du navigateur (Ctrl+F5), et sur l'application mobile videz le cache du frontend depuis les paramètres de l'application.
 
+## Cartes des économies
+
+L'intégration fournit aussi deux cartes qui reprennent l'onglet « Économies » de l'application ecojoko<sup>©️</sup>. Comme la carte du cadran, elles sont chargées automatiquement : cherchez « Little Monkey » dans le choix des cartes. Elles s'appuient sur les capteurs des économies (Little Monkey 1.3.0 ou plus récent), que leur éditeur visuel choisit seul.
+
+### Résumé des économies
+
+Trois barres pour les 12 derniers mois : la consommation en cours, la consommation de référence et les économies (« Surconsommation », en orange, quand elles sont négatives). Les barres sont proportionnelles, et toucher une ligne ouvre l'historique de son capteur.
+
+```yaml
+type: custom:little-monkey-savings-summary-card
+entity: sensor.ecojoko_economies_sur_12_mois
+# Facultatif : unité, euros (eur, par défaut) ou kWh (kwh)
+unit: eur
+# Facultatif : titre, « Économies » par défaut
+title: Économies
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Capteur Économies sur 12 Mois |
+| `consumption_entity` | Non | Capteur du coût de la consommation sur 12 mois ; par défaut celui du même appareil Little Monkey |
+| `reference_entity` | Non | Capteur du coût de référence sur 12 mois ; par défaut celui du même appareil Little Monkey |
+| `unit` | Non | `eur` (par défaut) ou `kwh` |
+| `title` | Non | Titre de la carte |
+
 ## Service « Lire les économies »
 
 Le service `little_monkey.get_savings` renvoie les économies d'une semaine, d'un mois ou d'une année, comme la page « Détail des économies » d'ecojoko. La carte « Détail des économies » s'en sert pour remonter dans le temps ; vous pouvez aussi l'appeler depuis un script ou une automatisation :

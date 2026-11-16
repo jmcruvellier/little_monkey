@@ -6,9 +6,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from custom_components.little_monkey import card, const
 
 
-def test_card_file_is_shipped():
-    """The served folder holds the card."""
-    assert (card.CARD_DIR / card.CARD_FILENAME).is_file()
+def test_card_files_are_shipped():
+    """The served folder holds the cards."""
+    for filename in card.CARD_FILENAMES:
+        assert (card.CARD_DIR / filename).is_file(), filename
 
 
 def test_card_url_changes_with_the_version():
@@ -29,7 +30,10 @@ async def test_card_is_served_and_loaded(hass):
     assert [(path.url_path, path.path, path.cache_headers) for path in paths] == [
         ("/little_monkey_card", str(card.CARD_DIR), False)
     ]
-    add_extra_js_url.assert_called_once_with(hass, card.card_url())
+    assert [call.args for call in add_extra_js_url.call_args_list] == [
+        (hass, card.card_url()),
+        (hass, f"/little_monkey_card/little-monkey-savings-cards.js?v={const.VERSION}"),
+    ]
 
 
 async def test_card_is_not_served_without_frontend(hass):
