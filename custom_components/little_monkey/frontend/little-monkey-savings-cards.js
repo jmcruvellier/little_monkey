@@ -302,7 +302,8 @@ class LittleMonkeySavingsSummaryCard extends HTMLElement {
   }
 
   getGridOptions() {
-    return { columns: 6, min_columns: 4, rows: 3, min_rows: 3 };
+    // Height of the content: a fixed number of rows would cut it
+    return { columns: 6, min_columns: 4 };
   }
 
   static getConfigElement() {
