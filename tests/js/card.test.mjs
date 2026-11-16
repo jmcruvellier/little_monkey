@@ -217,12 +217,12 @@ test("empty options are removed", () => {
 
 test("the editor asks for the tariff period only with the HC/HP or Tempo option", () => {
   const names = (hass) => card.editorSchema(hass, { entity: "sensor.home_realtime_consumption" }).map((field) => field.name);
-  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_color", "trend_minutes"]);
+  assert.deepEqual(names(hassWith(["home", [POWER]])), ["entity", "apparent_power_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_mode", "trend_minutes"]);
   assert.deepEqual(names(hassWith(["home", [POWER, "hc_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_color", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_mode", "trend_minutes",
   ]);
   assert.deepEqual(names(hassWith(["home", [POWER, "red_hp_grid_consumption"]])), [
-    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_color", "trend_minutes",
+    "entity", "apparent_power_entity", "tariff_entity", "tempo_color_entity", "savings_entity", "max_power", "return_seconds", "relief", "dial_mode", "trend_minutes",
   ]);
 });
 
@@ -329,4 +329,41 @@ test("the graduations stay readable on a colored dial", () => {
   assert.equal(card.labelColor([63, 81, 181]), light);
   assert.equal(card.labelColor([121, 85, 72]), light);
   assert.equal(card.labelColor([0, 0, 0]), light);
+});
+
+test("the dial takes a custom color", () => {
+  assert.equal(card.dialFill([30, 40, 50]), "rgb(30, 40, 50)");
+  assert.equal(card.dialFill("#1e2832"), "rgb(30, 40, 50)");
+  assert.equal(card.dialFill([300, -5, 12.4]), "rgb(255, 0, 12)");
+  assert.equal(card.dialMode([30, 40, 50]), "custom");
+  assert.equal(card.dialMode("amber"), "palette");
+  assert.equal(card.dialMode("transparent"), "none");
+  assert.equal(card.dialMode(undefined), "default");
+});
+
+test("the editor shows the background of the dial as a menu", () => {
+  assert.deepEqual(card.formData({ entity: "sensor.p" }), { entity: "sensor.p", dial_mode: "default" });
+  assert.deepEqual(card.formData({ dial_color: "amber" }), { dial_mode: "palette", dial_color: "amber" });
+  assert.deepEqual(card.formData({ dial_color: [1, 2, 3] }), { dial_mode: "custom", dial_rgb: [1, 2, 3] });
+  assert.deepEqual(card.formData({ dial_color: "none" }), { dial_mode: "none" });
+});
+
+test("the menu of the editor gives back the configuration", () => {
+  const previous = { entity: "sensor.p" };
+  assert.deepEqual(card.fromFormData(previous, { entity: "sensor.p", dial_mode: "default" }), { entity: "sensor.p" });
+  assert.deepEqual(card.fromFormData(previous, { dial_mode: "none" }), { dial_color: "none" });
+  // Palette or custom chosen: a first color until one is picked
+  assert.deepEqual(card.fromFormData(previous, { dial_mode: "palette" }), { dial_color: "blue" });
+  assert.deepEqual(card.fromFormData({ dial_color: "amber" }, { dial_mode: "palette" }), { dial_color: "amber" });
+  assert.deepEqual(card.fromFormData(previous, { dial_mode: "palette", dial_color: "teal" }), { dial_color: "teal" });
+  assert.deepEqual(card.fromFormData(previous, { dial_mode: "custom" }), { dial_color: [240, 240, 240] });
+  assert.deepEqual(card.fromFormData(previous, { dial_mode: "custom", dial_rgb: [9, 8, 7] }), { dial_color: [9, 8, 7] });
+});
+
+test("the editor shows the picker of the chosen background", () => {
+  const names = (config) => card.editorSchema({ entities: {} }, config).map((field) => field.name);
+  assert.ok(names({}).includes("dial_mode"));
+  assert.ok(!names({}).includes("dial_color") && !names({}).includes("dial_rgb"));
+  assert.ok(names({ dial_color: "amber" }).includes("dial_color"));
+  assert.ok(names({ dial_color: [1, 2, 3] }).includes("dial_rgb"));
 });

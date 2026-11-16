@@ -45,8 +45,15 @@ const TRANSLATIONS = {
       savings_entity: "Savings over 7 days (optional)",
       return_seconds: "Back to the real-time power after (s)",
       relief: "Relief of the dial",
-      dial_color: "Color inside the dial",
-      dial_color_helper: "Default: a shade of the theme. None: transparent.",
+      dial_mode: "Background of the dial",
+      dial_modes: {
+        default: "Default (shade of the theme)",
+        none: "Transparent",
+        palette: "Home Assistant palette",
+        custom: "Custom color",
+      },
+      dial_color: "Color of the palette",
+      dial_rgb: "Custom color",
       return_helper: "After another face of the disc was chosen. 0 to stay on it.",
       tariff_helper: "Entity giving the current period: HC / HP, Tempo color, both (\"HC Blue\"), Linky period (HCJB...), or a binary sensor on during the off-peak hours. By default, the Current Tariff Period sensor of Little Monkey.",
       tempo_helper: "Only when the entity above does not give the Tempo color.",
@@ -81,8 +88,15 @@ const TRANSLATIONS = {
       savings_entity: "Économies sur 7 jours (facultatif)",
       return_seconds: "Retour à la puissance temps réel après (s)",
       relief: "Relief du cadran",
-      dial_color: "Couleur de l'intérieur du cadran",
-      dial_color_helper: "Par défaut : une teinte du thème. Aucune : transparent.",
+      dial_mode: "Fond du cadran",
+      dial_modes: {
+        default: "Par défaut (teinte du thème)",
+        none: "Transparent",
+        palette: "Palette de Home Assistant",
+        custom: "Couleur libre",
+      },
+      dial_color: "Couleur de la palette",
+      dial_rgb: "Couleur libre",
       return_helper: "Après le choix d'une autre face du disque. 0 pour y rester.",
       tariff_helper: "Entité donnant la période en cours : HC / HP, couleur Tempo, les deux (« HC Bleu »), période Linky (HCJB...), ou capteur binaire allumé en heures creuses. Par défaut, le capteur Période Tarifaire en Cours de Little Monkey.",
       tempo_helper: "Seulement si l'entité ci-dessus ne donne pas la couleur Tempo.",
@@ -421,14 +435,6 @@ export function trendMinutes(config) {
   return Number.isFinite(minutes) && minutes >= 1 ? Math.min(minutes, 60) : DEFAULT_TREND_MINUTES;
 }
 
-/**
- * Return the fill of the inside of the dial.
- *
- * dial_color: "default" (or absent) for a shade of the theme, a little
- * lighter than the card in a dark theme and a little greyer in a light one;
- * "none" or "transparent" for the background of the card; otherwise a color
- * of the Home Assistant palette (red, light-blue...), which follows the theme.
- */
 // Colors of the palette of Home Assistant, used when the theme does not
 // define them
 const PALETTE = {
@@ -474,15 +480,81 @@ export function labelColor(rgb) {
   return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? DARK_LABEL : LIGHT_LABEL;
 }
 
-export function dialFill(dialColor) {
+/** Return the kind of a dial_color: "default", "none", "palette" or "custom". */
+export function dialMode(dialColor) {
   if (dialColor === undefined || dialColor === null || dialColor === "" || dialColor === "default") {
-    return "color-mix(in srgb, var(--primary-text-color, #212121) 7%, var(--lm-background))";
+    return "default";
   }
   if (dialColor === "none" || dialColor === "transparent") {
     return "none";
   }
+  return Array.isArray(dialColor) || parseColor(dialColor) ? "custom" : "palette";
+}
+
+/**
+ * Return the fill of the inside of the dial.
+ *
+ * dial_color: "default" (or absent) for a shade of the theme, a little
+ * lighter than the card in a dark theme and a little greyer in a light one;
+ * "none" or "transparent" for the background of the card; a color of the
+ * Home Assistant palette (red, light-blue...), which follows the theme; or a
+ * custom color, [r, g, b] as given by the color picker, "#rrggbb" or
+ * "rgb(r, g, b)".
+ */
+export function dialFill(dialColor) {
+  const mode = dialMode(dialColor);
+  if (mode === "default") {
+    return "color-mix(in srgb, var(--primary-text-color, #212121) 7%, var(--lm-background))";
+  }
+  if (mode === "none") {
+    return "none";
+  }
+  if (mode === "custom") {
+    const rgb = Array.isArray(dialColor) ? dialColor.map(Number) : parseColor(dialColor);
+    if (rgb.length === 3 && rgb.every((value) => Number.isFinite(value))) {
+      return `rgb(${rgb.map((value) => Math.round(Math.min(Math.max(value, 0), 255))).join(", ")})`;
+    }
+    return dialFill("default");
+  }
   // A name of the palette is a CSS variable of the theme
   return `var(--${String(dialColor).replace(/[^a-z0-9-]/gi, "")}-color)`;
+}
+
+/** Return the values shown by the editor: the background as a menu. */
+export function formData(config) {
+  const data = { ...config };
+  const mode = dialMode(config.dial_color);
+  delete data.dial_color;
+  data.dial_mode = mode;
+  if (mode === "palette") {
+    data.dial_color = config.dial_color;
+  } else if (mode === "custom") {
+    data.dial_rgb = Array.isArray(config.dial_color)
+      ? config.dial_color
+      : parseColor(config.dial_color);
+  }
+  return data;
+}
+
+/** Return the configuration from the values of the editor. */
+export function fromFormData(previous, value) {
+  const config = { ...value };
+  const mode = config.dial_mode || "default";
+  const color = config.dial_color;
+  const rgb = config.dial_rgb;
+  delete config.dial_mode;
+  delete config.dial_rgb;
+  delete config.dial_color;
+  if (mode === "none") {
+    config.dial_color = "none";
+  } else if (mode === "palette") {
+    // The color chosen in the palette, the previous one, or blue
+    const kept = dialMode(previous.dial_color) === "palette" ? previous.dial_color : "blue";
+    config.dial_color = color || kept;
+  } else if (mode === "custom") {
+    config.dial_color = Array.isArray(rgb) ? rgb : [240, 240, 240];
+  }
+  return config;
 }
 
 /**
@@ -667,10 +739,24 @@ export function editorSchema(hass, config) {
     default: true,
     selector: { boolean: {} },
   });
+  const background = dialMode(config.dial_color);
   schema.push({
-    name: "dial_color",
-    selector: { ui_color: { default_color: "default", include_none: true } },
+    name: "dial_mode",
+    selector: {
+      select: {
+        mode: "dropdown",
+        options: ["default", "none", "palette", "custom"].map((value) => ({
+          value,
+          label: (TRANSLATIONS[language(hass)] || TRANSLATIONS.en).editor.dial_modes[value],
+        })),
+      },
+    },
   });
+  if (background === "palette") {
+    schema.push({ name: "dial_color", selector: { ui_color: {} } });
+  } else if (background === "custom") {
+    schema.push({ name: "dial_rgb", selector: { color_rgb: {} } });
+  }
   schema.push({
     name: "trend_minutes",
     selector: { number: { min: 1, max: 60, step: 1, mode: "slider", unit_of_measurement: "min" } },
@@ -1020,8 +1106,8 @@ class LittleMonkeyCard extends HTMLElement {
 
   /**
    * Give the graduations a color that reads on the dial: the color of the
-   * theme on the default or transparent dial, dark or light on a color of
-   * the palette, as defined by the theme.
+   * theme on the default or transparent dial, dark or light on a custom
+   * color or on a color of the palette, as defined by the theme.
    */
   _updateLabelColor(dialColor) {
     const fill = dialFill(dialColor);
@@ -1031,6 +1117,8 @@ class LittleMonkeyCard extends HTMLElement {
       const themed = getComputedStyle(this).getPropertyValue(`--${name}-color`);
       const rgb = parseColor(themed) || parseColor(PALETTE[name]);
       label = rgb ? labelColor(rgb) : "";
+    } else if (fill.startsWith("rgb(")) {
+      label = labelColor(parseColor(fill));
     }
     if (label !== this._labelColor) {
       this._labelColor = label;
@@ -1209,13 +1297,12 @@ class LittleMonkeyCardEditor extends HTMLElement {
         tariff_entity: this._text().editor.tariff_helper,
         tempo_color_entity: this._text().editor.tempo_helper,
         return_seconds: this._text().editor.return_helper,
-        dial_color: this._text().editor.dial_color_helper,
       })[field.name];
       this._form.addEventListener("value-changed", (event) => this._changed(event));
       this.appendChild(this._form);
     }
     this._form.hass = this._hass;
-    this._form.data = this._config;
+    this._form.data = formData(this._config);
     this._form.schema = editorSchema(this._hass, this._config);
   }
 
@@ -1225,7 +1312,8 @@ class LittleMonkeyCardEditor extends HTMLElement {
 
   _changed(event) {
     event.stopPropagation();
-    const config = editedConfig(this._hass, this._config, event.detail.value);
+    const config = editedConfig(
+      this._hass, this._config, fromFormData(this._config, event.detail.value));
     this._config = config;
     this._render();
     this.dispatchEvent(new CustomEvent("config-changed", {
