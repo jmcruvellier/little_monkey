@@ -33,6 +33,7 @@ from .tariff import (
     PEAK,
     active_contract,
     bands_of,
+    TOTAL_BANDS,
     bands_of_offer,
     day_values,
     local_date)
@@ -161,6 +162,9 @@ class LittleMonkeyApiClient:
         self._contract_due = None
         # Labels of the bands counted in neither HC nor HP, logged once
         self._unclassified_bands = set()
+        # Bands of the day not configured {id: label}, None until the
+        # bands of a day are read
+        self._unknown_bands = None
         # Monotonic time of the last call of each statistics API
         self._last_stat_refresh = {
             "powerstat": None,
@@ -232,6 +236,11 @@ class LittleMonkeyApiClient:
     def kwh_hp_ns(self) -> float | None:
         """Return the HP consumption."""
         return self._kwh_hp_ns
+
+    @property
+    def unknown_bands(self) -> dict | None:
+        """Return the bands of the day not configured, None if not known."""
+        return None if self._unknown_bands is None else dict(self._unknown_bands)
 
     @property
     def band_values(self) -> dict:
@@ -753,8 +762,18 @@ class LittleMonkeyApiClient:
         # 78 bug fix
         if 'subconsumption' not in data[week_day]:
             return
+        subconsumption = data[week_day]['subconsumption']
         values, totals, unclassified = day_values(
-            data[week_day]['subconsumption'], self._configured_bands)
+            subconsumption, self._configured_bands)
+        configured = {band["id"] for band in self._configured_bands}
+        self._unknown_bands = {
+            band_id: label
+            for band_id, label in bands_of({}, data[week_day]).items()
+            if band_id not in configured
+            # Without the HC/HP totals, Heures Pleines and Heures Creuses
+            # would have no sensor: the user did not want them
+            and (self._use_hchp is True or band_id not in TOTAL_BANDS)
+        }
         self._band_values = {
             key: round_value(value) for key, value in values.items()}
         if self._use_hchp is True:

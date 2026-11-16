@@ -14,7 +14,11 @@ from unittest.mock import patch
 from homeassistant import config_entries, data_entry_flow
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import State
-from homeassistant.helpers import device_registry as dr, entity_registry as er
+from homeassistant.helpers import (
+    device_registry as dr,
+    entity_registry as er,
+    issue_registry as ir,
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import (
@@ -27,6 +31,7 @@ from custom_components.little_monkey import (
     async_remove_config_entry_device,
     config_flow,
     coordinator as lm_coordinator,
+    repairs,
 )
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
@@ -952,6 +957,61 @@ async def test_options_keep_the_bands_when_the_contract_is_unknown(hass, fake_ap
     result = await options_bands_screen(hass, entry, fake_api, {}, contract=None)
     assert result["description_placeholders"] == {"contract": "?"}
     assert "Heures Creuses – HC/HP" in schema_defaults(result)
+
+
+# --- Repair of the bands not configured
+
+
+async def test_unknown_bands_are_repaired(hass, fake_api):
+    """New bands raise a repair issue; fixing it adds their sensors."""
+    fake_api.values["_unknown_bands"] = {8: "HP Semaine", 9: "HC Semaine"}
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    issue_registry = ir.async_get(hass)
+    issue_id = f"unknown_bands_{entry.entry_id}"
+    issue = issue_registry.async_get_issue(DOMAIN, issue_id)
+    assert issue is not None
+    assert issue.is_fixable
+    assert issue.translation_placeholders == {
+        "name": "user", "bands": "HC Semaine, HP Semaine"}
+
+    flow = await repairs.async_create_fix_flow(hass, issue_id, issue.data)
+    flow.hass = hass
+    result = await flow.async_step_init()
+    assert result["type"] == FORM
+    assert result["step_id"] == "confirm"
+    assert result["description_placeholders"] == {
+        "bands": "HC Semaine, HP Semaine"}
+
+    # Once the entry reloads, the bands are configured
+    fake_api.values["_unknown_bands"] = {}
+    fake_api.values["_band_values"] = {"band_8": 6.43, "band_9": 18.29}
+    result = await flow.async_step_confirm({})
+    await hass.async_block_till_done()
+    assert result["type"] == CREATE_ENTRY
+    bands = entry.data["tariff_bands"]
+    assert [(b["id"], b["key"], b["category"]) for b in bands] == [
+        (2, "hp_grid_consumption", "hp"),
+        (3, "hc_grid_consumption", "hc"),
+        (8, "band_8", "hp"),
+        (9, "band_9", "hc"),
+    ]
+    assert entry.state is ConfigEntryState.LOADED
+    entity_id = er.async_get(hass).async_get_entity_id(
+        "sensor", DOMAIN, f"{entry.entry_id}_band_8")
+    state = hass.states.get(entity_id)
+    assert state.state == "6.43"
+    assert state.attributes["friendly_name"] == "Ecojoko HP Semaine"
+    assert issue_registry.async_get_issue(DOMAIN, issue_id) is None
+
+
+async def test_no_issue_while_the_bands_are_unknown(hass, fake_api):
+    """Nothing is reported before the bands of a day are read."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    issue_id = f"unknown_bands_{entry.entry_id}"
+    assert ir.async_get(hass).async_get_issue(DOMAIN, issue_id) is None
 
 
 # --- Current tariff period

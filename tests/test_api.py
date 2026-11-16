@@ -1247,6 +1247,39 @@ def test_tariff_setup_without_contract(api):
     assert run(client.async_get_tariff_setup()) == (None, {})
 
 
+# --- Bands of the day not configured
+
+
+def test_unknown_bands_of_a_new_contract(api):
+    """The bands of the day missing from the configuration are reported."""
+    payload = powerstat(subconsumption=[
+        {"id": 8, "label": "HP Semaine", "kwh": 6.43},
+        {"id": 9, "label": "HC Semaine", "kwh": 18.29},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    assert client.unknown_bands is None
+    run(client.async_get_data())
+    assert client.unknown_bands == {8: "HP Semaine", 9: "HC Semaine"}
+
+
+@pytest.mark.parametrize(("hchp", "expected"), [
+    (True, {}),
+    (False, {}),
+])
+def test_configured_bands_are_not_unknown(api, hchp, expected):
+    """Configured bands, and HP/HC without their totals, are not reported."""
+    payload = powerstat(subconsumption=[
+        {"id": 2, "label": "Heures Pleines", "kwh": 2.9},
+        {"id": 3, "label": "Heures Creuses", "kwh": 4.09},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    # Without HC/HP the entry has no band: HP and HC were not wanted
+    client = make_client(api, session, hchp=hchp)
+    run(client.async_get_data())
+    assert client.unknown_bands == expected
+
+
 # --- Activity of the account
 
 
