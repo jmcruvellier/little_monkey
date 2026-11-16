@@ -37,6 +37,47 @@ class DailyCounter:
             self.value = value
         return self.value
 
+class TariffPeriod:
+    """Current tariff period, deduced from the daily counters of the periods.
+
+    ecojoko gives the energy of each period of the day (HC and HP, or the six
+    Tempo periods), not the current period. The current period is the one
+    whose counter increased since the previous reading. It is known a few
+    minutes late, when the counter of the new period gains its first
+    hundredth of kWh, and it is kept while no counter increases.
+    """
+
+    def __init__(self):
+        """Initialize without any known period."""
+        self.period = None
+        self._day = None
+        self._counters = {}
+
+    def update(self, day, counters):
+        """Return the current period after a reading of the counters.
+
+        counters: energy of the day by period, None when not known.
+        """
+        if day != self._day:
+            # The counters restart from zero: the period goes on
+            self._day = day
+            self._counters = {}
+        increases = {}
+        for period, value in counters.items():
+            if value is None:
+                continue
+            previous = self._counters.get(period)
+            if previous is not None and value > previous:
+                increases[period] = value - previous
+            self._counters[period] = value
+        if len(increases) == 1 or (increases and self.period not in increases):
+            # When several counters increased, the period changed between
+            # two readings: the one that gained the most is the likeliest
+            self.period = max(increases, key=increases.get)
+        # Several increases including the current period: the next reading
+        # tells which one goes on
+        return self.period
+
 def get_paris_timezone():
     """Get Paris timezone."""
     return ZoneInfo('Europe/Paris')
