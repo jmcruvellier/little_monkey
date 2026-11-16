@@ -11,11 +11,15 @@
  *   year by category (standby, lighting, cooling...), read with the
  *   get_consumption_analysis service; a category shows its history, week
  *   by week over a year (get_category_history service).
+ * - little-monkey-activations-card: the starts of the appliances detected
+ *   by ecojoko, day by day (get_activations service).
  */
 
 const DOMAIN = "little_monkey";
 const ANALYSIS_TYPE = "little-monkey-analysis-card";
 const ANALYSIS_EDITOR_TYPE = "little-monkey-analysis-card-editor";
+const ACTIVATIONS_TYPE = "little-monkey-activations-card";
+const ACTIVATIONS_EDITOR_TYPE = "little-monkey-activations-card-editor";
 const DOCUMENTATION =
   "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-de-lanalyse-de-la-consommation";
 
@@ -43,6 +47,19 @@ const TRANSLATIONS = {
       6: "Fridges, freezers", 7: "Standby consumption", 8: "Lighting", 9: "Other appliances",
       11: "Air conditioning", 12: "Dishwasher", 13: "Washing", 14: "Drying",
     },
+    activations: {
+      name: "Little Monkey appliance activations",
+      description: "The starts of your appliances detected by ecojoko, as in its application.",
+      title: "Appliance activations",
+      more: "Load the next ones",
+      none: "No activation detected over these 48 hours",
+      error: "The activations could not be read",
+      missing: "Little Monkey sensor not found",
+      average: "Average {power}",
+      seconds: "{n} s",
+      minutes: "{n} min",
+      hours: "{h} h {m} min",
+    },
     editor: {
       entity: "A sensor of the Little Monkey device",
       period: "Period shown first",
@@ -68,6 +85,19 @@ const TRANSLATIONS = {
       bar: "{name} : {cost} · {energy}",
     },
     categories: {},
+    activations: {
+      name: "Petit Singe : activations des appareils",
+      description: "Les démarrages de vos appareils détectés par ecojoko, comme dans son application.",
+      title: "Activations des appareils",
+      more: "Charger les suivantes",
+      none: "Aucune activation détectée sur ces 48 heures",
+      error: "Les activations n'ont pas pu être lues",
+      missing: "Capteur Little Monkey introuvable",
+      average: "Moyenne {power}",
+      seconds: "{n} s",
+      minutes: "{n} min",
+      hours: "{h} h {m} min",
+    },
     editor: {
       entity: "Un capteur de l'appareil Little Monkey",
       period: "Période affichée d'abord",
@@ -301,6 +331,109 @@ export function monthLabels(locale, bars) {
     }
   });
   return labels;
+}
+
+// --- Activations of the appliances
+
+// The first page is read again after this many milliseconds
+const ACTIVATIONS_REFRESH = 10 * 60 * 1000;
+
+/** Return the activations of the pages read, without the repeated ones. */
+export function mergeActivations(pages) {
+  const seen = new Set();
+  const result = [];
+  for (const page of pages) {
+    for (const activation of page?.activations || []) {
+      if (activation?.start && !seen.has(activation.start)) {
+        seen.add(activation.start);
+        result.push(activation);
+      }
+    }
+  }
+  // The most recent first
+  return result.sort((a, b) => (a.start < b.start ? 1 : a.start > b.start ? -1 : 0));
+}
+
+/**
+ * Return the activations grouped by day, the day in the time zone of
+ * ecojoko (the date of their ISO time).
+ */
+export function groupByDay(activations) {
+  const days = [];
+  for (const activation of activations) {
+    const day = activation.start.slice(0, 10);
+    if (!days.length || days[days.length - 1].day !== day) {
+      days.push({ day, activations: [] });
+    }
+    days[days.length - 1].activations.push(activation);
+  }
+  return days;
+}
+
+/** Return the name of a day: "Lundi 16 novembre 2026". */
+export function dayLabel(locale, day) {
+  const text = new Intl.DateTimeFormat(locale, {
+    weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+  }).format(utcDate(day));
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Return the hours of an activation: "00:03 – 02:29". */
+export function timeRange(activation) {
+  const time = (iso) => (iso ? iso.slice(11, 16) : "");
+  return `${time(activation.start)} – ${time(activation.end)}`;
+}
+
+/** Return the duration of an activation: "30 s", "13 min", "2 h 26 min". */
+export function durationLabel(text, activation) {
+  const seconds = Math.max(Math.round((Date.parse(activation.end) - Date.parse(activation.start)) / 1000), 0);
+  if (!Number.isFinite(seconds)) {
+    return "";
+  }
+  if (seconds < 60) {
+    return text.seconds.replace("{n}", seconds);
+  }
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) {
+    return text.minutes.replace("{n}", minutes);
+  }
+  return text.hours.replace("{h}", Math.floor(minutes / 60)).replace("{m}", String(minutes % 60).padStart(2, "0"));
+}
+
+/**
+ * Return the SVG of the shape ecojoko draws for an activation: a pulse on a
+ * baseline, as wide as the activation is long and as high as its power.
+ */
+export function shapeSvg(shape) {
+  const width = Math.min(Math.max(Number(shape?.width) || 3, 2), 96);
+  const height = Math.min(Math.max(Number(shape?.height) || 4, 2), 40);
+  const color = /^#[0-9a-f]{3,8}$/i.test(shape?.color || "") ? shape.color : "#5fc2ff";
+  const base = 42;
+  return `<svg class="shape" viewBox="0 0 104 44" aria-hidden="true">
+    <path d="M 0 ${base} H 4 V ${base - height} H ${4 + width} V ${base} H 104" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" />
+  </svg>`;
+}
+
+/** Return the configuration of a new activations card, on the first device. */
+export function activationsStubConfig(hass) {
+  const config = { type: `custom:${ACTIVATIONS_TYPE}` };
+  const entity = findEntity(hass, "realtime_consumption");
+  if (entity) {
+    config.entity = entity;
+  }
+  return config;
+}
+
+/** Return the fields of the editor of the activations. */
+export function activationsSchema() {
+  return [
+    {
+      name: "entity",
+      required: true,
+      selector: { entity: { filter: { integration: DOMAIN, domain: "sensor" } } },
+    },
+    { name: "title", selector: { text: {} } },
+  ];
 }
 
 /** Return the sensors of the Little Monkey device of an entity, by key. */
@@ -847,6 +980,160 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
   }
 }
 
+class LittleMonkeyActivationsCard extends HTMLElement {
+  setConfig(config) {
+    if (!config) {
+      throw new Error("Invalid configuration");
+    }
+    const entity = this._config?.entity;
+    this._config = { ...config };
+    if (!this._pages || entity !== this._config.entity) {
+      // Pages read: 0 for the last 48 hours, 1 for the 48 hours before...
+      this._pages = [];
+      this._loaded = 0;
+    }
+    this._built = false;
+    this._render();
+  }
+
+  set hass(hass) {
+    const first = !this._hass;
+    this._hass = hass;
+    if (first) {
+      this._read(0);
+    }
+    this._render();
+  }
+
+  connectedCallback() {
+    clearInterval(this._timer);
+    this._timer = setInterval(() => this._read(0), ACTIVATIONS_REFRESH);
+  }
+
+  disconnectedCallback() {
+    clearInterval(this._timer);
+  }
+
+  getCardSize() {
+    return 6;
+  }
+
+  getGridOptions() {
+    // Height of the content: a fixed number of rows would cut it
+    return { columns: 6, min_columns: 4 };
+  }
+
+  static getConfigElement() {
+    return document.createElement(ACTIVATIONS_EDITOR_TYPE);
+  }
+
+  static getStubConfig(hass) {
+    return activationsStubConfig(hass);
+  }
+
+  _text() {
+    return TRANSLATIONS[language(this._hass)].activations;
+  }
+
+  /** Read a page of activations: the first one again, or the next one. */
+  async _read(page) {
+    if (!this._hass || !this._config?.entity || this._reading === page) {
+      return;
+    }
+    this._reading = page;
+    try {
+      const answer = await callService(this._hass, this._config.entity, "get_activations", { page });
+      this._pages[page] = answer;
+      this._loaded = Math.max(this._loaded, page + 1);
+      this._error = false;
+    } catch (error) {
+      console.debug("Little Monkey card: activations not read", error);
+      this._error = true;
+    } finally {
+      this._reading = null;
+      this._signature = null;
+      this._render();
+    }
+  }
+
+  _build() {
+    if (!this.shadowRoot) {
+      this.attachShadow({ mode: "open" });
+    }
+    this.shadowRoot.innerHTML = `
+      <style>
+        ${STYLES}
+        .day { margin: 12px 0 6px; color: var(--secondary-text-color); font-size: 0.9em; font-weight: 500; }
+        .day:first-child { margin-top: 0; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 8px; }
+        .item { display: grid; grid-template-columns: 44px 1fr auto; grid-template-rows: auto auto; column-gap: 10px; align-items: center;
+          border: 1px solid var(--divider-color, #e0e0e0); border-radius: 12px; padding: 8px 10px; }
+        .shape { grid-row: span 2; width: 44px; height: 20px; }
+        .hours { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; }
+        .energy { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; text-align: right; }
+        .duration, .power { color: var(--secondary-text-color); font-size: 0.85em; }
+        .hours, .energy, .duration, .power { white-space: nowrap; }
+        .power { text-align: right; }
+        .more { display: block; margin: 12px auto 0; border: 1px solid var(--divider-color, #e0e0e0); border-radius: 18px; background: none;
+          color: var(--primary-text-color); font: inherit; font-size: 0.9em; padding: 6px 14px; cursor: pointer; }
+        .more:disabled { opacity: 0.5; cursor: default; }
+      </style>
+      <ha-card>
+        <div class="header"><div class="title"></div></div>
+        <div class="warning"></div>
+        <div class="body"></div>
+        <button class="more"></button>
+      </ha-card>`;
+    this.shadowRoot.querySelector(".more").addEventListener("click", () => this._read(this._loaded));
+    this._built = true;
+  }
+
+  _render() {
+    if (!this._config || !this._hass) {
+      return;
+    }
+    if (!this._built) {
+      this._build();
+    }
+    const text = this._text();
+    const locale = this._hass.locale?.language || this._hass.language;
+    const activations = mergeActivations(this._pages);
+    const signature = JSON.stringify([activations, this._error, this._reading, this._loaded, this._config.title, locale]);
+    if (signature === this._signature) {
+      return;
+    }
+    this._signature = signature;
+    const root = this.shadowRoot;
+    root.querySelector(".title").textContent = this._config.title || text.title;
+    const missing = !this._config.entity || !this._hass.states[this._config.entity];
+    const warning = root.querySelector(".warning");
+    warning.textContent = missing ? text.missing : "";
+    warning.style.display = missing ? "" : "none";
+    const more = root.querySelector(".more");
+    more.textContent = text.more;
+    more.disabled = this._reading !== null && this._reading !== undefined;
+    more.style.display = this._loaded ? "" : "none";
+    const body = root.querySelector(".body");
+    if (!activations.length) {
+      const message = this._error ? text.error : this._loaded ? text.none : "…";
+      body.innerHTML = `<div class="message">${escapeHtml(message)}</div>`;
+      return;
+    }
+    const power = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+    body.innerHTML = groupByDay(activations).map((group) => `
+      <div class="day">${escapeHtml(dayLabel(locale, group.day))}</div>
+      <div class="grid">${group.activations.map((activation) => `
+        <div class="item">
+          ${shapeSvg(activation.shape)}
+          <div class="hours">${escapeHtml(timeRange(activation))}</div>
+          <div class="energy">${escapeHtml(formatValue(locale, activation.energy, "kwh"))}</div>
+          <div class="duration">${escapeHtml(durationLabel(text, activation))}</div>
+          <div class="power">${escapeHtml(text.average.replace("{power}", `${power.format(activation.power ?? 0)} W`))}</div>
+        </div>`).join("")}
+      </div>`).join("");
+  }
+}
+
 /** Editor of an analysis card: a form of Home Assistant. */
 class AnalysisEditor extends HTMLElement {
   setConfig(config) {
@@ -920,6 +1207,12 @@ class LittleMonkeyAnalysisCardEditor extends AnalysisEditor {
   }
 }
 
+class LittleMonkeyActivationsCardEditor extends AnalysisEditor {
+  _schema() {
+    return activationsSchema();
+  }
+}
+
 /** Define a card and its editor, and show the card in the card picker. */
 function defineCard(type, card, editorType, editor, key) {
   if (!customElements.get(editorType)) {
@@ -942,4 +1235,8 @@ function defineCard(type, card, editorType, editor, key) {
 defineCard(
   ANALYSIS_TYPE, LittleMonkeyAnalysisCard,
   ANALYSIS_EDITOR_TYPE, LittleMonkeyAnalysisCardEditor, "analysis",
+);
+defineCard(
+  ACTIVATIONS_TYPE, LittleMonkeyActivationsCard,
+  ACTIVATIONS_EDITOR_TYPE, LittleMonkeyActivationsCardEditor, "activations",
 );
