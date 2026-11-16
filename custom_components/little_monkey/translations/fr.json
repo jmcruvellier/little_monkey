@@ -91,6 +91,19 @@
             "red_hp_grid_consumption": {
                 "name": "Consommation HP Rouge Réseau"
             },
+            "current_tariff_period": {
+                "name": "Période Tarifaire en Cours",
+                "state": {
+                    "hc": "Heures Creuses",
+                    "hp": "Heures Pleines",
+                    "hc_blue": "HC Bleu",
+                    "hp_blue": "HP Bleu",
+                    "hc_white": "HC Blanc",
+                    "hp_white": "HP Blanc",
+                    "hc_red": "HC Rouge",
+                    "hp_red": "HP Rouge"
+                }
+            },
             "production_surplus": {
                 "name": "Surplus de Production"
             },
@@ -105,6 +118,37 @@
             },
             "outdoor_hum": {
                 "name": "Humidité Extérieure"
+            },
+            "savings_7_days": {
+                "name": "Économies sur 7 Jours",
+                "state_attributes": {
+                    "reference_consumption": {
+                        "name": "Consommation de référence"
+                    }
+                }
+            },
+            "consumption_7_days": {
+                "name": "Consommation sur 7 Jours",
+                "state_attributes": {
+                    "daily_consumption": {
+                        "name": "Consommation journalière"
+                    }
+                }
+            },
+            "cost_7_days": {
+                "name": "Coût sur 7 Jours"
+            },
+            "total_savings": {
+                "name": "Économies Cumulées"
+            },
+            "max_power_month": {
+                "name": "Puissance Max du Mois"
+            },
+            "max_power_year": {
+                "name": "Puissance Max de l'Année"
+            },
+            "max_power_alltime": {
+                "name": "Puissance Max Depuis le Début"
             }
         }
     }

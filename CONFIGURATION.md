@@ -67,3 +67,64 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 4. Voici un exemple de tous les capteurs créés:
 
 ![Etape 3](/custom_components/little_monkey/res/config_step_03.png)
+
+## Carte du tableau de bord
+
+Depuis la version 1.3.0, l'intégration fournit la carte « Little Monkey ». Elle est chargée automatiquement par Home Assistant : il n'y a pas de ressource Lovelace à ajouter, ni de dépôt HACS supplémentaire à installer. Elle nécessite Home Assistant 2024.7 ou plus récent.
+
+Elle reprend le cadran du boîtier ecojoko<sup>©️</sup> :
+
+- l'arc supérieur montre la puissance en temps réel sur une échelle logarithmique (0, 50, 100, 500, 1K, 5K, 10K, MAX), en zones de plus en plus marquées (0-100 W, 100 W-1K, 1K-5K, 5K-MAX), avec une aiguille rattachée au disque et de sa couleur ;
+- le disque central affiche la puissance en W, la puissance apparente en VA en dessous quand le capteur Puissance Apparente existe, et la courbe des 3 dernières minutes (réglable), lissée ;
+- l'aiguille bleu clair de l'arc inférieur indique vos économies sur 7 jours par rapport à votre consommation de référence, de -20 % (côté vert, économie) à +20 % (surconsommation), d'après le capteur Économies sur 7 Jours ; elle reste en butée au-delà, et n'apparaît pas tant qu'ecojoko n'a pas de semaine de référence.
+
+Comme sur le cadran d'ecojoko<sup>©️</sup>, le disque central a plusieurs faces. On passe de l'une à l'autre en glissant le doigt (ou la souris) sur le cadran, ou en touchant les points en bas du disque :
+
+1. la puissance temps réel, décrite ci-dessus ; le titre devient « INJECTION RÉSEAU » quand la puissance est négative (surplus de production injecté), et le disque passe alors au vert ;
+2. les économies sur 7 jours, en %, par rapport à votre consommation de référence (« SURCONSOMMATION » quand elles sont positives) ;
+3. le coût et la consommation sur 7 jours, avec la consommation de chaque jour en histogramme ;
+4. la puissance maximale du mois en cours, de l'année en cours et depuis le début.
+
+Les faces 2 à 4 n'apparaissent qu'avec les capteurs de l'activité du compte (Little Monkey 1.3.0 ou plus récent). Après le choix d'une autre face, la carte revient d'elle-même sur la puissance temps réel au bout de 30 secondes (option `return_seconds`, 0 pour rester sur la face choisie).
+
+Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capteurs HP/HC ou Capteurs Tempo est cochée dans l'intégration, il prend la couleur de la période en cours :
+
+| Période | HC | HP |
+| ------- | -- | -- |
+| HC/HP (sans Tempo) et Tempo Bleu | bleu foncé `#00008B` | bleu `#0000FF` |
+| Tempo Blanc | gris clair `#D3D3D3` | blanc `#FFFFFF` |
+| Tempo Rouge | rouge foncé `#8B0000` | rouge `#FF0000` |
+
+La carte utilise par défaut le capteur Période Tarifaire en Cours de l'intégration, créé avec l'option HC/HP ou Tempo. Ce capteur déduit la période du compteur d'énergie qui augmente : il la connaît avec quelques minutes de retard au changement de période. Si vous disposez d'une source plus réactive (intégration RTE Tempo, téléinformation du compteur Linky...), indiquez-la dans la carte. Sont compris les états `HC` / `HP` (ou « Heures Creuses », « off-peak »...), la couleur Tempo en français ou en anglais (`Bleu`, `white`...), les deux ensemble (`HC Bleu`, `hp_red`), les périodes du compteur Linky (`HCJB`, `HPJR`...) et un capteur binaire allumé pendant les heures creuses. Sans période connue, le disque reste bleu ecojoko<sup>©️</sup> ; une couleur Tempo connue sans période donne sa couleur HP. Sous la courbe, la carte affiche aussi le nom de la période en cours, par exemple « HEURES CREUSES » ou « HEURES PLEINES · JOUR ROUGE ».
+
+Pour l'ajouter, modifier un tableau de bord, cliquer sur "Ajouter une carte" et chercher "Little Monkey" (ou "Petit Singe"). L'éditeur visuel choisit automatiquement les capteurs Consommation Temps Réel, Puissance Apparente et Période Tarifaire en Cours de votre appareil Little Monkey ; il ne propose la période tarifaire que si l'option HC/HP ou Tempo est cochée dans l'intégration, et la couleur Tempo que pour l'option Tempo.
+
+Vous pouvez aussi utiliser la configuration YAML suivante, en remplaçant les entités par les vôtres :
+
+```yaml
+type: custom:little-monkey-card
+entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : entité donnant la période en cours (HC/HP, Tempo, Linky),
+# par défaut le capteur Période Tarifaire en Cours de l'appareil
+tariff_entity: binary_sensor.heures_creuses
+# Facultatif : entité donnant la couleur Tempo du jour, si tariff_entity ne la donne pas
+tempo_color_entity: sensor.couleur_tempo_actuelle
+```
+
+| Option | Obligatoire | Description |
+| ------ | ----------- | ----------- |
+| `entity` | Oui | Capteur Consommation Temps Réel de Little Monkey |
+| `apparent_power_entity` | Non | Capteur de puissance apparente ; par défaut le capteur Puissance Apparente du même appareil Little Monkey, s'il existe |
+| `tariff_entity` | Non | Entité donnant la période en cours (HC/HP, et éventuellement la couleur Tempo) ; par défaut le capteur Période Tarifaire en Cours du même appareil Little Monkey |
+| `tempo_color_entity` | Non | Entité donnant la couleur Tempo du jour, prioritaire sur `tariff_entity` pour la couleur |
+| `max_power` | Non | Puissance en W de la graduation MAX (12000 par défaut, au moins 10001) |
+| `relief` | Non | Relief du cadran comme sur l'application ecojoko : ombre autour du cadran, lunette creusée et ombre sous le disque (`true` par défaut, `false` pour un cadran plat) |
+| `dial_color` | Non | Couleur de l'intérieur du cadran : `default` (par défaut, une teinte tirée du thème, un peu plus claire que la carte en thème sombre et un peu grisée en thème clair), `none` (transparent) une couleur de la palette de Home Assistant (`light-blue`, `amber`, `grey`...), qui suit le thème, ou une couleur libre (`[30, 40, 50]` comme le donne le sélecteur de couleur, ou `"#1e2832"`) ; dans l'éditeur, le menu « Fond du cadran » propose ces quatre choix. Sur une couleur de la palette ou libre, les graduations passent en foncé ou en clair pour rester lisibles |
+| `return_seconds` | Non | Délai en secondes avant le retour sur la face de la puissance temps réel (30 par défaut, 0 pour rester sur la face choisie) |
+| `savings_entity` | Non | Capteur des économies sur 7 jours en %, pour l'aiguille du bas ; par défaut le capteur Économies sur 7 Jours du même appareil Little Monkey |
+| `trend_minutes` | Non | Durée de la courbe du disque central, en minutes (3 par défaut, comme le cadran d'ecojoko ; de 1 à 60) |
+
+La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du même appareil Little Monkey.
+
+> [!TIP]
+> Après une mise à jour de l'intégration, si la carte n'apparaît pas ou n'a pas changé, actualisez la page en vidant le cache du navigateur (Ctrl+F5), et sur l'application mobile videz le cache du frontend depuis les paramètres de l'application.
