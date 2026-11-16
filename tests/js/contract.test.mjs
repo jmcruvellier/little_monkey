@@ -1,0 +1,124 @@
+// Tests of the contract card of Little Monkey, run with: node --test tests/js
+import assert from "node:assert/strict";
+import test from "node:test";
+
+// The module defines custom elements: a browser is not needed for the
+// functions tested here
+globalThis.HTMLElement = class {};
+globalThis.customElements = { get: () => true };
+const card = await import(
+  "../../custom_components/little_monkey/frontend/little-monkey-contract-card.js"
+);
+
+const SLOTS = card.offPeakSlots([
+  { start: "01:30", stop: "07:00" },
+  { start: "14:00", stop: "16:30" },
+]);
+const NIGHT = card.offPeakSlots([{ start: "22:00", stop: "06:00" }]);
+
+test("the off-peak slots are read in minutes", () => {
+  assert.deepEqual(SLOTS, [[90, 420], [840, 990]]);
+  assert.deepEqual(card.offPeakSlots([{ start: "x", stop: "07:00" }, { start: "08:00", stop: "08:00" }]), []);
+  assert.deepEqual(card.offPeakSlots(undefined), []);
+  assert.equal(card.timeOf(1530), "01:30");
+});
+
+test("a time is in the off-peak hours or not, across midnight too", () => {
+  assert.equal(card.isOffPeak(SLOTS, 5 * 60), true);
+  assert.equal(card.isOffPeak(SLOTS, 7 * 60), false);
+  assert.equal(card.isOffPeak(SLOTS, 15 * 60), true);
+  assert.equal(card.isOffPeak(NIGHT, 23 * 60), true);
+  assert.equal(card.isOffPeak(NIGHT, 3 * 60), true);
+  assert.equal(card.isOffPeak(NIGHT, 12 * 60), false);
+});
+
+test("the next change of period", () => {
+  assert.deepEqual(card.nextChange(SLOTS, 5 * 60 + 15), { minutes: 420, offPeak: false, wait: 105 });
+  assert.deepEqual(card.nextChange(SLOTS, 17 * 60), { minutes: 90, offPeak: true, wait: 510 });
+  assert.deepEqual(card.nextChange(NIGHT, 21 * 60 + 40), { minutes: 1320, offPeak: true, wait: 20 });
+  assert.equal(card.nextChange([], 600), null);
+  const text = { hours: "{h} h {m}", minutes: "{m} min" };
+  assert.equal(card.durationLabel(text, 105), "1 h 45");
+  assert.equal(card.durationLabel(text, 20), "20 min");
+});
+
+test("the dial draws an arc between two times", () => {
+  // 0 h at the top, 6 h on the right
+  assert.equal(card.dialArc(0, 360, 60), "M 80.00 20.00 A 60 60 0 0 1 140.00 80.00");
+  // Across midnight: 22 h to 6 h is a third of the day
+  assert.match(card.dialArc(1320, 360, 60), / 0 0 1 140\.00 80\.00$/);
+});
+
+test("the Tempo color of the day and the badge of the supplier", () => {
+  assert.equal(card.tempoDay("hp_white"), "white");
+  assert.equal(card.tempoDay("hc_red"), "red");
+  assert.equal(card.tempoDay("hc"), null);
+  assert.equal(card.supplierBadge("EDF"), "EDF");
+  assert.equal(card.supplierBadge("TotalEnergies"), "TOTA");
+  assert.equal(card.supplierBadge("Ekwateur Énergie Verte"), "EÉV");
+  assert.equal(card.supplierBadge(""), "?");
+});
+
+function fakeHass(period) {
+  const entities = {};
+  for (const [entityId, key] of [
+    ["sensor.eco_contract", "contract"],
+    ["sensor.eco_period", "current_tariff_period"],
+    ["sensor.eco_hc", "hc_grid_consumption"],
+  ]) {
+    entities[entityId] = { entity_id: entityId, platform: "little_monkey", translation_key: key, device_id: "eco" };
+  }
+  return {
+    entities,
+    states: {
+      "sensor.eco_contract": {
+        state: "Zen Fixe - Option HP/HC",
+        attributes: {
+          supplier: "EDF", power: 9, subscription_price: 24.77, start_date: "2026-08-05",
+          off_peak_timeslots: [{ start: "01:30", stop: "07:00" }, { start: "14:00", stop: "16:30" }],
+          bands: [
+            { key: "hc_grid_consumption", name: "Heures Creuses", category: "hc" },
+            { key: "band_99", name: "Inconnue", category: "hp" },
+          ],
+        },
+      },
+      "sensor.eco_period": { state: period, attributes: {} },
+      "sensor.eco_hc": { state: "4.63", attributes: {} },
+    },
+  };
+}
+
+test("the card shows the contract, the period and the bands", () => {
+  const view = card.contractView(fakeHass("hp"), "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  assert.equal(view.offer, "Zen Fixe - Option HP/HC");
+  assert.equal(view.power, 9);
+  // The off-peak hours of the contract win over the period of the integration
+  assert.equal(view.offPeak, true);
+  assert.equal(view.minutes, 315);
+  assert.deepEqual(view.next, { minutes: 420, offPeak: false, wait: 105 });
+  assert.deepEqual(view.bands.map((band) => [band.name, band.energy, band.entity]), [
+    ["Heures Creuses", 4.63, "sensor.eco_hc"],
+    ["Inconnue", null, undefined],
+  ]);
+  const tempo = card.contractView(fakeHass("hc_blue"), "sensor.eco_contract", new Date(2026, 10, 17, 12, 0));
+  assert.equal(tempo.tempo, "blue");
+  assert.equal(tempo.offPeak, false);
+  // Without off-peak hours in the contract, the period of the integration decides
+  const hass = fakeHass("hc");
+  hass.states["sensor.eco_contract"].attributes.off_peak_timeslots = [];
+  assert.equal(card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 12, 0)).offPeak, true);
+});
+
+test("an unknown contract gives nothing to show", () => {
+  const hass = fakeHass("hc");
+  hass.states["sensor.eco_contract"].state = "unknown";
+  assert.equal(card.contractView(hass, "sensor.eco_contract"), null);
+  assert.equal(card.contractView(hass, "sensor.missing"), null);
+});
+
+test("a new contract card takes the contract sensor of the first device", () => {
+  assert.deepEqual(card.contractStubConfig(fakeHass("hc")), {
+    type: "custom:little-monkey-contract-card", entity: "sensor.eco_contract",
+  });
+  assert.deepEqual(card.contractSchema().map((field) => field.name), ["entity", "title"]);
+});
