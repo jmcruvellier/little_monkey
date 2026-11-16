@@ -6,6 +6,7 @@ import contextlib
 import datetime as dt
 import json
 import logging
+import sys
 import types
 from zoneinfo import ZoneInfo
 
@@ -718,6 +719,82 @@ def test_tempo(api):
     assert client.tempo_hc_red is None
     assert client.tempo_hp_red == 4
     assert (client.kwh_hc_ns, client.kwh_hp_ns) == (4, 6)
+
+
+# Days observed on real accounts: (sub-consumptions, HC, HP)
+REAL_DAYS = {
+    # EDF Zen Week-End Plus, weekday, special day and Saturday
+    "zen_weekend_plus_weekday": ([
+        {"id": 8, "label": "HP Semaine", "kwh": 25.91},
+        {"id": 9, "label": "HC Semaine", "kwh": 19.09},
+    ], 19.09, 25.91),
+    "zen_weekend_plus_special_day": ([
+        {"id": 10, "label": "HP Jour Spécial", "kwh": 23.41},
+        {"id": 11, "label": "HC Jour Spécial", "kwh": 9.58},
+    ], 9.58, 23.41),
+    "zen_weekend_plus_saturday": ([
+        {"id": 6, "label": "HP Weekend", "kwh": 20.76},
+        {"id": 7, "label": "HC Weekend", "kwh": 16.1},
+    ], 16.1, 20.76),
+    # EDF Tempo: a day changing from blue to white has two HC bands
+    "tempo_blue_to_white": ([
+        {"id": 19, "label": "HC Bleu", "kwh": 3.83},
+        {"id": 20, "label": "HP Blanc", "kwh": 7.47},
+        {"id": 21, "label": "HC Blanc", "kwh": 0.78},
+    ], 4.61, 7.47),
+    # EDF HC + Week-end: a single band on Saturday and Sunday (PR #125)
+    "hc_weekend_saturday": ([
+        {"id": 13, "label": "Heures Weekend", "kwh": 26.19},
+    ], 0, 0),
+    # Gaz de Bordeaux, HC given before HP
+    "hc_first": ([
+        {"id": 3, "label": "Heures Creuses", "kwh": 4.09},
+        {"id": 2, "label": "Heures Pleines", "kwh": 2.9},
+    ], 4.09, 2.9),
+}
+
+
+@pytest.mark.parametrize("day", REAL_DAYS)
+def test_hchp_adds_every_band_of_a_category(api, day):
+    """HC and HP add all the bands of their category, whatever the contract."""
+    subconsumption, hc, hp = REAL_DAYS[day]
+    payload = powerstat(subconsumption=subconsumption)
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == (hc, hp)
+
+
+def test_unclassified_band_is_logged_once(api, monkeypatch, caplog):
+    """A band counted in neither HC nor HP is logged once."""
+    clock = fake_clock(api, monkeypatch)
+    payload = powerstat(subconsumption=[
+        {"id": 13, "label": "Heures Weekend", "kwh": 26.19},
+    ])
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session, hchp=True)
+    with caplog.at_level(logging.INFO):
+        poll_during(client, clock, 120)
+    messages = [r.getMessage() for r in caplog.records
+                if "Heures Weekend" in r.getMessage()]
+    assert messages == [
+        "Tariff band 'Heures Weekend' is counted in neither HC nor HP"]
+
+
+@pytest.mark.parametrize(("label", "category"), [
+    ("Heures Creuses", "hc"),
+    ("HC Rouge", "hc"),
+    (" hc semaine", "hc"),
+    ("Heures Pleines", "hp"),
+    ("HP Jour Spécial", "hp"),
+    ("Heures Weekend", None),
+    ("HCHP", None),
+    ("", None),
+    (None, None),
+])
+def test_category_of(api, label, category):
+    """The category of a band is deduced from the first words of its label."""
+    assert sys.modules[api.__package__ + ".tariff"].category_of(label) == category
 
 
 @pytest.mark.parametrize(("raw", "expected"), [(-1.5, 1.5), ("0", 0), (2, 2)])

@@ -26,10 +26,14 @@ from .utils import (
     get_current_date,
     get_paris_timezone,
     get_value_from_json_array,
-    convert_to_float,
     finite_number,
     round_value)
-from .tariff import active_contract, bands_of
+from .tariff import (
+    OFF_PEAK,
+    PEAK,
+    active_contract,
+    bands_of,
+    totals_by_category)
 
 TZ = get_paris_timezone()
 
@@ -156,6 +160,8 @@ class LittleMonkeyApiClient:
         # Internal
         # Monotonic time the contract is due to be read again
         self._contract_due = None
+        # Labels of the bands counted in neither HC nor HP, logged once
+        self._unclassified_bands = set()
         # Monotonic time of the last call of each statistics API
         self._last_stat_refresh = {
             "powerstat": None,
@@ -758,26 +764,20 @@ class LittleMonkeyApiClient:
                 "label",
                 "HP Rouge",
                 "kwh"))
-        # HC/HP option
-        if self._use_tempo is True and self._use_hchp is True:
-            self._kwh_hc_ns = round_value(
-                convert_to_float(self._tempo_hc_blue)
-                + convert_to_float(self._tempo_hc_white)
-                + convert_to_float(self._tempo_hc_red))
-            self._kwh_hp_ns = round_value(
-                convert_to_float(self._tempo_hp_blue)
-                + convert_to_float(self._tempo_hp_white)
-                + convert_to_float(self._tempo_hp_red))
+        # HC/HP option: every band of a category is added, whatever the
+        # contract (Tempo, week-end, special day...)
         # 78 bug fix
-        elif self._use_hchp is True and 'subconsumption' in data[week_day]:
-            # 74 bug fix
-            for item in data[week_day]['subconsumption']:
-                if item['label'] == "Heures Creuses" or \
-                        item['label'].startswith("HC"):
-                    self._kwh_hc_ns = round_value(convert_to_float(item['kwh']))
-                if item['label'] == "Heures Pleines" or \
-                        item['label'].startswith("HP"):
-                    self._kwh_hp_ns = round_value(convert_to_float(item['kwh']))
+        if self._use_hchp is True and 'subconsumption' in data[week_day]:
+            totals, unclassified = totals_by_category(
+                data[week_day]['subconsumption'])
+            self._kwh_hc_ns = round_value(totals[OFF_PEAK])
+            self._kwh_hp_ns = round_value(totals[PEAK])
+            for label in unclassified:
+                if label not in self._unclassified_bands:
+                    self._unclassified_bands.add(label)
+                    LOGGER.info(
+                        "Tariff band %r is counted in neither HC nor HP",
+                        label)
 
     async def _cookiesapi_wrapper(
         self,
