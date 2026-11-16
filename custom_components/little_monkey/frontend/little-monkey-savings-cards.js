@@ -49,7 +49,6 @@ const TRANSLATIONS = {
       periods: { week: "Week", month: "Month", year: "Year" },
       previous: "Previous period",
       next: "Next period",
-      week_range: "{start} – {end}",
       bar: "{name}: {savings} · {energy}",
       error: "The savings of this period could not be read",
       missing: "Savings sensor not found",
@@ -89,7 +88,6 @@ const TRANSLATIONS = {
       periods: { week: "Semaine", month: "Mois", year: "Année" },
       previous: "Période précédente",
       next: "Période suivante",
-      week_range: "Du {start} au {end}",
       bar: "{name} : {savings} · {energy}",
       error: "Les économies de cette période n'ont pas pu être lues",
       missing: "Capteur des économies introuvable",
@@ -370,7 +368,7 @@ export function shiftPeriod(period, iso, step) {
 }
 
 /** Return the name of a period: its days, its month or its year. */
-export function periodLabel(locale, period, iso, weekRange = "{start} – {end}") {
+export function periodLabel(locale, period, iso) {
   const start = utcDate(periodStart(period, iso));
   if (period === "year") {
     return String(start.getUTCFullYear());
@@ -381,10 +379,10 @@ export function periodLabel(locale, period, iso, weekRange = "{start} – {end}"
   }
   const end = new Date(start);
   end.setUTCDate(end.getUTCDate() + 6);
-  const day = { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" };
-  return weekRange
-    .replace("{start}", new Intl.DateTimeFormat(locale, day).format(start))
-    .replace("{end}", new Intl.DateTimeFormat(locale, { ...day, year: "numeric" }).format(end));
+  // Short enough for a narrow card: "9–15 nov. 2026", "Nov 9 – 15, 2026"
+  return new Intl.DateTimeFormat(locale, {
+    day: "numeric", month: "short", year: "numeric", timeZone: "UTC",
+  }).formatRange(start, end);
 }
 
 /** Return the label of a bar: a day of the week, the days of a week, a month. */
@@ -1003,7 +1001,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     for (const button of root.querySelectorAll(".period")) {
       button.classList.toggle("active", button.dataset.period === this._period);
     }
-    root.querySelector(".name").textContent = periodLabel(locale, this._period, shown.start, text.week_range);
+    root.querySelector(".name").textContent = periodLabel(locale, this._period, shown.start);
     root.querySelector(".next").disabled = shown.start >= this._current();
 
     const savings = shown.savings;

@@ -138,8 +138,11 @@ test("the previous and next periods", () => {
 });
 
 test("the names of the periods and of the bars", () => {
-  assert.equal(cards.periodLabel("fr", "week", "2026-11-18", "Du {start} au {end}"),
-    "Du lun. 16 nov. au dim. 22 nov. 2026");
+  assert.equal(cards.periodLabel("fr", "week", "2026-11-18"), "16–22 nov. 2026");
+  // Intl puts thin or non-breaking spaces around the dash
+  const spaces = (text) => text.replace(/[   ]/g, " ");
+  assert.equal(spaces(cards.periodLabel("fr", "week", "2026-10-28")), "26 oct. – 1 nov. 2026");
+  assert.equal(spaces(cards.periodLabel("en", "week", "2026-11-18")), "Nov 16 – 22, 2026");
   assert.equal(cards.periodLabel("fr", "month", "2026-11-18"), "Novembre 2026");
   assert.equal(cards.periodLabel("en", "year", "2026-11-18"), "2026");
   assert.equal(cards.barLabel("fr", "week", "2026-11-16"), "lun.");

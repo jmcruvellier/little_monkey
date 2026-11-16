@@ -171,7 +171,7 @@ Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou
 
 - les boutons Semaine / Mois / Année changent de période ; le total de la période, en euros et en kWh, s'affiche à côté ;
 - les flèches en bas, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; la période en cours vient des capteurs, les précédentes sont lues chez ecojoko par le service `little_monkey.get_savings` ;
-- toucher une barre affiche son détail (par exemple « Lundi 16 novembre : -0,35 € · -2,58 kWh »).
+- toucher une barre affiche son détail (par exemple « Lundi 16 novembre : -0,35 € · -2,58 kWh ») ; une semaine est nommée par ses jours, par exemple « 9–15 nov. 2026 ».
 
 ```yaml
 type: custom:little-monkey-savings-detail-card
