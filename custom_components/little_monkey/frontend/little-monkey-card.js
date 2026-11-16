@@ -115,7 +115,7 @@ const LOWER_LABELS = ["20", "10", "0", "-10", "-20"];
 // The bezel goes a little beyond the 200 x 200 box: the view box is wider
 const R_BEZEL = 108;
 // Graduations, beyond the rounded tips of the needles and away from the rim
-const R_LABELS = 91.5;
+const R_LABELS = 90;
 const R_TRACK = 79;
 const R_DISC = 64;
 // Legends WATTS and %, halfway between the disc and the inner edge of the arcs
