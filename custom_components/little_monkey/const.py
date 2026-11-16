@@ -43,6 +43,10 @@ CONF_API_FAILURE_GRACE = 120
 CONF_API_KEEP_LIVE = 300
 # and after this many seconds when this reading failed
 CONF_API_KEEP_LIVE_RETRY = 30
+# The contract of the installation is read again after this many seconds,
+# and after this many seconds when its reading failed
+CONF_API_CONTRACT_REFRESH = 6 * 3600
+CONF_API_CONTRACT_RETRY = 600
 
 # Activity of the account (savings over 7 days...): ecojoko computes it
 # slowly, its web application waits 30 seconds for it and asks for it at most

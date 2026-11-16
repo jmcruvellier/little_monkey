@@ -36,6 +36,45 @@ GATEWAYS_WITHOUT_TEMP_HUM = {
     ]
 }
 STAT_APIS = ("powerstat", "tempstat", "humstat")
+# Contracts of an installation, as observed: the active one first
+SUPPLIERS = {
+    "suppliers": [
+        {
+            "id": 283901,
+            "is_active": 1,
+            "is_hchp": 1,
+            "offer_id": 5480,
+            "offer_name": "Zen Fixe - Option HP/HC",
+            "offer_type": "HP/HC",
+            "off_peak_timeslot": {
+                "timeslot_id": 16637,
+                "timeslots": [
+                    {"start": "01:30", "stop": "07:00"},
+                    {"start": "14:00", "stop": "16:30"},
+                ],
+            },
+            "power": 9,
+            "special_day": 1,
+            "start_date": 1785880800000,
+            "subscription_price": 24.77,
+            "supplier_id": 17,
+            "supplier_name": "EDF",
+        },
+        {
+            "id": 150559,
+            "is_hchp": 1,
+            "offer_id": 2564,
+            "offer_name": "Zen Week-End Plus - Option HP/HC",
+            "offer_type": "HC SEM WE LUNDI",
+            "off_peak_timeslot": {"timeslot_id": 1, "timeslots": [
+                {"start": "00:00", "stop": "08:00"}]},
+            "special_day": 3,
+            "start_date": 1738364400000,
+            "stop_date": 1739574000000,
+            "supplier_name": "EDF",
+        },
+    ]
+}
 # Answer of the activity API observed on 15/11/2026
 ACTIVITY = {
     "activity": {
@@ -147,6 +186,7 @@ class Session:
             "humstat": Response(
                 payload={"stat": {"data": [{"value": 50, "ext_value": 80}]}}
             ),
+            "suppliers": Response(payload=SUPPLIERS),
             "activity": Response(payload=ACTIVITY),
             **overrides,
         }
@@ -194,7 +234,7 @@ def test_nominal(api):
     assert client.kwh == 4.2
     assert client.gateway_firmware_version == "9"
     assert session.calls == [
-        "login", "gateways", "realtime_conso", "powerstat"
+        "login", "gateways", "realtime_conso", "powerstat", "suppliers"
     ]
 
 
@@ -219,6 +259,7 @@ def test_login_is_a_post_with_the_credentials_in_the_body(api):
         "gateways": "GET",
         "realtime_conso": "GET",
         "powerstat": "GET",
+        "suppliers": "GET",
     }
     _method, url, kwargs = session.requests[0]
     assert url == "https://service.ecojoko.com/login"
@@ -265,7 +306,8 @@ def test_diagnostics_show_the_response_headers(api):
     client = make_client(api, session)
     run(client.async_get_data())
     responses = client.diagnostics()["last_responses"]
-    assert set(responses) == {"Cookies", "Gateway", "realtime_conso", "powerstat (w)"}
+    assert set(responses) == {
+        "Cookies", "Gateway", "realtime_conso", "powerstat (w)", "suppliers"}
     realtime_conso = responses["realtime_conso"]
     assert realtime_conso["status"] == 200
     assert realtime_conso["headers"] == {
@@ -698,6 +740,99 @@ def test_options_off_ignore_extra_data(api):
     assert client.kwh_prod is None
     assert client.tempo_hc_blue is None
     assert client.kwh_hc_ns is None
+
+
+# --- Contract and tariff bands
+
+
+def test_contract_is_read_without_prices(api):
+    """The active contract is read, without prices or subscription ids."""
+    session = Session()
+    client = make_client(api, session)
+    assert client.contract is None
+    run(client.async_get_data())
+    assert client.contract == {
+        "supplier_name": "EDF",
+        "offer_id": 5480,
+        "offer_name": "Zen Fixe - Option HP/HC",
+        "offer_type": "HP/HC",
+        "is_hchp": 1,
+        "special_day": 1,
+        "off_peak_timeslots": [
+            {"start": "01:30", "stop": "07:00"},
+            {"start": "14:00", "stop": "16:30"},
+        ],
+        "start_date": "2026-08-04",
+    }
+    diagnostics = client.diagnostics()
+    assert diagnostics["contract"] == client.contract
+    assert "24.77" not in repr(diagnostics)
+    assert "283901" not in repr(diagnostics)
+
+
+def test_contract_without_active_flag(api):
+    """Without an active flag, the contract with no end date is taken."""
+    suppliers = {"suppliers": [
+        {"offer_type": "TEMPO", "stop_date": 1781042400000},
+        {"offer_type": "HP/HC", "start_date": 1781042400000},
+    ]}
+    session = Session(suppliers=Response(payload=suppliers))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.contract["offer_type"] == "HP/HC"
+    assert client.contract["off_peak_timeslots"] == []
+
+
+def test_contract_is_read_again_after_six_hours(api, monkeypatch):
+    """The contract is read at the first poll, then every six hours."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session()
+    client = make_client(api, session)
+    poll_during(client, clock, 6 * 3600 - 10)
+    assert session.calls.count("suppliers") == 1
+    poll_during(client, clock, 30)
+    assert session.calls.count("suppliers") == 2
+
+
+@pytest.mark.parametrize("answer", [
+    Response(status=500),
+    Response(payload={"error": 1}),
+    Response(is_json=False),
+])
+def test_contract_failure_is_not_an_error(api, monkeypatch, answer):
+    """The energy values do not depend on the contract, read again later."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session(suppliers=answer)
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.realtime_conso == 512
+    assert client.kwh == 4.2
+    assert client.contract is None
+    poll_during(client, clock, 590)
+    assert session.calls.count("suppliers") == 1
+    poll_during(client, clock, 30)
+    assert session.calls.count("suppliers") == 2
+
+
+def test_tariff_bands_are_collected_by_id(api):
+    """The bands of the period and of the day are kept by id."""
+    payload = powerstat(subconsumption=[
+        {"id": 18, "label": "HP Bleu", "kwh": 1},
+        {"id": 19, "label": "HC Bleu", "kwh": 2},
+    ])
+    payload["stat"]["pricing_details"] = [
+        {"id": 18, "label": "HP Bleu", "color": "#0087B1"},
+        {"id": 19, "label": "HC Bleu", "color": "#6BBED8"},
+        {"id": 20, "label": "HP Blanc", "color": "#ffffff"},
+        {"label": "no id"},
+        "unexpected",
+    ]
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.bands == {18: "HP Bleu", 19: "HC Bleu", 20: "HP Blanc"}
+    assert client.diagnostics()["tariff_bands"] == {
+        "18": "HP Bleu", "19": "HC Bleu", "20": "HP Blanc"}
 
 
 # --- Day of the statistics

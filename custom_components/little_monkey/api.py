@@ -13,6 +13,8 @@ from .const import (
     CONF_API_STAT_REFRESH,
     CONF_API_KEEP_LIVE,
     CONF_API_KEEP_LIVE_RETRY,
+    CONF_API_CONTRACT_REFRESH,
+    CONF_API_CONTRACT_RETRY,
     ECOJOKO_ACTIVITY_URL,
     ECOJOKO_LOGIN_URL,
     ECOJOKO_GATEWAYS_URL,
@@ -27,6 +29,7 @@ from .utils import (
     convert_to_float,
     finite_number,
     round_value)
+from .tariff import active_contract, bands_of
 
 TZ = get_paris_timezone()
 
@@ -145,8 +148,14 @@ class LittleMonkeyApiClient:
         self._outdoor_temp = None
         self._indoor_hum = None
         self._outdoor_hum = None
+        # Active contract of the installation, and tariff bands {id: label}
+        # met in the statistics since the start
+        self._contract = None
+        self._bands = {}
 
         # Internal
+        # Monotonic time the contract is due to be read again
+        self._contract_due = None
         # Monotonic time of the last call of each statistics API
         self._last_stat_refresh = {
             "powerstat": None,
@@ -173,6 +182,16 @@ class LittleMonkeyApiClient:
         # Last real-time values and monotonic time of their last change
         self._last_reading = None
         self._last_reading_change = None
+
+    @property
+    def contract(self) -> dict | None:
+        """Return the active contract, None until it is read."""
+        return self._contract
+
+    @property
+    def bands(self) -> dict:
+        """Return the tariff bands {id: label} met since the start."""
+        return dict(self._bands)
 
     @property
     def stat_date(self) -> str | None:
@@ -291,6 +310,11 @@ class LittleMonkeyApiClient:
                 for name, last in self._last_stat_refresh.items()
             },
             "failing_apis": sorted(self._warned | self._failed_once),
+            "contract": self._contract,
+            "tariff_bands": {
+                str(band_id): label
+                for band_id, label in sorted(self._bands.items())
+            },
             "last_responses": {
                 name: {
                     "seconds_ago": round(now - last["time"], 1),
@@ -541,6 +565,9 @@ class LittleMonkeyApiClient:
         refresh_tempstat = "tempstat" in stats_to_call
         #   - Humidity
         refresh_humstat = "humstat" in stats_to_call
+        #   - Contract, read rarely: it changes a few times in years
+        refresh_contract = (
+            self._contract_due is None or now >= self._contract_due)
 
         apis = []
         powermeterurl = f"/{self._gateway_id}/device/{self._power_meter_id}"
@@ -561,6 +588,10 @@ class LittleMonkeyApiClient:
                      "url": ECOJOKO_GATEWAY_URL + temphumurl +
                      f"/humstat/d4/{formatted_date}",
                      "call": refresh_humstat})
+        apis.append({"name": "suppliers",
+                     "url": ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}"
+                     "/suppliers",
+                     "call": refresh_contract})
 
         tasks = [self.fetch_data(api) for api in apis]
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -643,12 +674,35 @@ class LittleMonkeyApiClient:
                 self._warn_once(apis[3]['name'], exception)
             else:
                 self._clear_warning(apis[3]['name'])
+        # Contract
+        if refresh_contract:
+            self._parse_contract(results[4], now, apis[4]['name'])
+
+    def _parse_contract(self, payload, now, name) -> None:
+        """Update the active contract from the suppliers response.
+
+        The contract is not needed for the energy values: a failure is
+        logged and the contract read again a bit later.
+        """
+        self._contract_due = now + CONF_API_CONTRACT_RETRY
+        if payload is None:
+            return
+        try:
+            contract = active_contract(payload)
+        except PARSE_ERRORS as exception:
+            self._warn_once(name, exception)
+            return
+        self._clear_warning(name)
+        self._contract = contract
+        self._contract_due = now + CONF_API_CONTRACT_REFRESH
 
     def _parse_powerstat(self, payload, day) -> None:
         """Update the energy properties from the powerstat response of a day."""
         week_day = day.weekday()
-        data = payload['stat']['data']
+        stat = payload['stat']
+        data = stat['data']
         kwh = data[week_day]['kwh']
+        self._bands.update(bands_of(stat, data[week_day]))
         if day != self._stat_date:
             # New day: a value of the previous day must not be taken for a
             # value of this one when the response does not give it yet
