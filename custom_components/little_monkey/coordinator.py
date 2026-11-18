@@ -13,6 +13,8 @@ from homeassistant.helpers.update_coordinator import (
 )
 from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers import issue_registry as ir
+from homeassistant.helpers.event import async_call_later
+from homeassistant.util import dt as dt_util
 
 from .api import (
     LittleMonkeyApiClient,
@@ -280,6 +282,14 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
 
     KIND = "equipment"
     REFRESH = CONF_API_EQUIPMENT_REFRESH
+    # Seconds after the end of a forced mode or of an absence before the
+    # equipment is read again: ecojoko takes a few seconds to apply it
+    END_DELAY = 10
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize, without a reading planned at the end of a mode."""
+        super().__init__(*args, **kwargs)
+        self._end_unsub = None
 
     def piloted(self) -> list:
         """Return the equipments of the gateway that can be piloted."""
@@ -296,7 +306,40 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
             return {**fresh, "day": day}
 
         equipments = await asyncio.gather(*(read(equipment) for equipment in self.piloted()))
-        return {equipment["id"]: equipment for equipment in equipments}
+        data = {equipment["id"]: equipment for equipment in equipments}
+        self._plan_end_reading(data)
+        return data
+
+    def _plan_end_reading(self, equipments: dict) -> None:
+        """Read the equipments again just after the end of a forced mode.
+
+        Without it, the end of a forced mode or of an absence would be seen
+        up to two minutes late, at the next reading. A mode that should have
+        ended in the last minute, still forced in ecojoko, is read again
+        shortly as well.
+        """
+        self.async_cancel_end_reading()
+        now = dt_util.utcnow()
+        delays = []
+        for equipment in equipments.values():
+            until = dt_util.parse_datetime(equipment["state"].get("until") or "")
+            if until is not None:
+                delays.append((until - now).total_seconds())
+        delays = [delay for delay in delays if -60 < delay < self.REFRESH]
+        if delays:
+            self._end_unsub = async_call_later(
+                self.hass, max(min(delays), 0) + self.END_DELAY, self._async_end_reading)
+
+    async def _async_end_reading(self, _now) -> None:
+        """Read the equipments at the end of a mode."""
+        self._end_unsub = None
+        await self.async_refresh()
+
+    def async_cancel_end_reading(self) -> None:
+        """Cancel the reading planned at the end of a mode."""
+        if self._end_unsub is not None:
+            self._end_unsub()
+            self._end_unsub = None
 
     async def async_command(self, equipment_id, mode, seconds=None) -> None:
         """Pilot an equipment, then read it again to show its new state.
