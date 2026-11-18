@@ -101,8 +101,9 @@ test("the timeline of the day shows the periods on, forced or absent", () => {
   const { segments, curve, max } = card.dayTimeline(day, 23 * 60);
   assert.deepEqual(segments.map((segment) => [segment.kind, Math.round(segment.x), Math.round(segment.width)]), [
     ["on", 0, 324],
-    ["absence", 1220, 1],
-    ["forced", 1223, 5],
+    // Short periods are widened to be seen
+    ["absence", 1220, 12],
+    ["forced", 1223, 12],
     ["on", 1320, 60],
   ]);
   assert.equal(max, 2784);
@@ -186,4 +187,11 @@ test("a value with an entity shows the state of the entity, as its details", () 
   const metrics = card.equipmentMetrics(TEXT, heater, "fr", { "sensor.e": { state: "1.2", attributes: { unit_of_measurement: "kWh" } } });
   // The spaces of the French numbers are not breaking
   assert.deepEqual(metrics.map((metric) => metric.value.replace(/\s/g, " ")), ["1,2 kWh", "0,14 €", "233 V"]);
+});
+
+test("a short period at the end of the day stays within the day", () => {
+  const day = { date: "2026-11-18", switches: [
+    { start: "2026-11-18T23:58:00+01:00", end: "2026-11-19T00:00:00+01:00", on: true, forced: true }] };
+  const [segment] = card.dayTimeline(day).segments;
+  assert.deepEqual([segment.x, segment.width], [1440 - 12, 12]);
 });

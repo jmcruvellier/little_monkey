@@ -248,7 +248,10 @@ export function isSelected(equipment, action, panel) {
 }
 
 // Timeline of a day, in the units of the SVG: a minute a unit
-export const DAY_BOX = { width: 1440, height: 40, base: 36, top: 4 };
+export const DAY_BOX = { width: 1440, height: 40, base: 36, top: 4, band: 5 };
+// Narrowest period drawn, in minutes: a forced mode of a few minutes would
+// be a pixel wide, and not seen
+export const MIN_PERIOD = 12;
 
 /**
  * Return the timeline of the day of an equipment: the periods it was on,
@@ -271,7 +274,9 @@ export function dayTimeline(day, nowMinutes = DAY_BOX.width, box = DAY_BOX) {
     const x = start.day < date ? 0 : start.minutes;
     const stop = end ? (end.day > date ? box.width : end.minutes) : nowMinutes;
     if (stop > x) {
-      segments.push({ kind, x, width: stop - x });
+      // A short period is widened, within the day, to be seen
+      const width = Math.max(stop - x, MIN_PERIOD);
+      segments.push({ kind, x: Math.min(x, box.width - width), width });
     }
   }
   const points = (day?.power || [])
@@ -776,8 +781,10 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     if (day && (day.switches?.length || day.power?.length)) {
       const today = day.date === `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
       const { segments, curve } = dayTimeline(day, today ? now.getHours() * 60 + now.getMinutes() : DAY_BOX.width);
-      const rects = segments.map((segment) =>
-        `<rect x="${segment.x.toFixed(1)}" y="${DAY_BOX.top}" width="${segment.width.toFixed(1)}" height="${DAY_BOX.base - DAY_BOX.top}" fill="${STATE_COLORS[segment.kind]}" opacity="0.35" />`).join("");
+      // Each period: a pale area, and a band of its plain color at the top
+      const rects = segments.map((segment) => `
+        <rect x="${segment.x.toFixed(1)}" y="${DAY_BOX.top}" width="${segment.width.toFixed(1)}" height="${DAY_BOX.base - DAY_BOX.top}" fill="${STATE_COLORS[segment.kind]}" opacity="0.3" />
+        <rect x="${segment.x.toFixed(1)}" y="0" width="${segment.width.toFixed(1)}" height="${DAY_BOX.band}" fill="${STATE_COLORS[segment.kind]}" />`).join("");
       const kinds = [...new Set(segments.map((segment) => segment.kind))];
       const legend = kinds.length
         ? `<div class="legend">${kinds.map((kind) =>
