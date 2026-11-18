@@ -1763,6 +1763,8 @@ def test_equipments_are_read_with_the_gateways(api):
     assert power_meter["controls"] == [] and power_meter["state"]["mode"] is None
     assert sensor["name"] == "Sonde de température"
     assert sensor["battery"] == 80 and sensor["signal"] == 66
+    # Its measures, the temperature in tenths of a degree
+    assert sensor["state"]["temperature"] == 20.8 and sensor["state"]["humidity"] == 50
     assert sensor["controls"] == [] and sensor["measures"] is False
     assert heater == {
         "id": "630220", "type": "LULO", "model": "LULO", "name": "Chauffe-eau",
@@ -1774,6 +1776,7 @@ def test_equipments_are_read_with_the_gateways(api):
             "switch_state": "Mode absence jusqu'à 20:25",
             "since": "2026-11-18T20:20:44+01:00", "until": "2026-11-18T20:25:45+01:00",
             "source": "command", "voltage": 232.5, "max_power": 3131,
+            "temperature": None, "humidity": None,
         },
     }
     # No identifier nor network name in the diagnostics

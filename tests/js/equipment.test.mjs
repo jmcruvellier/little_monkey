@@ -154,3 +154,9 @@ test("a forced mode of another duration lasts 1 minute to 24 hours", () => {
     assert.equal(card.customMinutes(value), null, value);
   }
 });
+
+test("an equipment that is not piloted shows its measures", () => {
+  assert.deepEqual(card.otherMeasures({ state: { temperature: 20.8, humidity: 50 } }, "fr"), ["20,8 °C", "50 %"]);
+  assert.deepEqual(card.otherMeasures({ state: { power: 3326 } }, "fr"), [`3${" "}326 W`]);
+  assert.deepEqual(card.otherMeasures(SENSOR, "fr"), []);
+});

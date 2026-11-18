@@ -358,6 +358,8 @@ def _equipment_state(state, controls) -> dict:
     elif "on" in controls and on is not None:
         mode = "on" if on else "off"
     until = finite_number(state.get("switch_until"))
+    # A temperature sensor gives tenths of a degree
+    temperature = finite_number(state.get("temperature"))
     return {
         "power": finite_number(state.get("power_level")),
         "on": None if on is None else bool(on),
@@ -371,6 +373,8 @@ def _equipment_state(state, controls) -> dict:
         "source": SWITCH_SOURCES.get(state.get("switch_last_source")),
         "voltage": finite_number(state.get("voltage")),
         "max_power": finite_number(state.get("max_power_level")),
+        "temperature": None if temperature is None else round_value(temperature / 10, 1),
+        "humidity": finite_number(state.get("humidity")),
     }
 
 

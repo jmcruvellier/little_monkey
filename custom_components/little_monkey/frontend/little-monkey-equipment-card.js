@@ -306,6 +306,18 @@ export function equipmentMetrics(text, equipment, locale) {
     .map(([key, value, format]) => ({ key, label: text[key], value: format(Number(value)) }));
 }
 
+/** Return the measures of an equipment that is not piloted: power, temperature, humidity. */
+export function otherMeasures(equipment, locale) {
+  const state = equipment?.state || {};
+  const number = (value, digits) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
+  return [
+    [state.power, (value) => `${number(value, 0)} W`],
+    [state.temperature, (value) => `${number(value, 1)} °C`],
+    [state.humidity, (value) => `${number(value, 0)} %`],
+  ].filter(([value]) => value !== null && value !== undefined && Number.isFinite(Number(value)))
+    .map(([value, format]) => format(Number(value)));
+}
+
 /** Return the entity of the integration with a translation key, if any. */
 function findEntity(hass, translationKey) {
   return Object.values(hass?.entities || {}).find(
@@ -390,6 +402,7 @@ const STYLES = `
   .other .icon ha-icon { --mdc-icon-size: 16px; }
   .other .name { flex: 1; min-width: 0; color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .other .info { color: var(--secondary-text-color); font-size: 0.85em; white-space: nowrap; }
+  .other .info.measure { color: var(--primary-text-color); font-weight: 500; }
   .other .info.disconnected { color: var(--error-color, #db4437); }
 `;
 
@@ -622,7 +635,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
       this._block(equipment, text, locale, now, many, !many || this._opened === equipment.id)).join("");
     const none = piloted.length ? "" : `<div class="message">${escapeHtml(text.none)}</div>`;
     const list = others.length
-      ? `<div class="others">${others.map((equipment) => this._other(equipment, text)).join("")}</div>`
+      ? `<div class="others">${others.map((equipment) => this._other(equipment, text, locale)).join("")}</div>`
       : "";
     body.innerHTML = blocks + none + list;
   }
@@ -711,8 +724,10 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   }
 
   /** Return the HTML of an equipment that is not piloted. */
-  _other(equipment, text) {
-    const infos = [];
+  _other(equipment, text, locale) {
+    // Its measures first, then its connection
+    const infos = otherMeasures(equipment, locale).map((value) =>
+      `<span class="info measure">${escapeHtml(value)}</span>`);
     if (equipment.connected === false) {
       infos.push(`<span class="info disconnected">${escapeHtml(equipment.status || text.disconnected)}</span>`);
     }
