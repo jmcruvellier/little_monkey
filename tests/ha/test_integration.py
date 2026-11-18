@@ -1486,28 +1486,28 @@ async def test_equipment_diagnostic_sensors(hass, fake_api):
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
 
-    assert hass.states.get("sensor.ecojoko_sonde_connection").state == "connected"
-    assert hass.states.get("sensor.ecojoko_sonde_signal_strength").state == "66"
+    assert hass.states.get("sensor.ecojoko_sonde_connection_to_the_assistant").state == "connected"
+    assert hass.states.get("sensor.ecojoko_sonde_connection_strength").state == "66"
     assert hass.states.get("sensor.ecojoko_sonde_battery").state == "80"
     # Given for the water heater only
-    assert hass.states.get("sensor.ecojoko_sonde_wifi_signal") is None
-    assert hass.states.get("sensor.chauffe_eau_wifi_signal").state == "30"
+    assert hass.states.get("sensor.ecojoko_sonde_wifi_connection") is None
+    assert hass.states.get("sensor.chauffe_eau_wifi_connection").state == "30"
     assert hass.states.get("sensor.chauffe_eau_battery") is None
     entities = er.async_get(hass)
-    entity = entities.async_get("sensor.ecojoko_sonde_signal_strength")
+    entity = entities.async_get("sensor.ecojoko_sonde_connection_strength")
     assert entity.entity_category == "diagnostic"
     main = registry_device(dr.async_get(hass), (DOMAIN, entry.entry_id), entry.entry_id)
     assert entity.device_id == main.id
-    assert entities.async_get("sensor.chauffe_eau_wifi_signal").device_id != main.id
+    assert entities.async_get("sensor.chauffe_eau_wifi_connection").device_id != main.id
 
     # Read with the list of the gateways, by the polls
     fake_api.equipments = [{**TEMP_HUM_EQUIPMENT, "connected": False, "signal": 12}]
     await entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.ecojoko_sonde_connection").state == "disconnected"
-    assert hass.states.get("sensor.ecojoko_sonde_signal_strength").state == "12"
+    assert hass.states.get("sensor.ecojoko_sonde_connection_to_the_assistant").state == "disconnected"
+    assert hass.states.get("sensor.ecojoko_sonde_connection_strength").state == "12"
     # An equipment no longer listed by ecojoko is unavailable
-    assert hass.states.get("sensor.chauffe_eau_wifi_signal").state == "unavailable"
+    assert hass.states.get("sensor.chauffe_eau_wifi_connection").state == "unavailable"
 
 
 def heater_device(hass, entry):
