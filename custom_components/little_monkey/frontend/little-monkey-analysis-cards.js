@@ -41,6 +41,8 @@ const TRANSLATIONS = {
       history_error: "The history of this category could not be read",
       week_of: "Week of {date}",
       bar: "{name}: {cost} · {energy}",
+      show_all: "Show the {n} categories",
+      show_less: "Show fewer categories",
     },
     categories: {
       1: "Heating", 2: "Electric vehicle", 3: "Hot water", 4: "Cooking", 5: "Large appliances",
@@ -59,10 +61,17 @@ const TRANSLATIONS = {
       seconds: "{n} s",
       minutes: "{n} min",
       hours: "{h} h {m} min",
+      count: "{n} activations",
+      older: "Previous 48 hours",
+      newer: "Next 48 hours",
+      show_more: "Show more",
     },
     editor: {
       entity: "A sensor of the Little Monkey device",
       period: "Period shown first",
+      max_categories: "Categories shown (0 for all)",
+      mode: "Display",
+      modes: { timeline: "One timeline a day", list: "List" },
       title: "Title",
     },
   },
@@ -83,6 +92,8 @@ const TRANSLATIONS = {
       history_error: "L'historique de ce poste n'a pas pu être lu",
       week_of: "Semaine du {date}",
       bar: "{name} : {cost} · {energy}",
+      show_all: "Afficher les {n} postes",
+      show_less: "Afficher moins de postes",
     },
     categories: {},
     activations: {
@@ -97,10 +108,17 @@ const TRANSLATIONS = {
       seconds: "{n} s",
       minutes: "{n} min",
       hours: "{h} h {m} min",
+      count: "{n} activations",
+      older: "48 heures précédentes",
+      newer: "48 heures suivantes",
+      show_more: "Voir plus",
     },
     editor: {
       entity: "Un capteur de l'appareil Little Monkey",
       period: "Période affichée d'abord",
+      max_categories: "Postes affichés (0 pour tous)",
+      mode: "Affichage",
+      modes: { timeline: "Une frise par jour", list: "Liste" },
       title: "Titre",
     },
   },
@@ -414,6 +432,45 @@ export function shapeSvg(shape) {
   </svg>`;
 }
 
+// Timeline of a day, in the units of the SVG: a minute a unit
+const TIMELINE = { width: 1440, height: 48, base: 44, min: 6, max: 40, hit: 14 };
+// Activations of the list shown before "show more"
+export const LIST_LENGTH = 8;
+
+/** Return the minutes since midnight of an ISO time, in its time zone. */
+function minutesOfDay(iso) {
+  const match = String(iso ?? "").match(/T(\d{2}):(\d{2})(?::(\d{2}))?/);
+  return match ? Number(match[1]) * 60 + Number(match[2]) + Number(match[3] || 0) / 60 : null;
+}
+
+/**
+ * Return the timelines of the activations: one a day, the most recent
+ * first, each activation a pulse at its time, as wide as it lasts (two
+ * minutes at least, to be seen) and as high as its power, compared with the
+ * most powerful one shown.
+ */
+export function timelines(activations, box = TIMELINE) {
+  const powers = activations.map((activation) => Number(activation.power) || 0);
+  const strongest = Math.max(1, ...powers);
+  return groupByDay(activations).map((group) => ({
+    day: group.day,
+    pulses: group.activations.map((activation) => {
+      const start = minutesOfDay(activation.start) ?? 0;
+      const lasting = Math.max((Date.parse(activation.end) - Date.parse(activation.start)) / 60000, 0) || 0;
+      const width = Math.min(Math.max(lasting, 2), box.width - start);
+      const ratio = Math.min(Math.max(Number(activation.power) || 0, 0) / strongest, 1);
+      const height = box.min + (box.max - box.min) * ratio;
+      const color = /^#[0-9a-f]{3,8}$/i.test(activation.shape?.color || "") ? activation.shape.color : "#5fc2ff";
+      return { start: activation.start, x: start, width, height, y: box.base - height, color };
+    }).reverse(),
+  }));
+}
+
+/** Return the display of an activations card: "timeline" by default, or "list". */
+export function activationsMode(config) {
+  return config?.mode === "list" ? "list" : "timeline";
+}
+
 /** Return the configuration of a new activations card, on the first device. */
 export function activationsStubConfig(hass) {
   const config = { type: `custom:${ACTIVATIONS_TYPE}` };
@@ -425,15 +482,52 @@ export function activationsStubConfig(hass) {
 }
 
 /** Return the fields of the editor of the activations. */
-export function activationsSchema() {
+export function activationsSchema(hass) {
+  const text = TRANSLATIONS[language(hass)].editor;
   return [
     {
       name: "entity",
       required: true,
       selector: { entity: { filter: { integration: DOMAIN, domain: "sensor" } } },
     },
+    {
+      name: "mode",
+      selector: {
+        select: {
+          mode: "dropdown",
+          options: ["timeline", "list"].map((value) => ({ value, label: text.modes[value] })),
+        },
+      },
+    },
     { name: "title", selector: { text: {} } },
   ];
+}
+
+// Categories shown before "show all", by default
+export const DEFAULT_MAX_CATEGORIES = 5;
+
+/** Return the number of categories shown by a card: 0 for all of them. */
+export function maxCategories(config) {
+  const value = Number(config?.max_categories);
+  return Number.isInteger(value) && value >= 0 ? value : DEFAULT_MAX_CATEGORIES;
+}
+
+/**
+ * Return the categories shown: the largest ones (by consumption), in the
+ * order of ecojoko, all of them with a maximum of 0 or when expanded.
+ */
+export function shownCategories(categories, max, expanded = false) {
+  const list = categories || [];
+  if (expanded || max <= 0 || list.length <= max) {
+    return list;
+  }
+  const largest = new Set(
+    list.map((category, index) => ({ index, value: Number(category.consumption) || 0 }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, max)
+      .map((item) => item.index),
+  );
+  return list.filter((_category, index) => largest.has(index));
 }
 
 /** Return the sensors of the Little Monkey device of an entity, by key. */
@@ -499,6 +593,10 @@ export function analysisSchema(hass) {
         },
       },
     },
+    {
+      name: "max_categories",
+      selector: { number: { min: 0, max: 20, step: 1, mode: "box" } },
+    },
     { name: "title", selector: { text: {} } },
   ];
 }
@@ -553,6 +651,8 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     this._open = new Set();
     // Category whose history is shown, and the year shown
     this._history = null;
+    // All the categories shown, or the largest ones only
+    this._expanded = false;
     this._selected = null;
     this._built = false;
     this._signature = null;
@@ -565,8 +665,8 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
   }
 
   getCardSize() {
-    // Masonry view: rows of 50 pixels, for the ring and some categories
-    return 10;
+    // Masonry view: rows of 50 pixels, for the ring beside five categories
+    return 6;
   }
 
   getGridOptions() {
@@ -726,14 +826,22 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
       <style>
         ${STYLES}
         .top { margin-bottom: 8px; }
-        .ring { display: flex; justify-content: center; margin: 4px 0 8px; }
-        .ring svg { width: 100%; max-width: 200px; display: block; touch-action: pan-y; user-select: none; }
+        .body { container-type: inline-size; }
+        .layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px 16px; align-items: center; }
+        /* A wide card puts the ring beside the categories */
+        @container (min-width: 420px) { .layout { grid-template-columns: 140px minmax(0, 1fr); } }
+        /* A narrow card keeps the names and the costs, and leaves out the shares */
+        @container (max-width: 380px) { .share { display: none; } }
+        .ring { display: flex; justify-content: center; }
+        .ring svg { width: 100%; max-width: 150px; display: block; touch-action: pan-y; user-select: none; }
+        .more-categories { border: none; background: none; color: var(--primary-color, #03a9f4); font: inherit; font-size: 0.85em;
+          cursor: pointer; padding: 4px; text-align: left; }
         .ring .total { fill: var(--primary-text-color); font-size: 17px; font-weight: 600; text-anchor: middle; }
         .ring .energy { fill: var(--secondary-text-color); font-size: 11px; text-anchor: middle; }
         .ring .track { fill: none; stroke: var(--secondary-background-color, rgba(127, 127, 127, 0.15)); }
         .rows { display: flex; flex-direction: column; }
-        .row { display: flex; align-items: center; gap: 10px; padding: 6px 4px; border-radius: 8px; }
-        .row.child { padding-left: 32px; }
+        .row { display: flex; align-items: center; gap: 8px; padding: 3px 4px; border-radius: 8px; }
+        .row.child { padding-left: 28px; }
         .row { cursor: pointer; }
         .row:hover { background: var(--secondary-background-color, rgba(127, 127, 127, 0.08)); }
         .toggle { cursor: pointer; padding: 6px 0; font-size: 1.2em; text-align: center; }
@@ -753,14 +861,14 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
         .chart .bar.selected rect.value { stroke: var(--primary-text-color); stroke-width: 0.8; }
         .icon { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
         .icon ha-icon { --mdc-icon-size: 18px; }
-        .row.child .icon { width: 24px; height: 24px; }
-        .row.child .icon ha-icon { --mdc-icon-size: 14px; }
-        .name { flex: 1; min-width: 0; }
-        .name .label { color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .name .share { color: var(--secondary-text-color); font-size: 0.85em; }
-        .values { text-align: right; white-space: nowrap; }
-        .values .cost { color: var(--primary-text-color); font-weight: 500; }
-        .values .energy { color: var(--secondary-text-color); font-size: 0.85em; }
+        .row .icon { width: 24px; height: 24px; }
+        .row .icon ha-icon { --mdc-icon-size: 14px; }
+        .row.child .icon { width: 20px; height: 20px; }
+        .row.child .icon ha-icon { --mdc-icon-size: 12px; }
+        .name { flex: 1; min-width: 0; color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95em; }
+        .share { color: var(--secondary-text-color); font-size: 0.85em; width: 2.8em; text-align: right; flex: none; }
+        .cost { color: var(--primary-text-color); font-weight: 500; white-space: nowrap; text-align: right; min-width: 4em; font-size: 0.95em; }
+        .row .trend, .row .chevron { width: 12px; }
         .trend { width: 16px; text-align: center; font-weight: 700; flex: none; }
         .chevron { width: 16px; color: var(--secondary-text-color); flex: none; transition: transform 0.2s; }
         .row.open .chevron { transform: rotate(90deg); }
@@ -805,6 +913,12 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     const target = event.target;
     if (target.closest?.(".back")) {
       this._history = null;
+      this._signature = null;
+      this._render();
+      return;
+    }
+    if (target.closest?.(".more-categories")) {
+      this._expanded = !this._expanded;
       this._signature = null;
       this._render();
       return;
@@ -854,7 +968,8 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     const locale = this._locale();
     const analysis = this._history ? this._historyData() : this._analysis();
     const signature = JSON.stringify([
-      this._period, this._start, this._history, this._selected, analysis, [...this._open], this._config.title, locale,
+      this._period, this._start, this._history, this._selected, analysis, [...this._open], this._expanded,
+      this._config.title, this._config.max_categories, locale,
     ]);
     if (signature === this._signature) {
       return;
@@ -906,7 +1021,9 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
         <text class="total" x="${center}" y="${center + 2}">${escapeHtml(formatValue(locale, analysis.cost, "eur"))}</text>
         <text class="energy" x="${center}" y="${center + 20}">${escapeHtml(formatValue(locale, analysis.consumption, "kwh"))}</text>
       </svg></div>`;
-    const rows = categories.map((category) => {
+    const max = maxCategories(this._config);
+    const shown = shownCategories(categories, max, this._expanded);
+    const rows = shown.map((category) => {
       const children = category.children || [];
       const open = this._open.has(String(category.id));
       const trend = category.trend
@@ -919,7 +1036,11 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
         : "";
       return parent + details;
     }).join("");
-    return `${ring}<div class="rows">${rows}</div>`;
+    const toggle = max > 0 && categories.length > max
+      ? `<button class="more-categories">${escapeHtml(this._expanded
+        ? text.show_less : text.show_all.replace("{n}", categories.length))}</button>`
+      : "";
+    return `<div class="layout">${ring}<div class="rows">${rows}${toggle}</div></div>`;
   }
 
   /** Return the HTML of the history of a category: a bar a week. */
@@ -972,11 +1093,15 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
 
   /** Return the HTML of a row of a category. */
   _row(category, lang, locale, kind, open, end) {
+    // One line a category; its energy is in its history, shown on a touch
+    const name = categoryName(lang, category);
+    const energy = formatValue(locale, category.consumption, "kwh");
     return `
-      <div class="row ${kind}${open ? " open" : ""}" data-id="${escapeHtml(category.id)}">
+      <div class="row ${kind}${open ? " open" : ""}" data-id="${escapeHtml(category.id)}" title="${escapeHtml(`${name} · ${energy}`)}">
         <div class="icon" style="background: ${escapeHtml(category.color || "#9e9e9e")}; color: ${iconColor(category.color)}"><ha-icon icon="${categoryIcon(category)}"></ha-icon></div>
-        <div class="name"><div class="label">${escapeHtml(categoryName(lang, category))}</div><div class="share">${escapeHtml(formatPercent(locale, category.percentage))}</div></div>
-        <div class="values"><div class="cost">${escapeHtml(formatValue(locale, category.cost, "eur"))}</div><div class="energy">${escapeHtml(formatValue(locale, category.consumption, "kwh"))}</div></div>
+        <div class="name">${escapeHtml(name)}</div>
+        <div class="share">${escapeHtml(formatPercent(locale, category.percentage))}</div>
+        <div class="cost">${escapeHtml(formatValue(locale, category.cost, "eur"))}</div>
         ${end}
       </div>`;
   }
@@ -993,6 +1118,10 @@ class LittleMonkeyActivationsCard extends HTMLElement {
       // Pages read: 0 for the last 48 hours, 1 for the 48 hours before...
       this._pages = [];
       this._loaded = 0;
+      // Page shown by the timelines, and the activation selected
+      this._page = 0;
+      this._selected = null;
+      this._expanded = false;
     }
     this._built = false;
     this._render();
@@ -1017,8 +1146,8 @@ class LittleMonkeyActivationsCard extends HTMLElement {
   }
 
   getCardSize() {
-    // Masonry view: rows of 50 pixels
-    return 8;
+    // Masonry view: rows of 50 pixels, for two or three timelines
+    return 5;
   }
 
   getGridOptions() {
@@ -1039,7 +1168,7 @@ class LittleMonkeyActivationsCard extends HTMLElement {
     return TRANSLATIONS[language(this._hass)].activations;
   }
 
-  /** Read a page of activations: the first one again, or the next one. */
+  /** Read a page of activations: the first one again, or an older one. */
   async _read(page) {
     if (!this._hass || !this._config?.entity || this._reading === page) {
       return;
@@ -1060,6 +1189,18 @@ class LittleMonkeyActivationsCard extends HTMLElement {
     }
   }
 
+  /** Show the 48 hours before (+1) or after (-1) the ones shown. */
+  _go(step) {
+    const page = Math.max(this._page + step, 0);
+    this._page = page;
+    this._selected = null;
+    if (!this._pages[page]) {
+      this._read(page);
+    }
+    this._signature = null;
+    this._render();
+  }
+
   _build() {
     if (!this.shadowRoot) {
       this.attachShadow({ mode: "open" });
@@ -1067,32 +1208,67 @@ class LittleMonkeyActivationsCard extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         ${STYLES}
-        .day { margin: 12px 0 6px; color: var(--secondary-text-color); font-size: 0.9em; font-weight: 500; }
+        .header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .count { color: var(--secondary-text-color); font-size: 0.85em; white-space: nowrap; }
+        .day { margin: 10px 0 2px; color: var(--secondary-text-color); font-size: 0.85em; font-weight: 500; }
         .day:first-child { margin-top: 0; }
+        .timeline { width: 100%; height: 48px; display: block; touch-action: pan-y; }
+        .timeline .base { stroke: var(--divider-color, #e0e0e0); stroke-width: 2; vector-effect: non-scaling-stroke; }
+        .timeline .tick { stroke: var(--divider-color, #e0e0e0); stroke-width: 1; stroke-dasharray: 2 3; vector-effect: non-scaling-stroke; }
+        .timeline .pulse { cursor: pointer; }
+        .timeline .hit { fill: transparent; }
+        .timeline .pulse.selected .value { stroke: var(--primary-text-color); stroke-width: 2; vector-effect: non-scaling-stroke; }
+        .hours-axis { display: flex; justify-content: space-between; font-size: 0.75em; color: var(--secondary-text-color); }
+        .selection { border-top: 1px solid var(--divider-color, #e0e0e0); margin-top: 10px; padding-top: 8px;
+          display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px; font-size: 0.9em; }
+        .selection .when { color: var(--primary-text-color); font-weight: 500; }
+        .selection .dim { color: var(--secondary-text-color); font-weight: 400; }
+        .nav { margin-top: 6px; }
+        .nav button { font-size: 0.9em; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); gap: 8px; }
         .item { display: grid; grid-template-columns: 40px max-content minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 10px; align-items: center;
           border: 1px solid var(--divider-color, #e0e0e0); border-radius: 12px; padding: 8px 10px; }
         .shape { grid-row: span 2; width: 40px; height: 20px; }
-        .hours { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; }
-        .energy { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; text-align: right; }
-        .duration, .power { color: var(--secondary-text-color); font-size: 0.85em; }
+        .item .hours { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; }
+        .item .energy { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; text-align: right; }
+        .item .duration, .item .power { color: var(--secondary-text-color); font-size: 0.85em; }
         .item > * { min-width: 0; }
         .body { container-type: inline-size; }
         /* A narrow card keeps the power and leaves out its word */
         @container (max-width: 330px) { .power .word { display: none; } }
-        .hours, .energy, .duration, .power { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .power { text-align: right; }
+        .item .hours, .item .energy, .item .duration, .item .power { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item .power { text-align: right; }
         .more { display: block; margin: 12px auto 0; border: 1px solid var(--divider-color, #e0e0e0); border-radius: 18px; background: none;
           color: var(--primary-text-color); font: inherit; font-size: 0.9em; padding: 6px 14px; cursor: pointer; }
         .more:disabled { opacity: 0.5; cursor: default; }
       </style>
       <ha-card>
-        <div class="header"><div class="title"></div></div>
+        <div class="header"><div class="title"></div><div class="count"></div></div>
         <div class="warning"></div>
         <div class="body"></div>
-        <button class="more"></button>
       </ha-card>`;
-    this.shadowRoot.querySelector(".more").addEventListener("click", () => this._read(this._loaded));
+    const body = this.shadowRoot.querySelector(".body");
+    body.addEventListener("click", (event) => {
+      const target = event.target;
+      const pulse = target.closest?.(".pulse");
+      if (pulse) {
+        this._selected = pulse.dataset.start;
+        this._signature = null;
+        this._render();
+      } else if (target.closest?.(".older")) {
+        this._go(1);
+      } else if (target.closest?.(".newer")) {
+        this._go(-1);
+      } else if (target.closest?.(".more")) {
+        // The list: everything read, then 48 hours more
+        if (this._expanded) {
+          this._read(this._loaded);
+        }
+        this._expanded = true;
+        this._signature = null;
+        this._render();
+      }
+    });
     this._built = true;
   }
 
@@ -1105,30 +1281,94 @@ class LittleMonkeyActivationsCard extends HTMLElement {
     }
     const text = this._text();
     const locale = this._hass.locale?.language || this._hass.language;
-    const activations = mergeActivations(this._pages);
-    const signature = JSON.stringify([activations, this._error, this._reading, this._loaded, this._config.title, locale]);
+    const mode = activationsMode(this._config);
+    const activations = mode === "list"
+      ? mergeActivations(this._pages)
+      : mergeActivations([this._pages[this._page]]);
+    const signature = JSON.stringify([
+      mode, activations, this._page, this._selected, this._expanded, this._error, this._reading, this._loaded,
+      this._config.title, locale,
+    ]);
     if (signature === this._signature) {
       return;
     }
     this._signature = signature;
     const root = this.shadowRoot;
     root.querySelector(".title").textContent = this._config.title || text.title;
+    root.querySelector(".count").textContent = mode === "timeline" && activations.length
+      ? text.count.replace("{n}", activations.length) : "";
     const missing = !this._config.entity || !this._hass.states[this._config.entity];
     const warning = root.querySelector(".warning");
     warning.textContent = missing ? text.missing : "";
     warning.style.display = missing ? "" : "none";
-    const more = root.querySelector(".more");
-    more.textContent = text.more;
-    more.disabled = this._reading !== null && this._reading !== undefined;
-    more.style.display = this._loaded ? "" : "none";
     const body = root.querySelector(".body");
     if (!activations.length) {
-      const message = this._error ? text.error : this._loaded ? text.none : "…";
-      body.innerHTML = `<div class="message">${escapeHtml(message)}</div>`;
+      const read = mode === "list" ? this._loaded : this._pages[this._page];
+      const message = this._error ? text.error : read ? text.none : "…";
+      body.innerHTML = `<div class="message">${escapeHtml(message)}</div>${mode === "timeline" ? this._nav(text, locale) : ""}`;
       return;
     }
+    body.innerHTML = mode === "list"
+      ? this._list(activations, text, locale)
+      : this._timelines(activations, text, locale);
+  }
+
+  /** Return the HTML of the arrows between the pages of 48 hours, and their days. */
+  _nav(text, locale) {
+    const page = this._pages[this._page];
+    let name = "";
+    if (page?.start && page?.end) {
+      const format = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "UTC" });
+      // The times of ecojoko are in its time zone: shown as they are written
+      const asWritten = (iso) => new Date(`${iso.slice(0, 19)}Z`);
+      name = format.formatRange(asWritten(page.start), asWritten(page.end));
+    }
+    return `
+      <div class="nav">
+        <button class="older" aria-label="${escapeHtml(text.older)}">‹</button>
+        <div class="name">${escapeHtml(name)}</div>
+        <button class="newer" aria-label="${escapeHtml(text.newer)}"${this._page ? "" : " disabled"}>›</button>
+      </div>`;
+  }
+
+  /** Return the HTML of the timelines of the days, and of the activation selected. */
+  _timelines(activations, text, locale) {
+    const selected = activations.find((activation) => activation.start === this._selected) || activations[0];
+    const grid = [360, 720, 1080].map((minutes) =>
+      `<line class="tick" x1="${minutes}" x2="${minutes}" y1="4" y2="${TIMELINE.base}" />`).join("");
+    const days = timelines(activations).map((day) => {
+      const pulses = day.pulses.map((pulse) => {
+        // A short activation is easier to touch with a wider area
+        const hit = Math.max(pulse.width, TIMELINE.hit);
+        return `<g class="pulse${pulse.start === selected.start ? " selected" : ""}" data-start="${escapeHtml(pulse.start)}">
+          <rect class="hit" x="${(pulse.x + pulse.width / 2 - hit / 2).toFixed(1)}" y="0" width="${hit}" height="${TIMELINE.base}" />
+          <rect class="value" x="${pulse.x.toFixed(1)}" y="${pulse.y.toFixed(1)}" width="${pulse.width.toFixed(1)}" height="${pulse.height.toFixed(1)}" fill="${pulse.color}" />
+        </g>`;
+      }).join("");
+      return `
+        <div class="day">${escapeHtml(dayLabel(locale, day.day))}</div>
+        <svg class="timeline" viewBox="0 0 ${TIMELINE.width} ${TIMELINE.height}" preserveAspectRatio="none" role="img" aria-label="${escapeHtml(dayLabel(locale, day.day))}">
+          ${grid}<line class="base" x1="0" x2="${TIMELINE.width}" y1="${TIMELINE.base}" y2="${TIMELINE.base}" />${pulses}
+        </svg>
+        <div class="hours-axis"><span>0h</span><span>6h</span><span>12h</span><span>18h</span><span>24h</span></div>`;
+    }).join("");
     const power = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
-    body.innerHTML = groupByDay(activations).map((group) => `
+    const day = new Intl.DateTimeFormat(locale, { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" })
+      .format(utcDate(selected.start.slice(0, 10)));
+    const selection = `
+      <div class="selection">
+        <span class="when">${escapeHtml(timeRange(selected))} <span class="dim">· ${escapeHtml(day)} · ${escapeHtml(durationLabel(text, selected))}</span></span>
+        <span>${escapeHtml(formatValue(locale, selected.energy, "kwh"))} <span class="dim">· ${
+          escapeHtml(text.average.replace("{power}", `${power.format(selected.power ?? 0)} W`))}</span></span>
+      </div>`;
+    return days + selection + this._nav(text, locale);
+  }
+
+  /** Return the HTML of the list of the activations, the most recent first. */
+  _list(activations, text, locale) {
+    const shown = this._expanded ? activations : activations.slice(0, LIST_LENGTH);
+    const power = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+    const days = groupByDay(shown).map((group) => `
       <div class="day">${escapeHtml(dayLabel(locale, group.day))}</div>
       <div class="grid">${group.activations.map((activation) => `
         <div class="item">
@@ -1140,6 +1380,9 @@ class LittleMonkeyActivationsCard extends HTMLElement {
             escapeHtml(`${power.format(activation.power ?? 0)} W`)}</div>
         </div>`).join("")}
       </div>`).join("");
+    const busy = this._reading !== null && this._reading !== undefined;
+    const label = this._expanded ? text.more : text.show_more;
+    return `${days}<button class="more"${busy ? " disabled" : ""}>${escapeHtml(label)}</button>`;
   }
 }
 
@@ -1218,7 +1461,7 @@ class LittleMonkeyAnalysisCardEditor extends AnalysisEditor {
 
 class LittleMonkeyActivationsCardEditor extends AnalysisEditor {
   _schema() {
-    return activationsSchema();
+    return activationsSchema(this._hass);
   }
 }
 
