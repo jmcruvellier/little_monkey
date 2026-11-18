@@ -240,9 +240,10 @@ SWITCHSTAT = {
         {"duration": -1, "state_time": "2026-11-18 20:27:48",
          "switch_source": {"name": "Switch for", "val": 3},
          "switch_state": {"name": "Eteint", "val": 0}},
+        # A forced state has another value than "Allumé"
         {"duration": 300, "state_time": "2026-11-18 20:22:48",
          "switch_source": {"name": "Cloud", "val": 1},
-         "switch_state": {"name": "Allumé (forcé)", "val": 1}},
+         "switch_state": {"name": "Allumé (forcé)", "val": 3}},
         {"duration": 3, "state_time": "not a time",
          "switch_source": {"name": "Cloud", "val": 1},
          "switch_state": {"name": "Eteint", "val": 0}},
@@ -1856,3 +1857,19 @@ def test_equipment_unexpected_answer(api):
     session.routes["plugstat"] = Response(payload={"nothing": 1})
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(client.async_get_equipment_day(client.equipments[2], dt.date(2026, 11, 18)))
+
+
+@pytest.mark.parametrize(("state", "on"), [
+    ({"name": "Allumé", "val": 1}, True),
+    ({"name": "Allumé (forcé)", "val": 3}, True),
+    ({"name": "Eteint", "val": 0}, False),
+    ({"name": "Éteint (forcé)", "val": 2}, False),
+    # A name in another language: the value decides
+    ({"name": "Acceso", "val": 1}, True),
+    ({"name": "Spento", "val": 0}, False),
+])
+def test_equipment_switched_on(api, state, on):
+    """Whether an equipment was on comes from the name of its state."""
+    switches = api.parse_equipment_switches({"switch_state_logs": [
+        {"duration": 60, "state_time": "2026-11-18 20:00:00", "switch_state": state}]})
+    assert switches[0]["on"] is on
