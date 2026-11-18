@@ -1650,3 +1650,18 @@ async def test_equipment_is_read_again_at_the_end_of_a_forced_mode(hass, fake_ap
     async_fire_time_changed(hass, dt_util.utcnow() + dt.timedelta(seconds=100))
     await hass.async_block_till_done()
     assert fake_api.equipment_reads == reads + 1
+
+
+async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
+    """Each band of the contract has the price of a kWh, exact or estimated."""
+    fake_api.values["_exact_prices"] = [{"label": "Heures Pleines", "price": 0.2016}]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    bands = {
+        band["key"]: band
+        for band in hass.states.get("sensor.ecojoko_contract").attributes["bands"]}
+    assert bands["hp_grid_consumption"]["price"] == 0.2016
+    assert bands["hp_grid_consumption"]["price_exact"] is True
+    # Not enough statistics to estimate the other one
+    assert bands["hc_grid_consumption"]["price"] is None
+    assert "id" not in bands["hc_grid_consumption"]

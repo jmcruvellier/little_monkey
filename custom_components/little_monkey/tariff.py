@@ -247,3 +247,107 @@ def day_values(subconsumption, bands):
         elif band is None:
             unclassified.append(item.get("label"))
     return values, totals, unclassified
+
+
+# --- Price of a kWh of each tariff band
+#
+# ecojoko gives the exact prices only with a water heater it pilots: its
+# device has "device_external_settings.pricing_data.prices", items {label,
+# price} in euros per kWh, shown in its web application. Otherwise they are
+# estimated from the daily statistics: the cost of a band on a day is its
+# energy at the price of a kWh, plus a share of the subscription that does
+# not depend on the energy. The slope of the costs against the energies
+# over a few days is the price of a kWh.
+
+# Days of statistics kept for the estimation, and what it needs for a band:
+# days, and kWh between the smallest and the largest day of the band
+PRICE_DAYS = 15
+PRICE_MIN_DAYS = 3
+PRICE_MIN_SPREAD = 1.0
+
+
+def _number(value):
+    """Return a number given as a number or as a text such as "0,2016", or None."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, str):
+        try:
+            value = float(value.strip().replace(",", "."))
+        except ValueError:
+            return None
+    if not isinstance(value, int | float) or value != value:
+        return None
+    return float(value)
+
+
+def day_costs(stat):
+    """Return the energy and cost of each band, each day of a statistics response.
+
+    {iso date: {band id: (kWh, euros)}}, the days without bands left out.
+    """
+    days = {}
+    for item in stat.get("data") or []:
+        if not isinstance(item, dict):
+            continue
+        day = local_date(item.get("time"))
+        bands = {}
+        for band in item.get("subconsumption") or []:
+            if not isinstance(band, dict):
+                continue
+            band_id = band.get("id")
+            kwh = _number(band.get("kwh"))
+            price = _number(band.get("price"))
+            if isinstance(band_id, int) and not isinstance(band_id, bool) \
+                    and kwh is not None and price is not None and kwh > 0:
+                bands[band_id] = (kwh, price)
+        if day is not None and bands:
+            days[day.isoformat()] = bands
+    return days
+
+
+def estimate_prices(days):
+    """Return the estimated price of a kWh of each band {band id: euros}.
+
+    The slope of the least squares line of the costs against the energies of
+    the days of a band, rounded to the tenth of a cent: ecojoko rounds its
+    costs to the cent. A band without enough days, or whose days are too
+    alike, has no price.
+    """
+    points = {}
+    for bands in days.values():
+        for band_id, point in bands.items():
+            points.setdefault(band_id, []).append(point)
+    prices = {}
+    for band_id, values in points.items():
+        energies = [kwh for kwh, _price in values]
+        if len(values) < PRICE_MIN_DAYS or max(energies) - min(energies) < PRICE_MIN_SPREAD:
+            continue
+        mean_kwh = sum(energies) / len(values)
+        mean_price = sum(price for _kwh, price in values) / len(values)
+        spread = sum((kwh - mean_kwh) ** 2 for kwh in energies)
+        slope = sum((kwh - mean_kwh) * (price - mean_price) for kwh, price in values) / spread
+        if 0 < slope < 5:
+            prices[band_id] = round(slope, 3)
+    return prices
+
+
+def exact_prices(prices, labels):
+    """Return the prices given by ecojoko {band id: euros}.
+
+    prices: the "prices" items of its pricing data; labels: the labels of
+    the bands {band id: label}. An item is matched by its id when it has
+    one, by its label otherwise.
+    """
+    by_label = {
+        str(label).strip().casefold(): band_id for band_id, label in labels.items()}
+    result = {}
+    for item in prices or []:
+        if not isinstance(item, dict):
+            continue
+        price = _number(item.get("price"))
+        band_id = item.get("id")
+        if not isinstance(band_id, int) or isinstance(band_id, bool) or band_id not in labels:
+            band_id = by_label.get(str(item.get("label", "")).strip().casefold())
+        if price is not None and price > 0 and band_id is not None:
+            result[band_id] = price
+    return result

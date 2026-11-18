@@ -122,3 +122,41 @@ test("a new contract card takes the contract sensor of the first device", () => 
   });
   assert.deepEqual(card.contractSchema().map((field) => field.name), ["entity", "title"]);
 });
+
+const PRICE_TEXT = { per_kwh: "{price} / kWh" };
+// The spaces of the French numbers are not breaking
+const plain = (value) => value?.replace(/\s/g, " ");
+
+test("the price of a kWh: as ecojoko gives it, or estimated to the tenth of a cent", () => {
+  assert.equal(plain(card.bandPrice(PRICE_TEXT, "fr", { price: 0.2016, price_exact: true })), "0,2016 € / kWh");
+  assert.equal(plain(card.bandPrice(PRICE_TEXT, "fr", { price: 0.18, price_exact: true })), "0,18 € / kWh");
+  assert.equal(plain(card.bandPrice(PRICE_TEXT, "fr", { price: 0.18, price_exact: false })), "≈ 0,180 € / kWh");
+  assert.equal(card.bandPrice(PRICE_TEXT, "fr", { price: null }), null);
+  assert.equal(card.bandPrice(PRICE_TEXT, "fr", {}), null);
+});
+
+test("the current band: named by the period sensor, or the only one of the period", () => {
+  const hass = fakeHass("hp");
+  hass.states["sensor.eco_contract"].attributes.bands = [
+    { key: "hp_grid_consumption", name: "Heures Pleines", category: "hp" },
+    { key: "hc_grid_consumption", name: "Heures Creuses", category: "hc" },
+  ];
+  // 05:15 is in the off-peak hours of the contract
+  let view = card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  assert.deepEqual(view.bands.map((band) => band.current), [false, true]);
+  // The period sensor names it
+  hass.states["sensor.eco_period"].attributes = { tariff_band: "Heures Pleines" };
+  view = card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  assert.deepEqual(view.bands.map((band) => band.current), [true, false]);
+});
+
+test("without its name, no current band for Tempo: it depends on the day", () => {
+  const hass = fakeHass("hc_white");
+  hass.states["sensor.eco_contract"].attributes.bands = [
+    { key: "band_19", name: "HC Bleu", category: "hc" },
+    { key: "band_18", name: "HP Bleu", category: "hp" },
+    { key: "band_20", name: "HP Blanc", category: "hp" },
+  ];
+  const view = card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  assert.deepEqual(view.bands.map((band) => band.current), [false, false, false]);
+});

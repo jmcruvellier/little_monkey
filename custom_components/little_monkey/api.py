@@ -31,11 +31,15 @@ from .utils import (
 from .tariff import (
     OFF_PEAK,
     PEAK,
+    PRICE_DAYS,
     active_contract,
     bands_of,
     TOTAL_BANDS,
     bands_of_offer,
+    day_costs,
     day_values,
+    estimate_prices,
+    exact_prices,
     local_date)
 
 TZ = get_paris_timezone()
@@ -552,6 +556,11 @@ class LittleMonkeyApiClient:
         self._bands = {}
         # Equipments of the gateway, read with the list of the gateways
         self._equipments = []
+        # Energy and cost of each band, each day of the last two weeks, for
+        # the estimation of the price of a kWh; the exact prices when
+        # ecojoko gives them (with a water heater it pilots)
+        self._day_costs = {}
+        self._exact_prices = None
 
         # Internal
         # Monotonic time the contract is due to be read again
@@ -597,6 +606,24 @@ class LittleMonkeyApiClient:
     def equipments(self) -> list:
         """Return the equipments of the gateway, read every five minutes."""
         return list(self._equipments)
+
+    @property
+    def band_prices(self) -> dict:
+        """Return the price of a kWh of each band {band id: {price, exact}}.
+
+        The prices given by ecojoko when it has them, estimated from the
+        statistics of the last two weeks otherwise.
+        """
+        labels = dict(self._bands)
+        for band in self._configured_bands:
+            labels.setdefault(band.get("id"), band.get("label"))
+        exact = exact_prices(self._exact_prices, labels) if self._exact_prices else {}
+        estimated = estimate_prices(self._day_costs)
+        result = {
+            band_id: {"price": price, "exact": False} for band_id, price in estimated.items()}
+        result.update(
+            {band_id: {"price": price, "exact": True} for band_id, price in exact.items()})
+        return result
 
     @property
     def bands(self) -> dict:
@@ -1212,6 +1239,12 @@ class LittleMonkeyApiClient:
                      "url": ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}"
                      "/suppliers",
                      "call": refresh_contract})
+        # The week before, with the contract: for the price of a kWh
+        previous_week = (current_date - dt.timedelta(days=7)).strftime('%Y-%m-%d')
+        apis.append({"name": "powerstat (w-1)",
+                     "url": ECOJOKO_GATEWAY_URL + powermeterurl +
+                     f"/powerstat/w/{previous_week}",
+                     "call": refresh_contract})
 
         tasks = [self.fetch_data(api) for api in apis]
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -1297,6 +1330,7 @@ class LittleMonkeyApiClient:
         # Contract
         if refresh_contract:
             self._parse_contract(results[4], now, apis[4]['name'])
+            self._parse_previous_week(results[5], current_date, apis[5]['name'])
 
     def _parse_contract(self, payload, now, name) -> None:
         """Update the active contract from the suppliers response.
@@ -1316,11 +1350,30 @@ class LittleMonkeyApiClient:
         self._contract = contract
         self._contract_due = now + CONF_API_CONTRACT_REFRESH
 
+    def _parse_previous_week(self, payload, today, name) -> None:
+        """Keep the costs of the bands of the week before, for their prices."""
+        if payload is None:
+            return
+        try:
+            self._add_day_costs(payload['stat'], today)
+        except PARSE_ERRORS as exception:
+            self._warn_once(name, exception)
+        else:
+            self._clear_warning(name)
+
+    def _add_day_costs(self, stat, today) -> None:
+        """Keep the energy and cost of the bands of the days of a statistics response."""
+        self._day_costs.update(day_costs(stat))
+        oldest = (today - dt.timedelta(days=PRICE_DAYS)).isoformat()
+        self._day_costs = {
+            day: bands for day, bands in self._day_costs.items() if day > oldest}
+
     def _parse_powerstat(self, payload, day) -> None:
         """Update the energy properties from the powerstat response of a day."""
         week_day = day.weekday()
         stat = payload['stat']
         data = stat['data']
+        self._add_day_costs(stat, day)
         kwh = data[week_day]['kwh']
         self._bands.update(bands_of(stat, data[week_day]))
         if day != self._stat_date:
@@ -1406,6 +1459,14 @@ class LittleMonkeyApiClient:
             LOGGER.debug("Equipments not read: %r", exception)
 
         value_json = gateways[0].get('devices')
+        # Prices of the contract, given with a water heater piloted by ecojoko
+        self._exact_prices = next((
+            pricing.get("prices")
+            for item in value_json or []
+            if isinstance(pricing := (item.get("device_external_settings") or {})
+                          .get("pricing_data"), dict)
+            and pricing.get("prices")
+        ), None)
         # Looking for humidity temperature and  power meter devices id
         for item in value_json:
             if item["device_type"] == "TEMP_HUM":

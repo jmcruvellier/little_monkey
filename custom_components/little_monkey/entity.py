@@ -213,9 +213,10 @@ class EcojokoContractSensor(EcojokoSensor):
     def __init__(self, main_device, sensor_name, bands, icon="mdi:file-document-outline"):
         """Initialize the sensor with the configured tariff bands."""
         super().__init__(main_device, sensor_name, None, None, None, icon)
-        # Bands of the contract: sensor key, name and total (hc or hp)
+        # Bands of the contract: id, sensor key, name and total (hc or hp)
         self._bands = [
             {
+                "id": band.get("id"),
                 "key": band.get("key"),
                 "name": band.get("name") or band.get("label"),
                 "category": band.get("category"),
@@ -248,8 +249,20 @@ class EcojokoContractSensor(EcojokoSensor):
             "subscription_price": contract.get("subscription_price"),
             "start_date": contract.get("start_date"),
             "off_peak_timeslots": contract.get("off_peak_timeslots") or [],
-            "bands": self._bands,
+            # With the price of a kWh: given by ecojoko (exact) or estimated
+            "bands": [
+                {
+                    **{key: value for key, value in band.items() if key != "id"},
+                    **self._band_price(band["id"]),
+                }
+                for band in self._bands
+            ],
         }
+
+    def _band_price(self, band_id) -> dict:
+        """Return the price of a kWh of a band and whether it is exact."""
+        price = ((self.coordinator.data or {}).get("band_prices") or {}).get(band_id) or {}
+        return {"price": price.get("price"), "price_exact": price.get("exact")}
 
 
 class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
