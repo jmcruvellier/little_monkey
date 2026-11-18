@@ -354,6 +354,38 @@
             },
             "equipment_cost": {
                 "name": "Custo de hoje"
+            },
+            "equipment_connection": {
+                "name": "Ligação ao assistente",
+                "state": {
+                    "connected": "Ligado",
+                    "disconnected": "Desligado"
+                }
+            },
+            "equipment_signal": {
+                "name": "Força da ligação"
+            },
+            "equipment_wifi_signal": {
+                "name": "Ligação WiFi"
+            },
+            "equipment_battery": {
+                "name": "Bateria"
+            },
+            "equipment_connection_of": {
+                "name": "{equipment}: ligação ao assistente",
+                "state": {
+                    "connected": "Ligado",
+                    "disconnected": "Desligado"
+                }
+            },
+            "equipment_signal_of": {
+                "name": "{equipment}: força da ligação"
+            },
+            "equipment_wifi_signal_of": {
+                "name": "{equipment}: ligação WiFi"
+            },
+            "equipment_battery_of": {
+                "name": "{equipment}: bateria"
             }
         }
     },

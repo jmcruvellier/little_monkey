@@ -178,6 +178,9 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "current_tariff_band": self._current_tariff_band(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "contract": self.client.contract,
+            # Equipments of the gateway by id, for their diagnostic sensors
+            "equipments": {
+                equipment["id"]: equipment for equipment in self.client.equipments},
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
             "realtime_apparent_power": self.client.realtime_va,

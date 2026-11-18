@@ -105,8 +105,39 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.runtime_data = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    _async_remove_old_equipment_devices(hass, entry)
 
     return True
+
+
+def _equipment_devices(entry: ConfigEntry) -> set:
+    """Return the identifiers of the devices of the piloted equipments."""
+    return {
+        equipment_identifier(entry.entry_id, equipment["id"])
+        for equipment in entry.runtime_data.client.equipments
+        if equipment["controls"]
+    }
+
+
+def _async_remove_old_equipment_devices(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Remove the devices of the equipments that are no longer piloted.
+
+    Only a piloted equipment has a device. The device of an equipment
+    removed from ecojoko, or left empty by a version under development that
+    gave one to every equipment, is removed. Nothing is removed while the
+    equipments are unknown.
+    """
+    if not entry.runtime_data.client.equipments:
+        return
+    current = _equipment_devices(entry)
+    prefix = f"{entry.entry_id}_"
+    registry = dr.async_get(hass)
+    for device in dr.async_entries_for_config_entry(registry, entry.entry_id):
+        equipment = any(
+            domain == DOMAIN and identifier.startswith(prefix)
+            for domain, identifier in device.identifiers)
+        if equipment and not current & device.identifiers:
+            registry.async_update_device(device.id, remove_config_entry_id=entry.entry_id)
 
 
 def _async_sync_unique_id(hass: HomeAssistant, entry: ConfigEntry) -> None:
@@ -210,12 +241,8 @@ async def async_remove_config_entry_device(
     devices currently provided by the entry cannot.
     """
     current = {(DOMAIN, entry.entry_id)}
-    coordinator = getattr(entry, "runtime_data", None)
-    if coordinator is not None:
-        current |= {
-            equipment_identifier(entry.entry_id, equipment["id"])
-            for equipment in coordinator.client.equipments
-        }
+    if getattr(entry, "runtime_data", None) is not None:
+        current |= _equipment_devices(entry)
     return not current & device_entry.identifiers
 
 

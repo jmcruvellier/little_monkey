@@ -441,3 +441,52 @@ class EcojokoEquipmentSensor(EcojokoEquipmentEntity, SensorEntity):
         if self._key != "equipment_mode" or equipment is None:
             return None
         return {name: equipment["state"].get(name) for name in EQUIPMENT_MODE_ATTRIBUTES}
+
+
+# Value of each diagnostic sensor of an equipment
+EQUIPMENT_DIAGNOSTIC_VALUES = {
+    "equipment_connection": lambda equipment: (
+        None if equipment.get("connected") is None
+        else "connected" if equipment["connected"] else "disconnected"),
+    "equipment_signal": lambda equipment: equipment.get("signal"),
+    "equipment_wifi_signal": lambda equipment: equipment.get("wifi_signal"),
+    "equipment_battery": lambda equipment: equipment.get("battery"),
+}
+
+
+class EcojokoEquipmentDiagnosticSensor(EcojokoEquipmentEntity, SensorEntity):
+    """Diagnostic sensor of an equipment: connection, signal, battery.
+
+    Every equipment of the gateway has them, piloted or not; they come with
+    the list of the gateways, read every five minutes. A piloted equipment
+    has them on its device; the others (Linky key, sensor...) have no device
+    of their own: theirs are on the Ecojoko device, named after them.
+    """
+
+    _attr_entity_category = EntityCategory.DIAGNOSTIC
+
+    def __init__(self, main_device, equipment, key, state_class, device_class,
+                 unit_of_measurement, icon):
+        """Initialize the sensor, updated by the main coordinator."""
+        super().__init__(main_device, main_device.coordinator, equipment, key)
+        if not equipment.get("controls"):
+            self._attr_device_info = main_device.device_info
+            self._attr_translation_key = f"{key}_of"
+            self._attr_translation_placeholders = {
+                "equipment": str(equipment.get("name") or equipment.get("type"))}
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_icon = icon
+        if key == "equipment_connection":
+            self._attr_options = ["connected", "disconnected"]
+
+    def _equipment(self) -> dict | None:
+        """Return the equipment as read with the list of the gateways."""
+        return ((self.coordinator.data or {}).get("equipments") or {}).get(self._equipment_id)
+
+    @property
+    def native_value(self):
+        """Return the value of the sensor."""
+        equipment = self._equipment()
+        return None if equipment is None else EQUIPMENT_DIAGNOSTIC_VALUES[self._key](equipment)

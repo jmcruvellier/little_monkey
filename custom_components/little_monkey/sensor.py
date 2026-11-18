@@ -18,6 +18,7 @@ from .entity import (
     EcojokoActivitySensor,
     EcojokoContractSensor,
     EcojokoEntity,
+    EcojokoEquipmentDiagnosticSensor,
     EcojokoEquipmentSensor,
     EcojokoPeriodSensor,
     EcojokoSavingsSensor,
@@ -141,6 +142,18 @@ EQUIPMENT_SENSORS = (
     ("equipment_cost", COST, lambda equipment: equipment["measures"]),
 )
 
+# Diagnostic sensors of every equipment, created when ecojoko gives their value
+SIGNAL = (SensorStateClass.MEASUREMENT, None, PERCENTAGE, "mdi:signal")
+EQUIPMENT_DIAGNOSTIC_SENSORS = (
+    ("equipment_connection", (None, SensorDeviceClass.ENUM, None, "mdi:lan-connect"),
+     "connected"),
+    ("equipment_signal", SIGNAL, "signal"),
+    ("equipment_wifi_signal", (SensorStateClass.MEASUREMENT, None, PERCENTAGE, "mdi:wifi"),
+     "wifi_signal"),
+    ("equipment_battery", (SensorStateClass.MEASUREMENT, SensorDeviceClass.BATTERY, PERCENTAGE,
+                           None), "battery"),
+)
+
 # Option that enables a sensor: None (always), one option, or several (any)
 
 
@@ -200,7 +213,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for key, kind in SAVINGS_SENSORS:
         main_device.add_child_entity(
             EcojokoSavingsSensor(main_device, coordinator.savings, key, *kind))
-    # Piloted equipments, each on its own device
+    # Every equipment: its connection, signal... on the device of a piloted
+    # one, on the Ecojoko device for the others
+    for equipment in coordinator.client.equipments:
+        for key, kind, field in EQUIPMENT_DIAGNOSTIC_SENSORS:
+            if equipment.get(field) is not None:
+                main_device.add_child_entity(EcojokoEquipmentDiagnosticSensor(
+                    main_device, equipment, key, *kind))
+    # Piloted equipments: their mode, power...
     for equipment in coordinator.equipment.piloted():
         for key, kind, needed in EQUIPMENT_SENSORS:
             if needed(equipment):
