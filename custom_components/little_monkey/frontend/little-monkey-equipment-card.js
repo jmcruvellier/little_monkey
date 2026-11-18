@@ -471,9 +471,15 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   set hass(hass) {
     const first = !this._hass;
     this._hass = hass;
-    if (first) {
+    // The mode of an equipment changed (after a command, at the end of a
+    // forced mode...): the card reads the equipments at once instead of
+    // waiting for its next reading. Not for every value: the power of the
+    // Linky key changes every few seconds
+    const states = JSON.stringify(this._modeStates());
+    if (first || (this._equipments && states !== this._states)) {
       this._read();
     }
+    this._states = states;
     this._render();
   }
 
@@ -529,6 +535,8 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
       });
       this._equipments = result.response?.equipments || [];
       this._error = false;
+      // The modes read: a change of them makes the card read again
+      this._states = JSON.stringify(this._modeStates());
     } catch (error) {
       console.debug("Little Monkey card: equipments not read", error);
       this._error = true;
@@ -689,6 +697,14 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
       ? `<div class="others">${others.map((equipment) => this._other(equipment, text, locale)).join("")}</div>`
       : "";
     body.innerHTML = blocks + none + list;
+  }
+
+  /** Return the modes of the piloted equipments, with the time they changed. */
+  _modeStates() {
+    return (this._equipments || []).map((equipment) => {
+      const state = this._hass.states[equipment.entities?.mode];
+      return state ? [state.state, state.last_changed, state.attributes?.until] : null;
+    });
   }
 
   /** Return the states of the entities of the values shown, to draw them again when they change. */
