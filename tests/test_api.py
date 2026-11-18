@@ -187,6 +187,69 @@ ACTIVATIONS = {
 }
 
 
+# Water heater piloted by ecojoko, as observed (identifiers changed)
+WATER_HEATER = {
+    "device_id": 630220,
+    "device_status": 1,
+    "device_status_desc": "Connecté",
+    "device_type": "LULO",
+    "device_model": "LULO",
+    "device_fw_ver": "1.01.11",
+    "device_state": {
+        "power_level": 0, "onoff": 0, "voltage": 232.5, "forced": 1, "max_power_level": 3131,
+        "switch_last_source": 1, "switch_state": "Mode absence jusqu'à 20:25",
+        "switch_time": 1795029644000, "switch_until": 1795029945000,
+    },
+    "device_commands": ["on", "off", "on_forced", "off_forced", "reset_max_power", "powerstat",
+                        "plugstat", "switchstat"],
+    "battery": {"level": 255, "value": "", "type": "Alimentation"},
+    "signal": {"level": 3, "value": "29%", "type": "ESP-NOW"},
+    "device_settings": {"name": "Chauffe-eau", "operating_mode": 1},
+    "lulo_network_status": {"wifi": {"state": 1, "mac": "00:00:00:00:00:00", "ssid": "Box",
+                                     "signal": 30}},
+    "device_showable_settings": {"show_switch_buttons": 1, "switch_forced_mode": 1},
+}
+TEMP_HUM_DEVICE = {
+    "device_id": 3, "device_type": "TEMP_HUM", "device_status": 1,
+    "device_status_desc": "Connecté", "device_state": {"temperature": 208, "humidity": 50},
+    "device_commands": ["tempstat", "humstat"],
+    "battery": {"level": 80, "value": "80%", "type": "AAA"},
+    "signal": {"level": 4, "value": "66%", "type": "UNET"},
+    "device_settings": {"name": "Sonde de température"},
+}
+GATEWAYS_WITH_EQUIPMENTS = {
+    "gateways": [
+        {
+            "gateway_id": 1,
+            "gateway_firmware_version": "9",
+            "devices": [{"device_type": "POWER_METER", "device_id": 2}, TEMP_HUM_DEVICE,
+                        WATER_HEATER],
+        }
+    ]
+}
+PLUGSTAT = {
+    "stat": {
+        "period": {"kwh": 0.9666, "price": 0.141521761, "kwh_hc_ns": 0.7382},
+        "data": [{"time": 1794956400000, "value": 0, "price": 0},
+                 {"time": 1794956640000, "value": 2784, "price": 0.01}],
+    }
+}
+SWITCHSTAT = {
+    # The most recent first
+    "switch_state_logs": [
+        {"duration": -1, "state_time": "2026-11-18 20:27:48",
+         "switch_source": {"name": "Switch for", "val": 3},
+         "switch_state": {"name": "Eteint", "val": 0}},
+        {"duration": 300, "state_time": "2026-11-18 20:22:48",
+         "switch_source": {"name": "Cloud", "val": 1},
+         "switch_state": {"name": "Allumé (forcé)", "val": 1}},
+        {"duration": 3, "state_time": "not a time",
+         "switch_source": {"name": "Cloud", "val": 1},
+         "switch_state": {"name": "Eteint", "val": 0}},
+    ]
+}
+
+
 def powerstat(kwh=4.2, **today):
     """Return a powerstat response whose current day holds the given values."""
     data = [{"kwh": 0} for _ in range(7)]
@@ -280,6 +343,9 @@ class Session:
             "ia/conso": Response(payload=ANALYSIS_WEEK),
             "history": Response(payload=CATEGORY_HISTORY),
             "ia/appliances": Response(payload=ACTIVATIONS),
+            "plugstat": Response(payload=PLUGSTAT),
+            "switchstat": Response(payload=SWITCHSTAT),
+            "device/630220": Response(payload=WATER_HEATER),
             **overrides,
         }
         self.calls = []
@@ -1676,3 +1742,117 @@ def test_analysis_unexpected_answer(api, route, read):
     run(client.async_get_data())
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(read(client))
+
+
+# --- Equipments
+
+
+def equipment_client(api):
+    """Return a client that read a gateway with equipments, and its session."""
+    session = Session(gateways=Response(payload=GATEWAYS_WITH_EQUIPMENTS))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    return client, session
+
+
+def test_equipments_are_read_with_the_gateways(api):
+    """Every equipment of the gateway is described the same way."""
+    client, _session = equipment_client(api)
+    power_meter, sensor, heater = client.equipments
+    assert power_meter["controls"] == [] and power_meter["state"]["mode"] is None
+    assert sensor["name"] == "Sonde de température"
+    assert sensor["battery"] == 80 and sensor["signal"] == 66
+    assert sensor["controls"] == [] and sensor["measures"] is False
+    assert heater == {
+        "id": "630220", "type": "LULO", "model": "LULO", "name": "Chauffe-eau",
+        "firmware": "1.01.11", "connected": True, "status": "Connecté",
+        "signal": 29, "battery": None, "wifi_signal": 30,
+        "controls": ["forced", "absence", "auto"], "measures": True, "switches": True,
+        "state": {
+            "power": 0, "on": False, "forced": True, "mode": "absence",
+            "switch_state": "Mode absence jusqu'à 20:25",
+            "since": "2026-11-18T20:20:44+01:00", "until": "2026-11-18T20:25:45+01:00",
+            "source": "command", "voltage": 232.5, "max_power": 3131,
+        },
+    }
+    # No identifier nor network name in the diagnostics
+    text = json.dumps(client.diagnostics())
+    assert "630220" not in text and "Box" not in text and '"LULO"' in text
+
+
+@pytest.mark.parametrize(("state", "showable", "commands", "controls", "mode"), [
+    # Forced on for a while, then back to automatic
+    ({"onoff": 1, "forced": 1}, {}, ["on", "off", "on_forced", "off_forced"],
+     ["forced", "absence", "auto"], "forced"),
+    ({"onoff": 1, "forced": 0}, {}, ["on", "off", "on_forced", "off_forced"],
+     ["forced", "absence", "auto"], "auto"),
+    # Without a forced mode, ecojoko offers on and off
+    ({"onoff": 1, "forced": 0}, {"switch_forced_mode": 0},
+     ["on", "off", "on_forced", "off_forced"], ["on", "off"], "on"),
+    # A plug of an unknown type is piloted by its commands
+    ({"onoff": 0}, None, ["on", "off"], ["on", "off"], "off"),
+    # Buttons hidden by ecojoko
+    ({"onoff": 0}, {"show_switch_buttons": 0}, ["on", "off"], [], None),
+])
+def test_equipment_controls(api, state, showable, commands, controls, mode):
+    """The controls come from the commands, as in the web application."""
+    equipment = api.parse_equipment({
+        "device_id": 9, "device_type": "SOMETHING_NEW", "device_state": state,
+        "device_commands": commands, "device_showable_settings": showable})
+    assert equipment["controls"] == controls
+    assert equipment["state"]["mode"] == mode
+    assert equipment["name"] == "SOMETHING_NEW"
+
+
+def test_equipment_until_only_while_forced(api):
+    """The end of the last forced mode, kept by ecojoko, is not shown."""
+    equipment = api.parse_equipment({**WATER_HEATER, "device_state": {
+        **WATER_HEATER["device_state"], "forced": 0, "switch_until": 1795030069000}})
+    assert equipment["state"]["until"] is None
+    assert equipment["state"]["mode"] == "auto"
+
+
+def test_equipment_and_its_day(api):
+    """A piloted equipment is read again, with its measures of the day."""
+    client, session = equipment_client(api)
+    equipment = run(client.async_get_equipment("630220"))
+    assert session.requests[-1][1].endswith("/gateway/1/device/630220")
+    assert equipment["state"]["mode"] == "absence"
+    day = run(client.async_get_equipment_day(equipment, dt.date(2026, 11, 18)))
+    urls = [request[1] for request in session.requests[-2:]]
+    assert any(url.endswith("/device/630220/plugstat/d4/2026-11-18") for url in urls)
+    assert any(url.endswith("/device/630220/switchstat/d/2026-11-18") for url in urls)
+    assert day["energy"] == 0.97 and day["cost"] == 0.14
+    assert day["power"][1] == {"time": "2026-11-18T00:04:00+01:00", "value": 2784}
+    # The oldest first, the unreadable ones left out
+    assert day["switches"] == [
+        {"start": "2026-11-18T20:22:48+01:00", "end": "2026-11-18T20:27:48+01:00",
+         "on": True, "forced": True, "source": "command"},
+        {"start": "2026-11-18T20:27:48+01:00", "end": None,
+         "on": False, "forced": False, "source": "timer"},
+    ]
+
+
+def test_equipment_day_without_measures(api):
+    """An equipment without measures has an empty day, read from nowhere."""
+    client, session = equipment_client(api)
+    calls = len(session.calls)
+    day = run(client.async_get_equipment_day(client.equipments[1], dt.date(2026, 11, 18)))
+    assert len(session.calls) == calls
+    assert day == {"date": "2026-11-18", "energy": None, "cost": None, "power": [],
+                   "switches": []}
+
+
+def test_unknown_equipment_is_refused(api):
+    """Only the equipments of the gateway are read."""
+    client, _session = equipment_client(api)
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_get_equipment("12"))
+
+
+def test_equipment_unexpected_answer(api):
+    """An unexpected answer is an error of the client."""
+    client, session = equipment_client(api)
+    session.routes["plugstat"] = Response(payload={"nothing": 1})
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_get_equipment_day(client.equipments[2], dt.date(2026, 11, 18)))

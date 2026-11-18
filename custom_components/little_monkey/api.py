@@ -301,6 +301,159 @@ def parse_activations(payload) -> dict:
     }
 
 
+# Origin of the last change of state of a piloted equipment, by ecojoko id
+SWITCH_SOURCES = {1: "command", 2: "schedule", 3: "timer"}
+# ecojoko gives this battery level to an equipment plugged in the mains
+MAINS_BATTERY_LEVEL = 255
+
+
+def _percent(value) -> float | None:
+    """Return a percentage given as a number or as a text such as "66%"."""
+    if isinstance(value, str):
+        value = value.strip().rstrip("%").strip()
+        try:
+            value = float(value)
+        except ValueError:
+            return None
+    number = finite_number(value)
+    return number if number is not None and 0 <= number <= 100 else None
+
+
+def _local_time(text) -> dt.datetime | None:
+    """Return a time "YYYY-MM-DD HH:MM:SS" in Paris, or None."""
+    try:
+        return dt.datetime.strptime(str(text), "%Y-%m-%d %H:%M:%S").replace(tzinfo=TZ)
+    except ValueError:
+        return None
+
+
+def equipment_controls(commands, showable) -> list:
+    """Return the controls ecojoko offers for an equipment.
+
+    Its web application shows the same buttons: forced, absence and back to
+    automatic when the equipment has a forced mode, on and off otherwise,
+    nothing when ecojoko hides them. An equipment of an unknown type is
+    piloted the same way as soon as it has these commands.
+    """
+    commands = set(commands)
+    showable = showable if isinstance(showable, dict) else {}
+    if showable.get("show_switch_buttons", 1) != 1:
+        return []
+    if showable.get("switch_forced_mode", 1) and {"on_forced", "off_forced"} <= commands:
+        return ["forced", "absence", "auto"]
+    if {"on", "off"} <= commands:
+        return ["on", "off"]
+    return []
+
+
+def _equipment_state(state, controls) -> dict:
+    """Return the state of an equipment: power, on, forced, mode..."""
+    state = state if isinstance(state, dict) else {}
+    on = state.get("onoff")
+    forced = state.get("forced")
+    mode = None
+    if "auto" in controls and forced is not None:
+        # Forced on, or off for an absence; automatic otherwise
+        mode = ("forced" if on else "absence") if forced else "auto"
+    elif "on" in controls and on is not None:
+        mode = "on" if on else "off"
+    until = finite_number(state.get("switch_until"))
+    return {
+        "power": finite_number(state.get("power_level")),
+        "on": None if on is None else bool(on),
+        "forced": None if forced is None else bool(forced),
+        "mode": mode,
+        # As ecojoko words it: "Éteint depuis 05:24"
+        "switch_state": state.get("switch_state"),
+        "since": _iso_time(state.get("switch_time"), 1000),
+        # Only while a forced mode lasts: -1 or the end of the last one otherwise
+        "until": _iso_time(until, 1000) if forced and until and until > 0 else None,
+        "source": SWITCH_SOURCES.get(state.get("switch_last_source")),
+        "voltage": finite_number(state.get("voltage")),
+        "max_power": finite_number(state.get("max_power_level")),
+    }
+
+
+def parse_equipment(device) -> dict:
+    """Return an equipment of the gateway: its identity, status and state.
+
+    Every equipment has the same description in ecojoko, whatever its type:
+    its controls and measures come from the commands it accepts.
+    """
+    settings = device.get("device_settings") or {}
+    commands = [command for command in device.get("device_commands") or []
+                if isinstance(command, str)]
+    controls = equipment_controls(commands, device.get("device_showable_settings"))
+    battery = device.get("battery") or {}
+    level = finite_number(battery.get("level"))
+    wifi = (device.get("lulo_network_status") or {}).get("wifi") or {}
+    status = device.get("device_status")
+    return {
+        "id": str(device["device_id"]),
+        "type": device.get("device_type"),
+        "model": device.get("device_model"),
+        "name": settings.get("name") or device.get("device_type"),
+        "firmware": device.get("device_fw_ver"),
+        "connected": None if status is None else status == 1,
+        "status": device.get("device_status_desc"),
+        "signal": _percent((device.get("signal") or {}).get("value")),
+        # Mains powered equipments have no battery level
+        "battery": None if level == MAINS_BATTERY_LEVEL else _percent(level),
+        "wifi_signal": _percent(wifi.get("signal")) if wifi.get("state") == 1 else None,
+        "controls": controls,
+        # Measures of the day: power and energy, and the changes of state
+        "measures": "plugstat" in commands,
+        "switches": "switchstat" in commands,
+        "state": _equipment_state(device.get("device_state"), controls),
+    }
+
+
+def parse_equipments(payload) -> list:
+    """Return the equipments of the first gateway of the list of gateways."""
+    devices = payload["gateways"][0].get("devices") or []
+    return [parse_equipment(device) for device in devices if "device_id" in device]
+
+
+def parse_equipment_power(payload) -> dict:
+    """Return the energy, cost and power curve of an equipment over a day."""
+    stat = payload["stat"]
+    period = stat.get("period") or {}
+    return {
+        "energy": finite_number(period.get("kwh")),
+        "cost": finite_number(period.get("price")),
+        "power": [
+            {"time": _iso_time(item.get("time"), 1000), "value": finite_number(item.get("value"))}
+            for item in stat.get("data") or []
+        ],
+    }
+
+
+def parse_equipment_switches(payload) -> list:
+    """Return the changes of state of an equipment over a day, the oldest first.
+
+    Each one has its start, its end (None while it lasts), whether the
+    equipment was on, whether it was forced, and its origin.
+    """
+    switches = []
+    for item in payload.get("switch_state_logs") or []:
+        start = _local_time(item.get("state_time"))
+        if start is None:
+            continue
+        state = item.get("switch_state") or {}
+        duration = finite_number(item.get("duration"))
+        end = None if duration is None or duration < 0 else start + dt.timedelta(seconds=duration)
+        switches.append({
+            "start": start.isoformat(),
+            "end": None if end is None else end.isoformat(),
+            "on": state.get("val") == 1,
+            # "Allumé (forcé)", "Eteint (forcé)"
+            "forced": "forc" in str(state.get("name", "")).lower(),
+            "source": SWITCH_SOURCES.get((item.get("switch_source") or {}).get("val")),
+        })
+    switches.sort(key=lambda switch: switch["start"])
+    return switches
+
+
 class LittleMonkeyApiClient:
     """API Client to retrieve ecojoko data."""
 
@@ -353,6 +506,8 @@ class LittleMonkeyApiClient:
         # met in the statistics since the start
         self._contract = None
         self._bands = {}
+        # Equipments of the gateway, read with the list of the gateways
+        self._equipments = []
 
         # Internal
         # Monotonic time the contract is due to be read again
@@ -393,6 +548,11 @@ class LittleMonkeyApiClient:
     def contract(self) -> dict | None:
         """Return the active contract, None until it is read."""
         return self._contract
+
+    @property
+    def equipments(self) -> list:
+        """Return the equipments of the gateway, read every five minutes."""
+        return list(self._equipments)
 
     @property
     def bands(self) -> dict:
@@ -490,6 +650,12 @@ class LittleMonkeyApiClient:
             "gateway_found": self._gateway_id is not None,
             "power_meter_found": self._power_meter_id is not None,
             "temp_hum_found": self._temp_hum_id is not None,
+            # Their type, status and controls; no identifier nor network name
+            "equipments": [
+                {key: equipment.get(key) for key in (
+                    "type", "model", "firmware", "connected", "controls", "measures", "switches")}
+                for equipment in self._equipments
+            ],
             "gateway_firmware_version": self._gateway_firmware_version,
             "seconds_since_stat_refresh": {
                 name: None if last is None else round(now - last, 1)
@@ -693,6 +859,60 @@ class LittleMonkeyApiClient:
         """
         return await self._async_get_slow(
             "activations", f"ia/appliances/0/{int(page)}", parse_activations)
+
+    def _equipment_url(self, equipment_id) -> str:
+        """Return the URL of an equipment of the gateway, known or not."""
+        if str(equipment_id) not in {equipment["id"] for equipment in self._equipments}:
+            raise LittleMonkeyApiClientError(f"Unknown equipment {equipment_id}")
+        return f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}/device/{int(equipment_id)}"
+
+    async def async_get_equipment(self, equipment_id) -> dict:
+        """Return an equipment read now: its state is more recent than the list."""
+        self._check_slow_api("equipment")
+        payload, _cookies = await self._async_request(
+            "equipment", self._equipment_url(equipment_id), cookies=self._cookies,
+            timeout=CONF_API_ACTIVITY_TIMEOUT)
+        try:
+            return parse_equipment(payload)
+        except PARSE_ERRORS as exception:
+            raise LittleMonkeyApiClientError(
+                f"Unexpected data from API equipment: {exception!r}"
+            ) from exception
+
+    async def async_get_equipment_day(self, equipment, day) -> dict:
+        """Return the measures of an equipment over a day.
+
+        Its energy, cost and power curve when it measures its power, and its
+        changes of state when it has some.
+        """
+        self._check_slow_api("equipment day")
+        url = self._equipment_url(equipment["id"])
+
+        async def read(name, path, parse):
+            payload, _cookies = await self._async_request(
+                name, f"{url}/{path}/{day.isoformat()}", cookies=self._cookies,
+                timeout=CONF_API_ACTIVITY_TIMEOUT)
+            try:
+                return parse(payload)
+            except PARSE_ERRORS as exception:
+                raise LittleMonkeyApiClientError(
+                    f"Unexpected data from API {name}: {exception!r}"
+                ) from exception
+
+        reads = {}
+        if equipment.get("measures"):
+            reads["power"] = read("plugstat", "plugstat/d4", parse_equipment_power)
+        if equipment.get("switches"):
+            reads["switches"] = read("switchstat", "switchstat/d", parse_equipment_switches)
+        results = dict(zip(reads, await asyncio.gather(*reads.values())))
+        power = results.get("power") or {}
+        return {
+            "date": day.isoformat(),
+            "energy": power.get("energy"),
+            "cost": power.get("cost"),
+            "power": power.get("power", []),
+            "switches": results.get("switches", []),
+        }
 
     async def async_get_savings(self) -> dict:
         """Return the savings over 12 months, this week, month and year.
@@ -1111,6 +1331,11 @@ class LittleMonkeyApiClient:
         gateway_firmware_version = gateways[0].get(
             'gateway_firmware_version')
         self._gateway_firmware_version = gateway_firmware_version
+
+        try:
+            self._equipments = parse_equipments(value_json)
+        except PARSE_ERRORS as exception:
+            LOGGER.debug("Equipments not read: %r", exception)
 
         value_json = gateways[0].get('devices')
         # Looking for humidity temperature and  power meter devices id

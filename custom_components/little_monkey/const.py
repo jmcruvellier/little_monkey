@@ -75,6 +75,9 @@ CONF_API_ACTIVITY_GRACE = 3600
 # Savings of the account (12 months, current week, month and year): read
 # like the activity, with its timeout and its grace, every half hour
 CONF_API_SAVINGS_REFRESH = 1800
+# Piloted equipments (water heater...): their state and the measures of the
+# day are read every two minutes, with the timeout and grace of the activity
+CONF_API_EQUIPMENT_REFRESH = 120
 
 # URLs
 ECOJOKO_LOGIN_URL = "https://service.ecojoko.com/login"

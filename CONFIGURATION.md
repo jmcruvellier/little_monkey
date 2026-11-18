@@ -269,3 +269,13 @@ Trois services renvoient les données de la page « Analyse de votre conso » d'
 | `little_monkey.get_category_history` | `category` (l'`id` d'un poste), `date` facultative | La consommation du poste semaine par semaine sur l'année de la date (`bars` : `date`, `cost`, `consumption`, `percentage`) |
 | `little_monkey.get_activations` | `page` facultative (0 par défaut) | Les démarrages d'appareils détectés sur 48 heures (page 0 : les 48 dernières heures, page 1 : les 48 heures précédentes…) : `activations`, chacune avec `start`, `end`, `power` (W moyen), `energy` (kWh) et la forme dessinée par ecojoko (`shape`) |
 
+## Équipements
+
+Chaque équipement piloté par ecojoko (chauffe-eau, prise pilotée…) devient un appareil de Home Assistant, rattaché à l'appareil Little Monkey, avec ses capteurs : mode, puissance, et consommation et coût du jour s'il mesure sa consommation. Son état et ses mesures sont lus toutes les deux minutes, à part des autres capteurs : une panne de ces API ne touche jamais les capteurs de consommation. Un équipement ajouté dans ecojoko apparaît après un rechargement de l'intégration ; l'appareil d'un équipement retiré peut être supprimé depuis sa page.
+
+L'intégration ne connaît pas à l'avance les types d'équipements : elle lit pour chacun les commandes qu'ecojoko lui reconnaît. Un équipement d'un type inconnu est donc pris en charge dès qu'il accepte les commandes de pilotage.
+
+### Service « Lire les équipements »
+
+`little_monkey.get_equipments` renvoie immédiatement, sans interroger ecojoko, les équipements de l'installation tels que lus en dernier (`equipments`). Chacun a son nom (`name`), son type (`type`), son état de connexion (`connected`, `status`), la force de son signal (`signal`, `wifi_signal`) et sa batterie (`battery`) quand ecojoko les donne, ses commandes de pilotage (`controls`) et son état (`state` : `mode`, `power`, `since`, `until`, `source`…). Un équipement piloté a aussi l'id de son appareil Home Assistant (`device_id`) et ses mesures du jour (`day` : `energy`, `cost`, la courbe de puissance `power` et les changements d'état `switches`). `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
+

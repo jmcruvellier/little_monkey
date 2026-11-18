@@ -316,6 +316,44 @@
                         "name": "Tariff bands"
                     }
                 }
+            },
+            "equipment_mode": {
+                "name": "Mode",
+                "state": {
+                    "auto": "Automatic",
+                    "forced": "Forced",
+                    "absence": "Absence",
+                    "on": "On",
+                    "off": "Off"
+                },
+                "state_attributes": {
+                    "switch_state": {
+                        "name": "Switch state"
+                    },
+                    "since": {
+                        "name": "Since"
+                    },
+                    "until": {
+                        "name": "Until"
+                    },
+                    "source": {
+                        "name": "Origin",
+                        "state": {
+                            "command": "Command",
+                            "schedule": "Schedule",
+                            "timer": "End of duration"
+                        }
+                    }
+                }
+            },
+            "equipment_power": {
+                "name": "Power"
+            },
+            "equipment_energy": {
+                "name": "Consumption today"
+            },
+            "equipment_cost": {
+                "name": "Cost today"
             }
         }
     },
@@ -414,6 +452,16 @@
                 "page": {
                     "name": "Page",
                     "description": "0 for the last 48 hours, 1 for the 48 hours before, and so on."
+                }
+            }
+        },
+        "get_equipments": {
+            "name": "Read the equipments",
+            "description": "Returns the equipments of the installation, their state and, for the piloted ones, their measures of the day.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Installation",
+                    "description": "Little Monkey installation; optional when there is only one."
                 }
             }
         }

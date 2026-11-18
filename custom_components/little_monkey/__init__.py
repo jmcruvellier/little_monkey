@@ -33,8 +33,10 @@ from .const import (
 from .coordinator import (
     LittleMonkeyActivityCoordinator,
     LittleMonkeyDataUpdateCoordinator,
+    LittleMonkeyEquipmentCoordinator,
     LittleMonkeySavingsCoordinator,
 )
+from .entity import equipment_identifier
 from .sensor import SENSOR_KEYS
 from .services import async_register_services
 from .tariff import legacy_bands
@@ -91,6 +93,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass=hass, entry=entry, client=coordinator.client)
     entry.async_create_background_task(
         hass, coordinator.savings.async_refresh(), "little_monkey savings")
+    # Piloted equipments, read the same way
+    coordinator.equipment = LittleMonkeyEquipmentCoordinator(
+        hass=hass, entry=entry, client=coordinator.client)
+    entry.async_create_background_task(
+        hass, coordinator.equipment.async_refresh(), "little_monkey equipment")
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
@@ -200,9 +207,17 @@ async def async_remove_config_entry_device(
 
     Until 1.2.7 renaming the integration created a new device and left the
     previous one behind, with unavailable entities. Such a device can be
-    removed; the device currently provided by the entry cannot.
+    removed, and so can the device of an equipment removed from ecojoko; the
+    devices currently provided by the entry cannot.
     """
-    return (DOMAIN, entry.entry_id) not in device_entry.identifiers
+    current = {(DOMAIN, entry.entry_id)}
+    coordinator = getattr(entry, "runtime_data", None)
+    if coordinator is not None:
+        current |= {
+            equipment_identifier(entry.entry_id, equipment["id"])
+            for equipment in coordinator.client.equipments
+        }
+    return not current & device_entry.identifiers
 
 
 async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
