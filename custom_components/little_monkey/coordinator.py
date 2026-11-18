@@ -175,6 +175,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "current_tariff_band": self._current_tariff_band(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "contract": self.client.contract,
+            # Price of a kWh of each band, by band id
+            "band_prices": self.client.band_prices,
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
             "realtime_apparent_power": self.client.realtime_va,

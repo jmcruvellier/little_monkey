@@ -195,7 +195,9 @@ La carte « Petit Singe : contrat » (« Little Monkey contract » en anglais) r
 
 - le fournisseur, l'offre, sa date de début et la puissance souscrite ;
 - un cadran des 24 heures avec les heures creuses du contrat et une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:00, dans 1 h 45 ») ; avec un contrat Tempo, le cadran prend la couleur du jour (bleu, blanc ou rouge, plus foncée en heures creuses) ;
-- les tranches tarifaires configurées, avec leur badge HC ou HP et leur consommation du jour (toucher une tranche ouvre son capteur), et l'abonnement mensuel.
+- les tranches tarifaires configurées, avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras (toucher une tranche ouvre le capteur de sa consommation du jour), et l'abonnement mensuel.
+
+Le prix d'un kWh est celui qu'ecojoko donne quand il pilote un chauffe-eau : c'est le tarif de la fiche du chauffe-eau dans son application (« Votre tarif d'électricité »). Sans chauffe-eau piloté, ecojoko ne le donne pas : il est estimé, précédé de « ≈ », à partir des coûts qu'ecojoko calcule chaque jour pour chaque tranche sur les deux dernières semaines. Ces coûts comprennent une part de l'abonnement, que l'estimation écarte ; ecojoko les arrondissant au centime, elle est donnée au dixième de centime près. Une tranche qui n'a pas assez servi pour l'estimer (un jour rouge Tempo, par exemple) affiche sa consommation du jour à la place.
 
 ```yaml
 type: custom:little-monkey-contract-card

@@ -1396,3 +1396,18 @@ async def test_tariff_band_unknown_at_first(hass, fake_api):
     assert await setup_entry(hass, entry)
     state = hass.states.get(period_entity(hass, entry))
     assert "tariff_band" not in state.attributes
+
+
+async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
+    """Each band of the contract has the price of a kWh, exact or estimated."""
+    fake_api.values["_exact_prices"] = [{"label": "Heures Pleines", "price": 0.2016}]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    bands = {
+        band["key"]: band
+        for band in hass.states.get("sensor.ecojoko_contract").attributes["bands"]}
+    assert bands["hp_grid_consumption"]["price"] == 0.2016
+    assert bands["hp_grid_consumption"]["price_exact"] is True
+    # Not enough statistics to estimate the other one
+    assert bands["hc_grid_consumption"]["price"] is None
+    assert "id" not in bands["hc_grid_consumption"]
