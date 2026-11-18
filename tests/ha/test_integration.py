@@ -1447,10 +1447,8 @@ async def test_piloted_equipment_has_its_device(hass, fake_api):
     assert heater.via_device_id == main.id
     # The device of a current equipment cannot be removed, the others can
     assert not await async_remove_config_entry_device(hass, entry, heater)
-    # An equipment that is not piloted has a device for its diagnostics
-    sensor = registry_device(devices, (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id)
-    assert sensor.name == "Sonde"
-    assert not await async_remove_config_entry_device(hass, entry, sensor)
+    # An equipment that is not piloted has no device
+    assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id) is None
 
 
 async def test_equipments_service(hass, fake_api):
@@ -1461,7 +1459,7 @@ async def test_equipments_service(hass, fake_api):
 
     answer = await call_service(hass, "get_equipments")
     sensor, heater = answer["equipments"]
-    assert sensor["name"] == "Sonde" and sensor["device_id"] is not None
+    assert sensor["name"] == "Sonde" and sensor["device_id"] is None
     assert "day" not in sensor
     assert heater["day"]["energy"] == 0.97
     heater_device = registry_device(
@@ -1480,27 +1478,34 @@ async def test_equipment_failure_keeps_the_entry(hass, fake_api):
 
 
 async def test_equipment_diagnostic_sensors(hass, fake_api):
-    """Every equipment has its connection, signal and battery, when given."""
+    """Every equipment has its connection, signal and battery, when given.
+
+    On the device of a piloted equipment, on the Ecojoko device for the others.
+    """
     fake_api.equipments = [TEMP_HUM_EQUIPMENT, WATER_HEATER]
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
 
-    assert hass.states.get("sensor.sonde_connection").state == "connected"
-    assert hass.states.get("sensor.sonde_signal_strength").state == "66"
-    assert hass.states.get("sensor.sonde_battery").state == "80"
+    assert hass.states.get("sensor.ecojoko_sonde_connection").state == "connected"
+    assert hass.states.get("sensor.ecojoko_sonde_signal_strength").state == "66"
+    assert hass.states.get("sensor.ecojoko_sonde_battery").state == "80"
     # Given for the water heater only
-    assert hass.states.get("sensor.sonde_wifi_signal") is None
+    assert hass.states.get("sensor.ecojoko_sonde_wifi_signal") is None
     assert hass.states.get("sensor.chauffe_eau_wifi_signal").state == "30"
     assert hass.states.get("sensor.chauffe_eau_battery") is None
-    entity = er.async_get(hass).async_get("sensor.sonde_signal_strength")
+    entities = er.async_get(hass)
+    entity = entities.async_get("sensor.ecojoko_sonde_signal_strength")
     assert entity.entity_category == "diagnostic"
+    main = registry_device(dr.async_get(hass), (DOMAIN, entry.entry_id), entry.entry_id)
+    assert entity.device_id == main.id
+    assert entities.async_get("sensor.chauffe_eau_wifi_signal").device_id != main.id
 
     # Read with the list of the gateways, by the polls
     fake_api.equipments = [{**TEMP_HUM_EQUIPMENT, "connected": False, "signal": 12}]
     await entry.runtime_data.async_refresh()
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.sonde_connection").state == "disconnected"
-    assert hass.states.get("sensor.sonde_signal_strength").state == "12"
+    assert hass.states.get("sensor.ecojoko_sonde_connection").state == "disconnected"
+    assert hass.states.get("sensor.ecojoko_sonde_signal_strength").state == "12"
     # An equipment no longer listed by ecojoko is unavailable
     assert hass.states.get("sensor.chauffe_eau_wifi_signal").state == "unavailable"
 
@@ -1584,13 +1589,31 @@ async def test_set_equipment_mode_service(hass, fake_api):
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
             DOMAIN, "set_equipment_mode", {"device_id": "unknown", "mode": "auto"}, blocking=True)
-    sensor = registry_device(dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id)
+    # The Ecojoko device is not an equipment
+    main = registry_device(dr.async_get(hass), (DOMAIN, entry.entry_id), entry.entry_id)
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
-            DOMAIN, "set_equipment_mode", {"device_id": sensor.id, "mode": "auto"}, blocking=True)
+            DOMAIN, "set_equipment_mode", {"device_id": main.id, "mode": "auto"}, blocking=True)
     assert len(fake_api.commands) == 5
 
     # ecojoko does not answer: an error, and the equipment is read again
     fake_api.command_error = lm_api.LittleMonkeyApiClientCommunicationError("timeout")
     with pytest.raises(HomeAssistantError):
         await set_mode(mode="auto")
+
+
+async def test_devices_of_equipments_no_longer_piloted_are_removed(hass, fake_api):
+    """Only a piloted equipment keeps a device: the others are removed."""
+    fake_api.equipments = [TEMP_HUM_EQUIPMENT, WATER_HEATER]
+    entry = add_entry(hass)
+    devices = dr.async_get(hass)
+    # Left by a version that gave a device to every equipment
+    devices.async_get_or_create(
+        config_entry_id=entry.entry_id, identifiers={(DOMAIN, f"{entry.entry_id}_3")},
+        name="Sonde")
+    assert await setup_entry(hass, entry)
+
+    assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id) is None
+    assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
+    assert registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
+
