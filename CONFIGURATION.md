@@ -327,7 +327,7 @@ title: Équipements
 | `show_list` | Non | `false` pour ne pas lister les équipements non pilotés (clé Linky, sonde…) |
 | `title` | Non | Titre de la carte |
 
-Chaque équipement piloté a son bloc : son mode (« Forcé jusqu'à 21:30 », « Automatique · éteint »…), sa puissance et les boutons d'ecojoko. « Forcé » propose 1, 2, 3 ou 4 heures, « Absence » la date et l'heure de retour (minuit par défaut), « Automatique » (affiché pendant un forçage ou une absence) et « Allumer » / « Éteindre » demandent une confirmation. Ouvert, le bloc montre la consommation et le coût du jour, la tension, la puissance maximale, et la frise de la journée : les périodes allumé, forcé et absent, et la courbe de puissance.
+Chaque équipement piloté a son bloc : son mode (« Forcé jusqu'à 21:30 », « Automatique · éteint »…), sa puissance et les boutons d'ecojoko. « Forcé » propose 1, 2, 3 ou 4 heures, ou une autre durée en minutes (24 heures au plus), « Absence » la date et l'heure de retour (minuit par défaut), « Automatique » (affiché pendant un forçage ou une absence) et « Allumer » / « Éteindre » demandent une confirmation ; le bouton dont la question est ouverte apparaît sélectionné, comme Allumer ou Éteindre selon l'état de l'équipement. Ouvert, le bloc montre la consommation et le coût du jour, la tension, la puissance maximale, et la frise de la journée : les périodes allumé, forcé et absent, et la courbe de puissance.
 
 Avec plusieurs équipements pilotés, chaque bloc tient sur une ligne avec ses boutons ; toucher un équipement l'ouvre et referme le précédent, pour que la carte reste basse quel que soit leur nombre. Les équipements non pilotés sont listés en dessous avec leur connexion, leur batterie et la force de leur signal.
 

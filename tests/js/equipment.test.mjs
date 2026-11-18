@@ -136,3 +136,21 @@ test("a new card uses the first Little Monkey device", () => {
   assert.deepEqual(card.equipmentStubConfig(hass), { type: "custom:little-monkey-equipment-card", entity: "sensor.x" });
   assert.deepEqual(card.equipmentSchema().map((field) => field.name), ["entity", "equipment", "show_list", "title"]);
 });
+
+test("the button whose question is open is shown selected, and the state of on and off", () => {
+  assert.equal(card.isSelected(heater(), "forced", { id: "630220", mode: "forced" }), true);
+  assert.equal(card.isSelected(heater(), "absence", { id: "630220", mode: "forced" }), false);
+  // The question of another equipment
+  assert.equal(card.isSelected(heater(), "forced", { id: "7", mode: "forced" }), false);
+  assert.equal(card.isSelected(heater(), "forced", null), false);
+  assert.equal(card.isSelected(PLUG, "on", null), true);
+  assert.equal(card.isSelected(PLUG, "off", null), false);
+});
+
+test("a forced mode of another duration lasts 1 minute to 24 hours", () => {
+  assert.equal(card.customMinutes("90"), 90);
+  assert.equal(card.customMinutes("1440"), 1440);
+  for (const value of ["0", "1441", "12.5", "", "abc", undefined]) {
+    assert.equal(card.customMinutes(value), null, value);
+  }
+});

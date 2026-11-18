@@ -23,6 +23,14 @@ const DOCUMENTATION =
 const EQUIPMENT_REFRESH = 60000;
 // Hours of forced mode offered, as in ecojoko
 export const FORCED_HOURS = [1, 2, 3, 4];
+// Longest forced mode of another duration, in minutes, as the service accepts
+export const MAX_FORCED_MINUTES = 24 * 60;
+
+/** Return the minutes of a forced mode of another duration, null if not valid. */
+export function customMinutes(value) {
+  const minutes = Number(value);
+  return Number.isInteger(minutes) && minutes >= 1 && minutes <= MAX_FORCED_MINUTES ? minutes : null;
+}
 
 const TRANSLATIONS = {
   en: {
@@ -40,6 +48,8 @@ const TRANSLATIONS = {
     buttons: { forced: "Forced", absence: "Absence", auto: "Automatic", on: "Turn on", off: "Turn off" },
     confirm: { auto: "Back to automatic?", on: "Turn on?", off: "Turn off?" },
     forced_for: "Forced for:",
+    other: "Other…",
+    minutes: "min",
     absence_end: "Back on:",
     validate: "Confirm",
     cancel: "Cancel",
@@ -79,6 +89,8 @@ const TRANSLATIONS = {
     buttons: { forced: "Forcé", absence: "Absence", auto: "Automatique", on: "Allumer", off: "Éteindre" },
     confirm: { auto: "Revenir en automatique ?", on: "Allumer ?", off: "Éteindre ?" },
     forced_for: "Forcer pendant :",
+    other: "Autre…",
+    minutes: "min",
     absence_end: "Retour le :",
     validate: "Valider",
     cancel: "Annuler",
@@ -224,6 +236,17 @@ export function equipmentButtons(equipment) {
   return controls.filter((control) => control === "on" || control === "off");
 }
 
+/**
+ * Tell whether a button is shown selected: the one whose question is open,
+ * or for on and off the current state of the equipment.
+ */
+export function isSelected(equipment, action, panel) {
+  if (panel?.id === equipment?.id && panel?.mode === action) {
+    return true;
+  }
+  return (action === "on" || action === "off") && equipment?.state?.mode === action;
+}
+
 // Timeline of a day, in the units of the SVG: a minute a unit
 export const DAY_BOX = { width: 1440, height: 40, base: 36, top: 4 };
 
@@ -344,10 +367,13 @@ const STYLES = `
   button { border: 1px solid var(--divider-color, #e0e0e0); border-radius: 18px; background: none; color: var(--primary-text-color);
     font: inherit; font-size: 0.85em; padding: 5px 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
   button ha-icon { --mdc-icon-size: 16px; }
+  button.selected { border-color: var(--primary-color, #03a9f4); font-weight: 500;
+    background: color-mix(in srgb, var(--primary-color, #03a9f4) 22%, transparent); }
+  input.minutes { width: 5em; }
+  input.minutes, input[type=datetime-local] { font: inherit; font-size: 0.85em; padding: 3px 6px; border-radius: 8px;
+    border: 1px solid var(--divider-color, #e0e0e0); background: var(--card-background-color, #fff); color: var(--primary-text-color); }
   button.primary { background: var(--primary-color, #03a9f4); border-color: var(--primary-color, #03a9f4); color: var(--text-primary-color, #fff); }
   button:disabled { opacity: 0.5; cursor: default; }
-  input[type=datetime-local] { font: inherit; font-size: 0.85em; padding: 3px 6px; border-radius: 8px;
-    border: 1px solid var(--divider-color, #e0e0e0); background: var(--card-background-color, #fff); color: var(--primary-text-color); }
   .details { margin-top: 10px; border-top: 1px solid var(--divider-color, #e0e0e0); padding-top: 8px; }
   .metrics { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 4px 12px; margin-bottom: 8px; }
   .metric .label { color: var(--secondary-text-color); font-size: 0.8em; }
@@ -510,6 +536,18 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
       } else if (action === "hours") {
         this._send(equipment, "forced", { duration: Number(button.dataset.hours) * 60 });
         return;
+      } else if (action === "custom") {
+        this._panel = { ...this._panel, custom: true };
+        this._custom = null;
+      } else if (action === "custom-ok") {
+        const input = block.querySelector("input.minutes");
+        const minutes = customMinutes(input?.value);
+        if (minutes === null) {
+          input?.focus();
+          return;
+        }
+        this._send(equipment, "forced", { duration: minutes });
+        return;
       } else if (action === "absence-ok") {
         const input = block.querySelector("input[type=datetime-local]");
         const until = new Date(input?.value || "");
@@ -572,6 +610,10 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     if (input && this._panel?.kind === "absence") {
       this._absence = input.value;
     }
+    const minutes = body.querySelector("input.minutes");
+    if (minutes && this._panel?.custom) {
+      this._custom = minutes.value;
+    }
     const piloted = pilotedEquipments(this._equipments, this._config);
     const others = otherEquipments(this._equipments, this._config);
     // With several piloted equipments, one line each; one opens at a time
@@ -590,8 +632,11 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     const kind = stateKind(equipment);
     const power = equipment.state?.power;
     const busy = this._busy === equipment.id;
-    const buttons = equipmentButtons(equipment).map((action) => `
-      <button data-action="${action}"${busy ? " disabled" : ""}>${escapeHtml(text.buttons[action])}</button>`).join("");
+    const buttons = equipmentButtons(equipment).map((action) => {
+      const selected = isSelected(equipment, action, this._panel);
+      return `
+      <button data-action="${action}" class="${selected ? "selected" : ""}" aria-pressed="${selected}"${busy ? " disabled" : ""}>${escapeHtml(text.buttons[action])}</button>`;
+    }).join("");
     const error = this._commandError?.id === equipment.id
       ? `<div class="error">${escapeHtml(text.command_error.replace("{error}", this._commandError.message))}</div>` : "";
     return `
@@ -618,7 +663,13 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     if (this._panel.kind === "forced") {
       const hours = FORCED_HOURS.map((n) =>
         `<button class="primary" data-action="hours" data-hours="${n}">${escapeHtml(text.hours.replace("{n}", n))}</button>`).join("");
-      return `<div class="panel"><span class="label">${escapeHtml(text.forced_for)}</span>${hours}${cancel}</div>`;
+      // Another duration, in minutes
+      const custom = this._panel.custom
+        ? `<input class="minutes" type="number" min="1" max="${MAX_FORCED_MINUTES}" step="5" value="${escapeHtml(this._custom ?? "30")}"
+            aria-label="${escapeHtml(text.minutes)}"><span class="label">${escapeHtml(text.minutes)}</span>
+          <button class="primary" data-action="custom-ok">${escapeHtml(text.validate)}</button>`
+        : `<button data-action="custom">${escapeHtml(text.other)}</button>`;
+      return `<div class="panel"><span class="label">${escapeHtml(text.forced_for)}</span>${hours}${custom}${cancel}</div>`;
     }
     if (this._panel.kind === "absence") {
       return `<div class="panel"><span class="label">${escapeHtml(text.absence_end)}</span>
