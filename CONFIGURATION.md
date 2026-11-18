@@ -228,7 +228,7 @@ Ces cartes reprennent la page « Analyse de votre conso » de l'application ecoj
 
 ### Analyse de la conso
 
-La consommation d'une semaine, d'un mois ou d'une année par poste : un anneau coloré avec le total au centre, puis la liste des postes (talon de consommation, éclairage, froid, cuisson…) avec leur part, leur coût, leur énergie et une flèche quand ils sont en hausse ou en baisse par rapport à la période précédente. La flèche › de « Gros électroménager » affiche son détail (lave-vaisselle, lavage et séchage du linge). Toucher un poste affiche son historique : sa consommation semaine par semaine sur l'année, avec le total ; les flèches changent d'année, toucher une barre affiche sa semaine, et ‹ revient aux postes.
+La consommation d'une semaine, d'un mois ou d'une année par poste : un anneau coloré avec le total au centre et, à côté (au-dessus sur une carte étroite), les principaux postes (talon de consommation, éclairage, froid, cuisson…) sur une ligne chacun, avec leur part, leur coût et une flèche quand ils sont en hausse ou en baisse par rapport à la période précédente. Seuls les 5 plus gros postes sont affichés d'abord : « Afficher les N postes » déplie la liste complète (option `max_categories`). La flèche › de « Gros électroménager » affiche son détail (lave-vaisselle, lavage et séchage du linge). Toucher un poste affiche son historique : sa consommation semaine par semaine sur l'année, avec le total ; les flèches changent d'année, toucher une barre affiche sa semaine, et ‹ revient aux postes.
 
 ecojoko analyse une période une fois qu'elle est terminée : la carte s'ouvre sur la dernière semaine (ou le dernier mois) analysée, et les flèches ou un glissement du doigt remontent dans le temps. Une période pas encore analysée affiche l'explication d'ecojoko.
 
@@ -243,20 +243,24 @@ period: week
 |---|---|---|
 | `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
 | `period` | Non | `week` (par défaut), `month` ou `year` |
+| `max_categories` | Non | Nombre de postes affichés avant de déplier la liste : 5 par défaut, 0 pour tous |
 | `title` | Non | Titre de la carte |
 
 ### Activations des appareils
 
-Les démarrages d'appareils détectés par ecojoko, du plus récent au plus ancien et groupés par jour : pour chacun, les heures de début et de fin, la durée, l'énergie, la puissance moyenne et la forme qu'ecojoko dessine pour lui (plus large quand il dure, plus haute quand il consomme). La carte montre les 48 dernières heures, se met à jour toutes les dix minutes, et « Charger les suivantes » remonte de 48 heures en 48 heures.
+Les démarrages d'appareils détectés par ecojoko sur 48 heures, en une frise de 24 heures par jour : chaque activation y est une impulsion à son heure, aussi large qu'elle dure et aussi haute que sa puissance, à la couleur d'ecojoko. Toucher une impulsion affiche ses heures, sa durée, son énergie et sa puissance moyenne (la dernière activation au départ) ; les flèches passent aux 48 heures précédentes ou suivantes. La carte se met à jour toutes les dix minutes. Avec `mode: list`, elle affiche à la place la liste des 8 dernières activations, que « Voir plus » complète.
 
 ```yaml
 type: custom:little-monkey-activations-card
 entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : timeline (une frise par jour, par défaut) ou list
+mode: timeline
 ```
 
 | Option | Obligatoire | Description |
 |---|---|---|
 | `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
+| `mode` | Non | `timeline` (par défaut) ou `list` |
 | `title` | Non | Titre de la carte |
 
 ## Services de l'analyse de la consommation
