@@ -140,6 +140,8 @@ class FakeApi:
         # Commands sent: (equipment id, mode, seconds), or the error to raise
         self.commands = []
         self.command_error = None
+        # Readings of the equipments
+        self.equipment_reads = 0
 
     def apply(self, equipment_id, mode):
         """Apply a mode to an equipment, as ecojoko does after a command."""
@@ -206,6 +208,7 @@ def fake_api():
         return {"start": None, "end": None, "pending": False, "activations": []}
 
     async def get_equipment(self, equipment_id):
+        state.equipment_reads += 1
         if state.equipment_error:
             raise state.equipment_error
         return copy.deepcopy(next(

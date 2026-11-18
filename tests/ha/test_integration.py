@@ -28,6 +28,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
+    async_fire_time_changed,
     mock_restore_cache_with_extra_data,
 )
 
@@ -1628,3 +1629,24 @@ async def test_devices_of_equipments_no_longer_piloted_are_removed(hass, fake_ap
     assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     assert registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
 
+
+async def test_equipment_is_read_again_at_the_end_of_a_forced_mode(hass, fake_api):
+    """The end of a forced mode is seen at once, not at the next reading."""
+    heater = copy.deepcopy(WATER_HEATER)
+    heater["state"]["until"] = (dt_util.utcnow() + dt.timedelta(seconds=30)).isoformat()
+    fake_api.equipments = [heater]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    reads = fake_api.equipment_reads
+
+    # ecojoko ended the forced mode
+    heater["state"].update(mode="auto", until=None)
+    async_fire_time_changed(hass, dt_util.utcnow() + dt.timedelta(seconds=45))
+    await hass.async_block_till_done()
+    assert fake_api.equipment_reads == reads + 1
+    assert hass.states.get("sensor.chauffe_eau_mode").state == "auto"
+
+    # Nothing more is planned without a forced mode
+    async_fire_time_changed(hass, dt_util.utcnow() + dt.timedelta(seconds=100))
+    await hass.async_block_till_done()
+    assert fake_api.equipment_reads == reads + 1

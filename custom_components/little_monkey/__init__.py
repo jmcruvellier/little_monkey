@@ -98,6 +98,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         hass=hass, entry=entry, client=coordinator.client)
     entry.async_create_background_task(
         hass, coordinator.equipment.async_refresh(), "little_monkey equipment")
+    entry.async_on_unload(coordinator.equipment.async_cancel_end_reading)
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
