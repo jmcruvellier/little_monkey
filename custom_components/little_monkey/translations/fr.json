@@ -466,7 +466,7 @@
         },
         "get_consumption_analysis": {
             "name": "Lire l'analyse de la consommation",
-            "description": "Renvoie la répartition de la consommation d'une semaine, d'un mois ou d'une année par poste (talon, éclairage, froid…), comme la page « Analyse de votre conso » d'ecojoko.",
+            "description": "Renvoie la répartition de la consommation d'une semaine ou d'un mois par poste (talon, éclairage, froid…), comme la page « Analyse de votre conso » d'ecojoko.",
             "fields": {
                 "config_entry_id": {
                     "name": "Installation",
@@ -474,7 +474,7 @@
                 },
                 "period": {
                     "name": "Période",
-                    "description": "Semaine, mois ou année."
+                    "description": "Semaine ou mois : ecojoko n'analyse pas les années."
                 },
                 "date": {
                     "name": "Date",

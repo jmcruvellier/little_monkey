@@ -8,7 +8,7 @@
  *
  * The "analysis of your consumption" page of the ecojoko application:
  * - little-monkey-analysis-card: the consumption of a week, a month or a
- *   year by category (standby, lighting, cooling...), read with the
+ *   month by category (standby, lighting, cooling...), read with the
  *   get_consumption_analysis service; a category shows its history, week
  *   by week over a year (get_category_history service).
  * - little-monkey-activations-card: the starts of the appliances detected
@@ -29,7 +29,7 @@ const TRANSLATIONS = {
       name: "Little Monkey consumption analysis",
       description: "Your consumption by category (standby, lighting, cooling...), as in the ecojoko application.",
       title: "Consumption analysis",
-      periods: { week: "Week", month: "Month", year: "Year" },
+      periods: { week: "Week", month: "Month" },
       previous: "Previous period",
       next: "Next period",
       error: "The analysis of this period could not be read",
@@ -80,7 +80,7 @@ const TRANSLATIONS = {
       name: "Petit Singe : analyse de la conso",
       description: "Votre consommation par poste (talon, éclairage, froid…), comme dans l'application ecojoko.",
       title: "Analyse de la conso",
-      periods: { week: "Semaine", month: "Mois", year: "Année" },
+      periods: { week: "Semaine", month: "Mois" },
       previous: "Période précédente",
       next: "Période suivante",
       error: "L'analyse de cette période n'a pas pu être lue",
@@ -130,7 +130,10 @@ function language(hass) {
   return TRANSLATIONS[lang] ? lang : "en";
 }
 
-export const PERIODS = ["week", "month", "year"];
+// Periods analysed by ecojoko: its page « Analyse de votre conso » offers
+// the week and the month only (the year is commented out in its page, and
+// asking for a year gives the current week)
+export const PERIODS = ["week", "month"];
 // Icons of the categories of ecojoko, by id
 const CATEGORY_ICONS = {
   1: "mdi:radiator", 2: "mdi:car-electric", 3: "mdi:water-boiler", 4: "mdi:stove",

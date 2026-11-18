@@ -49,7 +49,10 @@ GET_SAVINGS_SCHEMA = vol.Schema({
     vol.Required(ATTR_PERIOD): vol.In(list(SAVINGS_PERIODS)),
     vol.Optional(ATTR_DATE): cv.date,
 })
-GET_CONSUMPTION_ANALYSIS_SCHEMA = GET_SAVINGS_SCHEMA
+# ecojoko analyses weeks and months only: a year gives the current week
+GET_CONSUMPTION_ANALYSIS_SCHEMA = GET_SAVINGS_SCHEMA.extend({
+    vol.Required(ATTR_PERIOD): vol.In(["week", "month"]),
+})
 GET_CATEGORY_HISTORY_SCHEMA = vol.Schema({
     vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
     vol.Required(ATTR_CATEGORY): vol.All(vol.Coerce(int), vol.Range(min=0)),

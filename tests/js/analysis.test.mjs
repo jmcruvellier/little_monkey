@@ -215,3 +215,10 @@ test("the timelines put each activation at its time, as high as its power", () =
   assert.equal(evening.y, 4);
   assert.equal(afternoon.height.toFixed(2), (6 + 34 * (496 / 1260)).toFixed(2));
 });
+
+test("the analysis offers the week and the month only, as ecojoko", () => {
+  assert.deepEqual(cards.PERIODS, ["week", "month"]);
+  // A card configured on the year, which ecojoko does not analyse, shows the week
+  assert.equal(cards.initialPeriod({ period: "year" }), "week");
+  assert.equal(cards.initialPeriod({ period: "month" }), "month");
+});

@@ -1344,6 +1344,9 @@ async def test_analysis_services(hass, fake_api):
         await call_service(hass, "get_consumption_analysis", period="week")
     with pytest.raises(vol.Invalid):
         await call_service(hass, "get_activations", page=-1)
+    # ecojoko does not analyse years: it would give the current week
+    with pytest.raises(vol.Invalid):
+        await call_service(hass, "get_consumption_analysis", period="year")
 
 
 async def test_contract_sensor(hass, fake_api):

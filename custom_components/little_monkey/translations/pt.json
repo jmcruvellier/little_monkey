@@ -466,7 +466,7 @@
         },
         "get_consumption_analysis": {
             "name": "Ler a análise do consumo",
-            "description": "Devolve a repartição do consumo de uma semana, de um mês ou de um ano por categoria (consumo de base, iluminação, frio…), como a página “Análise do seu consumo” do ecojoko.",
+            "description": "Devolve a repartição do consumo de uma semana ou de um mês por categoria (consumo de base, iluminação, frio…), como a página “Análise do seu consumo” do ecojoko.",
             "fields": {
                 "config_entry_id": {
                     "name": "Instalação",
@@ -474,7 +474,7 @@
                 },
                 "period": {
                     "name": "Período",
-                    "description": "Semana, mês ou ano."
+                    "description": "Semana ou mês: o ecojoko não analisa anos."
                 },
                 "date": {
                     "name": "Data",
