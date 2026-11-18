@@ -341,6 +341,19 @@ class EcojokoSavingsSensor(EcojokoActivitySensor):
         return {name: data.get(key) for name, key in attributes.items()}
 
 
+def registry_device(registry, identifier, entry_id):
+    """Return the device of a config entry with an identifier, None if there is none.
+
+    Home Assistant deprecated async_get_device in 2026: identifiers are now
+    unique within a config entry only. Its replacement does not exist in the
+    older versions supported (2024.7 at least).
+    """
+    get = getattr(registry, "async_get_device_by_identifier", None)
+    if get is not None:
+        return get(identifier, entry_id)
+    return registry.async_get_device(identifiers={identifier})
+
+
 def equipment_identifier(entry_id, equipment_id) -> tuple:
     """Return the identifier of the device of an equipment of the gateway."""
     return (DOMAIN, f"{entry_id}_{equipment_id}")

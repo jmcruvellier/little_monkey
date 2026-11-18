@@ -18,7 +18,7 @@ from homeassistant.util import dt as dt_util
 
 from .api import EQUIPMENT_DURATIONS, SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
 from .const import DOMAIN
-from .entity import equipment_identifier
+from .entity import equipment_identifier, registry_device
 from .utils import get_current_date
 
 SERVICE_GET_SAVINGS = "get_savings"
@@ -166,8 +166,8 @@ async def _async_get_equipments(
     registry = dr.async_get(hass)
     equipments = []
     for equipment in coordinator.client.equipments:
-        device = registry.async_get_device(
-            identifiers={equipment_identifier(entry.entry_id, equipment["id"])})
+        device = registry_device(
+            registry, equipment_identifier(entry.entry_id, equipment["id"]), entry.entry_id)
         equipments.append({
             **piloted.get(equipment["id"], equipment),
             "device_id": None if device is None else device.id,
@@ -199,7 +199,8 @@ def _mode_seconds(call: ServiceCall) -> int | None:
     if mode == "absence" and until is not None:
         if until.tzinfo is None:
             until = until.replace(tzinfo=dt_util.get_default_time_zone())
-        seconds = int((until - dt_util.now()).total_seconds())
+        # Through the timestamps, right across a change of the clocks
+        seconds = int(until.timestamp() - dt_util.now().timestamp())
     elif ATTR_DURATION in call.data:
         seconds = call.data[ATTR_DURATION] * 60
     elif mode == "forced":

@@ -39,6 +39,7 @@ from custom_components.little_monkey import (
     repairs,
     select as lm_select,
 )
+from custom_components.little_monkey.entity import registry_device
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
 )
@@ -1440,14 +1441,14 @@ async def test_piloted_equipment_has_its_device(hass, fake_api):
     assert mode.attributes["source"] == "command"
 
     devices = dr.async_get(hass)
-    heater = devices.async_get_device(identifiers={(DOMAIN, f"{entry.entry_id}_630220")})
-    main = devices.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    heater = registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
+    main = registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
     assert heater.name == "Chauffe-eau"
     assert heater.via_device_id == main.id
     # The device of a current equipment cannot be removed, the others can
     assert not await async_remove_config_entry_device(hass, entry, heater)
     # An equipment that is not piloted has a device for its diagnostics
-    sensor = devices.async_get_device(identifiers={(DOMAIN, f"{entry.entry_id}_3")})
+    sensor = registry_device(devices, (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id)
     assert sensor.name == "Sonde"
     assert not await async_remove_config_entry_device(hass, entry, sensor)
 
@@ -1463,8 +1464,8 @@ async def test_equipments_service(hass, fake_api):
     assert sensor["name"] == "Sonde" and sensor["device_id"] is not None
     assert "day" not in sensor
     assert heater["day"]["energy"] == 0.97
-    heater_device = dr.async_get(hass).async_get_device(
-        identifiers={(DOMAIN, f"{entry.entry_id}_630220")})
+    heater_device = registry_device(
+        dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     assert heater["device_id"] == heater_device.id
 
 
@@ -1506,8 +1507,8 @@ async def test_equipment_diagnostic_sensors(hass, fake_api):
 
 def heater_device(hass, entry):
     """Return the device of the water heater."""
-    return dr.async_get(hass).async_get_device(
-        identifiers={(DOMAIN, f"{entry.entry_id}_630220")})
+    return registry_device(
+        dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
 
 
 async def test_equipment_mode_select(hass, fake_api):
@@ -1583,7 +1584,7 @@ async def test_set_equipment_mode_service(hass, fake_api):
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
             DOMAIN, "set_equipment_mode", {"device_id": "unknown", "mode": "auto"}, blocking=True)
-    sensor = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, f"{entry.entry_id}_3")})
+    sensor = registry_device(dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id)
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
             DOMAIN, "set_equipment_mode", {"device_id": sensor.id, "mode": "auto"}, blocking=True)
