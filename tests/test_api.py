@@ -2013,3 +2013,90 @@ def test_band_prices_of_the_client(api):
     run(client._gatewayapi_wrapper())
     assert client.band_prices == {
         2: {"price": 0.2016, "exact": True}, 3: {"price": 0.139, "exact": False}}
+
+
+# --- Measures (page « Mesures »)
+
+POWER_DAY = {"stat": {
+    "period": {"this": 1794956400000, "prev": 1794870000000, "next": 1795042800000,
+               "measure_unit": "W", "kwh": 15.3736, "price": 3.063763571, "kwh_prod": 0.6286},
+    "pricing_details": [{"color": "#0087B1", "id": 2, "label": "Heures Pleines"},
+                        {"color": "#6BBED8", "id": 3, "label": "Heures Creuses"}],
+    "data": [{"time": 1794956400000, "consobase": 6, "value": 299, "price": 0.00057,
+              "is_hchp": 1, "pricing": 3}],
+}}
+ENERGY_WEEK = {"stat": {
+    "period": {"this": 1794783600000, "prev": 1794178800000, "measure_unit": "EUR",
+               "price": 16.3, "kwh": 95.32, "kwh_prod": 1.35},
+    "pricing_details": [{"id": 2, "label": "Heures Pleines", "color": "#0087B1", "enable_filter": 1}],
+    "data": [{"time": 1794783600000, "value": 3.47, "consobase_kwh": 11.69, "kwh": 30.88,
+              "kwh_prod": -0.02, "subconsumption": [
+                  {"id": 2, "kwh": 16.4, "price": 3.3, "label": "Heures Pleines"},
+                  {"id": 3, "kwh": 14.47, "price": 2.24, "label": "Heures Creuses"}]},
+             {"time": 1795302000000, "value": 0, "kwh": 0, "consobase_kwh": 0, "kwh_prod": 0}],
+}}
+TEMPERATURE_DAY = {"stat": {
+    "period": {"this": 1794956400000, "prev": 1794870000000, "next": 1795042800000,
+               "measure_unit": "°C"},
+    "data": [{"time": 1794956400000, "value": 23.8, "ext_value": 10.66}],
+}}
+
+
+def test_power_of_a_day(api):
+    """The power of a day, every few minutes, with the band of its time."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    session.routes["powerstat"] = Response(payload=POWER_DAY)
+    day = run(client.async_get_measures("electricity", "day", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/device/2/powerstat/d4/2026-11-18")
+    assert day["start"] == "2026-11-18T00:00:00+01:00"
+    assert day["previous"] == "2026-11-17T00:00:00+01:00"
+    assert day["energy"] == 15.37 and day["cost"] == 3.06 and day["production"] == 0.63
+    assert day["bands"][0] == {"id": 2, "label": "Heures Pleines", "color": "#0087B1"}
+    assert day["points"] == [
+        {"time": "2026-11-18T00:00:00+01:00", "power": 299, "base": 6, "band": 3}]
+
+
+def test_energy_of_a_week_by_band(api):
+    """The days of a week, each with its bands, base load and production."""
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    session.routes["powerstat"] = Response(payload=ENERGY_WEEK)
+    week = run(client.async_get_measures("electricity", "week", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/powerstat/w/2026-11-18")
+    assert week["next"] is None and week["previous"] == "2026-11-09T00:00:00+01:00"
+    assert week["bars"][0] == {
+        "date": "2026-11-16", "energy": 30.88, "cost": 3.47, "base_energy": 11.69,
+        "production": 0.02, "bands": [
+            {"id": 2, "energy": 16.4, "cost": 3.3}, {"id": 3, "energy": 14.47, "cost": 2.24}]}
+    # A day to come has no bands
+    assert week["bars"][1]["bands"] == [] and week["bars"][1]["energy"] == 0
+    run(client.async_get_measures("electricity", "month", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/powerstat/m6/2026-11-18")
+    run(client.async_get_measures("electricity", "year", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/powerstat/y/2026-11-18")
+
+
+def test_temperature_and_humidity(api):
+    """Inside and outside, read from the temperature and humidity sensor."""
+    session = Session(tempstat=Response(payload=TEMPERATURE_DAY))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    day = run(client.async_get_measures("temperature", "day", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/device/3/tempstat/d4/2026-11-18")
+    assert day["unit"] == "°C"
+    assert day["points"] == [
+        {"time": "2026-11-18T00:00:00+01:00", "inside": 23.8, "outside": 10.66}]
+    run(client.async_get_measures("humidity", "week", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/device/3/humstat/w/2026-11-18")
+
+
+def test_climate_measures_need_the_sensor(api):
+    """Without a temperature and humidity sensor, nothing is read."""
+    session = Session(gateways=Response(payload=GATEWAYS_WITHOUT_TEMP_HUM))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_get_measures("humidity", "day", dt.date(2026, 11, 18)))

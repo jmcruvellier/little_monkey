@@ -99,3 +99,33 @@ set_equipment_mode:
     until:
       selector:
         datetime:
+get_measures:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: little_monkey
+    measure:
+      required: true
+      default: electricity
+      selector:
+        select:
+          translation_key: measure
+          options:
+            - electricity
+            - temperature
+            - humidity
+    period:
+      required: true
+      default: day
+      selector:
+        select:
+          translation_key: measure_period
+          options:
+            - day
+            - week
+            - month
+            - year
+    date:
+      selector:
+        date:

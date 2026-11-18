@@ -20,7 +20,14 @@ from homeassistant.helpers import (
 )
 from homeassistant.util import dt as dt_util
 
-from .api import EQUIPMENT_DURATIONS, SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
+from .api import (
+    EQUIPMENT_DURATIONS,
+    MEASURE_PERIODS,
+    MEASURES,
+    SAVINGS_PERIODS,
+    LittleMonkeyApiClientError,
+    TZ,
+)
 from .const import DOMAIN
 from .entity import equipment_identifier, registry_device
 from .utils import get_current_date
@@ -30,6 +37,8 @@ SERVICE_GET_CONSUMPTION_ANALYSIS = "get_consumption_analysis"
 SERVICE_GET_CATEGORY_HISTORY = "get_category_history"
 SERVICE_GET_ACTIVATIONS = "get_activations"
 SERVICE_GET_EQUIPMENTS = "get_equipments"
+SERVICE_GET_MEASURES = "get_measures"
+ATTR_MEASURE = "measure"
 SERVICE_SET_EQUIPMENT_MODE = "set_equipment_mode"
 ATTR_DEVICE_ID = "device_id"
 ATTR_MODE = "mode"
@@ -61,6 +70,12 @@ GET_CATEGORY_HISTORY_SCHEMA = vol.Schema({
 GET_ACTIVATIONS_SCHEMA = vol.Schema({
     vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
     vol.Optional(ATTR_PAGE, default=0): vol.All(vol.Coerce(int), vol.Range(min=0, max=365)),
+})
+GET_MEASURES_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
+    vol.Required(ATTR_MEASURE): vol.In(list(MEASURES)),
+    vol.Required(ATTR_PERIOD): vol.In(list(MEASURE_PERIODS)),
+    vol.Optional(ATTR_DATE): cv.date,
 })
 GET_EQUIPMENTS_SCHEMA = vol.Schema({
     vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
@@ -142,6 +157,22 @@ async def _async_get_category_history(
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
     return await _async_read(
         hass, call, lambda client: client.async_get_category_history(category, day))
+
+
+async def _async_get_measures(hass: HomeAssistant, call: ServiceCall) -> ServiceResponse:
+    """Return the measures of a period holding a day, as the page « Mesures ».
+
+    The day is today by default. The electricity of a day is its power every
+    few minutes with its tariff band; of a week, 30 days or a year, the
+    energy and cost of its days or months by band. The temperature and the
+    humidity are inside and outside, as curves.
+    """
+    measure = call.data[ATTR_MEASURE]
+    period = call.data[ATTR_PERIOD]
+    day = call.data.get(ATTR_DATE) or get_current_date(TZ)
+    measures = await _async_read(
+        hass, call, lambda client: client.async_get_measures(measure, period, day))
+    return {"measure": measure, "period": period, "date": day.isoformat(), **measures}
 
 
 async def _async_get_activations(
@@ -297,6 +328,7 @@ def async_register_services(hass: HomeAssistant) -> None:
          GET_CATEGORY_HISTORY_SCHEMA),
         (SERVICE_GET_ACTIVATIONS, _async_get_activations, GET_ACTIVATIONS_SCHEMA),
         (SERVICE_GET_EQUIPMENTS, _async_get_equipments, GET_EQUIPMENTS_SCHEMA),
+        (SERVICE_GET_MEASURES, _async_get_measures, GET_MEASURES_SCHEMA),
     ):
         hass.services.async_register(
             DOMAIN,
