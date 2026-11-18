@@ -27,7 +27,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Puissance Max du Mois | Puissance | W | Permanent | |
 | 1.3.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
 | 1.3.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
-| 1.3.0 | Contrat | Texte | | Permanent (diagnostic) | Nom de l'offre lue chez ecojoko ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches tarifaires configurées |
+| 1.3.0 | Contrat | Texte | | Permanent (diagnostic) | Nom de l'offre lue chez ecojoko ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches tarifaires configurées, chacune avec le prix d'un kWh (`price`, exact ou estimé selon `price_exact`) |
 | 1.3.0 | Coût de la Consommation sur 12 Mois | Monétaire | EUR | Permanent | Coût de la consommation des 12 derniers mois (« Conso en cours » du résumé des économies d'ecojoko) ; consommation en kWh en attribut |
 | 1.3.0 | Coût de Référence sur 12 Mois | Monétaire | EUR | Permanent | Coût de votre consommation de référence sur 12 mois ; consommation de référence en kWh en attribut |
 | 1.3.0 | Économies sur 12 Mois | Monétaire | EUR | Permanent | Différence entre les deux, négative en cas de surconsommation ; économies en kWh et niveau (1 à 5) en attribut |
@@ -39,13 +39,14 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Puissance (équipement piloté) | Puissance | W | Automatique | Puissance consommée par l'équipement |
 | 1.3.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Automatique | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
 | 1.3.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Automatique | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
+| 1.3.0 | Tension, Puissance Max Mesurée (équipement piloté) | Tension, Puissance | V, W | Automatique | Tension mesurée par l'équipement et puissance maximale qu'il a mesurée, quand ecojoko les donne |
 | 1.3.0 | Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie (équipement) | Diagnostic | %  | Automatique | Pour chaque équipement de l'installation, quand ecojoko donne la valeur : sur l'appareil d'un équipement piloté (chauffe-eau…), sur l'appareil Little Monkey pour les autres (« Clé Linky : force de la connexion », « Sonde de température : connexion à l'assistant »…) |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |
 | 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
 
-Elle fournit aussi une carte « Little Monkey » pour vos tableaux de bord, chargée automatiquement : voir [la configuration de la carte](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord). Les cartes des économies reprennent l'onglet « Économies » d'ecojoko : voir [leur configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies).
+Elle fournit aussi une carte « Little Monkey » pour vos tableaux de bord, chargée automatiquement : voir [la configuration de la carte](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord). Les cartes des économies reprennent l'onglet « Économies » d'ecojoko : voir [leur configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies). La carte des équipements reprend l'écran « Équipements » et pilote le chauffe-eau : voir [sa configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-des-%C3%A9quipements).
 
 > [!IMPORTANT]
 > Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos données.**

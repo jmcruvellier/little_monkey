@@ -398,8 +398,9 @@ def test_nominal(api):
     assert client.realtime_conso == 512
     assert client.kwh == 4.2
     assert client.gateway_firmware_version == "9"
+    # The week before is read with the contract, for the prices of a kWh
     assert session.calls == [
-        "login", "gateways", "realtime_conso", "powerstat", "suppliers"
+        "login", "gateways", "realtime_conso", "powerstat", "suppliers", "powerstat"
     ]
 
 
@@ -451,7 +452,7 @@ def test_diagnostics_hold_no_secret(api):
     assert after["power_meter_found"] is True
     assert after["temp_hum_found"] is True
     assert after["gateway_firmware_version"] == "9"
-    assert after["failing_apis"] == ["powerstat (w)"]
+    assert after["failing_apis"] == ["powerstat (w)", "powerstat (w-1)"]
     assert after["seconds_since_stat_refresh"]["powerstat"] is not None
     assert after["seconds_since_stat_refresh"]["tempstat"] is None
     text = repr(after)
@@ -472,7 +473,8 @@ def test_diagnostics_show_the_response_headers(api):
     run(client.async_get_data())
     responses = client.diagnostics()["last_responses"]
     assert set(responses) == {
-        "Cookies", "Gateway", "realtime_conso", "powerstat (w)", "suppliers"}
+        "Cookies", "Gateway", "realtime_conso", "powerstat (w)", "suppliers",
+        "powerstat (w-1)"}
     realtime_conso = responses["realtime_conso"]
     assert realtime_conso["status"] == 200
     assert realtime_conso["headers"] == {
@@ -782,8 +784,9 @@ def test_powerstat_network_error(api, caplog):
         run(poll_twice())
     assert client.realtime_conso == 512
     assert client.kwh is None
-    # Called again after the usual delay only, not at each poll
-    assert session.calls.count("powerstat") == 1
+    # Called again after the usual delay only, not at each poll (the week
+    # before is read with the contract)
+    assert session.calls.count("powerstat") == 2
     # A single network failure is usual: it is not worth a warning
     assert [r for r in caplog.records if r.levelno >= logging.WARNING] == []
 
@@ -807,7 +810,8 @@ def test_powerstat_network_error_twice_in_a_row_warns_once(api, caplog):
 
     with caplog.at_level(logging.INFO):
         run(scenario())
-    assert session.calls.count("powerstat") == 5
+    # And once the week before, with the contract
+    assert session.calls.count("powerstat") == 6
     levels = [r.levelno for r in caplog.records]
     assert levels == [logging.WARNING, logging.INFO]
 
@@ -1167,7 +1171,8 @@ def simulate(api, monkeypatch, poll, temphum=True, gateways=GATEWAYS,
         while clock["now"] - 1000.0 <= duration:
             before = len(session.calls)
             await client.async_get_data()
-            called = [n for n in session.calls[before:] if n in times]
+            # The week before, read with the contract, is not a statistic of the poll
+            called = [n for n in dict.fromkeys(session.calls[before:]) if n in times]
             busiest = max(busiest, len(called))
             for name in called:
                 times[name].append(clock["now"] - 1000.0)
@@ -1764,6 +1769,8 @@ def test_equipments_are_read_with_the_gateways(api):
     assert power_meter["controls"] == [] and power_meter["state"]["mode"] is None
     assert sensor["name"] == "Sonde de température"
     assert sensor["battery"] == 80 and sensor["signal"] == 66
+    # Its measures, the temperature in tenths of a degree
+    assert sensor["state"]["temperature"] == 20.8 and sensor["state"]["humidity"] == 50
     assert sensor["controls"] == [] and sensor["measures"] is False
     assert heater == {
         "id": "630220", "type": "LULO", "model": "LULO", "name": "Chauffe-eau",
@@ -1775,6 +1782,7 @@ def test_equipments_are_read_with_the_gateways(api):
             "switch_state": "Mode absence jusqu'à 20:25",
             "since": "2026-11-18T20:20:44+01:00", "until": "2026-11-18T20:25:45+01:00",
             "source": "command", "voltage": 232.5, "max_power": 3131,
+            "temperature": None, "humidity": None,
         },
     }
     # No identifier nor network name in the diagnostics
@@ -1924,3 +1932,84 @@ def test_equipment_switched_on(api, state, on):
     switches = api.parse_equipment_switches({"switch_state_logs": [
         {"duration": 60, "state_time": "2026-11-18 20:00:00", "switch_state": state}]})
     assert switches[0]["on"] is on
+
+
+# --- Price of a kWh of each band
+
+# Ten real days of an HP/HC contract (Gaz de Bordeaux, November 2026): the
+# cost of a band includes a share of the subscription, about 0.43 € for HP
+# and 0.22 € for HC a day
+REAL_COSTS = {
+    2: [(3.17, 1.00), (8.7, 2.00), (3.23, 1.01), (5.92, 1.5), (6.28, 1.56),
+        (7.69, 1.81), (6.99, 1.69), (4.41, 1.23), (5.17, 1.36), (5.13, 1.35)],
+    3: [(5, 0.91), (3, 0.63), (2.88, 0.61), (6.54, 1.12), (3.26, 0.67),
+        (4.72, 0.87), (5.37, 0.96), (3.61, 0.72), (5.17, 0.93), (3.87, 0.75)],
+}
+
+
+def week_of_costs(start, costs):
+    """Return a powerstat response whose days hold the costs of the bands."""
+    paris = ZoneInfo("Europe/Paris")
+    data = []
+    for index in range(len(costs[2])):
+        day = start + dt.timedelta(days=index)
+        midnight = dt.datetime(day.year, day.month, day.day, tzinfo=paris)
+        data.append({"time": int(midnight.timestamp() * 1000), "kwh": 0, "subconsumption": [
+            {"id": band_id, "label": label, "kwh": values[index][0], "price": values[index][1]}
+            for band_id, label, values in (
+                (2, "Heures Pleines", costs[2]), (3, "Heures Creuses", costs[3]))]})
+    return {"stat": {"data": data}}
+
+
+def test_prices_are_estimated_from_the_costs(api):
+    """The price of a kWh is the slope of the costs against the energies."""
+    tariff = tariff_module(api)
+    days = tariff.day_costs(week_of_costs(dt.date(2026, 11, 8), REAL_COSTS)["stat"])
+    assert len(days) == 10
+    assert tariff.estimate_prices(days) == {2: 0.18, 3: 0.139}
+
+
+def test_prices_need_enough_different_days(api):
+    """Two days, or days too alike, give no price."""
+    tariff = tariff_module(api)
+    two = tariff.day_costs(week_of_costs(
+        dt.date(2026, 11, 8), {2: REAL_COSTS[2][:2], 3: REAL_COSTS[3][:2]})["stat"])
+    assert tariff.estimate_prices(two) == {}
+    alike = {f"2026-11-0{day}": {2: (5.0 + day / 100, 1.3)} for day in range(1, 6)}
+    assert tariff.estimate_prices(alike) == {}
+
+
+def test_exact_prices_by_id_or_label(api):
+    """The prices of ecojoko are matched by id, or by label, as text or numbers."""
+    tariff = tariff_module(api)
+    labels = {2: "Heures Pleines", 3: "Heures Creuses"}
+    assert tariff.exact_prices([
+        {"label": "heures pleines ", "price": "0,2016"},
+        {"id": 3, "label": "HC", "price": 0.1612},
+        {"label": "Inconnue", "price": 0.3},
+        {"label": "Heures Creuses", "price": "abc"},
+    ], labels) == {2: 0.2016, 3: 0.1612}
+
+
+def test_band_prices_of_the_client(api):
+    """The client estimates the prices over two weeks, the exact ones win."""
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    start = today - dt.timedelta(days=9)
+    gateways = {"gateways": [{
+        "gateway_id": 1, "gateway_firmware_version": "9",
+        "devices": [{"device_type": "POWER_METER", "device_id": 2}],
+    }]}
+    session = Session(gateways=Response(payload=gateways),
+                      powerstat=Response(payload=week_of_costs(start, REAL_COSTS)))
+    client = make_client(api, session, hchp=True)
+    run(client.async_get_data())
+    assert client.band_prices == {
+        2: {"price": 0.18, "exact": False}, 3: {"price": 0.139, "exact": False}}
+
+    # With a water heater piloted by ecojoko, its prices
+    gateways["gateways"][0]["devices"].append({
+        "device_type": "LULO", "device_id": 9, "device_external_settings": {"pricing_data": {
+            "prices": [{"label": "Heures Pleines", "price": 0.2016}]}}})
+    run(client._gatewayapi_wrapper())
+    assert client.band_prices == {
+        2: {"price": 0.2016, "exact": True}, 3: {"price": 0.139, "exact": False}}

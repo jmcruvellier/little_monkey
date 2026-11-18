@@ -7,6 +7,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import (
     UnitOfApparentPower,
+    UnitOfElectricPotential,
     UnitOfPower,
     UnitOfEnergy,
     UnitOfTemperature,
@@ -140,6 +141,11 @@ EQUIPMENT_SENSORS = (
     ("equipment_power", POWER, lambda equipment: True),
     ("equipment_energy", ENERGY, lambda equipment: equipment["measures"]),
     ("equipment_cost", COST, lambda equipment: equipment["measures"]),
+    ("equipment_voltage", (SensorStateClass.MEASUREMENT, SensorDeviceClass.VOLTAGE,
+                           UnitOfElectricPotential.VOLT, "mdi:sine-wave"),
+     lambda equipment: equipment["state"].get("voltage") is not None),
+    ("equipment_max_power", MAX_POWER,
+     lambda equipment: equipment["state"].get("max_power") is not None),
 )
 
 # Diagnostic sensors of every equipment, created when ecojoko gives their value

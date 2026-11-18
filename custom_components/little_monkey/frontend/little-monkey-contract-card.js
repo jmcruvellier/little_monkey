@@ -9,7 +9,8 @@
  * little-monkey-contract-card: the contract of the installation, read from
  * the Contract sensor: the offer, a dial of the 24 hours with the off-peak
  * hours and the current time, the current period and the next change, the
- * tariff bands with their energy of the day, and the subscription.
+ * tariff bands with the price of a kWh (their energy of the day without
+ * it), the current one in bold, and the subscription.
  */
 
 const DOMAIN = "little_monkey";
@@ -34,6 +35,8 @@ const TRANSLATIONS = {
     tempo: { blue: "Blue day", white: "White day", red: "Red day" },
     subscription: "Subscription",
     per_month: "{price} / month",
+    per_kwh: "{price} / kWh",
+    estimated: "≈ estimated from the costs computed by ecojoko",
     off_peak_legend: "Off-peak hours",
     unknown: "Contract not read yet",
     missing: "Contract sensor not found",
@@ -54,6 +57,8 @@ const TRANSLATIONS = {
     tempo: { blue: "Jour bleu", white: "Jour blanc", red: "Jour rouge" },
     subscription: "Abonnement",
     per_month: "{price} / mois",
+    per_kwh: "{price} / kWh",
+    estimated: "≈ estimé d'après les coûts calculés par ecojoko",
     off_peak_legend: "Heures creuses",
     unknown: "Contrat pas encore lu",
     missing: "Capteur Contrat introuvable",
@@ -231,6 +236,23 @@ function numericState(hass, entityId) {
   return Number.isFinite(value) ? value : null;
 }
 
+/**
+ * Return the price of a kWh of a band, in words, or null without a price:
+ * as ecojoko gives it, or estimated (≈) to the tenth of a cent.
+ */
+export function bandPrice(text, locale, band) {
+  const price = Number(band?.price);
+  if (band?.price === null || band?.price === undefined || !Number.isFinite(price) || price <= 0) {
+    return null;
+  }
+  const exact = band.price_exact === true;
+  const format = new Intl.NumberFormat(locale, {
+    style: "currency", currency: "EUR",
+    minimumFractionDigits: exact ? 2 : 3, maximumFractionDigits: exact ? 4 : 3,
+  });
+  return `${exact ? "" : "≈ "}${text.per_kwh.replace("{price}", format.format(price))}`;
+}
+
 /** Return what the card shows, from the states of the device. */
 export function contractView(hass, entityId, now = new Date()) {
   const state = hass?.states?.[entityId];
@@ -239,17 +261,28 @@ export function contractView(hass, entityId, now = new Date()) {
   }
   const attributes = state.attributes || {};
   const sensors = deviceEntities(hass, entityId);
-  const period = hass.states?.[sensors.current_tariff_period]?.state;
+  const periodState = hass.states?.[sensors.current_tariff_period];
+  const period = periodState?.state;
+  // Current band (Heures Pleines, HP Rouge, HC Weekend...), named by the period sensor
+  const currentBand = periodState?.attributes?.tariff_band;
   const slots = offPeakSlots(attributes.off_peak_timeslots);
   const minutes = now.getHours() * 60 + now.getMinutes();
   // The off-peak hours of the contract give the period at once; the period
   // of the integration, deduced from the counters a few minutes late, is
   // taken only without them. It always gives the Tempo color of the day
   const offPeak = slots.length ? isOffPeak(slots, minutes) : /^hc/.test(period ?? "");
-  const bands = (attributes.bands || []).map((band) => ({
+  const list = attributes.bands || [];
+  // Without its name, the current band of a contract with an HC band and
+  // an HP band only is the one of the current period. Not for Tempo or a
+  // week-end contract: the band depends on the day too
+  const category = offPeak ? "hc" : "hp";
+  const categories = list.map((band) => band.category).sort().join();
+  const single = list.length === 2 && categories === "hc,hp";
+  const bands = list.map((band) => ({
     ...band,
     energy: numericState(hass, sensors[band.key]),
     entity: sensors[band.key],
+    current: currentBand ? band.name === currentBand : single && band.category === category,
   }));
   return {
     offer: state.state,
@@ -288,6 +321,8 @@ const STYLES = `
   .rows { border-top: 1px solid var(--divider-color, #e0e0e0); padding-top: 8px; font-size: 0.95em; }
   .row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; gap: 8px; }
   .row.band { cursor: pointer; }
+  .row.band.current .label, .row.band.current .value { font-weight: 600; }
+  .note { font-size: 0.75em; color: var(--secondary-text-color); margin-top: 4px; }
   .tag { border-radius: 6px; padding: 1px 6px; font-size: 0.8em; margin-right: 6px; font-weight: 500; }
   .tag.hc { background: color-mix(in srgb, #85b7eb 35%, transparent); }
   .tag.hp { background: color-mix(in srgb, #185fa5 35%, transparent); }
@@ -412,8 +447,10 @@ class LittleMonkeyContractCard extends HTMLElement {
     const bands = view.bands.map((band) => {
       const tag = band.category === "hc" || band.category === "hp"
         ? `<span class="tag ${band.category}">${band.category.toUpperCase()}</span>` : "";
-      const value = band.energy === null ? "—" : `${energy.format(band.energy)} kWh`;
-      return `<div class="row band"${band.entity ? ` data-entity="${escapeHtml(band.entity)}"` : ""}>
+      // The price of a kWh of the contract, the energy of the day without it
+      const value = bandPrice(text, locale, band)
+        ?? (band.energy === null ? "—" : `${energy.format(band.energy)} kWh`);
+      return `<div class="row band${band.current ? " current" : ""}"${band.entity ? ` data-entity="${escapeHtml(band.entity)}"` : ""}>
         <span class="label">${tag}${escapeHtml(band.name)}</span><span class="value">${escapeHtml(value)}</span></div>`;
     }).join("");
     const subscription = Number.isFinite(Number(view.subscription)) && view.subscription !== null
@@ -421,7 +458,9 @@ class LittleMonkeyContractCard extends HTMLElement {
         escapeHtml(text.per_month.replace(
           "{price}", new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(view.subscription)))}</span></div>`
       : "";
-    const rows = bands || subscription ? `<div class="rows">${bands}${subscription}</div>` : "";
+    const estimated = view.bands.some((band) => bandPrice(text, locale, band)?.startsWith("≈"))
+      ? `<div class="note">${escapeHtml(text.estimated)}</div>` : "";
+    const rows = bands || subscription ? `<div class="rows">${bands}${subscription}${estimated}</div>` : "";
     return `
       <div class="offer">
         <div class="badge">${escapeHtml(supplierBadge(view.supplier))}</div>

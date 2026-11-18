@@ -1466,6 +1466,17 @@ async def test_equipments_service(hass, fake_api):
     heater_device = registry_device(
         dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     assert heater["device_id"] == heater_device.id
+    # The entity of each value, for its details
+    assert heater["entities"]["power"] == "sensor.chauffe_eau_power"
+    assert heater["entities"]["voltage"] == "sensor.chauffe_eau_voltage"
+    assert heater["entities"]["max_power"] == "sensor.chauffe_eau_max_measured_power"
+    assert heater["entities"]["control"] == "select.chauffe_eau_control"
+    assert heater["entities"]["wifi_signal"] == "sensor.chauffe_eau_wifi_connection"
+    assert hass.states.get("sensor.chauffe_eau_voltage").state == "232.5"
+    # The sensor: its diagnostics, and its measures on the Ecojoko device
+    assert sensor["entities"]["signal"] == "sensor.ecojoko_sonde_connection_strength"
+    assert sensor["entities"]["temperature"] == "sensor.ecojoko_indoor_temperature"
+    assert sensor["entities"]["humidity"] == "sensor.ecojoko_indoor_humidity"
 
 
 async def test_equipment_failure_keeps_the_entry(hass, fake_api):
@@ -1639,3 +1650,18 @@ async def test_equipment_is_read_again_at_the_end_of_a_forced_mode(hass, fake_ap
     async_fire_time_changed(hass, dt_util.utcnow() + dt.timedelta(seconds=100))
     await hass.async_block_till_done()
     assert fake_api.equipment_reads == reads + 1
+
+
+async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
+    """Each band of the contract has the price of a kWh, exact or estimated."""
+    fake_api.values["_exact_prices"] = [{"label": "Heures Pleines", "price": 0.2016}]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    bands = {
+        band["key"]: band
+        for band in hass.states.get("sensor.ecojoko_contract").attributes["bands"]}
+    assert bands["hp_grid_consumption"]["price"] == 0.2016
+    assert bands["hp_grid_consumption"]["price_exact"] is True
+    # Not enough statistics to estimate the other one
+    assert bands["hc_grid_consumption"]["price"] is None
+    assert "id" not in bands["hc_grid_consumption"]

@@ -195,7 +195,9 @@ La carte « Petit Singe : contrat » (« Little Monkey contract » en anglais) r
 
 - le fournisseur, l'offre, sa date de début et la puissance souscrite ;
 - un cadran des 24 heures avec les heures creuses du contrat et une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:00, dans 1 h 45 ») ; avec un contrat Tempo, le cadran prend la couleur du jour (bleu, blanc ou rouge, plus foncée en heures creuses) ;
-- les tranches tarifaires configurées, avec leur badge HC ou HP et leur consommation du jour (toucher une tranche ouvre son capteur), et l'abonnement mensuel.
+- les tranches tarifaires configurées, avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras (toucher une tranche ouvre le capteur de sa consommation du jour), et l'abonnement mensuel.
+
+Le prix d'un kWh est celui qu'ecojoko donne quand il pilote un chauffe-eau : c'est le tarif de la fiche du chauffe-eau dans son application (« Votre tarif d'électricité »). Sans chauffe-eau piloté, ecojoko ne le donne pas : il est estimé, précédé de « ≈ », à partir des coûts qu'ecojoko calcule chaque jour pour chaque tranche sur les deux dernières semaines. Ces coûts comprennent une part de l'abonnement, que l'estimation écarte ; ecojoko les arrondissant au centime, elle est donnée au dixième de centime près. Une tranche qui n'a pas assez servi pour l'estimer (un jour rouge Tempo, par exemple) affiche sa consommation du jour à la place.
 
 ```yaml
 type: custom:little-monkey-contract-card
@@ -309,7 +311,35 @@ data:
 
 ecojoko accepte des durées que son application ne propose pas (un forçage de 30 minutes, une absence jusqu'à une heure précise). L'état de l'équipement est relu juste après la commande. Si ecojoko ne répond pas, le service renvoie une erreur, mais la commande a pu être appliquée : l'état relu le dit.
 
+### Carte des équipements
+
+La carte « Équipements » reprend l'écran « Équipements » d'ecojoko. Elle est chargée automatiquement, comme les autres cartes ; cherchez « Petit Singe : équipements » dans le sélecteur de cartes.
+
+```yaml
+type: custom:little-monkey-equipment-card
+entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : un seul équipement piloté, par son nom ou son id ecojoko
+equipment: Chauffe-eau
+# Facultatif : false pour ne pas lister les équipements non pilotés
+show_list: true
+# Facultatif : titre, « Équipements » par défaut
+title: Équipements
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
+| `equipment` | Non | Un seul équipement piloté, par son nom ou son id ecojoko : une carte par équipement. La liste des autres équipements n'est alors pas affichée |
+| `show_list` | Non | `false` pour ne pas lister les équipements non pilotés (clé Linky, sonde…) |
+| `title` | Non | Titre de la carte |
+
+Chaque équipement piloté a son bloc : son mode (« Forcé jusqu'à 21:30 », « Automatique · éteint »…), sa puissance et les boutons d'ecojoko. « Forcé » propose 1, 2, 3 ou 4 heures, ou une autre durée en minutes (24 heures au plus), « Absence » la date et l'heure de retour (minuit par défaut), « Automatique » (affiché pendant un forçage ou une absence) et « Allumer » / « Éteindre » demandent une confirmation ; le bouton dont la question est ouverte apparaît sélectionné, comme Allumer ou Éteindre selon l'état de l'équipement. Ouvert, le bloc montre la consommation et le coût du jour, la tension, la puissance maximale, et la frise de la journée : les périodes allumé, forcé et absent, et la courbe de puissance.
+
+Avec plusieurs équipements pilotés, chaque bloc tient sur une ligne avec ses boutons ; toucher un équipement l'ouvre et referme le précédent, pour que la carte reste basse quel que soit leur nombre. Toucher une valeur (mode, puissance, consommation, coût, tension, frise, température de la sonde…) ouvre ses détails dans Home Assistant, avec son historique, comme dans les autres cartes. Une valeur qui a une entité affiche l'état de cette entité, comme ses détails : la puissance de la clé Linky est celle de Consommation Temps Réel, et non celle de la liste des équipements, qu'ecojoko ne met à jour que toutes les cinq minutes. Les équipements non pilotés sont listés en dessous avec leurs mesures (température et humidité de la sonde, puissance lue par la clé Linky), leur batterie et la force de leur signal, et « Déconnecté » s'ils ne sont plus reliés.
+
+La carte ne connaît pas les types d'équipements : ses boutons sont ceux qu'ecojoko propose pour chacun, et elle n'affiche que les mesures qu'il donne. Un nouvel équipement d'ecojoko y apparaît donc sans mise à jour de la carte.
+
 ### Service « Lire les équipements »
 
-`little_monkey.get_equipments` renvoie immédiatement, sans interroger ecojoko, les équipements de l'installation tels que lus en dernier (`equipments`). Chacun a son nom (`name`), son type (`type`), son état de connexion (`connected`, `status`), la force de son signal (`signal`, `wifi_signal`) et sa batterie (`battery`) quand ecojoko les donne, ses commandes de pilotage (`controls`) et son état (`state` : `mode`, `power`, `since`, `until`, `source`…). Un équipement piloté a aussi l'id de son appareil Home Assistant (`device_id`) et ses mesures du jour (`day` : `energy`, `cost`, la courbe de puissance `power` et les changements d'état `switches`). `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
+`little_monkey.get_equipments` renvoie immédiatement, sans interroger ecojoko, les équipements de l'installation tels que lus en dernier (`equipments`). Chacun a son nom (`name`), son type (`type`), son état de connexion (`connected`, `status`), la force de son signal (`signal`, `wifi_signal`) et sa batterie (`battery`) quand ecojoko les donne, ses commandes de pilotage (`controls`) et son état (`state` : `mode`, `power`, `since`, `until`, `source`, `temperature` et `humidity` pour une sonde…). Chacun a les entités de ses valeurs (`entities` : `mode`, `power`, `energy`, `cost`, `voltage`, `control`, `signal`…, et pour la sonde ou la clé Linky les capteurs de l'appareil Little Monkey qui donnent les mêmes mesures). Un équipement piloté a aussi l'id de son appareil Home Assistant (`device_id`) et ses mesures du jour (`day` : `energy`, `cost`, la courbe de puissance `power` et les changements d'état `switches`). `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
 
