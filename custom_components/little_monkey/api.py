@@ -457,6 +457,21 @@ def parse_equipment_power(payload) -> dict:
     }
 
 
+def _switched_on(state) -> bool:
+    """Tell whether a change of state switched the equipment on.
+
+    The name says it, "Allumé" or "Allumé (forcé)" against "Eteint": the
+    value is 1 for "Allumé" but another one for a forced state. The value
+    decides only for a name in another language.
+    """
+    name = str(state.get("name", "")).strip().lower()
+    if name.startswith(("allum", "on")):
+        return True
+    if name.startswith(("etein", "étein", "off")):
+        return False
+    return state.get("val") == 1
+
+
 def parse_equipment_switches(payload) -> list:
     """Return the changes of state of an equipment over a day, the oldest first.
 
@@ -474,7 +489,7 @@ def parse_equipment_switches(payload) -> list:
         switches.append({
             "start": start.isoformat(),
             "end": None if end is None else end.isoformat(),
-            "on": state.get("val") == 1,
+            "on": _switched_on(state),
             # "Allumé (forcé)", "Eteint (forcé)"
             "forced": "forc" in str(state.get("name", "")).lower(),
             "source": SWITCH_SOURCES.get((item.get("switch_source") or {}).get("val")),
