@@ -137,6 +137,17 @@ class FakeApi:
         # Equipments of the gateway: none by default
         self.equipments = []
         self.equipment_error = None
+        # Commands sent: (equipment id, mode, seconds), or the error to raise
+        self.commands = []
+        self.command_error = None
+        # Readings of the equipments
+        self.equipment_reads = 0
+
+    def apply(self, equipment_id, mode):
+        """Apply a mode to an equipment, as ecojoko does after a command."""
+        for equipment in self.equipments:
+            if equipment["id"] == equipment_id:
+                equipment["state"]["mode"] = mode
 
 
 @pytest.fixture
@@ -197,6 +208,7 @@ def fake_api():
         return {"start": None, "end": None, "pending": False, "activations": []}
 
     async def get_equipment(self, equipment_id):
+        state.equipment_reads += 1
         if state.equipment_error:
             raise state.equipment_error
         return copy.deepcopy(next(
@@ -204,6 +216,12 @@ def fake_api():
 
     async def get_equipment_day(self, equipment, day):
         return copy.deepcopy(EQUIPMENT_DAY)
+
+    async def send_equipment_command(self, equipment_id, mode, seconds=None):
+        state.commands.append((equipment_id, mode, seconds))
+        if state.command_error:
+            raise state.command_error
+        state.apply(equipment_id, mode)
 
     client = lm_api.LittleMonkeyApiClient
     with patch.object(client, "async_get_cookiesdata", login), \
@@ -214,5 +232,6 @@ def fake_api():
             patch.object(client, "async_get_category_history", get_category_history), \
             patch.object(client, "async_get_activations", get_activations), \
             patch.object(client, "async_get_equipment", get_equipment), \
-            patch.object(client, "async_get_equipment_day", get_equipment_day):
+            patch.object(client, "async_get_equipment_day", get_equipment_day), \
+            patch.object(client, "async_send_equipment_command", send_equipment_command):
         yield state

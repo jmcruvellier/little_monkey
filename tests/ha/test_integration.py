@@ -6,6 +6,7 @@ the setup form and the options.
 """
 from __future__ import annotations
 
+import copy
 import datetime as dt
 import json
 import types
@@ -27,6 +28,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
+    async_fire_time_changed,
     mock_restore_cache_with_extra_data,
 )
 
@@ -36,6 +38,7 @@ from custom_components.little_monkey import (
     config_flow,
     coordinator as lm_coordinator,
     repairs,
+    select as lm_select,
 )
 from custom_components.little_monkey.entity import registry_device
 from custom_components.little_monkey.diagnostics import (
@@ -1508,6 +1511,98 @@ async def test_equipment_diagnostic_sensors(hass, fake_api):
     assert hass.states.get("sensor.chauffe_eau_wifi_connection").state == "unavailable"
 
 
+def heater_device(hass, entry):
+    """Return the device of the water heater."""
+    return registry_device(
+        dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
+
+
+async def test_equipment_mode_select(hass, fake_api):
+    """The list pilots the equipment: an hour of forced mode, an absence until midnight."""
+    fake_api.equipments = [copy.deepcopy(WATER_HEATER)]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    state = hass.states.get("select.chauffe_eau_control")
+    assert state.state == "forced"
+    assert state.attributes["options"] == ["auto", "forced", "absence"]
+
+    await hass.services.async_call(
+        "select", "select_option", {"entity_id": "select.chauffe_eau_control", "option": "auto"},
+        blocking=True)
+    await hass.async_block_till_done()
+    assert fake_api.commands == [("630220", "auto", None)]
+    # Read again after the command
+    assert hass.states.get("select.chauffe_eau_control").state == "auto"
+    assert hass.states.get("sensor.chauffe_eau_mode").state == "auto"
+
+    await hass.services.async_call(
+        "select", "select_option", {"entity_id": "select.chauffe_eau_control", "option": "forced"},
+        blocking=True)
+    await hass.services.async_call(
+        "select", "select_option", {"entity_id": "select.chauffe_eau_control", "option": "absence"},
+        blocking=True)
+    assert fake_api.commands[1] == ("630220", "forced", 3600)
+    mode, seconds = fake_api.commands[2][1:]
+    assert mode == "absence" and 0 < seconds <= 24 * 3600
+
+
+def test_absence_of_the_list_ends_at_midnight():
+    """An absence chosen in the list ends at the next midnight in Paris."""
+    paris = dt_util.get_time_zone("Europe/Paris")
+    assert lm_select.seconds_until_midnight(dt.datetime(2026, 11, 18, 23, 0, tzinfo=paris)) == 3600
+    # The day the clocks go back lasts 25 hours
+    assert lm_select.seconds_until_midnight(dt.datetime(2026, 10, 25, 0, 0, tzinfo=paris)) == 25 * 3600
+
+
+async def test_set_equipment_mode_service(hass, fake_api):
+    """The service pilots the equipment for any duration."""
+    fake_api.equipments = [copy.deepcopy(WATER_HEATER), TEMP_HUM_EQUIPMENT]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    device_id = heater_device(hass, entry).id
+
+    async def set_mode(**data):
+        await hass.services.async_call(
+            DOMAIN, "set_equipment_mode", {"device_id": device_id, **data}, blocking=True)
+
+    await set_mode(mode="forced")
+    await set_mode(mode="forced", duration=30)
+    await set_mode(mode="absence", duration=120)
+    until = dt_util.now() + dt.timedelta(days=2)
+    await set_mode(mode="absence", until=until.isoformat())
+    await set_mode(mode="auto")
+    commands = fake_api.commands
+    assert commands[:3] == [
+        ("630220", "forced", 3600), ("630220", "forced", 1800), ("630220", "absence", 7200)]
+    assert abs(commands[3][2] - 2 * 86400) < 60
+    assert commands[4] == ("630220", "auto", None)
+
+    with pytest.raises(ServiceValidationError):
+        # An absence needs its end
+        await set_mode(mode="absence")
+    with pytest.raises(ServiceValidationError):
+        await set_mode(mode="absence", until=(dt_util.now() - dt.timedelta(hours=1)).isoformat())
+    with pytest.raises(ServiceValidationError):
+        await set_mode(mode="forced", duration=25 * 60)
+    with pytest.raises(ServiceValidationError):
+        # Without a forced mode only
+        await set_mode(mode="on")
+    with pytest.raises(ServiceValidationError):
+        await hass.services.async_call(
+            DOMAIN, "set_equipment_mode", {"device_id": "unknown", "mode": "auto"}, blocking=True)
+    # The Ecojoko device is not an equipment
+    main = registry_device(dr.async_get(hass), (DOMAIN, entry.entry_id), entry.entry_id)
+    with pytest.raises(ServiceValidationError):
+        await hass.services.async_call(
+            DOMAIN, "set_equipment_mode", {"device_id": main.id, "mode": "auto"}, blocking=True)
+    assert len(fake_api.commands) == 5
+
+    # ecojoko does not answer: an error, and the equipment is read again
+    fake_api.command_error = lm_api.LittleMonkeyApiClientCommunicationError("timeout")
+    with pytest.raises(HomeAssistantError):
+        await set_mode(mode="auto")
+
+
 async def test_devices_of_equipments_no_longer_piloted_are_removed(hass, fake_api):
     """Only a piloted equipment keeps a device: the others are removed."""
     fake_api.equipments = [TEMP_HUM_EQUIPMENT, WATER_HEATER]
@@ -1523,3 +1618,24 @@ async def test_devices_of_equipments_no_longer_piloted_are_removed(hass, fake_ap
     assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     assert registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
 
+
+async def test_equipment_is_read_again_at_the_end_of_a_forced_mode(hass, fake_api):
+    """The end of a forced mode is seen at once, not at the next reading."""
+    heater = copy.deepcopy(WATER_HEATER)
+    heater["state"]["until"] = (dt_util.utcnow() + dt.timedelta(seconds=30)).isoformat()
+    fake_api.equipments = [heater]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    reads = fake_api.equipment_reads
+
+    # ecojoko ended the forced mode
+    heater["state"].update(mode="auto", until=None)
+    async_fire_time_changed(hass, dt_util.utcnow() + dt.timedelta(seconds=45))
+    await hass.async_block_till_done()
+    assert fake_api.equipment_reads == reads + 1
+    assert hass.states.get("sensor.chauffe_eau_mode").state == "auto"
+
+    # Nothing more is planned without a forced mode
+    async_fire_time_changed(hass, dt_util.utcnow() + dt.timedelta(seconds=100))
+    await hass.async_block_till_done()
+    assert fake_api.equipment_reads == reads + 1

@@ -408,6 +408,31 @@ def parse_equipment(device) -> dict:
     }
 
 
+# Durations accepted for a forced mode and an absence, in seconds. ecojoko
+# offers 1 to 4 hours of forced mode and an absence until a day, but accepts
+# any duration
+EQUIPMENT_DURATIONS = {"forced": (60, 24 * 3600), "absence": (60, 366 * 24 * 3600)}
+
+
+def equipment_command(mode, seconds=None) -> str:
+    """Return the ecojoko command of a mode of a piloted equipment.
+
+    Forced on or off (absence) for a number of seconds, back to automatic
+    (what the "Automatique" button of ecojoko sends), or on and off for an
+    equipment without a forced mode.
+    """
+    if mode == "auto":
+        return "off_forced/1"
+    if mode in ("on", "off"):
+        return mode
+    if mode in EQUIPMENT_DURATIONS:
+        low, high = EQUIPMENT_DURATIONS[mode]
+        if seconds is None or not low <= int(seconds) <= high:
+            raise ValueError(f"Duration of {mode} out of range: {seconds}")
+        return f"{'on' if mode == 'forced' else 'off'}_forced/{int(seconds)}"
+    raise ValueError(f"Unknown mode {mode}")
+
+
 def parse_equipments(payload) -> list:
     """Return the equipments of the first gateway of the list of gateways."""
     devices = payload["gateways"][0].get("devices") or []
@@ -893,6 +918,30 @@ class LittleMonkeyApiClient:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API equipment: {exception!r}"
             ) from exception
+
+    async def async_send_equipment_command(self, equipment_id, mode, seconds=None) -> None:
+        """Pilot an equipment: forced, absence, automatic, on or off.
+
+        Only the controls ecojoko offers for the equipment are sent. ecojoko
+        answers an error id, 0 when the command is accepted. When it does
+        not answer, the command may have been applied all the same.
+        """
+        self._check_slow_api("command")
+        equipment = next(
+            (item for item in self._equipments if item["id"] == str(equipment_id)), None)
+        if equipment is None:
+            raise LittleMonkeyApiClientError(f"Unknown equipment {equipment_id}")
+        if mode not in equipment["controls"]:
+            raise LittleMonkeyApiClientError(
+                f"Mode {mode} not offered by ecojoko for this equipment")
+        command = equipment_command(mode, seconds)
+        payload, _cookies = await self._async_request(
+            "command", f"{self._equipment_url(equipment_id)}/{command}",
+            cookies=self._cookies, timeout=CONF_API_ACTIVITY_TIMEOUT)
+        error = payload.get("error_id") if isinstance(payload, dict) else None
+        if error not in (0, None):
+            raise LittleMonkeyApiClientError(
+                f"ecojoko refused the command: {payload.get('error_desc') or error}")
 
     async def async_get_equipment_day(self, equipment, day) -> dict:
         """Return the measures of an equipment over a day.

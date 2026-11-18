@@ -279,6 +279,36 @@ Chaque équipement piloté par ecojoko (chauffe-eau, prise pilotée…) devient 
 
 L'intégration ne connaît pas à l'avance les types d'équipements : elle lit pour chacun les commandes qu'ecojoko lui reconnaît. Un équipement d'un type inconnu est donc pris en charge dès qu'il accepte les commandes de pilotage.
 
+### Pilotage
+
+Un équipement piloté a une liste « Pilotage » qui reprend les boutons de l'application ecojoko :
+
+| Choix | Effet |
+|---|---|
+| Automatique | L'équipement suit de nouveau sa programmation dans ecojoko (bouton « Automatique » d'ecojoko) |
+| Forcé | L'équipement est allumé pendant une heure, puis revient seul en automatique |
+| Absence | L'équipement est éteint jusqu'à minuit, puis revient seul en automatique |
+| Allumé, Éteint | Pour un équipement sans mode forcé, les boutons « Allumer » et « Éteindre » d'ecojoko |
+
+Le service « Piloter un équipement » (`little_monkey.set_equipment_mode`) choisit la durée, par exemple dans une automatisation :
+
+| Champ | Obligatoire | Description |
+|---|---|---|
+| `device_id` | Oui | L'appareil de l'équipement piloté |
+| `mode` | Oui | `auto`, `forced`, `absence`, ou `on` et `off` pour un équipement sans mode forcé |
+| `duration` | Non | Durée du mode forcé (une heure par défaut, au plus 24 heures) ou de l'absence, en minutes |
+| `until` | Non | Fin de l'absence (date et heure), à la place de la durée ; une absence demande l'une ou l'autre |
+
+```yaml
+action: little_monkey.set_equipment_mode
+data:
+  device_id: 0123456789abcdef  # l'appareil du chauffe-eau
+  mode: forced
+  duration: 90
+```
+
+ecojoko accepte des durées que son application ne propose pas (un forçage de 30 minutes, une absence jusqu'à une heure précise). L'état de l'équipement est relu juste après la commande. Si ecojoko ne répond pas, le service renvoie une erreur, mais la commande a pu être appliquée : l'état relu le dit.
+
 ### Service « Lire les équipements »
 
 `little_monkey.get_equipments` renvoie immédiatement, sans interroger ecojoko, les équipements de l'installation tels que lus en dernier (`equipments`). Chacun a son nom (`name`), son type (`type`), son état de connexion (`connected`, `status`), la force de son signal (`signal`, `wifi_signal`) et sa batterie (`battery`) quand ecojoko les donne, ses commandes de pilotage (`controls`) et son état (`state` : `mode`, `power`, `since`, `until`, `source`…). Un équipement piloté a aussi l'id de son appareil Home Assistant (`device_id`) et ses mesures du jour (`day` : `energy`, `cost`, la courbe de puissance `power` et les changements d'état `switches`). `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.

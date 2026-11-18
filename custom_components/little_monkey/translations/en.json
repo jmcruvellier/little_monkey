@@ -387,6 +387,18 @@
             "equipment_battery_of": {
                 "name": "{equipment}: battery"
             }
+        },
+        "select": {
+            "equipment_mode": {
+                "name": "Control",
+                "state": {
+                    "auto": "Automatic",
+                    "forced": "Forced",
+                    "absence": "Absence",
+                    "on": "On",
+                    "off": "Off"
+                }
+            }
         }
     },
     "selector": {
@@ -402,6 +414,15 @@
                 "week": "Week",
                 "month": "Month",
                 "year": "Year"
+            }
+        },
+        "equipment_mode": {
+            "options": {
+                "auto": "Automatic",
+                "forced": "Forced",
+                "absence": "Absence",
+                "on": "Turn on",
+                "off": "Turn off"
             }
         }
     },
@@ -496,6 +517,28 @@
                     "description": "Little Monkey installation; optional when there is only one."
                 }
             }
+        },
+        "set_equipment_mode": {
+            "name": "Control an equipment",
+            "description": "Forces an equipment piloted by ecojoko, turns it off for an absence, sets it back to automatic, or turns it on and off when it has no forced mode.",
+            "fields": {
+                "device_id": {
+                    "name": "Equipment",
+                    "description": "The device of the piloted equipment."
+                },
+                "mode": {
+                    "name": "Mode",
+                    "description": "Automatic, Forced, Absence, or Turn on and Turn off for an equipment without a forced mode."
+                },
+                "duration": {
+                    "name": "Duration",
+                    "description": "Duration of the forced mode (1 hour by default) or of the absence, in minutes."
+                },
+                "until": {
+                    "name": "End of the absence",
+                    "description": "Date and time the absence ends, instead of the duration."
+                }
+            }
         }
     },
     "exceptions": {
@@ -507,6 +550,21 @@
         },
         "data_not_read": {
             "message": "The data could not be read from ecojoko: {error}"
+        },
+        "equipment_not_found": {
+            "message": "This device is not an equipment of a loaded Little Monkey installation."
+        },
+        "mode_not_supported": {
+            "message": "ecojoko does not offer the mode {mode} for {name}."
+        },
+        "absence_end_required": {
+            "message": "Give the duration or the end of the absence."
+        },
+        "duration_out_of_range": {
+            "message": "The duration must be between {min} and {max} minutes."
+        },
+        "command_failed": {
+            "message": "The command could not be sent to ecojoko: {error}. It may have been applied all the same."
         }
     }
 }
