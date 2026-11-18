@@ -356,33 +356,33 @@
                 "name": "Cost today"
             },
             "equipment_connection": {
-                "name": "Connection",
+                "name": "Connection to the assistant",
                 "state": {
                     "connected": "Connected",
                     "disconnected": "Disconnected"
                 }
             },
             "equipment_signal": {
-                "name": "Signal strength"
+                "name": "Connection strength"
             },
             "equipment_wifi_signal": {
-                "name": "WiFi signal"
+                "name": "WiFi connection"
             },
             "equipment_battery": {
                 "name": "Battery"
             },
             "equipment_connection_of": {
-                "name": "{equipment}: connection",
+                "name": "{equipment}: connection to the assistant",
                 "state": {
                     "connected": "Connected",
                     "disconnected": "Disconnected"
                 }
             },
             "equipment_signal_of": {
-                "name": "{equipment}: signal strength"
+                "name": "{equipment}: connection strength"
             },
             "equipment_wifi_signal_of": {
-                "name": "{equipment}: WiFi signal"
+                "name": "{equipment}: WiFi connection"
             },
             "equipment_battery_of": {
                 "name": "{equipment}: battery"
