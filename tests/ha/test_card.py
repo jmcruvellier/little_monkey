@@ -35,6 +35,7 @@ async def test_card_is_served_and_loaded(hass):
         (hass, f"/little_monkey_card/little-monkey-savings-cards.js?v={const.VERSION}"),
         (hass, f"/little_monkey_card/little-monkey-analysis-cards.js?v={const.VERSION}"),
         (hass, f"/little_monkey_card/little-monkey-contract-card.js?v={const.VERSION}"),
+        (hass, f"/little_monkey_card/little-monkey-equipment-card.js?v={const.VERSION}"),
     ]
 
 

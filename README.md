@@ -45,7 +45,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |
 | 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
 
-Elle fournit aussi une carte « Little Monkey » pour vos tableaux de bord, chargée automatiquement : voir [la configuration de la carte](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord). Les cartes des économies reprennent l'onglet « Économies » d'ecojoko : voir [leur configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies).
+Elle fournit aussi une carte « Little Monkey » pour vos tableaux de bord, chargée automatiquement : voir [la configuration de la carte](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord). Les cartes des économies reprennent l'onglet « Économies » d'ecojoko : voir [leur configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies). La carte des équipements reprend l'écran « Équipements » et pilote le chauffe-eau : voir [sa configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-des-%C3%A9quipements).
 
 > [!IMPORTANT]
 > Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos données.**

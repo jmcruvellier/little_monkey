@@ -18,10 +18,11 @@ from .const import LOGGER, VERSION
 # URL of the folder holding the files of the card
 CARD_URL_BASE = "/little_monkey_card"
 CARD_FILENAME = "little-monkey-card.js"
-# Every module loaded by the frontend: the dial, savings, analysis and contract cards
+# Every module loaded by the frontend: the dial, savings, analysis, contract
+# and equipment cards
 CARD_FILENAMES = (
     CARD_FILENAME, "little-monkey-savings-cards.js", "little-monkey-analysis-cards.js",
-    "little-monkey-contract-card.js")
+    "little-monkey-contract-card.js", "little-monkey-equipment-card.js")
 CARD_DIR = Path(__file__).parent / "frontend"
 
 
