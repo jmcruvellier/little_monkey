@@ -322,12 +322,14 @@ class LittleMonkeyContractCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 5;
+    // Masonry view: rows of 50 pixels
+    return 6;
   }
 
   getGridOptions() {
-    // Height of the content: a fixed number of rows would cut it
-    return { columns: 6, min_columns: 4 };
+    // The whole width of a section (12 columns): a list or a chart is cut
+    // in half a section. The height follows the content
+    return { columns: 12, min_columns: 6 };
   }
 
   static getConfigElement() {
