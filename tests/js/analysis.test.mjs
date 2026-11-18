@@ -89,7 +89,7 @@ test("a new analysis card takes a sensor of the first device", () => {
   assert.equal(cards.initialPeriod({ period: "month" }), "month");
   assert.equal(cards.initialPeriod({}), "week");
   assert.deepEqual(cards.analysisSchema({ language: "fr" }).map((field) => field.name), [
-    "entity", "period", "title",
+    "entity", "period", "max_categories", "title",
   ]);
 });
 
@@ -178,5 +178,40 @@ test("a new activations card takes a sensor of the first device", () => {
   assert.deepEqual(cards.activationsStubConfig(hass), {
     type: "custom:little-monkey-activations-card", entity: "sensor.eco_power",
   });
-  assert.deepEqual(cards.activationsSchema().map((field) => field.name), ["entity", "title"]);
+  assert.deepEqual(cards.activationsSchema({ language: "fr" }).map((field) => field.name), ["entity", "mode", "title"]);
+  assert.equal(cards.activationsMode({}), "timeline");
+  assert.equal(cards.activationsMode({ mode: "list" }), "list");
+});
+
+test("the largest categories are shown first, in the order of ecojoko", () => {
+  const categories = [
+    { id: 7, consumption: 359 }, { id: 5, consumption: 103 }, { id: 6, consumption: 81 },
+    { id: 3, consumption: 75 }, { id: 11, consumption: 44 }, { id: 4, consumption: 29 },
+    { id: 9, consumption: 398 },
+  ];
+  assert.deepEqual(cards.shownCategories(categories, 3).map((category) => category.id), [7, 5, 9]);
+  assert.equal(cards.shownCategories(categories, 3, true).length, 7);
+  assert.equal(cards.shownCategories(categories, 0).length, 7);
+  assert.equal(cards.shownCategories(categories, 10).length, 7);
+  assert.equal(cards.maxCategories({}), 5);
+  assert.equal(cards.maxCategories({ max_categories: 0 }), 0);
+  assert.equal(cards.maxCategories({ max_categories: -2 }), 5);
+});
+
+test("the timelines put each activation at its time, as high as its power", () => {
+  const box = { width: 1440, height: 48, base: 44, min: 6, max: 40, hit: 14 };
+  const days = cards.timelines(ACTIVATIONS, box);
+  assert.deepEqual(days.map((day) => [day.day, day.pulses.length]), [["2026-11-16", 1], ["2026-11-15", 2]]);
+  const night = days[0].pulses[0];
+  // 00:03 to 02:29: 146 minutes from minute 3, the most powerful one shown
+  assert.equal(night.x, 3);
+  assert.equal(night.width, 146);
+  assert.equal(night.color, "#FA6200");
+  const [afternoon, evening] = days[1].pulses;
+  // In the order of the day; 30 seconds are drawn as two minutes
+  assert.equal(afternoon.x, 14 * 60 + 38);
+  assert.equal(evening.width, 2);
+  assert.equal(evening.height, 40);
+  assert.equal(evening.y, 4);
+  assert.equal(afternoon.height.toFixed(2), (6 + 34 * (496 / 1260)).toFixed(2));
 });

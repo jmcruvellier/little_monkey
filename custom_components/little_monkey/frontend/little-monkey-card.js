@@ -794,7 +794,8 @@ class LittleMonkeyCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 6;
+    // Masonry view: rows of 50 pixels, for a dial of 360 pixels at most
+    return 7;
   }
 
   disconnectedCallback() {
@@ -821,7 +822,9 @@ class LittleMonkeyCard extends HTMLElement {
   }
 
   getGridOptions() {
-    return { columns: 6, min_columns: 4 };
+    // Half a section, at least: narrower, the graduations do not read.
+    // Square, its height follows its width
+    return { columns: 6, min_columns: 6 };
   }
 
   /** Build the dial once; the updates only change its moving parts. */
