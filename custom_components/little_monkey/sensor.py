@@ -213,7 +213,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for key, kind in SAVINGS_SENSORS:
         main_device.add_child_entity(
             EcojokoSavingsSensor(main_device, coordinator.savings, key, *kind))
-    # Every equipment, each on its own device: its connection, signal...
+    # Every equipment: its connection, signal... on the device of a piloted
+    # one, on the Ecojoko device for the others
     for equipment in coordinator.client.equipments:
         for key, kind, field in EQUIPMENT_DIAGNOSTIC_SENSORS:
             if equipment.get(field) is not None:

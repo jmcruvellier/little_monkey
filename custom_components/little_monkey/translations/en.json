@@ -370,6 +370,22 @@
             },
             "equipment_battery": {
                 "name": "Battery"
+            },
+            "equipment_connection_of": {
+                "name": "{equipment}: connection",
+                "state": {
+                    "connected": "Connected",
+                    "disconnected": "Disconnected"
+                }
+            },
+            "equipment_signal_of": {
+                "name": "{equipment}: signal strength"
+            },
+            "equipment_wifi_signal_of": {
+                "name": "{equipment}: WiFi signal"
+            },
+            "equipment_battery_of": {
+                "name": "{equipment}: battery"
             }
         }
     },
