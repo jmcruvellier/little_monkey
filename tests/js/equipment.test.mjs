@@ -169,3 +169,21 @@ test("a value with an entity opens its details", () => {
   assert.equal(card.entityAttribute(equipment, "voltage"), "");
   assert.equal(card.entityAttribute(SENSOR, "power"), "");
 });
+
+test("a value with an entity shows the state of the entity, as its details", () => {
+  const linky = { type: "POWER_METER", state: { power: 4636 }, entities: { power: "sensor.ecojoko_rt" } };
+  const states = { "sensor.ecojoko_rt": { state: "243", attributes: { unit_of_measurement: "W" } } };
+  assert.deepEqual(card.otherMeasures(linky, "fr", states), [{ key: "power", value: "243 W" }]);
+  // Without its state yet: the value of the list
+  assert.deepEqual(card.otherMeasures(linky, "fr", {}), [{ key: "power", value: `4${" "}636 W` }]);
+  // An unavailable entity shows nothing, as its details
+  assert.deepEqual(card.otherMeasures(linky, "fr", { "sensor.ecojoko_rt": { state: "unavailable" } }), []);
+  // The unit of the entity wins: a temperature converted by Home Assistant
+  const probe = { state: { temperature: 20.8 }, entities: { temperature: "sensor.t" } };
+  assert.deepEqual(card.otherMeasures(probe, "fr", { "sensor.t": { state: "69.4", attributes: { unit_of_measurement: "°F" } } }),
+    [{ key: "temperature", value: "69,4 °F" }]);
+  const heater = { state: { voltage: 232.5 }, day: { energy: 0.97, cost: 0.14 }, entities: { energy: "sensor.e" } };
+  const metrics = card.equipmentMetrics(TEXT, heater, "fr", { "sensor.e": { state: "1.2", attributes: { unit_of_measurement: "kWh" } } });
+  // The spaces of the French numbers are not breaking
+  assert.deepEqual(metrics.map((metric) => metric.value.replace(/\s/g, " ")), ["1,2 kWh", "0,14 €", "233 V"]);
+});

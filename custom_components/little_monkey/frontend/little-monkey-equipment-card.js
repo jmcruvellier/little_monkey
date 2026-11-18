@@ -292,18 +292,48 @@ export function absenceDefault(now = new Date()) {
 }
 
 /** Return the values of an equipment shown when it is opened. */
-export function equipmentMetrics(text, equipment, locale) {
-  const number = (value, digits) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
+export function equipmentMetrics(text, equipment, locale, states) {
   const day = equipment?.day || {};
   const state = equipment?.state || {};
   const currency = new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" });
   return [
-    ["energy", day.energy, (value) => `${number(value, 2)} kWh`],
-    ["cost", day.cost, (value) => currency.format(value)],
-    ["voltage", state.voltage, (value) => `${number(value, 0)} V`],
-    ["max_power", state.max_power, (value) => `${number(value, 0)} W`],
-  ].filter(([, value]) => value !== null && value !== undefined && Number.isFinite(Number(value)))
-    .map(([key, value, format]) => ({ key, label: text[key], value: format(Number(value)) }));
+    ["energy", day.energy, 2, "kWh"],
+    ["cost", day.cost, 2, "EUR"],
+    ["voltage", state.voltage, 0, "V"],
+    ["max_power", state.max_power, 0, "W"],
+  ].map(([key, value, digits, unit]) => ({ key, digits, unit, ...liveValue(states, equipment, key, value, unit) }))
+    .filter((metric) => metric.value !== null)
+    .map(({ key, value, digits, unit }) => ({
+      key,
+      label: text[key],
+      value: unit === "EUR" ? currency.format(value) : formatNumber(locale, value, digits, unit),
+    }));
+}
+
+/** Return a number with its unit, in the language of the user. */
+function formatNumber(locale, value, digits, unit) {
+  const number = new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
+  return unit ? `${number} ${unit}` : number;
+}
+
+/**
+ * Return the value shown for a value of an equipment. The state of its
+ * entity when it has one, as in its details: the list of the equipments is
+ * read by ecojoko every five minutes only, the real time power of the
+ * Linky key is read at each poll. The value read with the list otherwise.
+ */
+export function liveValue(states, equipment, key, value, unit) {
+  const entity = equipment?.entities?.[key];
+  const state = entity ? states?.[entity] : undefined;
+  if (state) {
+    const number = Number(state.state);
+    return {
+      value: state.state !== "" && Number.isFinite(number) ? number : null,
+      unit: state.attributes?.unit_of_measurement ?? unit,
+    };
+  }
+  const number = Number(value);
+  return { value: value !== null && value !== undefined && Number.isFinite(number) ? number : null, unit };
 }
 
 /**
@@ -316,15 +346,15 @@ export function entityAttribute(equipment, key) {
 }
 
 /** Return the measures of an equipment that is not piloted: power, temperature, humidity. */
-export function otherMeasures(equipment, locale) {
+export function otherMeasures(equipment, locale, states) {
   const state = equipment?.state || {};
-  const number = (value, digits) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
   return [
-    ["power", state.power, (value) => `${number(value, 0)} W`],
-    ["temperature", state.temperature, (value) => `${number(value, 1)} °C`],
-    ["humidity", state.humidity, (value) => `${number(value, 0)} %`],
-  ].filter(([, value]) => value !== null && value !== undefined && Number.isFinite(Number(value)))
-    .map(([key, value, format]) => ({ key, value: format(Number(value)) }));
+    ["power", state.power, 0, "W"],
+    ["temperature", state.temperature, 1, "°C"],
+    ["humidity", state.humidity, 0, "%"],
+  ].map(([key, value, digits, unit]) => ({ key, digits, ...liveValue(states, equipment, key, value, unit) }))
+    .filter((measure) => measure.value !== null)
+    .map(({ key, value, digits, unit }) => ({ key, value: formatNumber(locale, value, digits, unit) }));
 }
 
 /** Return the entity of the integration with a translation key, if any. */
@@ -622,7 +652,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     const now = new Date();
     const signature = JSON.stringify([
       this._equipments, this._error, this._opened, this._panel, this._busy, this._commandError,
-      this._config, locale, now.getHours(), now.getMinutes(),
+      this._config, locale, now.getHours(), now.getMinutes(), this._shownStates(),
     ]);
     if (signature === this._signature) {
       return;
@@ -661,10 +691,16 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     body.innerHTML = blocks + none + list;
   }
 
+  /** Return the states of the entities of the values shown, to draw them again when they change. */
+  _shownStates() {
+    return (this._equipments || []).flatMap((equipment) =>
+      Object.values(equipment.entities || {}).map((entity) => this._hass.states[entity]?.state));
+  }
+
   /** Return the HTML of a piloted equipment. */
   _block(equipment, text, locale, now, many, open) {
     const kind = stateKind(equipment);
-    const power = equipment.state?.power;
+    const power = liveValue(this._hass.states, equipment, "power", equipment.state?.power, "W");
     const busy = this._busy === equipment.id;
     const buttons = equipmentButtons(equipment).map((action) => {
       const selected = isSelected(equipment, action, this._panel);
@@ -681,7 +717,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
             <div class="name">${escapeHtml(equipment.name)}</div>
             <div class="mode"${entityAttribute(equipment, "mode")}>${escapeHtml(modeLabel(text, equipment, locale, now))}</div>
           </div>
-          <div class="power"${entityAttribute(equipment, "power")}>${power === null || power === undefined ? "" : escapeHtml(`${new Intl.NumberFormat(locale).format(power)} W`)}</div>
+          <div class="power"${entityAttribute(equipment, "power")}>${power.value === null ? "" : escapeHtml(formatNumber(locale, power.value, 0, power.unit))}</div>
           ${many ? '<ha-icon class="chevron" icon="mdi:chevron-down"></ha-icon>' : ""}
         </div>
         <div class="actions">${buttons}</div>
@@ -717,7 +753,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
 
   /** Return the HTML of the measures and of the timeline of the day. */
   _details(equipment, text, locale, now) {
-    const metrics = equipmentMetrics(text, equipment, locale).map((metric) => `
+    const metrics = equipmentMetrics(text, equipment, locale, this._hass.states).map((metric) => `
       <div class="metric"${entityAttribute(equipment, metric.key)}><div class="label">${escapeHtml(metric.label)}</div><div class="value">${escapeHtml(metric.value)}</div></div>`).join("");
     const day = equipment.day;
     let timeline = "";
@@ -747,7 +783,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   /** Return the HTML of an equipment that is not piloted. */
   _other(equipment, text, locale) {
     // Its measures first, then its connection
-    const infos = otherMeasures(equipment, locale).map((measure) =>
+    const infos = otherMeasures(equipment, locale, this._hass.states).map((measure) =>
       `<span class="info measure"${entityAttribute(equipment, measure.key)}>${escapeHtml(measure.value)}</span>`);
     if (equipment.connected === false) {
       infos.push(`<span class="info disconnected"${entityAttribute(equipment, "connection")}>${escapeHtml(equipment.status || text.disconnected)}</span>`);
