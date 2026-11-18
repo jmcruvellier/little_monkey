@@ -565,12 +565,14 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 7;
+    // Masonry view: rows of 50 pixels, for the ring and some categories
+    return 10;
   }
 
   getGridOptions() {
-    // Height of the content: a fixed number of rows would cut it
-    return { columns: 6, min_columns: 4 };
+    // The whole width of a section (12 columns): a list or a chart is cut
+    // in half a section. The height follows the content
+    return { columns: 12, min_columns: 6 };
   }
 
   static getConfigElement() {
@@ -1015,12 +1017,14 @@ class LittleMonkeyActivationsCard extends HTMLElement {
   }
 
   getCardSize() {
-    return 6;
+    // Masonry view: rows of 50 pixels
+    return 8;
   }
 
   getGridOptions() {
-    // Height of the content: a fixed number of rows would cut it
-    return { columns: 6, min_columns: 4 };
+    // The whole width of a section (12 columns): a list or a chart is cut
+    // in half a section. The height follows the content
+    return { columns: 12, min_columns: 6 };
   }
 
   static getConfigElement() {
@@ -1065,14 +1069,18 @@ class LittleMonkeyActivationsCard extends HTMLElement {
         ${STYLES}
         .day { margin: 12px 0 6px; color: var(--secondary-text-color); font-size: 0.9em; font-weight: 500; }
         .day:first-child { margin-top: 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 8px; }
-        .item { display: grid; grid-template-columns: 44px 1fr auto; grid-template-rows: auto auto; column-gap: 10px; align-items: center;
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(290px, 100%), 1fr)); gap: 8px; }
+        .item { display: grid; grid-template-columns: 40px max-content minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 10px; align-items: center;
           border: 1px solid var(--divider-color, #e0e0e0); border-radius: 12px; padding: 8px 10px; }
-        .shape { grid-row: span 2; width: 44px; height: 20px; }
+        .shape { grid-row: span 2; width: 40px; height: 20px; }
         .hours { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; }
         .energy { color: var(--primary-text-color); font-weight: 500; font-size: 0.95em; text-align: right; }
         .duration, .power { color: var(--secondary-text-color); font-size: 0.85em; }
-        .hours, .energy, .duration, .power { white-space: nowrap; }
+        .item > * { min-width: 0; }
+        .body { container-type: inline-size; }
+        /* A narrow card keeps the power and leaves out its word */
+        @container (max-width: 330px) { .power .word { display: none; } }
+        .hours, .energy, .duration, .power { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .power { text-align: right; }
         .more { display: block; margin: 12px auto 0; border: 1px solid var(--divider-color, #e0e0e0); border-radius: 18px; background: none;
           color: var(--primary-text-color); font: inherit; font-size: 0.9em; padding: 6px 14px; cursor: pointer; }
@@ -1128,7 +1136,8 @@ class LittleMonkeyActivationsCard extends HTMLElement {
           <div class="hours">${escapeHtml(timeRange(activation))}</div>
           <div class="energy">${escapeHtml(formatValue(locale, activation.energy, "kwh"))}</div>
           <div class="duration">${escapeHtml(durationLabel(text, activation))}</div>
-          <div class="power">${escapeHtml(text.average.replace("{power}", `${power.format(activation.power ?? 0)} W`))}</div>
+          <div class="power"><span class="word">${escapeHtml(text.average.replace("{power}", "").trim())} </span>${
+            escapeHtml(`${power.format(activation.power ?? 0)} W`)}</div>
         </div>`).join("")}
       </div>`).join("");
   }
