@@ -356,33 +356,33 @@
                 "name": "Coût du jour"
             },
             "equipment_connection": {
-                "name": "Connexion",
+                "name": "Connexion à l'assistant",
                 "state": {
                     "connected": "Connecté",
                     "disconnected": "Déconnecté"
                 }
             },
             "equipment_signal": {
-                "name": "Force du signal"
+                "name": "Force de la connexion"
             },
             "equipment_wifi_signal": {
-                "name": "Signal WiFi"
+                "name": "Connexion au WiFi"
             },
             "equipment_battery": {
                 "name": "Batterie"
             },
             "equipment_connection_of": {
-                "name": "{equipment} : connexion",
+                "name": "{equipment} : connexion à l'assistant",
                 "state": {
                     "connected": "Connecté",
                     "disconnected": "Déconnecté"
                 }
             },
             "equipment_signal_of": {
-                "name": "{equipment} : force du signal"
+                "name": "{equipment} : force de la connexion"
             },
             "equipment_wifi_signal_of": {
-                "name": "{equipment} : signal WiFi"
+                "name": "{equipment} : connexion au WiFi"
             },
             "equipment_battery_of": {
                 "name": "{equipment} : batterie"
