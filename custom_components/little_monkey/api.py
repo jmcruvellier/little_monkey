@@ -907,7 +907,7 @@ class LittleMonkeyApiClient:
             ) from exception
 
     async def async_get_analysis(self, period, day=None) -> dict:
-        """Return the analysis of the consumption of a week, month or year.
+        """Return the analysis of the consumption of a week or a month.
 
         Without a day, the last period analysed by ecojoko.
         """

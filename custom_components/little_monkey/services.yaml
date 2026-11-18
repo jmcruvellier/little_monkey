@@ -32,7 +32,6 @@ get_consumption_analysis:
           options:
             - week
             - month
-            - year
     date:
       selector:
         date:

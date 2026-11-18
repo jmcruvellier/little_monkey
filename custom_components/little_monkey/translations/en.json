@@ -466,7 +466,7 @@
         },
         "get_consumption_analysis": {
             "name": "Get consumption analysis",
-            "description": "Returns the breakdown of the consumption of a week, a month or a year by category (standby, lighting, cooling…), as the “Analysis of your consumption” page of ecojoko.",
+            "description": "Returns the breakdown of the consumption of a week or a month by category (standby, lighting, cooling…), as the “Analysis of your consumption” page of ecojoko.",
             "fields": {
                 "config_entry_id": {
                     "name": "Installation",
@@ -474,7 +474,7 @@
                 },
                 "period": {
                     "name": "Period",
-                    "description": "Week, month or year."
+                    "description": "Week or month: ecojoko does not analyse years."
                 },
                 "date": {
                     "name": "Date",
