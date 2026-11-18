@@ -36,7 +36,7 @@ from .coordinator import (
     LittleMonkeyEquipmentCoordinator,
     LittleMonkeySavingsCoordinator,
 )
-from .entity import equipment_identifier
+from .entity import equipment_identifier, registry_device
 from .sensor import SENSOR_KEYS
 from .services import async_register_services
 from .tariff import legacy_bands
@@ -184,12 +184,11 @@ def _migrate_unique_ids(hass: HomeAssistant, entry: ConfigEntry) -> None:
             entity.entity_id, new_unique_id=new_unique_id)
 
     device_registry = dr.async_get(hass)
-    device = device_registry.async_get_device(identifiers={(DOMAIN, old_base)})
+    device = registry_device(device_registry, (DOMAIN, old_base), entry.entry_id)
     if (
         device is not None
         and entry.entry_id in device.config_entries
-        and device_registry.async_get_device(
-            identifiers={(DOMAIN, new_base)}) is None
+        and registry_device(device_registry, (DOMAIN, new_base), entry.entry_id) is None
     ):
         device_registry.async_update_device(
             device.id, new_identifiers={(DOMAIN, new_base)})

@@ -17,7 +17,7 @@ from homeassistant.helpers import config_validation as cv, device_registry as dr
 
 from .api import SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
 from .const import DOMAIN
-from .entity import equipment_identifier
+from .entity import equipment_identifier, registry_device
 from .utils import get_current_date
 
 SERVICE_GET_SAVINGS = "get_savings"
@@ -149,8 +149,8 @@ async def _async_get_equipments(
     registry = dr.async_get(hass)
     equipments = []
     for equipment in coordinator.client.equipments:
-        device = registry.async_get_device(
-            identifiers={equipment_identifier(entry.entry_id, equipment["id"])})
+        device = registry_device(
+            registry, equipment_identifier(entry.entry_id, equipment["id"]), entry.entry_id)
         equipments.append({
             **piloted.get(equipment["id"], equipment),
             "device_id": None if device is None else device.id,
