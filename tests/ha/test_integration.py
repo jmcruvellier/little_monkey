@@ -1668,3 +1668,15 @@ async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
     # Not enough statistics to estimate the other one
     assert bands["hc_grid_consumption"]["price"] is None
     assert "id" not in bands["hc_grid_consumption"]
+
+
+async def test_measures_service(hass, fake_api):
+    """The service gives the measures of a period, today by default."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    answer = await call_service(hass, "get_measures", measure="electricity", period="week")
+    assert answer["measure"] == "electricity" and answer["period"] == "week"
+    await call_service(hass, "get_measures", measure="humidity", period="day", date="2026-11-18")
+    assert fake_api.analysis_calls[-1] == ("measures", "humidity", "day", dt.date(2026, 11, 18))
+    with pytest.raises(vol.Invalid):
+        await call_service(hass, "get_measures", measure="water", period="day")
