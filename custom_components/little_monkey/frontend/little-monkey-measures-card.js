@@ -196,6 +196,21 @@ export function climateFromStatistics(statistics, entities, unit) {
   return { unit, points: [...points.values()].sort((a, b) => a.time.localeCompare(b.time)) };
 }
 
+// Margin of the statistics at the start of a period: their first value may
+// come a few minutes, hours or days after it
+const STATISTICS_MARGIN = { day: 15 * 60000, week: 3 * 3600000, month: 3 * 3600000, year: 2 * 86400000 };
+
+/**
+ * Tell whether the statistics of Home Assistant cover a period from its
+ * start. They begin when the sensor was created, and the short-term ones of
+ * a day are kept for ten days only: before, the curves come from ecojoko,
+ * which has the whole history of the sensor.
+ */
+export function statisticsCover(climate, range, period) {
+  const first = climate?.points?.[0];
+  return Boolean(first) && new Date(first.time).getTime() <= range.start.getTime() + STATISTICS_MARGIN[period];
+}
+
 /** Return the average of the inside values of curves, null without one. */
 export function climateAverage(climate) {
   const values = (climate?.points || []).map((point) => point.inside).filter((value) => Number.isFinite(value));
@@ -675,6 +690,11 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       await this._fetchStatistics(key, entities, cached);
       return;
     }
+    await this._fetchService(key, cached);
+  }
+
+  /** Read the measures of the period from ecojoko, with the service get_measures. */
+  async _fetchService(key, cached) {
     const data = { measure: this._measure, period: this._period, date: this._date() };
     const entry = configEntryId(this._hass, this._config.entity);
     if (entry) {
@@ -708,13 +728,18 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       });
       const unit = this._hass.states[ids[0]]?.attributes?.unit_of_measurement
         || (this._measure === "temperature" ? "°C" : "%");
-      this._cache.set(key, { measures: climateFromStatistics(statistics, entities, unit), entities });
+      const climate = climateFromStatistics(statistics, entities, unit);
+      if (statisticsCover(climate, range, this._period)) {
+        this._cache.set(key, { measures: climate, entities });
+        this._signature = null;
+        this._render();
+        return;
+      }
     } catch (error) {
       console.debug("Little Monkey card: statistics not read", error);
-      this._cache.set(key, cached?.measures ? cached : { error: true });
     }
-    this._signature = null;
-    this._render();
+    // Home Assistant has not recorded the whole period: ecojoko has it
+    await this._fetchService(key, cached);
   }
 
   _chooseMeasure(measure) {

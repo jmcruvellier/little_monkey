@@ -151,3 +151,12 @@ test("the values of the climate and the measure shown first", () => {
   assert.equal(card.initialMeasure({ measure: "humidity" }), "humidity");
   assert.equal(card.climateLabels("fr", "week", card.periodRange("week", "2026-11-18")).length, 7);
 });
+
+test("the statistics are used only when they cover the period from its start", () => {
+  const range = { start: new Date(Date.UTC(2026, 10, 16)), end: new Date(Date.UTC(2026, 10, 23)) };
+  const climate = (time) => ({ points: [{ time, inside: 20, outside: 10 }] });
+  assert.equal(card.statisticsCover(climate("2026-11-16T01:00:00.000Z"), range, "week"), true);
+  // Recorded since Wednesday only: ecojoko has the week
+  assert.equal(card.statisticsCover(climate("2026-11-18T14:00:00.000Z"), range, "week"), false);
+  assert.equal(card.statisticsCover({ points: [] }, range, "week"), false);
+});
