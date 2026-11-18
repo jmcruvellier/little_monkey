@@ -37,7 +37,9 @@ async def async_get_config_entry_diagnostics(
         ),
         "last_exception": None if last_exception is None else str(last_exception),
     }
-    diagnostics["data"] = coordinator.data
+    # The equipments hold their ids and names: the client gives what matters
+    diagnostics["data"] = None if coordinator.data is None else {
+        key: value for key, value in coordinator.data.items() if key != "equipments"}
     # Data read apart from the polls
     for name in ("activity", "savings"):
         slow = getattr(coordinator, name, None)

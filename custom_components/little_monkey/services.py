@@ -138,9 +138,9 @@ async def _async_get_equipments(
 ) -> ServiceResponse:
     """Return the equipments of the installation, as last read.
 
-    Every equipment has its status and its controls. A piloted one also has
-    its state and its measures of today, read every two minutes and after a
-    command, and the id of its Home Assistant device. Nothing is read from
+    Every equipment has its status, its controls and the id of its Home
+    Assistant device. A piloted one also has its state and its measures of
+    today, read every two minutes and after a command. Nothing is read from
     ecojoko: the answer is immediate.
     """
     entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))

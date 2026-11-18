@@ -38,6 +38,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Puissance (équipement piloté) | Puissance | W | Automatique | Puissance consommée par l'équipement |
 | 1.3.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Automatique | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
 | 1.3.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Automatique | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
+| 1.3.0 | Connexion, Force du Signal, Signal WiFi, Batterie (équipement) | Diagnostic | %  | Automatique | Pour chaque équipement de l'installation (clé Linky, sonde, chauffe-eau…), sur l'appareil de l'équipement, quand ecojoko donne la valeur |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |

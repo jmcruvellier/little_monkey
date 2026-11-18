@@ -354,6 +354,22 @@
             },
             "equipment_cost": {
                 "name": "Cost today"
+            },
+            "equipment_connection": {
+                "name": "Connection",
+                "state": {
+                    "connected": "Connected",
+                    "disconnected": "Disconnected"
+                }
+            },
+            "equipment_signal": {
+                "name": "Signal strength"
+            },
+            "equipment_wifi_signal": {
+                "name": "WiFi signal"
+            },
+            "equipment_battery": {
+                "name": "Battery"
             }
         }
     },

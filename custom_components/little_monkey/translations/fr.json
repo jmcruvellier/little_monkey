@@ -354,6 +354,22 @@
             },
             "equipment_cost": {
                 "name": "Coût du jour"
+            },
+            "equipment_connection": {
+                "name": "Connexion",
+                "state": {
+                    "connected": "Connecté",
+                    "disconnected": "Déconnecté"
+                }
+            },
+            "equipment_signal": {
+                "name": "Force du signal"
+            },
+            "equipment_wifi_signal": {
+                "name": "Signal WiFi"
+            },
+            "equipment_battery": {
+                "name": "Batterie"
             }
         }
     },
