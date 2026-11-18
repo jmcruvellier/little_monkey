@@ -19,6 +19,16 @@ def test_card_url_changes_with_the_version():
     )
 
 
+def test_card_url_changes_with_the_file(tmp_path, monkeypatch):
+    """Browsers load the card again after any change of its file."""
+    (tmp_path / "card.js").write_text("one")
+    monkeypatch.setattr(card, "CARD_DIR", tmp_path)
+    first = card.card_url("card.js", card.file_digest("card.js"))
+    assert first.startswith(f"/little_monkey_card/card.js?v={const.VERSION}-")
+    (tmp_path / "card.js").write_text("two")
+    assert card.card_url("card.js", card.file_digest("card.js")) != first
+
+
 async def test_card_is_served_and_loaded(hass):
     """The card folder is served, and the card loaded on every page."""
     hass.http = MagicMock(async_register_static_paths=AsyncMock())
@@ -31,11 +41,11 @@ async def test_card_is_served_and_loaded(hass):
         ("/little_monkey_card", str(card.CARD_DIR), False)
     ]
     assert [call.args for call in add_extra_js_url.call_args_list] == [
-        (hass, card.card_url()),
-        (hass, f"/little_monkey_card/little-monkey-savings-cards.js?v={const.VERSION}"),
-        (hass, f"/little_monkey_card/little-monkey-analysis-cards.js?v={const.VERSION}"),
-        (hass, f"/little_monkey_card/little-monkey-contract-card.js?v={const.VERSION}"),
-        (hass, f"/little_monkey_card/little-monkey-equipment-card.js?v={const.VERSION}"),
+        (hass, card.card_url(filename, card.file_digest(filename)))
+        for filename in (
+            "little-monkey-card.js", "little-monkey-savings-cards.js",
+            "little-monkey-analysis-cards.js", "little-monkey-contract-card.js",
+            "little-monkey-equipment-card.js")
     ]
 
 
