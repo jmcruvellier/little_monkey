@@ -1460,6 +1460,7 @@ class LittleMonkeyApiClient:
 
         value_json = gateways[0].get('devices')
         # Prices of the contract, given with a water heater piloted by ecojoko
+        # and only for some offers
         self._exact_prices = next((
             pricing.get("prices")
             for item in value_json or []
