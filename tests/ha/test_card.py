@@ -45,7 +45,7 @@ async def test_card_is_served_and_loaded(hass):
         for filename in (
             "little-monkey-card.js", "little-monkey-savings-cards.js",
             "little-monkey-analysis-cards.js", "little-monkey-contract-card.js",
-            "little-monkey-equipment-card.js")
+            "little-monkey-equipment-card.js", "little-monkey-measures-card.js")
     ]
 
 

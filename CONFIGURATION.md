@@ -343,6 +343,32 @@ La carte ne connaît pas les types d'équipements : ses boutons sont ceux qu'eco
 
 `little_monkey.get_equipments` renvoie immédiatement, sans interroger ecojoko, les équipements de l'installation tels que lus en dernier (`equipments`). Chacun a son nom (`name`), son type (`type`), son état de connexion (`connected`, `status`), la force de son signal (`signal`, `wifi_signal`) et sa batterie (`battery`) quand ecojoko les donne, ses commandes de pilotage (`controls`) et son état (`state` : `mode`, `power`, `since`, `until`, `source`, `temperature` et `humidity` pour une sonde…). Chacun a les entités de ses valeurs (`entities` : `mode`, `power`, `energy`, `cost`, `voltage`, `control`, `signal`…, et pour la sonde ou la clé Linky les capteurs de l'appareil Little Monkey qui donnent les mêmes mesures). Un équipement piloté a aussi l'id de son appareil Home Assistant (`device_id`) et ses mesures du jour (`day` : `energy`, `cost`, la courbe de puissance `power` et les changements d'état `switches`). `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
 
+## Carte des mesures
+
+La carte « Petit Singe : mesures » reprend la page « Mesures » d'ecojoko. Elle est chargée automatiquement, comme les autres cartes.
+
+```yaml
+type: custom:little-monkey-measures-card
+entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : période affichée d'abord, day (par défaut), week, month ou year
+period: day
+# Facultatif : unité des barres, kwh (par défaut) ou eur
+unit: kwh
+# Facultatif : titre, « Mesures » par défaut
+title: Mesures
+```
+
+| Option | Obligatoire | Description |
+|---|---|---|
+| `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
+| `period` | Non | Période affichée d'abord : `day` (par défaut), `week`, `month` (30 jours, comme le « Mois » d'ecojoko) ou `year` |
+| `unit` | Non | Unité des barres : `kwh` (par défaut) ou `eur` |
+| `title` | Non | Titre de la carte |
+
+- **Jour :** la courbe de puissance de la journée, colorée selon la tranche tarifaire de chaque instant (heures pleines, heures creuses, couleurs Tempo…) aux couleurs d'ecojoko, avec le talon de consommation en bleu foncé dessous et la production injectée sous l'axe. Toucher la courbe donne la puissance à cette heure.
+- **Semaine, Mois, Année :** les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec la production injectée sous l'axe (en kWh). La légende donne le total de chaque tranche sur la période ; toucher une barre affiche son détail.
+- En haut, l'énergie et le coût de la période ; les flèches, ou un glissement du doigt, changent de période.
+
 ## Service « Lire les mesures »
 
 `little_monkey.get_measures` renvoie les mesures d'une période, comme la page « Mesures » d'ecojoko. `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
