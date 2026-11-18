@@ -345,6 +345,7 @@ class Session:
             "ia/appliances": Response(payload=ACTIVATIONS),
             "plugstat": Response(payload=PLUGSTAT),
             "switchstat": Response(payload=SWITCHSTAT),
+            "_forced/": Response(payload={"error_id": 0, "error_desc": ""}),
             "device/630220": Response(payload=WATER_HEATER),
             **overrides,
         }
@@ -1856,3 +1857,53 @@ def test_equipment_unexpected_answer(api):
     session.routes["plugstat"] = Response(payload={"nothing": 1})
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(client.async_get_equipment_day(client.equipments[2], dt.date(2026, 11, 18)))
+
+
+@pytest.mark.parametrize(("mode", "seconds", "command"), [
+    ("forced", 300, "on_forced/300"),
+    ("forced", 14400, "on_forced/14400"),
+    ("absence", 7 * 86400, "off_forced/604800"),
+    # The "Automatique" button of ecojoko
+    ("auto", None, "off_forced/1"),
+    ("on", None, "on"),
+    ("off", None, "off"),
+])
+def test_equipment_command(api, mode, seconds, command):
+    """Each mode has its ecojoko command."""
+    assert api.equipment_command(mode, seconds) == command
+
+
+@pytest.mark.parametrize(("mode", "seconds"), [
+    ("forced", None), ("forced", 59), ("forced", 24 * 3600 + 1), ("absence", 30), ("up", None)])
+def test_equipment_command_out_of_range(api, mode, seconds):
+    """A forced mode or an absence needs a duration that ecojoko accepts."""
+    with pytest.raises(ValueError):
+        api.equipment_command(mode, seconds)
+
+
+def test_equipment_is_piloted(api):
+    """A command is sent to the equipment, and its answer checked."""
+    client, session = equipment_client(api)
+    run(client.async_send_equipment_command("630220", "forced", 300))
+    assert session.requests[-1][1].endswith("/gateway/1/device/630220/on_forced/300")
+    run(client.async_send_equipment_command("630220", "auto"))
+    assert session.requests[-1][1].endswith("/gateway/1/device/630220/off_forced/1")
+
+
+def test_equipment_command_refused(api):
+    """An error id of ecojoko is an error."""
+    client, session = equipment_client(api)
+    session.routes["_forced/"] = Response(payload={"error_id": 12, "error_desc": "Hors ligne"})
+    with pytest.raises(api.LittleMonkeyApiClientError, match="Hors ligne"):
+        run(client.async_send_equipment_command("630220", "forced", 3600))
+
+
+def test_equipment_command_not_offered(api):
+    """A mode ecojoko does not offer is not sent."""
+    client, session = equipment_client(api)
+    calls = len(session.calls)
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_send_equipment_command("630220", "on"))
+    with pytest.raises(api.LittleMonkeyApiClientError):
+        run(client.async_send_equipment_command("3", "forced", 3600))
+    assert len(session.calls) == calls

@@ -71,3 +71,32 @@ get_equipments:
       selector:
         config_entry:
           integration: little_monkey
+set_equipment_mode:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: little_monkey
+    mode:
+      required: true
+      default: forced
+      selector:
+        select:
+          translation_key: equipment_mode
+          options:
+            - auto
+            - forced
+            - absence
+            - "on"
+            - "off"
+    duration:
+      selector:
+        number:
+          min: 1
+          max: 527040
+          unit_of_measurement: min
+          mode: box
+    until:
+      selector:
+        datetime:

@@ -14,8 +14,9 @@ from homeassistant.core import (
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import config_validation as cv, device_registry as dr
+from homeassistant.util import dt as dt_util
 
-from .api import SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
+from .api import EQUIPMENT_DURATIONS, SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
 from .const import DOMAIN
 from .entity import equipment_identifier
 from .utils import get_current_date
@@ -25,6 +26,14 @@ SERVICE_GET_CONSUMPTION_ANALYSIS = "get_consumption_analysis"
 SERVICE_GET_CATEGORY_HISTORY = "get_category_history"
 SERVICE_GET_ACTIVATIONS = "get_activations"
 SERVICE_GET_EQUIPMENTS = "get_equipments"
+SERVICE_SET_EQUIPMENT_MODE = "set_equipment_mode"
+ATTR_DEVICE_ID = "device_id"
+ATTR_MODE = "mode"
+ATTR_DURATION = "duration"
+ATTR_UNTIL = "until"
+EQUIPMENT_MODES = ["auto", "forced", "absence", "on", "off"]
+# Duration of a forced mode without a duration, in minutes
+DEFAULT_FORCED_MINUTES = 60
 ATTR_CONFIG_ENTRY_ID = "config_entry_id"
 ATTR_PERIOD = "period"
 ATTR_DATE = "date"
@@ -48,6 +57,14 @@ GET_ACTIVATIONS_SCHEMA = vol.Schema({
 })
 GET_EQUIPMENTS_SCHEMA = vol.Schema({
     vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
+})
+SET_EQUIPMENT_MODE_SCHEMA = vol.Schema({
+    vol.Required(ATTR_DEVICE_ID): cv.string,
+    vol.Required(ATTR_MODE): vol.In(EQUIPMENT_MODES),
+    # Minutes of a forced mode or of an absence
+    vol.Optional(ATTR_DURATION): vol.All(vol.Coerce(int), vol.Range(min=1)),
+    # End of an absence
+    vol.Optional(ATTR_UNTIL): cv.datetime,
 })
 
 
@@ -158,6 +175,66 @@ async def _async_get_equipments(
     return {"equipments": equipments}
 
 
+def _equipment_of_device(hass: HomeAssistant, device_id: str):
+    """Return the loaded entry and the ecojoko id of the equipment of a device."""
+    device = dr.async_get(hass).async_get(device_id)
+    if device is not None:
+        for entry_id in device.config_entries:
+            entry = hass.config_entries.async_get_entry(entry_id)
+            if entry is None or entry.domain != DOMAIN or entry.state is not ConfigEntryState.LOADED:
+                continue
+            for equipment in entry.runtime_data.client.equipments:
+                if equipment_identifier(entry.entry_id, equipment["id"]) in device.identifiers:
+                    return entry, equipment
+    raise ServiceValidationError(
+        translation_domain=DOMAIN, translation_key="equipment_not_found")
+
+
+def _mode_seconds(call: ServiceCall) -> int | None:
+    """Return the seconds of a forced mode or of an absence, None otherwise."""
+    mode = call.data[ATTR_MODE]
+    if mode not in EQUIPMENT_DURATIONS:
+        return None
+    until = call.data.get(ATTR_UNTIL)
+    if mode == "absence" and until is not None:
+        if until.tzinfo is None:
+            until = until.replace(tzinfo=dt_util.get_default_time_zone())
+        seconds = int((until - dt_util.now()).total_seconds())
+    elif ATTR_DURATION in call.data:
+        seconds = call.data[ATTR_DURATION] * 60
+    elif mode == "forced":
+        seconds = DEFAULT_FORCED_MINUTES * 60
+    else:
+        raise ServiceValidationError(
+            translation_domain=DOMAIN, translation_key="absence_end_required")
+    low, high = EQUIPMENT_DURATIONS[mode]
+    if not low <= seconds <= high:
+        raise ServiceValidationError(
+            translation_domain=DOMAIN,
+            translation_key="duration_out_of_range",
+            translation_placeholders={"min": str(low // 60), "max": str(high // 60)},
+        )
+    return seconds
+
+
+async def _async_set_equipment_mode(hass: HomeAssistant, call: ServiceCall) -> None:
+    """Pilot an equipment: forced, absence, back to automatic, on or off.
+
+    A forced mode lasts the duration given, an hour by default; an absence
+    lasts the duration given or until the end given.
+    """
+    entry, equipment = _equipment_of_device(hass, call.data[ATTR_DEVICE_ID])
+    mode = call.data[ATTR_MODE]
+    if mode not in equipment["controls"]:
+        raise ServiceValidationError(
+            translation_domain=DOMAIN,
+            translation_key="mode_not_supported",
+            translation_placeholders={"mode": mode, "name": str(equipment.get("name"))},
+        )
+    await entry.runtime_data.equipment.async_command(
+        equipment["id"], mode, _mode_seconds(call))
+
+
 def async_register_services(hass: HomeAssistant) -> None:
     """Register the services of the integration, once for all its entries."""
     # ServiceCall.hass appeared after Home Assistant 2024.7
@@ -177,3 +254,9 @@ def async_register_services(hass: HomeAssistant) -> None:
             schema=schema,
             supports_response=SupportsResponse.ONLY,
         )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_SET_EQUIPMENT_MODE,
+        partial(_async_set_equipment_mode, hass),
+        schema=SET_EQUIPMENT_MODE_SCHEMA,
+    )

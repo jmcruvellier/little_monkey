@@ -11,7 +11,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
-from homeassistant.exceptions import ConfigEntryAuthFailed
+from homeassistant.exceptions import ConfigEntryAuthFailed, HomeAssistantError
 from homeassistant.helpers import issue_registry as ir
 
 from .api import (
@@ -297,3 +297,20 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
 
         equipments = await asyncio.gather(*(read(equipment) for equipment in self.piloted()))
         return {equipment["id"]: equipment for equipment in equipments}
+
+    async def async_command(self, equipment_id, mode, seconds=None) -> None:
+        """Pilot an equipment, then read it again to show its new state.
+
+        It is read again even when the command failed: ecojoko may have
+        applied it without answering in time.
+        """
+        try:
+            await self.client.async_send_equipment_command(equipment_id, mode, seconds)
+        except LittleMonkeyApiClientError as exception:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="command_failed",
+                translation_placeholders={"error": str(exception)},
+            ) from exception
+        finally:
+            await self.async_refresh()

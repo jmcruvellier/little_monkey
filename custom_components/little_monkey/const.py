@@ -11,7 +11,7 @@ ATTRIBUTION = "Data provided by https://service.ecojoko.com/"
 POLL_INTERVAL = "poll_interval"
 DEFAULT_POLL_INTERVAL = 5
 
-PLATFORMS = ['sensor']
+PLATFORMS = ['sensor', 'select']
 CONF_USE_HCHP_FEATURE = "use_hchp_feature"
 # Replaced by the tariff bands in version 3 of the config entries
 CONF_USE_TEMPO_FEATURE = "use_tempo_feature"

@@ -371,6 +371,18 @@
             "equipment_battery": {
                 "name": "Bateria"
             }
+        },
+        "select": {
+            "equipment_mode": {
+                "name": "Pilotagem",
+                "state": {
+                    "auto": "Automático",
+                    "forced": "Forçado",
+                    "absence": "Ausência",
+                    "on": "Ligado",
+                    "off": "Desligado"
+                }
+            }
         }
     },
     "selector": {
@@ -386,6 +398,15 @@
                 "week": "Semana",
                 "month": "Mês",
                 "year": "Ano"
+            }
+        },
+        "equipment_mode": {
+            "options": {
+                "auto": "Automático",
+                "forced": "Forçado",
+                "absence": "Ausência",
+                "on": "Ligar",
+                "off": "Desligar"
             }
         }
     },
@@ -480,6 +501,28 @@
                     "description": "Instalação Little Monkey; opcional se houver apenas uma."
                 }
             }
+        },
+        "set_equipment_mode": {
+            "name": "Pilotar um equipamento",
+            "description": "Força um equipamento pilotado pela ecojoko, desliga-o durante uma ausência, volta a pô-lo em automático, ou liga-o e desliga-o se não tiver modo forçado.",
+            "fields": {
+                "device_id": {
+                    "name": "Equipamento",
+                    "description": "O dispositivo do equipamento pilotado."
+                },
+                "mode": {
+                    "name": "Modo",
+                    "description": "Automático, Forçado, Ausência, ou Ligar e Desligar para um equipamento sem modo forçado."
+                },
+                "duration": {
+                    "name": "Duração",
+                    "description": "Duração do modo forçado (1 hora por omissão) ou da ausência, em minutos."
+                },
+                "until": {
+                    "name": "Fim da ausência",
+                    "description": "Data e hora do fim da ausência, em vez da duração."
+                }
+            }
         }
     },
     "exceptions": {
@@ -491,6 +534,21 @@
         },
         "data_not_read": {
             "message": "Não foi possível ler os dados no ecojoko: {error}"
+        },
+        "equipment_not_found": {
+            "message": "Este dispositivo não é um equipamento de uma instalação Little Monkey carregada."
+        },
+        "mode_not_supported": {
+            "message": "A ecojoko não propõe o modo {mode} para {name}."
+        },
+        "absence_end_required": {
+            "message": "Indique a duração ou o fim da ausência."
+        },
+        "duration_out_of_range": {
+            "message": "A duração deve estar entre {min} e {max} minutos."
+        },
+        "command_failed": {
+            "message": "O comando não pôde ser enviado à ecojoko: {error}. Pode ter sido aplicado mesmo assim."
         }
     }
 }
