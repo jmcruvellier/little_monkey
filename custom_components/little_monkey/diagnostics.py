@@ -49,5 +49,15 @@ async def async_get_config_entry_diagnostics(
                     else str(slow.last_exception)),
                 "data": slow.data,
             }
+    # Equipments: without their data, which hold their ids and names
+    equipment = getattr(coordinator, "equipment", None)
+    if equipment is not None:
+        diagnostics["equipment"] = {
+            "last_update_success": equipment.last_update_success,
+            "last_exception": (
+                None if equipment.last_exception is None
+                else str(equipment.last_exception)),
+            "piloted": len(equipment.data or {}),
+        }
     diagnostics["client"] = coordinator.client.diagnostics()
     return diagnostics

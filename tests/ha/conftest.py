@@ -89,6 +89,14 @@ SAVINGS = {
 }
 
 
+EQUIPMENT_DAY = {
+    "date": "2026-11-18", "energy": 0.97, "cost": 0.14,
+    "power": [{"time": "2026-11-18T20:00:00+01:00", "value": 2784}],
+    "switches": [{"start": "2026-11-18T20:00:00+01:00", "end": None, "on": True,
+                  "forced": True, "source": "command"}],
+}
+
+
 @pytest.fixture(autouse=True)
 def _enable_custom_integrations(enable_custom_integrations):
     """Let Home Assistant load the integration from custom_components."""
@@ -126,6 +134,9 @@ class FakeApi:
         self.analysis = {"available": True, "start": "2026-11-02", "cost": 14.46,
                          "consumption": 60.6, "categories": []}
         self.analysis_calls = []
+        # Equipments of the gateway: none by default
+        self.equipments = []
+        self.equipment_error = None
 
 
 @pytest.fixture
@@ -151,6 +162,7 @@ def fake_api():
             raise state.data_error
         for name, value in state.values.items():
             setattr(self, name, value)
+        self._equipments = copy.deepcopy(state.equipments)
         self._stat_date = state.stat_date
 
     async def get_activity(self):
@@ -184,6 +196,15 @@ def fake_api():
         state.analysis_calls.append(("activations", page))
         return {"start": None, "end": None, "pending": False, "activations": []}
 
+    async def get_equipment(self, equipment_id):
+        if state.equipment_error:
+            raise state.equipment_error
+        return copy.deepcopy(next(
+            equipment for equipment in state.equipments if equipment["id"] == equipment_id))
+
+    async def get_equipment_day(self, equipment, day):
+        return copy.deepcopy(EQUIPMENT_DAY)
+
     client = lm_api.LittleMonkeyApiClient
     with patch.object(client, "async_get_cookiesdata", login), \
             patch.object(client, "async_get_gatewaydata", gateway), \
@@ -191,5 +212,7 @@ def fake_api():
             patch.object(client, "async_get_tariff_setup", tariff_setup),             patch.object(client, "async_get_activity", get_activity),             patch.object(client, "async_get_savings", get_savings),             patch.object(client, "async_get_savings_period", get_savings_period), \
             patch.object(client, "async_get_analysis", get_analysis), \
             patch.object(client, "async_get_category_history", get_category_history), \
-            patch.object(client, "async_get_activations", get_activations):
+            patch.object(client, "async_get_activations", get_activations), \
+            patch.object(client, "async_get_equipment", get_equipment), \
+            patch.object(client, "async_get_equipment_day", get_equipment_day):
         yield state

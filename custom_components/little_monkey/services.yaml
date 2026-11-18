@@ -65,3 +65,9 @@ get_activations:
           min: 0
           max: 365
           mode: box
+get_equipments:
+  fields:
+    config_entry_id:
+      selector:
+        config_entry:
+          integration: little_monkey

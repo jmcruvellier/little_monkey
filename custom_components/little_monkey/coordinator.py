@@ -1,6 +1,7 @@
 """DataUpdateCoordinator for little_monkey."""
 from __future__ import annotations
 
+import asyncio
 import time
 from datetime import timedelta
 
@@ -18,10 +19,12 @@ from .api import (
     LittleMonkeyApiClientAuthenticationError,
     LittleMonkeyApiClientCommunicationError,
     LittleMonkeyApiClientError,
+    TZ,
 )
 from .const import (
     CONF_API_ACTIVITY_GRACE,
     CONF_API_ACTIVITY_REFRESH,
+    CONF_API_EQUIPMENT_REFRESH,
     CONF_API_FAILURE_GRACE,
     CONF_API_SAVINGS_REFRESH,
     DEFAULT_POLL_INTERVAL,
@@ -34,7 +37,7 @@ from .const import (
     tariff_periods,
 )
 from .tariff import band_key
-from .utils import TariffPeriod
+from .utils import TariffPeriod, get_current_date
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
 
@@ -262,3 +265,32 @@ class LittleMonkeySavingsCoordinator(LittleMonkeySlowCoordinator):
     async def _async_fetch(self) -> dict:
         """Read the savings of the account."""
         return await self.client.async_get_savings()
+
+
+class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
+    """Fetch the piloted equipments: their state and their measures of the day.
+
+    The list of the equipments comes with the list of the gateways, read
+    every five minutes; the state of a piloted one is read more often, and
+    right after a command.
+    """
+
+    KIND = "equipment"
+    REFRESH = CONF_API_EQUIPMENT_REFRESH
+
+    def piloted(self) -> list:
+        """Return the equipments of the gateway that can be piloted."""
+        return [equipment for equipment in self.client.equipments if equipment["controls"]]
+
+    async def _async_fetch(self) -> dict:
+        """Read each piloted equipment and its measures of today."""
+        today = get_current_date(TZ)
+
+        async def read(equipment):
+            fresh, day = await asyncio.gather(
+                self.client.async_get_equipment(equipment["id"]),
+                self.client.async_get_equipment_day(equipment, today))
+            return {**fresh, "day": day}
+
+        equipments = await asyncio.gather(*(read(equipment) for equipment in self.piloted()))
+        return {equipment["id"]: equipment for equipment in equipments}

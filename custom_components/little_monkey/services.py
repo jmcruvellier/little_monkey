@@ -13,16 +13,18 @@ from homeassistant.core import (
     SupportsResponse,
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, device_registry as dr
 
 from .api import SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
 from .const import DOMAIN
+from .entity import equipment_identifier, registry_device
 from .utils import get_current_date
 
 SERVICE_GET_SAVINGS = "get_savings"
 SERVICE_GET_CONSUMPTION_ANALYSIS = "get_consumption_analysis"
 SERVICE_GET_CATEGORY_HISTORY = "get_category_history"
 SERVICE_GET_ACTIVATIONS = "get_activations"
+SERVICE_GET_EQUIPMENTS = "get_equipments"
 ATTR_CONFIG_ENTRY_ID = "config_entry_id"
 ATTR_PERIOD = "period"
 ATTR_DATE = "date"
@@ -43,6 +45,9 @@ GET_CATEGORY_HISTORY_SCHEMA = vol.Schema({
 GET_ACTIVATIONS_SCHEMA = vol.Schema({
     vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
     vol.Optional(ATTR_PAGE, default=0): vol.All(vol.Coerce(int), vol.Range(min=0, max=365)),
+})
+GET_EQUIPMENTS_SCHEMA = vol.Schema({
+    vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
 })
 
 
@@ -128,6 +133,31 @@ async def _async_get_activations(
     return {"page": page, **activations}
 
 
+async def _async_get_equipments(
+    hass: HomeAssistant, call: ServiceCall
+) -> ServiceResponse:
+    """Return the equipments of the installation, as last read.
+
+    Every equipment has its status and its controls. A piloted one also has
+    its state and its measures of today, read every two minutes and after a
+    command, and the id of its Home Assistant device. Nothing is read from
+    ecojoko: the answer is immediate.
+    """
+    entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
+    coordinator = entry.runtime_data
+    piloted = coordinator.equipment.data or {}
+    registry = dr.async_get(hass)
+    equipments = []
+    for equipment in coordinator.client.equipments:
+        device = registry_device(
+            registry, equipment_identifier(entry.entry_id, equipment["id"]), entry.entry_id)
+        equipments.append({
+            **piloted.get(equipment["id"], equipment),
+            "device_id": None if device is None else device.id,
+        })
+    return {"equipments": equipments}
+
+
 def async_register_services(hass: HomeAssistant) -> None:
     """Register the services of the integration, once for all its entries."""
     # ServiceCall.hass appeared after Home Assistant 2024.7
@@ -138,6 +168,7 @@ def async_register_services(hass: HomeAssistant) -> None:
         (SERVICE_GET_CATEGORY_HISTORY, _async_get_category_history,
          GET_CATEGORY_HISTORY_SCHEMA),
         (SERVICE_GET_ACTIVATIONS, _async_get_activations, GET_ACTIVATIONS_SCHEMA),
+        (SERVICE_GET_EQUIPMENTS, _async_get_equipments, GET_EQUIPMENTS_SCHEMA),
     ):
         hass.services.async_register(
             DOMAIN,

@@ -316,6 +316,44 @@
                         "name": "Escalões tarifários"
                     }
                 }
+            },
+            "equipment_mode": {
+                "name": "Modo",
+                "state": {
+                    "auto": "Automático",
+                    "forced": "Forçado",
+                    "absence": "Ausência",
+                    "on": "Ligado",
+                    "off": "Desligado"
+                },
+                "state_attributes": {
+                    "switch_state": {
+                        "name": "Estado do contactor"
+                    },
+                    "since": {
+                        "name": "Desde"
+                    },
+                    "until": {
+                        "name": "Até"
+                    },
+                    "source": {
+                        "name": "Origem",
+                        "state": {
+                            "command": "Comando",
+                            "schedule": "Programação",
+                            "timer": "Fim da duração"
+                        }
+                    }
+                }
+            },
+            "equipment_power": {
+                "name": "Potência"
+            },
+            "equipment_energy": {
+                "name": "Consumo de hoje"
+            },
+            "equipment_cost": {
+                "name": "Custo de hoje"
             }
         }
     },
@@ -414,6 +452,16 @@
                 "page": {
                     "name": "Página",
                     "description": "0 para as últimas 48 horas, 1 para as 48 horas anteriores, etc."
+                }
+            }
+        },
+        "get_equipments": {
+            "name": "Ler os equipamentos",
+            "description": "Devolve os equipamentos da instalação, o seu estado e, para os equipamentos pilotados, as suas medidas do dia.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Instalação",
+                    "description": "Instalação Little Monkey; opcional se houver apenas uma."
                 }
             }
         }

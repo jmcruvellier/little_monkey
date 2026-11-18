@@ -34,6 +34,10 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Économies de la Semaine | Monétaire | EUR | Permanent | Économies de la semaine en cours (du lundi au dimanche), négatives en cas de surconsommation ; en attribut, les économies en kWh, les coûts et consommations réels et de référence, et le détail de chaque jour (`bars`, non historisé) |
 | 1.3.0 | Économies du Mois | Monétaire | EUR | Permanent | Idem pour le mois en cours, détaillé par semaine |
 | 1.3.0 | Économies de l'Année | Monétaire | EUR | Permanent | Idem pour l'année en cours, détaillée par mois |
+| 1.3.0 | Mode (équipement piloté) | Énumération | | Automatique | Un par équipement piloté par ecojoko (chauffe-eau, prise…), sur l'appareil de l'équipement : Automatique, Forcé ou Absence (Allumé ou Éteint pour un équipement sans mode forcé) ; en attribut, l'état du contacteur tel qu'ecojoko l'écrit, depuis et jusqu'à quand, et l'origine du changement (commande, programmation, fin de durée) |
+| 1.3.0 | Puissance (équipement piloté) | Puissance | W | Automatique | Puissance consommée par l'équipement |
+| 1.3.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Automatique | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
+| 1.3.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Automatique | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |

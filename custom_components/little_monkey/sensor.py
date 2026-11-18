@@ -18,6 +18,7 @@ from .entity import (
     EcojokoActivitySensor,
     EcojokoContractSensor,
     EcojokoEntity,
+    EcojokoEquipmentSensor,
     EcojokoPeriodSensor,
     EcojokoSavingsSensor,
     EcojokoSensor,
@@ -131,6 +132,15 @@ SAVINGS_SENSORS = (
     ("savings_year", SAVINGS_COST),
 )
 
+# Sensors of a piloted equipment, and what it needs to have them
+EQUIPMENT_SENSORS = (
+    ("equipment_mode", (None, SensorDeviceClass.ENUM, None, "mdi:remote"),
+     lambda equipment: True),
+    ("equipment_power", POWER, lambda equipment: True),
+    ("equipment_energy", ENERGY, lambda equipment: equipment["measures"]),
+    ("equipment_cost", COST, lambda equipment: equipment["measures"]),
+)
+
 # Option that enables a sensor: None (always), one option, or several (any)
 
 
@@ -190,5 +200,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for key, kind in SAVINGS_SENSORS:
         main_device.add_child_entity(
             EcojokoSavingsSensor(main_device, coordinator.savings, key, *kind))
+    # Piloted equipments, each on its own device
+    for equipment in coordinator.equipment.piloted():
+        for key, kind, needed in EQUIPMENT_SENSORS:
+            if needed(equipment):
+                main_device.add_child_entity(EcojokoEquipmentSensor(
+                    main_device, coordinator.equipment, equipment, key, *kind))
 
     async_add_entities([main_device] + main_device.child_entities)

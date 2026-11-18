@@ -37,6 +37,7 @@ from custom_components.little_monkey import (
     coordinator as lm_coordinator,
     repairs,
 )
+from custom_components.little_monkey.entity import registry_device
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
 )
@@ -109,6 +110,30 @@ SAVINGS_KEYS = [
     "savings_month",
     "savings_year",
 ]
+# A water heater piloted by ecojoko, as the patched client reports it
+WATER_HEATER = {
+    "id": "630220", "type": "LULO", "model": "LULO", "name": "Chauffe-eau",
+    "firmware": "1.01.11", "connected": True, "status": "Connecté",
+    "signal": 29, "battery": None, "wifi_signal": 30,
+    "controls": ["forced", "absence", "auto"], "measures": True, "switches": True,
+    "state": {
+        "power": 2784, "on": True, "forced": True, "mode": "forced",
+        "switch_state": "Mode forcé jusqu'à 21:00",
+        "since": "2026-11-18T20:00:00+01:00", "until": "2026-11-18T21:00:00+01:00",
+        "source": "command", "voltage": 232.5, "max_power": 3131,
+    },
+}
+# An equipment that is not piloted
+TEMP_HUM_EQUIPMENT = {
+    "id": "3", "type": "TEMP_HUM", "model": None, "name": "Sonde",
+    "firmware": None, "connected": True, "status": "Connecté",
+    "signal": 66, "battery": 80, "wifi_signal": None,
+    "controls": [], "measures": False, "switches": False,
+    "state": {"power": None, "on": None, "forced": None, "mode": None, "switch_state": None,
+              "since": None, "until": None, "source": None, "voltage": None,
+              "max_power": None},
+}
+
 REALTIME = "sensor.ecojoko_real_time_consumption"
 GRID = "sensor.ecojoko_grid_consumption"
 FORM = data_entry_flow.FlowResultType.FORM
@@ -1396,3 +1421,55 @@ async def test_tariff_band_unknown_at_first(hass, fake_api):
     assert await setup_entry(hass, entry)
     state = hass.states.get(period_entity(hass, entry))
     assert "tariff_band" not in state.attributes
+
+
+async def test_piloted_equipment_has_its_device(hass, fake_api):
+    """A piloted equipment is a device of its own, linked to the Ecojoko device."""
+    fake_api.equipments = [TEMP_HUM_EQUIPMENT, WATER_HEATER]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    assert hass.states.get("sensor.chauffe_eau_power").state == "2784"
+    assert hass.states.get("sensor.chauffe_eau_consumption_today").state == "0.97"
+    assert hass.states.get("sensor.chauffe_eau_cost_today").state == "0.14"
+    mode = hass.states.get("sensor.chauffe_eau_mode")
+    assert mode.state == "forced"
+    assert mode.attributes["options"] == ["auto", "forced", "absence"]
+    assert mode.attributes["until"] == "2026-11-18T21:00:00+01:00"
+    assert mode.attributes["source"] == "command"
+
+    devices = dr.async_get(hass)
+    heater = registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
+    main = registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
+    assert heater.name == "Chauffe-eau"
+    assert heater.via_device_id == main.id
+    # The device of a current equipment cannot be removed, the others can
+    assert not await async_remove_config_entry_device(hass, entry, heater)
+    # The equipment that is not piloted has no device
+    assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id) is None
+
+
+async def test_equipments_service(hass, fake_api):
+    """The service gives every equipment, the piloted ones with their day."""
+    fake_api.equipments = [TEMP_HUM_EQUIPMENT, WATER_HEATER]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+
+    answer = await call_service(hass, "get_equipments")
+    sensor, heater = answer["equipments"]
+    assert sensor["name"] == "Sonde" and sensor["device_id"] is None
+    assert "day" not in sensor
+    assert heater["day"]["energy"] == 0.97
+    heater_device = registry_device(
+        dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
+    assert heater["device_id"] == heater_device.id
+
+
+async def test_equipment_failure_keeps_the_entry(hass, fake_api):
+    """The equipments are read apart: a failure leaves the other sensors."""
+    fake_api.equipments = [WATER_HEATER]
+    fake_api.equipment_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get("sensor.chauffe_eau_power").state == "unavailable"
+    assert hass.states.get(REALTIME).state == "512"

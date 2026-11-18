@@ -11,7 +11,11 @@ from homeassistant.components.sensor import (
 )
 
 from .const import ATTRIBUTION, DOMAIN, LOGGER, MANUFACTURER, MODEL, VERSION
+
 from .utils import DailyCounter, get_paris_timezone
+
+# Modes of a piloted equipment, by its controls (see api.equipment_controls)
+EQUIPMENT_MODES = {"auto": ["auto", "forced", "absence"], "on": ["on", "off"]}
 
 TZ = get_paris_timezone()
 
@@ -335,3 +339,105 @@ class EcojokoSavingsSensor(EcojokoActivitySensor):
         data = self.coordinator.data or {}
         attributes = SAVINGS_ATTRIBUTES.get(self._sensor_name, {})
         return {name: data.get(key) for name, key in attributes.items()}
+
+
+def registry_device(registry, identifier, entry_id):
+    """Return the device of a config entry with an identifier, None if there is none.
+
+    Home Assistant deprecated async_get_device in 2026: identifiers are now
+    unique within a config entry only. Its replacement does not exist in the
+    older versions supported (2024.7 at least).
+    """
+    get = getattr(registry, "async_get_device_by_identifier", None)
+    if get is not None:
+        return get(identifier, entry_id)
+    return registry.async_get_device(identifiers={identifier})
+
+
+def equipment_identifier(entry_id, equipment_id) -> tuple:
+    """Return the identifier of the device of an equipment of the gateway."""
+    return (DOMAIN, f"{entry_id}_{equipment_id}")
+
+
+def equipment_modes(equipment) -> list:
+    """Return the modes of a piloted equipment, empty if it is not piloted."""
+    controls = equipment.get("controls") or []
+    for control, modes in EQUIPMENT_MODES.items():
+        if control in controls:
+            return list(modes)
+    return []
+
+
+class EcojokoEquipmentEntity(CoordinatorEntity):
+    """Entity of an equipment of the gateway (water heater...).
+
+    Each equipment is a device of its own, linked to the Ecojoko device.
+    """
+
+    _attr_attribution = ATTRIBUTION
+    _attr_has_entity_name = True
+
+    def __init__(self, main_device, coordinator, equipment, key):
+        """Initialize the entity of an equipment, identified by its ecojoko id."""
+        super().__init__(coordinator)
+        self._equipment_id = equipment["id"]
+        self._key = key
+        self._attr_translation_key = key
+        self._attr_unique_id = f"{main_device.unique_id}_{equipment['id']}_{key}"
+        self._attr_device_info = {
+            "identifiers": {equipment_identifier(main_device.unique_id, equipment["id"])},
+            "name": equipment.get("name") or equipment.get("type"),
+            "manufacturer": MODEL,
+            "model": equipment.get("model") or equipment.get("type"),
+            "sw_version": equipment.get("firmware"),
+            "via_device": (DOMAIN, main_device.unique_id),
+        }
+
+    def _equipment(self) -> dict | None:
+        """Return the equipment as last read, None if it was not read."""
+        return (self.coordinator.data or {}).get(self._equipment_id)
+
+    @property
+    def available(self) -> bool:
+        """Tell whether the equipment was read."""
+        return super().available and self._equipment() is not None
+
+
+# Value of each sensor of an equipment, from the equipment read
+EQUIPMENT_VALUES = {
+    "equipment_power": lambda equipment: equipment["state"].get("power"),
+    "equipment_energy": lambda equipment: (equipment.get("day") or {}).get("energy"),
+    "equipment_cost": lambda equipment: (equipment.get("day") or {}).get("cost"),
+    "equipment_mode": lambda equipment: equipment["state"].get("mode"),
+}
+# Details of the mode, as attributes
+EQUIPMENT_MODE_ATTRIBUTES = ("switch_state", "since", "until", "source")
+
+
+class EcojokoEquipmentSensor(EcojokoEquipmentEntity, SensorEntity):
+    """Sensor of a piloted equipment: power, energy and cost of the day, mode."""
+
+    def __init__(self, main_device, coordinator, equipment, key, state_class,
+                 device_class, unit_of_measurement, icon):
+        """Initialize the sensor."""
+        super().__init__(main_device, coordinator, equipment, key)
+        self._attr_state_class = state_class
+        self._attr_device_class = device_class
+        self._attr_native_unit_of_measurement = unit_of_measurement
+        self._attr_icon = icon
+        if key == "equipment_mode":
+            self._attr_options = equipment_modes(equipment)
+
+    @property
+    def native_value(self):
+        """Return the value of the sensor, from the equipment last read."""
+        equipment = self._equipment()
+        return None if equipment is None else EQUIPMENT_VALUES[self._key](equipment)
+
+    @property
+    def extra_state_attributes(self):
+        """Return the details of the mode: since and until when, and why."""
+        equipment = self._equipment()
+        if self._key != "equipment_mode" or equipment is None:
+            return None
+        return {name: equipment["state"].get(name) for name in EQUIPMENT_MODE_ATTRIBUTES}
