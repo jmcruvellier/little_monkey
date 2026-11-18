@@ -251,9 +251,11 @@ def day_values(subconsumption, bands):
 
 # --- Price of a kWh of each tariff band
 #
-# ecojoko gives the exact prices only with a water heater it pilots: its
-# device has "device_external_settings.pricing_data.prices", items {label,
-# price} in euros per kWh, shown in its web application. Otherwise they are
+# ecojoko gives the exact prices only with a water heater it pilots, and not
+# for every offer: its device may have "device_external_settings.pricing_data
+# .prices", items {label, price} in euros per kWh, shown in its web
+# application. For some offers its pricing data has the supplier and the
+# offer only (Primeo Energie, Offre Fixe -20%, November 2026). Otherwise they are
 # estimated from the daily statistics: the cost of a band on a day is its
 # energy at the price of a kWh, plus a share of the subscription that does
 # not depend on the energy. The slope of the costs against the energies
