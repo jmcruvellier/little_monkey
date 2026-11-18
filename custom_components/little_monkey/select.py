@@ -20,7 +20,10 @@ def seconds_until_midnight(now: dt.datetime) -> int:
     """
     local = now.astimezone(TZ)
     midnight = dt.datetime.combine(local.date() + dt.timedelta(days=1), dt.time(), TZ)
-    return int((midnight - local).total_seconds())
+    # Through the timestamps: a difference of two times of the same time
+    # zone ignores the change of the clocks, and the day it changes lasts
+    # 23 or 25 hours
+    return int(midnight.timestamp() - local.timestamp())
 
 
 class EcojokoEquipmentSelect(EcojokoEquipmentEntity, SelectEntity):

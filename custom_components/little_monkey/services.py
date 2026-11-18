@@ -199,7 +199,8 @@ def _mode_seconds(call: ServiceCall) -> int | None:
     if mode == "absence" and until is not None:
         if until.tzinfo is None:
             until = until.replace(tzinfo=dt_util.get_default_time_zone())
-        seconds = int((until - dt_util.now()).total_seconds())
+        # Through the timestamps, right across a change of the clocks
+        seconds = int(until.timestamp() - dt_util.now().timestamp())
     elif ATTR_DURATION in call.data:
         seconds = call.data[ATTR_DURATION] * 60
     elif mode == "forced":

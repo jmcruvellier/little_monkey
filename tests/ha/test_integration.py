@@ -1507,8 +1507,8 @@ async def test_equipment_diagnostic_sensors(hass, fake_api):
 
 def heater_device(hass, entry):
     """Return the device of the water heater."""
-    return dr.async_get(hass).async_get_device(
-        identifiers={(DOMAIN, f"{entry.entry_id}_630220")})
+    return registry_device(
+        dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
 
 
 async def test_equipment_mode_select(hass, fake_api):
@@ -1584,7 +1584,7 @@ async def test_set_equipment_mode_service(hass, fake_api):
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
             DOMAIN, "set_equipment_mode", {"device_id": "unknown", "mode": "auto"}, blocking=True)
-    sensor = dr.async_get(hass).async_get_device(identifiers={(DOMAIN, f"{entry.entry_id}_3")})
+    sensor = registry_device(dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id)
     with pytest.raises(ServiceValidationError):
         await hass.services.async_call(
             DOMAIN, "set_equipment_mode", {"device_id": sensor.id, "mode": "auto"}, blocking=True)
