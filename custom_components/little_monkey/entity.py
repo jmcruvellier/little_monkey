@@ -458,7 +458,9 @@ class EcojokoEquipmentDiagnosticSensor(EcojokoEquipmentEntity, SensorEntity):
     """Diagnostic sensor of an equipment: connection, signal, battery.
 
     Every equipment of the gateway has them, piloted or not; they come with
-    the list of the gateways, read every five minutes.
+    the list of the gateways, read every five minutes. A piloted equipment
+    has them on its device; the others (Linky key, sensor...) have no device
+    of their own: theirs are on the Ecojoko device, named after them.
     """
 
     _attr_entity_category = EntityCategory.DIAGNOSTIC
@@ -467,6 +469,11 @@ class EcojokoEquipmentDiagnosticSensor(EcojokoEquipmentEntity, SensorEntity):
                  unit_of_measurement, icon):
         """Initialize the sensor, updated by the main coordinator."""
         super().__init__(main_device, main_device.coordinator, equipment, key)
+        if not equipment.get("controls"):
+            self._attr_device_info = main_device.device_info
+            self._attr_translation_key = f"{key}_of"
+            self._attr_translation_placeholders = {
+                "equipment": str(equipment.get("name") or equipment.get("type"))}
         self._attr_state_class = state_class
         self._attr_device_class = device_class
         self._attr_native_unit_of_measurement = unit_of_measurement
