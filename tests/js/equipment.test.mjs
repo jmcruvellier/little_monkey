@@ -156,7 +156,16 @@ test("a forced mode of another duration lasts 1 minute to 24 hours", () => {
 });
 
 test("an equipment that is not piloted shows its measures", () => {
-  assert.deepEqual(card.otherMeasures({ state: { temperature: 20.8, humidity: 50 } }, "fr"), ["20,8 °C", "50 %"]);
-  assert.deepEqual(card.otherMeasures({ state: { power: 3326 } }, "fr"), [`3${" "}326 W`]);
+  assert.deepEqual(card.otherMeasures({ state: { temperature: 20.8, humidity: 50 } }, "fr"),
+    [{ key: "temperature", value: "20,8 °C" }, { key: "humidity", value: "50 %" }]);
+  assert.deepEqual(card.otherMeasures({ state: { power: 3326 } }, "fr"), [{ key: "power", value: `3${" "}326 W` }]);
   assert.deepEqual(card.otherMeasures(SENSOR, "fr"), []);
+});
+
+test("a value with an entity opens its details", () => {
+  const equipment = { entities: { power: "sensor.chauffe_eau_power", odd: 'sensor.a"b' } };
+  assert.equal(card.entityAttribute(equipment, "power"), ' data-entity="sensor.chauffe_eau_power"');
+  assert.equal(card.entityAttribute(equipment, "odd"), ' data-entity="sensor.a&quot;b"');
+  assert.equal(card.entityAttribute(equipment, "voltage"), "");
+  assert.equal(card.entityAttribute(SENSOR, "power"), "");
 });

@@ -306,16 +306,25 @@ export function equipmentMetrics(text, equipment, locale) {
     .map(([key, value, format]) => ({ key, label: text[key], value: format(Number(value)) }));
 }
 
+/**
+ * Return the attribute that opens the details of a value: the entity of the
+ * value, given by the service get_equipments, if it has one.
+ */
+export function entityAttribute(equipment, key) {
+  const entity = equipment?.entities?.[key];
+  return entity ? ` data-entity="${escapeHtml(entity)}"` : "";
+}
+
 /** Return the measures of an equipment that is not piloted: power, temperature, humidity. */
 export function otherMeasures(equipment, locale) {
   const state = equipment?.state || {};
   const number = (value, digits) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(value);
   return [
-    [state.power, (value) => `${number(value, 0)} W`],
-    [state.temperature, (value) => `${number(value, 1)} °C`],
-    [state.humidity, (value) => `${number(value, 0)} %`],
-  ].filter(([value]) => value !== null && value !== undefined && Number.isFinite(Number(value)))
-    .map(([value, format]) => format(Number(value)));
+    ["power", state.power, (value) => `${number(value, 0)} W`],
+    ["temperature", state.temperature, (value) => `${number(value, 1)} °C`],
+    ["humidity", state.humidity, (value) => `${number(value, 0)} %`],
+  ].filter(([, value]) => value !== null && value !== undefined && Number.isFinite(Number(value)))
+    .map(([key, value, format]) => ({ key, value: format(Number(value)) }));
 }
 
 /** Return the entity of the integration with a translation key, if any. */
@@ -402,6 +411,9 @@ const STYLES = `
   .other .icon ha-icon { --mdc-icon-size: 16px; }
   .other .name { flex: 1; min-width: 0; color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .other .info { color: var(--secondary-text-color); font-size: 0.85em; white-space: nowrap; }
+  [data-entity] { cursor: pointer; }
+  [data-entity]:hover { text-decoration: underline dotted; }
+  .timeline[data-entity]:hover { text-decoration: none; opacity: 0.85; }
   .other .info.measure { color: var(--primary-text-color); font-weight: 500; }
   .other .info.disconnected { color: var(--error-color, #db4437); }
 `;
@@ -534,6 +546,15 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   }
 
   _click(event) {
+    // A value opens its details, as in the other cards
+    const value = event.target.closest?.("[data-entity]");
+    if (value) {
+      event.stopPropagation();
+      this.dispatchEvent(new CustomEvent("hass-more-info", {
+        detail: { entityId: value.dataset.entity }, bubbles: true, composed: true,
+      }));
+      return;
+    }
     const target = event.target;
     const block = target.closest?.("[data-id]");
     const equipment = (this._equipments || []).find((item) => String(item.id) === block?.dataset.id);
@@ -658,9 +679,9 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
           <div class="icon" style="background: ${STATE_COLORS[kind]}"><ha-icon icon="${equipmentIcon(equipment)}"></ha-icon></div>
           <div class="who">
             <div class="name">${escapeHtml(equipment.name)}</div>
-            <div class="mode">${escapeHtml(modeLabel(text, equipment, locale, now))}</div>
+            <div class="mode"${entityAttribute(equipment, "mode")}>${escapeHtml(modeLabel(text, equipment, locale, now))}</div>
           </div>
-          <div class="power">${power === null || power === undefined ? "" : escapeHtml(`${new Intl.NumberFormat(locale).format(power)} W`)}</div>
+          <div class="power"${entityAttribute(equipment, "power")}>${power === null || power === undefined ? "" : escapeHtml(`${new Intl.NumberFormat(locale).format(power)} W`)}</div>
           ${many ? '<ha-icon class="chevron" icon="mdi:chevron-down"></ha-icon>' : ""}
         </div>
         <div class="actions">${buttons}</div>
@@ -697,7 +718,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   /** Return the HTML of the measures and of the timeline of the day. */
   _details(equipment, text, locale, now) {
     const metrics = equipmentMetrics(text, equipment, locale).map((metric) => `
-      <div class="metric"><div class="label">${escapeHtml(metric.label)}</div><div class="value">${escapeHtml(metric.value)}</div></div>`).join("");
+      <div class="metric"${entityAttribute(equipment, metric.key)}><div class="label">${escapeHtml(metric.label)}</div><div class="value">${escapeHtml(metric.value)}</div></div>`).join("");
     const day = equipment.day;
     let timeline = "";
     if (day && (day.switches?.length || day.power?.length)) {
@@ -711,7 +732,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
           `<span><span class="swatch" style="background: ${STATE_COLORS[kind]}"></span>${escapeHtml(text.legend[kind])}</span>`).join("")}</div>`
         : "";
       timeline = `
-        <svg class="timeline" viewBox="0 0 ${DAY_BOX.width} ${DAY_BOX.height}" preserveAspectRatio="none" role="img">
+        <svg class="timeline"${entityAttribute(equipment, "mode")} viewBox="0 0 ${DAY_BOX.width} ${DAY_BOX.height}" preserveAspectRatio="none" role="img">
           ${rects}<line class="base" x1="0" x2="${DAY_BOX.width}" y1="${DAY_BOX.base}" y2="${DAY_BOX.base}" />
           ${curve ? `<path class="curve" d="${curve}" />` : ""}
         </svg>
@@ -726,16 +747,16 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   /** Return the HTML of an equipment that is not piloted. */
   _other(equipment, text, locale) {
     // Its measures first, then its connection
-    const infos = otherMeasures(equipment, locale).map((value) =>
-      `<span class="info measure">${escapeHtml(value)}</span>`);
+    const infos = otherMeasures(equipment, locale).map((measure) =>
+      `<span class="info measure"${entityAttribute(equipment, measure.key)}>${escapeHtml(measure.value)}</span>`);
     if (equipment.connected === false) {
-      infos.push(`<span class="info disconnected">${escapeHtml(equipment.status || text.disconnected)}</span>`);
+      infos.push(`<span class="info disconnected"${entityAttribute(equipment, "connection")}>${escapeHtml(equipment.status || text.disconnected)}</span>`);
     }
     if (equipment.battery !== null && equipment.battery !== undefined) {
-      infos.push(`<span class="info">${escapeHtml(text.battery.replace("{value}", `${equipment.battery} %`))}</span>`);
+      infos.push(`<span class="info"${entityAttribute(equipment, "battery")}>${escapeHtml(text.battery.replace("{value}", `${equipment.battery} %`))}</span>`);
     }
     if (equipment.signal !== null && equipment.signal !== undefined) {
-      infos.push(`<span class="info">${escapeHtml(text.signal.replace("{value}", `${equipment.signal} %`))}</span>`);
+      infos.push(`<span class="info"${entityAttribute(equipment, "signal")}>${escapeHtml(text.signal.replace("{value}", `${equipment.signal} %`))}</span>`);
     }
     return `
       <div class="other" data-id="${escapeHtml(equipment.id)}">

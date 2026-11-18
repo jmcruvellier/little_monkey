@@ -409,6 +409,8 @@ EQUIPMENT_VALUES = {
     "equipment_energy": lambda equipment: (equipment.get("day") or {}).get("energy"),
     "equipment_cost": lambda equipment: (equipment.get("day") or {}).get("cost"),
     "equipment_mode": lambda equipment: equipment["state"].get("mode"),
+    "equipment_voltage": lambda equipment: equipment["state"].get("voltage"),
+    "equipment_max_power": lambda equipment: equipment["state"].get("max_power"),
 }
 # Details of the mode, as attributes
 EQUIPMENT_MODE_ATTRIBUTES = ("switch_state", "since", "until", "source")

@@ -386,6 +386,12 @@
             },
             "equipment_battery_of": {
                 "name": "{equipment} : batterie"
+            },
+            "equipment_voltage": {
+                "name": "Tension"
+            },
+            "equipment_max_power": {
+                "name": "Puissance max mesurée"
             }
         },
         "select": {

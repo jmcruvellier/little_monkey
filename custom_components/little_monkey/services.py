@@ -13,7 +13,11 @@ from homeassistant.core import (
     SupportsResponse,
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import config_validation as cv, device_registry as dr
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.util import dt as dt_util
 
 from .api import EQUIPMENT_DURATIONS, SAVINGS_PERIODS, LittleMonkeyApiClientError, TZ
@@ -171,6 +175,7 @@ async def _async_get_equipments(
         equipments.append({
             **piloted.get(equipment["id"], equipment),
             "device_id": None if device is None else device.id,
+            "entities": equipment_entities(hass, entry.entry_id, equipment),
         })
     return {"equipments": equipments}
 
@@ -234,6 +239,48 @@ async def _async_set_equipment_mode(hass: HomeAssistant, call: ServiceCall) -> N
         )
     await entry.runtime_data.equipment.async_command(
         equipment["id"], mode, _mode_seconds(call))
+
+
+# Entities of an equipment, by the name of their value in the answer:
+# platform and key of their unique id
+EQUIPMENT_ENTITIES = {
+    "mode": ("sensor", "equipment_mode"),
+    "power": ("sensor", "equipment_power"),
+    "energy": ("sensor", "equipment_energy"),
+    "cost": ("sensor", "equipment_cost"),
+    "voltage": ("sensor", "equipment_voltage"),
+    "max_power": ("sensor", "equipment_max_power"),
+    "control": ("select", "equipment_mode"),
+    "connection": ("sensor", "equipment_connection"),
+    "signal": ("sensor", "equipment_signal"),
+    "wifi_signal": ("sensor", "equipment_wifi_signal"),
+    "battery": ("sensor", "equipment_battery"),
+}
+# Sensors of the Ecojoko device that give the measures of an equipment, by type
+DEVICE_MEASURES = {
+    "TEMP_HUM": {"temperature": "indoor_temp", "humidity": "indoor_hum"},
+    "POWER_METER": {"power": "realtime_consumption"},
+}
+
+
+def equipment_entities(hass: HomeAssistant, entry_id: str, equipment: dict) -> dict:
+    """Return the entities of the values of an equipment, for its details.
+
+    Its own sensors, and for a sensor or the Linky key the sensors of the
+    Ecojoko device that give the same measures.
+    """
+    registry = er.async_get(hass)
+    entities = {}
+    for name, (platform, key) in EQUIPMENT_ENTITIES.items():
+        entity_id = registry.async_get_entity_id(
+            platform, DOMAIN, f"{entry_id}_{equipment['id']}_{key}")
+        if entity_id:
+            entities[name] = entity_id
+    for name, key in DEVICE_MEASURES.get(equipment.get("type"), {}).items():
+        entity_id = registry.async_get_entity_id("sensor", DOMAIN, f"{entry_id}_{key}")
+        if entity_id:
+            entities.setdefault(name, entity_id)
+    return entities
 
 
 def async_register_services(hass: HomeAssistant) -> None:

@@ -1465,6 +1465,17 @@ async def test_equipments_service(hass, fake_api):
     heater_device = registry_device(
         dr.async_get(hass), (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     assert heater["device_id"] == heater_device.id
+    # The entity of each value, for its details
+    assert heater["entities"]["power"] == "sensor.chauffe_eau_power"
+    assert heater["entities"]["voltage"] == "sensor.chauffe_eau_voltage"
+    assert heater["entities"]["max_power"] == "sensor.chauffe_eau_max_measured_power"
+    assert heater["entities"]["control"] == "select.chauffe_eau_control"
+    assert heater["entities"]["wifi_signal"] == "sensor.chauffe_eau_wifi_connection"
+    assert hass.states.get("sensor.chauffe_eau_voltage").state == "232.5"
+    # The sensor: its diagnostics, and its measures on the Ecojoko device
+    assert sensor["entities"]["signal"] == "sensor.ecojoko_sonde_connection_strength"
+    assert sensor["entities"]["temperature"] == "sensor.ecojoko_indoor_temperature"
+    assert sensor["entities"]["humidity"] == "sensor.ecojoko_indoor_humidity"
 
 
 async def test_equipment_failure_keeps_the_entry(hass, fake_api):

@@ -39,6 +39,7 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.3.0 | Puissance (équipement piloté) | Puissance | W | Automatique | Puissance consommée par l'équipement |
 | 1.3.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Automatique | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
 | 1.3.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Automatique | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
+| 1.3.0 | Tension, Puissance Max Mesurée (équipement piloté) | Tension, Puissance | V, W | Automatique | Tension mesurée par l'équipement et puissance maximale qu'il a mesurée, quand ecojoko les donne |
 | 1.3.0 | Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie (équipement) | Diagnostic | %  | Automatique | Pour chaque équipement de l'installation, quand ecojoko donne la valeur : sur l'appareil d'un équipement piloté (chauffe-eau…), sur l'appareil Little Monkey pour les autres (« Clé Linky : force de la connexion », « Sonde de température : connexion à l'assistant »…) |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
