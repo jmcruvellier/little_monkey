@@ -111,6 +111,18 @@ def _settings_schema(defaults: Mapping[str, Any]) -> vol.Schema:
     )
 
 
+def _account_of_another_entry(
+    hass: HomeAssistant, entry: config_entries.ConfigEntry, username: str
+) -> bool:
+    """Tell whether an ecojoko account is already the one of another entry."""
+    account = account_unique_id(username)
+    return any(
+        other.entry_id != entry.entry_id
+        and account_unique_id(other.data.get(CONF_USERNAME, "")) == account
+        for other in hass.config_entries.async_entries(DOMAIN)
+    )
+
+
 def _name_errors(user_input: Mapping[str, Any]) -> dict[str, str]:
     """Return the form errors of the name, which names the device."""
     if not str(user_input.get(CONF_NAME) or "").strip():
@@ -412,6 +424,11 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
         _errors = {}
         if user_input is not None:
             _errors = _name_errors(user_input)
+            if not _errors and _account_of_another_entry(
+                self.hass, self._config_entry, user_input[CONF_USERNAME]
+            ):
+                # As the setup, which refuses the same account twice
+                _errors = {"base": "already_configured"}
             if not _errors:
                 _errors, contract, found, complete = await _async_validate(
                     self.hass, user_input, discover=True
@@ -456,6 +473,12 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
         if user_input is not None:
             self._data.update(
                 {key: user_input.get(key, False) for key in SETTINGS_KEYS})
+            # The title of the entry is the username it was created with: it
+            # follows a new username, unless the user gave it another title.
+            # The entities are identified by the entry: they do not change
+            title = self._config_entry.title
+            if title == self._config_entry.data.get(CONF_USERNAME):
+                title = self._data[CONF_USERNAME]
             # All the settings are kept in the entry data. Data and options
             # are saved together: the entry is reloaded once, and
             # async_create_entry below changes nothing more
@@ -463,9 +486,10 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
                 entry=self._config_entry,
                 data=self._data,
                 options={},
+                title=title,
             )
             return self.async_create_entry(
-                title=self._config_entry.title,
+                title=title,
                 data={}
             )
         return self.async_show_form(
