@@ -1571,7 +1571,7 @@ def savings_day(api, monkeypatch):
 
 
 WEEK = {
-    "savings": -0.35, "savings_kwh": -2.58, "cost": 1.8, "consumption": 7.58,
+    "savings": -0.35, "savings_kwh": -2.57, "cost": 1.8, "consumption": 7.58,
     "reference_cost": 1.45, "reference_consumption": 5.01,
 }
 EMPTY_BAR = dict.fromkeys(WEEK)
@@ -1619,10 +1619,36 @@ def test_savings_of_a_past_period(api, savings_day):
     assert session.requests[-1][1].endswith("/savingstat/y/2025-03-04")
 
 
-def test_saving_in_kwh_is_positive(api, savings_day):
-    """A saving keeps its kWh positive."""
+def test_savings_in_kwh_are_the_reference_minus_the_consumption(api, savings_day):
+    """The kWh saved are the reference consumption minus the consumption.
+
+    For a period, ecojoko gives the sum of the differences of its bars
+    without their sign: observed on 19/11/2026 for a week of +12.94, -9.37
+    and +4.22 kWh.
+    """
     answer = json.loads(json.dumps(SAVINGSTAT_WEEK))
-    answer["stat"]["period"].update(val=25.85, val_kwh=67.62, is_saving=1)
+    answer["stat"]["period"].update(
+        val=1.73, val_kwh=26.53, price=15.85, kwh=89.52, ref=17.58, ref_kwh=97.3)
+    answer["stat"]["data"][0].update(
+        val=-1.18, val_kwh=9.37, conso=7.08, conso_kwh=42.07, ref=5.9, ref_kwh=32.7)
+    client = make_client(api, Session(savingstat=Response(payload=answer)))
+    run(client.async_get_data())
+    values = run(client.async_get_savings_period("week", SAVINGS_DAY))
+    assert (values["savings"], values["savings_kwh"]) == (1.73, 7.78)
+    assert values["bars"][0]["savings_kwh"] == -9.37
+
+
+def test_saving_in_kwh_without_the_consumptions(api, savings_day):
+    """Without both consumptions, ecojoko's kWh take the sign of the euros."""
+    answer = json.loads(json.dumps(SAVINGSTAT_WEEK))
+    del answer["stat"]["period"]["kwh"]
+    answer["stat"]["data"][0].pop("ref_kwh")
+    client = make_client(api, Session(savingstat=Response(payload=answer)))
+    run(client.async_get_data())
+    values = run(client.async_get_savings_period("week", SAVINGS_DAY))
+    assert (values["savings"], values["savings_kwh"]) == (-0.35, -2.58)
+    assert values["bars"][0]["savings_kwh"] == -2.58
+    answer["stat"]["period"].update(val=25.85, val_kwh=67.62)
     client = make_client(api, Session(savingstat=Response(payload=answer)))
     run(client.async_get_data())
     values = run(client.async_get_savings_period("week", SAVINGS_DAY))

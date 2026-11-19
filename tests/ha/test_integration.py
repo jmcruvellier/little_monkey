@@ -1246,7 +1246,7 @@ async def test_tariff_period_is_restored_after_a_restart(hass, fake_api):
 # --- Activity of the account
 
 
-SAVINGS = "sensor.ecojoko_savings_over_7_days"
+SAVINGS = "sensor.ecojoko_gap_over_7_days"
 
 
 async def refresh_activity(hass, entry):
@@ -1264,7 +1264,7 @@ async def test_activity_sensors(hass, fake_api):
     assert savings.state == "-3"
     assert savings.attributes["unit_of_measurement"] == "%"
     assert savings.attributes["reference_consumption"] == 74.4
-    assert savings.attributes["friendly_name"] == "Ecojoko Savings over 7 Days"
+    assert savings.attributes["friendly_name"] == "Ecojoko Gap over 7 Days"
     cost = hass.states.get("sensor.ecojoko_cost_over_7_days")
     assert cost.state == "16.6"
     assert cost.attributes["device_class"] == "monetary"
@@ -1853,14 +1853,14 @@ async def test_sensors_of_a_group_turned_off_are_removed(hass, fake_api):
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     entities = er.async_get(hass)
-    assert entities.async_get("sensor.ecojoko_savings_over_7_days") is not None
+    assert entities.async_get("sensor.ecojoko_gap_over_7_days") is not None
     assert entities.async_get("sensor.chauffe_eau_power") is not None
 
     hass.config_entries.async_update_entry(entry, data={
         **entry.data, "use_activity_feature": False, "use_equipment_feature": False})
     await hass.async_block_till_done(wait_background_tasks=True)
 
-    assert entities.async_get("sensor.ecojoko_savings_over_7_days") is None
+    assert entities.async_get("sensor.ecojoko_gap_over_7_days") is None
     assert entities.async_get("sensor.chauffe_eau_power") is None
     assert entities.async_get("sensor.ecojoko_sonde_connection_to_the_assistant") is None
     assert entities.async_get("select.chauffe_eau_control") is None

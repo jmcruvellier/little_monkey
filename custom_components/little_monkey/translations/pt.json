@@ -160,7 +160,7 @@
                 "name": "Humidade Exterior"
             },
             "savings_7_days": {
-                "name": "Poupança em 7 Dias",
+                "name": "Desvio em 7 Dias",
                 "state_attributes": {
                     "reference_consumption": {
                         "name": "Consumo de referência"
