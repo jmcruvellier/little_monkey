@@ -6,7 +6,7 @@ from typing import Any
 from homeassistant.components.repairs import RepairsFlow
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_TARIFF_BANDS
+from .const import CONF_REMOVED_BANDS, CONF_TARIFF_BANDS
 from .tariff import new_band
 
 
@@ -39,9 +39,18 @@ class AddBandsFlow(RepairsFlow):
                     for band_id, label in self._bands.items()
                     if int(band_id) not in known
                 ]
+                # A band removed by the user and added here is no longer removed
+                added = {int(band_id) for band_id in self._bands}
+                removed = [
+                    band_id for band_id in entry.data.get(CONF_REMOVED_BANDS) or []
+                    if band_id not in added]
+                data = {**entry.data, CONF_TARIFF_BANDS: configured}
+                if removed:
+                    data[CONF_REMOVED_BANDS] = removed
+                else:
+                    data.pop(CONF_REMOVED_BANDS, None)
                 # The update listener reloads the entry
-                self.hass.config_entries.async_update_entry(
-                    entry, data={**entry.data, CONF_TARIFF_BANDS: configured})
+                self.hass.config_entries.async_update_entry(entry, data=data)
             return self.async_create_entry(data={})
         return self.async_show_form(
             step_id="confirm",

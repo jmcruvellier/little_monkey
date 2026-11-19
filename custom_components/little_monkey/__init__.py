@@ -32,6 +32,7 @@ from .const import (
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
+    CONF_REMOVED_BANDS,
     CONF_TARIFF_BANDS,
     CONF_USE_ACTIVITY_FEATURE,
     CONF_USE_EQUIPMENT_FEATURE,
@@ -48,7 +49,7 @@ from .coordinator import (
 from .entity import equipment_identifier, registry_device
 from .sensor import GROUP_SENSOR_KEYS, SENSOR_KEYS
 from .services import async_register_services
-from .tariff import legacy_bands
+from .tariff import has_sensor, is_band_key, legacy_bands
 from .utils import account_unique_id
 
 # Version of the config entries, see EcojokoFlowHandler.VERSION
@@ -79,6 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             poll_interval=entry.data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
             use_hchp=entry.data.get(CONF_USE_HCHP_FEATURE, False),
             bands=entry.data.get(CONF_TARIFF_BANDS),
+            removed_bands=entry.data.get(CONF_REMOVED_BANDS),
             use_temphum=entry.data.get(CONF_USE_TEMPHUM_FEATURE, False),
             use_prod=entry.data.get(CONF_USE_PROD_FEATURE, False),
             # A session of its own, with its own cookies: the ecojoko session
@@ -140,22 +142,27 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 def _async_remove_disabled_entities(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    """Remove the sensors of the groups whose option is off.
+    """Remove the sensors of the groups whose option is off, and of the bands removed.
 
-    They were created while it was on; otherwise they would stay
-    unavailable. Turned on again, the option creates them again.
+    They were created while it was on, or while the band was configured;
+    otherwise they would stay unavailable. Turned on again, the option
+    creates them again, and so does a band added again.
     """
     keys = set()
     for option, group in GROUP_SENSOR_KEYS.items():
         if not option_enabled(entry, option):
             keys |= set(group)
+    configured = {
+        band["key"] for band in entry.data.get(CONF_TARIFF_BANDS) or []
+        if has_sensor(band)}
     equipment_prefix = f"{entry.entry_id}_"
     registry = er.async_get(hass)
     for entity in er.async_entries_for_config_entry(registry, entry.entry_id):
         key = entity.unique_id.removeprefix(equipment_prefix)
         # The sensors of the equipments: <entry>_<equipment id>_<key>
         equipment = key.split("_", 1)[0].isdigit()
-        if (key in keys and not equipment) or (
+        removed_band = is_band_key(key) and key not in configured
+        if ((key in keys or removed_band) and not equipment) or (
             equipment and not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE)
         ):
             registry.async_remove(entity.entity_id)

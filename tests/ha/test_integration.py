@@ -990,6 +990,7 @@ async def test_setup_of_a_weekend_contract(hass, fake_api):
         "HC Semaine – HC/HP": "hc",
         "Heures Weekend": "Heures Weekend",
         "Heures Weekend – HC/HP": "none",
+        "removed_bands": [],
     }
     result = await hass.config_entries.flow.async_configure(result["flow_id"], {
         "use_hchp_feature": True,
@@ -1111,6 +1112,69 @@ async def test_options_keep_the_bands_when_statistics_are_missing(hass, fake_api
     defaults = schema_defaults(result)
     assert defaults["Heures Weekend"] == "Week-end"
     assert defaults["Heures Weekend – HC/HP"] == "hc"
+
+
+async def test_options_remove_the_bands_of_a_previous_contract(hass, fake_api):
+    """Bands removed lose their sensor and stay removed while ecojoko gives them."""
+    winter = [
+        {"id": 28, "label": "HC Hiver", "key": "band_28", "name": None, "category": "hc"},
+        {"id": 29, "label": "HP Hiver", "key": "band_29", "name": None, "category": "hp"},
+    ]
+    entry = add_entry(hass, data={**DATA, "tariff_bands": [*HCHP_BANDS, *winter]})
+    assert await setup_entry(hass, entry)
+    registry = er.async_get(hass)
+    assert registry.async_get_entity_id("sensor", DOMAIN, f"{entry.entry_id}_band_28")
+    found = {2: "Heures Pleines", 3: "Heures Creuses", 28: "HC Hiver", 29: "HP Hiver"}
+
+    result = await options_bands_screen(hass, entry, fake_api, found)
+    defaults = schema_defaults(result)
+    assert defaults["removed_bands"] == []
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**defaults, "removed_bands": ["28", "29"]})
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert entry.data["tariff_bands"] == HCHP_BANDS
+    assert entry.data["removed_bands"] == [28, 29]
+    for key in ("band_28", "band_29"):
+        assert registry.async_get_entity_id(
+            "sensor", DOMAIN, f"{entry.entry_id}_{key}") is None
+
+    # Still found, they are not proposed again but stay checked; unchecking
+    # one adds it back
+    result = await options_bands_screen(hass, entry, fake_api, found)
+    defaults = schema_defaults(result)
+    assert "HC Hiver" not in defaults
+    assert defaults["removed_bands"] == ["28", "29"]
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**defaults, "removed_bands": ["28"]})
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert [band["id"] for band in entry.data["tariff_bands"]] == [2, 3, 29]
+    assert entry.data["removed_bands"] == [28]
+
+    # Missing from incomplete statistics, a removed band stays removed
+    fake_api.weeks_missed = 1
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses", 29: "HP Hiver"})
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], schema_defaults(result))
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert entry.data["removed_bands"] == [28]
+
+    # No longer found, a removed band is forgotten
+    fake_api.weeks_missed = 0
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses", 29: "HP Hiver"})
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], schema_defaults(result))
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert "removed_bands" not in entry.data
 
 
 # --- Repair of the bands not configured

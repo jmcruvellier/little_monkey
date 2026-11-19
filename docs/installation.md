@@ -53,8 +53,9 @@ L'écran affiche le contrat détecté et ses tranches (Heures Pleines et Creuses
 |---|---|
 | Capteurs totaux HC et HP | Crée « Consommation HC Réseau » et « Consommation HP Réseau », qui additionnent les tranches de chaque catégorie |
 | Pour chaque tranche | Le nom de son capteur (prérempli) et le total dans lequel elle compte : Heures Creuses, Heures Pleines ou aucun |
+| Tranches à supprimer | Les tranches à retirer avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore |
 
-Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez donné. Après un changement de contrat, ouvrez les options : elles reprennent cet écran avec les tranches du nouveau contrat, et une réparation le signale dans Home Assistant quand une tranche n'a pas de capteur.
+Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez donné. Après un changement de contrat, ouvrez les options : elles reprennent cet écran avec les tranches du nouveau contrat, et une réparation le signale dans Home Assistant quand une tranche n'a pas de capteur. Les tranches de l'ancien contrat disparaissent d'elles-mêmes quand ecojoko ne les donne plus dans ses statistiques des dernières semaines ; pour les retirer tout de suite, cochez-les dans « Tranches à supprimer ». Elles ne sont alors plus proposées ni signalées tant qu'ecojoko les donne encore, et restent cochées dans cette liste : décochez-en une pour la remettre.
 
 ### 3. Les autres capteurs et fonctions
 
