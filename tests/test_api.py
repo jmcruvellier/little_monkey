@@ -213,7 +213,7 @@ TEMP_HUM_DEVICE = {
     "device_id": 3, "device_type": "TEMP_HUM", "device_status": 1,
     "device_status_desc": "Connecté", "device_state": {"temperature": 208, "humidity": 50},
     "device_commands": ["tempstat", "humstat"],
-    "battery": {"level": 80, "value": "80%", "type": "AAA"},
+    "battery": {"level": 7, "value": "5.09V", "type": "4 piles LR14"},
     "signal": {"level": 4, "value": "66%", "type": "UNET"},
     "device_settings": {"name": "Sonde de température"},
 }
@@ -1760,6 +1760,16 @@ def equipment_client(api):
     client = make_client(api, session)
     run(client.async_get_data())
     return client, session
+
+
+def test_battery_is_shown_as_in_the_ecojoko_application(api):
+    """The level from 0 to 10 is a battery of five bars; 255 is the mains."""
+    levels = {0: 0, 1: 20, 2: 20, 3: 40, 5: 60, 7: 80, 8: 80, 9: 100, 10: 100}
+    assert {level: api.battery_percent(level) for level in levels} == levels
+    assert api.battery_percent(255) is None
+    assert api.battery_percent(None) is None
+    assert api.battery_percent("") is None
+    assert api.battery_percent(-1) is None
 
 
 def test_equipments_are_read_with_the_gateways(api):
