@@ -86,15 +86,16 @@ def _settings_schema(defaults: Mapping[str, Any]) -> vol.Schema:
                 CONF_USE_PROD_FEATURE,
                 default=defaults.get(CONF_USE_PROD_FEATURE, False),
             ): cv.boolean,
-            # The groups of sensors of 2.0.0, off by default
-            **{
-                vol.Optional(option, default=defaults.get(option, False)): cv.boolean
-                for option in SENSOR_GROUP_OPTIONS
-            },
             vol.Optional(
                 CONF_USE_TEMPHUM_FEATURE,
                 default=defaults.get(CONF_USE_TEMPHUM_FEATURE, False),
             ): cv.boolean,
+            # The groups of sensors of 2.0.0, off by default, after the
+            # options of the earlier versions
+            **{
+                vol.Optional(option, default=defaults.get(option, False)): cv.boolean
+                for option in SENSOR_GROUP_OPTIONS
+            },
             vol.Required(
                 POLL_INTERVAL,
                 default=defaults.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),
