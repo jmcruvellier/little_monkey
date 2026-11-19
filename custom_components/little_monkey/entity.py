@@ -417,7 +417,10 @@ class EcojokoEquipmentEntity(CoordinatorEntity):
             "name": equipment.get("name") or equipment.get("type"),
             "manufacturer": MODEL,
             "model": equipment.get("model") or equipment.get("type"),
-            "sw_version": equipment.get("firmware"),
+            # As the Ecojoko device: the version of Little Monkey as its
+            # software, the firmware of the equipment as its hardware
+            "sw_version": VERSION,
+            "hw_version": equipment.get("firmware"),
             **parent_device(main_device),
         }
 

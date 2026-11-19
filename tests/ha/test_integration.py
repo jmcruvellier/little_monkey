@@ -1448,6 +1448,9 @@ async def test_piloted_equipment_has_its_device(hass, fake_api):
     heater = registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     main = registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
     assert heater.name == "Chauffe-eau"
+    # Versions as the Ecojoko device: Little Monkey, then the equipment
+    assert heater.sw_version == main.sw_version
+    assert heater.hw_version == "1.01.11"
     assert heater.via_device_id == main.id
     # The device of a current equipment cannot be removed, the others can
     assert not await async_remove_config_entry_device(hass, entry, heater)
