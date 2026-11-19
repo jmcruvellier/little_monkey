@@ -430,6 +430,21 @@
                 "on": "Ligar",
                 "off": "Desligar"
             }
+        },
+        "measure": {
+            "options": {
+                "electricity": "Eletricidade",
+                "temperature": "Temperatura",
+                "humidity": "Humidade"
+            }
+        },
+        "measure_period": {
+            "options": {
+                "day": "Dia",
+                "week": "Semana",
+                "month": "Mês",
+                "year": "Ano"
+            }
         }
     },
     "issues": {
@@ -543,6 +558,28 @@
                 "until": {
                     "name": "Fim da ausência",
                     "description": "Data e hora do fim da ausência, em vez da duração."
+                }
+            }
+        },
+        "get_measures": {
+            "name": "Ler as medidas",
+            "description": "Devolve as medidas de um período, como a página “Medidas” do ecojoko: a potência de um dia ou a energia e o custo dos dias ou meses por escalão tarifário, a temperatura ou a humidade interior e exterior.",
+            "fields": {
+                "config_entry_id": {
+                    "name": "Instalação",
+                    "description": "Instalação Little Monkey; opcional se houver apenas uma."
+                },
+                "measure": {
+                    "name": "Medida",
+                    "description": "Eletricidade, temperatura ou humidade."
+                },
+                "period": {
+                    "name": "Período",
+                    "description": "Dia, semana, 30 dias (mês) ou ano."
+                },
+                "date": {
+                    "name": "Data",
+                    "description": "Um dia do período; hoje por omissão. Para o mês, os 30 dias que terminam nesse dia."
                 }
             }
         }

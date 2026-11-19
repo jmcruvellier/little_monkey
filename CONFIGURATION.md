@@ -343,3 +343,14 @@ La carte ne connaît pas les types d'équipements : ses boutons sont ceux qu'eco
 
 `little_monkey.get_equipments` renvoie immédiatement, sans interroger ecojoko, les équipements de l'installation tels que lus en dernier (`equipments`). Chacun a son nom (`name`), son type (`type`), son état de connexion (`connected`, `status`), la force de son signal (`signal`, `wifi_signal`) et sa batterie (`battery`) quand ecojoko les donne, ses commandes de pilotage (`controls`) et son état (`state` : `mode`, `power`, `since`, `until`, `source`, `temperature` et `humidity` pour une sonde…). Chacun a les entités de ses valeurs (`entities` : `mode`, `power`, `energy`, `cost`, `voltage`, `control`, `signal`…, et pour la sonde ou la clé Linky les capteurs de l'appareil Little Monkey qui donnent les mêmes mesures). Un équipement piloté a aussi l'id de son appareil Home Assistant (`device_id`) et ses mesures du jour (`day` : `energy`, `cost`, la courbe de puissance `power` et les changements d'état `switches`). `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
 
+## Service « Lire les mesures »
+
+`little_monkey.get_measures` renvoie les mesures d'une période, comme la page « Mesures » d'ecojoko. `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
+
+| Champ | Obligatoire | Description |
+|---|---|---|
+| `measure` | Oui | `electricity`, `temperature` ou `humidity` |
+| `period` | Oui | `day`, `week`, `month` (les 30 jours qui finissent à la date, comme le « Mois » d'ecojoko) ou `year` |
+| `date` | Non | Un jour de la période, aujourd'hui par défaut |
+
+La réponse donne le début de la période (`start`) et celui des périodes précédente et suivante (`previous`, `next`). Pour l'électricité, elle donne aussi l'énergie (`energy`), le coût (`cost`), la production injectée (`production`) et les tranches tarifaires avec leur couleur (`bands`). Un jour a sa puissance toutes les quelques minutes (`points` : `time`, `power`, le talon `base` et la tranche `band`). Une semaine, un mois ou une année a ses jours ou ses mois (`bars` : `date`, `energy`, `cost`, `base_energy`, `production` et le détail par tranche `bands`). Pour la température et l'humidité, elle donne l'unité (`unit`) et les mesures intérieure et extérieure (`points` : `time`, `inside`, `outside`).

@@ -305,6 +305,121 @@ def parse_activations(payload) -> dict:
     }
 
 
+# Scales of the measures of ecojoko, by period: as its page « Mesures », a
+# day of power every few minutes, 7 days, 30 days ending on the date (its
+# « Mois »), and the 12 months of a year
+MEASURE_PERIODS = {"day": "d4", "week": "w", "month": "m6", "year": "y"}
+# Kinds of measures: the API and the device that measures them
+MEASURES = {"electricity": "powerstat", "temperature": "tempstat", "humidity": "humstat"}
+
+
+def _measure_period(period) -> dict:
+    """Return the start of a period of measures, and of the ones around it."""
+    return {
+        "start": _iso_time(period.get("this"), 1000),
+        "previous": _iso_time(period.get("prev"), 1000),
+        "next": _iso_time(period.get("next"), 1000),
+    }
+
+
+def _measure_bands(stat) -> list:
+    """Return the tariff bands of a statistics response: id, label and color."""
+    return [
+        {"id": item.get("id"), "label": item.get("label"), "color": item.get("color")}
+        for item in stat.get("pricing_details") or []
+        if isinstance(item, dict)
+    ]
+
+
+def parse_power_day(payload) -> dict:
+    """Return the power of a day, every few minutes, with its tariff band.
+
+    Each point has its power and the base load (consobase) in watts, and the
+    id of the band of its time.
+    """
+    stat = payload["stat"]
+    period = stat["period"]
+    return {
+        **_measure_period(period),
+        "energy": finite_number(period.get("kwh")),
+        "cost": finite_number(period.get("price")),
+        "production": _positive(period.get("kwh_prod")),
+        "bands": _measure_bands(stat),
+        "points": [
+            {
+                "time": _iso_time(item.get("time"), 1000),
+                "power": finite_number(item.get("value")),
+                "base": finite_number(item.get("consobase")),
+                "band": item.get("pricing"),
+            }
+            for item in stat.get("data") or []
+        ],
+    }
+
+
+def _positive(value):
+    """Return a production, given negative by ecojoko, as a positive number."""
+    number = finite_number(value)
+    return None if number is None else abs(number)
+
+
+def parse_energy_bars(payload) -> dict:
+    """Return the energy of the days or months of a period, by tariff band.
+
+    Each bar has its energy and cost, those of each band, its base load and
+    the production injected into the grid.
+    """
+    stat = payload["stat"]
+    period = stat["period"]
+    bars = []
+    for item in stat.get("data") or []:
+        bars.append({
+            "date": _iso_day(item.get("time")),
+            "energy": finite_number(item.get("kwh")),
+            "cost": finite_number(item.get("value")),
+            "base_energy": finite_number(item.get("consobase_kwh")),
+            "production": _positive(item.get("kwh_prod")),
+            "bands": [
+                {
+                    "id": band.get("id"),
+                    "energy": finite_number(band.get("kwh")),
+                    "cost": finite_number(band.get("price")),
+                }
+                for band in item.get("subconsumption") or []
+                if isinstance(band, dict)
+            ],
+        })
+    return {
+        **_measure_period(period),
+        "energy": finite_number(period.get("kwh")),
+        "cost": finite_number(period.get("price")),
+        "production": _positive(period.get("kwh_prod")),
+        "bands": _measure_bands(stat),
+        "bars": bars,
+    }
+
+
+def parse_climate(payload) -> dict:
+    """Return the temperature or humidity of a period, inside and outside.
+
+    Just after midnight, a day may come without its period yet.
+    """
+    stat = payload["stat"]
+    period = stat.get("period") or {}
+    return {
+        **_measure_period(period),
+        "unit": period.get("measure_unit"),
+        "points": [
+            {
+                "time": _iso_time(item.get("time"), 1000),
+                "inside": finite_number(item.get("value")),
+                "outside": finite_number(item.get("ext_value")),
+            }
+            for item in stat.get("data") or []
+        ],
+    }
+
+
 # Origin of the last change of state of a piloted equipment, by ecojoko id
 SWITCH_SOURCES = {1: "command", 2: "schedule", 3: "timer"}
 # ecojoko gives this battery level to an equipment plugged in the mains
@@ -891,11 +1006,14 @@ class LittleMonkeyApiClient:
                 f"Unexpected data from API savingstat: {exception!r}"
             ) from exception
 
-    async def _async_get_slow(self, name, path, parse, error_payload=False):
-        """Read an API of the power meter apart from the polls, and parse it."""
+    async def _async_get_slow(self, name, path, parse, error_payload=False, device=None):
+        """Read an API of a device apart from the polls, and parse it.
+
+        The power meter by default.
+        """
         self._check_slow_api(name)
         url = (f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}"
-               f"/device/{self._power_meter_id}/{path}")
+               f"/device/{device or self._power_meter_id}/{path}")
         payload, _cookies = await self._async_request(
             name, url, cookies=self._cookies, timeout=CONF_API_ACTIVITY_TIMEOUT,
             error_payload=error_payload)
@@ -922,6 +1040,23 @@ class LittleMonkeyApiClient:
         return await self._async_get_slow(
             "category history", f"usage/{int(category)}/history/y/{day.isoformat()}",
             parse_category_history)
+
+    async def async_get_measures(self, measure, period, day) -> dict:
+        """Return the measures of a period holding a day, as the page « Mesures ».
+
+        The electricity of a day is its power every few minutes, of a longer
+        period the energy of its days or months by tariff band. The
+        temperature and humidity are inside and outside, as curves.
+        """
+        scale = MEASURE_PERIODS[period]
+        path = f"{MEASURES[measure]}/{scale}/{day.isoformat()}"
+        if measure != "electricity":
+            if self._temp_hum_id is None:
+                raise LittleMonkeyApiClientError("No temperature and humidity sensor")
+            return await self._async_get_slow(
+                f"{MEASURES[measure]} ({scale})", path, parse_climate, device=self._temp_hum_id)
+        parse = parse_power_day if period == "day" else parse_energy_bars
+        return await self._async_get_slow(f"powerstat ({scale})", path, parse)
 
     async def async_get_activations(self, page=0) -> dict:
         """Return the activations of the appliances over 48 hours.

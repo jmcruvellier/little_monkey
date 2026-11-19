@@ -203,6 +203,10 @@ def fake_api():
         state.analysis_calls.append(("history", category, day))
         return {"category": {"id": category}, "start": "2026-01-05", "bars": []}
 
+    async def get_measures(self, measure, period, day):
+        state.analysis_calls.append(("measures", measure, period, day))
+        return {"start": None, "previous": None, "next": None, "bars": []}
+
     async def get_activations(self, page=0):
         state.analysis_calls.append(("activations", page))
         return {"start": None, "end": None, "pending": False, "activations": []}
@@ -231,6 +235,7 @@ def fake_api():
             patch.object(client, "async_get_analysis", get_analysis), \
             patch.object(client, "async_get_category_history", get_category_history), \
             patch.object(client, "async_get_activations", get_activations), \
+            patch.object(client, "async_get_measures", get_measures), \
             patch.object(client, "async_get_equipment", get_equipment), \
             patch.object(client, "async_get_equipment_day", get_equipment_day), \
             patch.object(client, "async_send_equipment_command", send_equipment_command):
