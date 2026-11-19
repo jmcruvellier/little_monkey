@@ -149,6 +149,9 @@ const CATEGORY_ICONS = {
 export const TREND_COLORS = { up: "#f7b500", down: "#0b6aae" };
 // Distance of a swipe that changes the period, in pixels
 const SWIPE_DISTANCE = 40;
+// Without the option of the analysis, the card asks again after this many
+// milliseconds: the option may have been turned on meanwhile
+const OPTION_RETRY = 60 * 1000;
 // Ring of the categories, in the units of the SVG
 const RING = { size: 160, radius: 62, width: 18, gap: 1.2 };
 
@@ -787,6 +790,10 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
   /** Return the analysis shown, reading it when needed. */
   _analysis() {
     const key = this._key();
+    if (this._disabled && Date.now() - this._disabledAt > OPTION_RETRY) {
+      this._disabledAt = Date.now();
+      this._cache.delete(key);
+    }
     if (this._errors.has(key)) {
       return { error: true };
     }
@@ -811,6 +818,7 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
       const analysis = await callService(this._hass, this._config.entity, "get_consumption_analysis", data);
       // Without the option of the analysis, the card asks to turn it on
       this._disabled = analysis?.enabled === false;
+      this._disabledAt = Date.now();
       this._cache.set(key, analysis);
       if (!start && analysis?.start) {
         this._latest[period] = analysis.start;
@@ -1137,8 +1145,12 @@ class LittleMonkeyActivationsCard extends HTMLElement {
       this._page = 0;
       this._selected = null;
       this._expanded = false;
+      // Another installation: its activations are read at once
+      this._read(0);
     }
     this._built = false;
+    // Built again, the card is empty: it is drawn even if nothing changed
+    this._signature = null;
     this._render();
   }
 

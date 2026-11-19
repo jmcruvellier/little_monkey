@@ -154,6 +154,20 @@ export function shiftDate(period, iso, step) {
 }
 
 /**
+ * Tell whether the period holding a day is the current one, or a later one:
+ * the month or the year of today, whatever the day in it.
+ */
+export function isCurrent(period, iso, now = today()) {
+  if (period === "year") {
+    return iso.slice(0, 4) >= now.slice(0, 4);
+  }
+  if (period === "calendar") {
+    return iso.slice(0, 7) >= now.slice(0, 7);
+  }
+  return iso >= now;
+}
+
+/**
  * Return the bounds of a period holding a day, in the time zone of the
  * browser: the day, its week from Monday, the 30 days ending on it (the
  * « Mois » of ecojoko), or its year.
@@ -659,7 +673,8 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     }
     const entity = this._config?.entity;
     this._config = { ...config };
-    if (!this._cache || entity !== this._config.entity) {
+    const changed = !this._cache || entity !== this._config.entity;
+    if (changed) {
       this._cache = new Map();
       this._period = initialPeriod(this._config);
       this._measure = initialMeasure(this._config);
@@ -668,6 +683,12 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       this._selected = null;
     }
     this._built = false;
+    // Built again, the card is empty: it is drawn even if nothing changed
+    this._signature = null;
+    if (changed) {
+      // Another installation: its measures are read at once
+      this._fetch();
+    }
     this._render();
   }
 
@@ -725,14 +746,20 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
 
   /** Read the measures of the period shown, unless they are read. */
   async _fetch(force = false) {
+    // What is asked for, kept while it is read: the user may show another
+    // measure or period meanwhile
+    const request = { measure: this._measure, period: this._period, date: this._date() };
     const key = this._key();
     const cached = this._cache.get(key);
-    if (!this._hass || !this._config?.entity || (cached && !force) || cached?.loading) {
+    // A reading that failed is tried again
+    const read = cached && !cached.error;
+    if (!this._hass || !this._config?.entity || (read && !force) || cached?.loading) {
       return;
     }
     this._cache.set(key, { ...cached, loading: true });
-    const entities = this._measure === "electricity" ? {} : climateEntities(this._hass, this._config.entity, this._measure);
-    if ((entities.inside || entities.outside) && !(await this._enabled())) {
+    const entities = request.measure === "electricity"
+      ? {} : climateEntities(this._hass, this._config.entity, request.measure);
+    if ((entities.inside || entities.outside) && !(await this._enabled(request))) {
       // Without the option of the measures, not even the statistics
       this._cache.set(key, { measures: { enabled: false } });
       this._signature = null;
@@ -740,16 +767,16 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       return;
     }
     if (entities.inside || entities.outside) {
-      await this._fetchStatistics(key, entities, cached);
+      await this._fetchStatistics(key, entities, cached, request);
       return;
     }
-    await this._fetchService(key, cached);
+    await this._fetchService(key, cached, request);
   }
 
   /** Tell whether the option of the measures is on, asked once to the service. */
-  async _enabled() {
+  async _enabled(request) {
     if (this._optionEnabled === undefined) {
-      const data = { measure: this._measure, period: this._period, check: true };
+      const data = { measure: request.measure, period: request.period, check: true };
       const entry = configEntryId(this._hass, this._config.entity);
       if (entry) {
         data.config_entry_id = entry;
@@ -768,8 +795,8 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
   }
 
   /** Read the measures of the period from ecojoko, with the service get_measures. */
-  async _fetchService(key, cached) {
-    const data = { measure: this._measure, period: this._period, date: this._date() };
+  async _fetchService(key, cached, request) {
+    const data = { measure: request.measure, period: request.period, date: request.date };
     const entry = configEntryId(this._hass, this._config.entity);
     if (entry) {
       data.config_entry_id = entry;
@@ -788,9 +815,9 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
   }
 
   /** Read the temperature or humidity of the period from the statistics of the sensors. */
-  async _fetchStatistics(key, entities, cached) {
-    const period = datesPeriod(this._measure, this._period);
-    const range = periodRange(period, this._date());
+  async _fetchStatistics(key, entities, cached, request) {
+    const period = datesPeriod(request.measure, request.period);
+    const range = periodRange(period, request.date);
     const ids = Object.values(entities);
     try {
       const statistics = await this._hass.callWS({
@@ -802,7 +829,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
         types: ["mean"],
       });
       const unit = this._hass.states[ids[0]]?.attributes?.unit_of_measurement
-        || (this._measure === "temperature" ? "°C" : "%");
+        || (request.measure === "temperature" ? "°C" : "%");
       const climate = climateFromStatistics(statistics, entities, unit);
       if (statisticsCover(climate, range, period)) {
         this._cache.set(key, { measures: climate, entities });
@@ -814,7 +841,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       console.debug("Little Monkey card: statistics not read", error);
     }
     // Home Assistant has not recorded the whole period: ecojoko has it
-    await this._fetchService(key, cached);
+    await this._fetchService(key, cached, request);
   }
 
   _chooseMeasure(measure) {
@@ -846,11 +873,12 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
 
   /** Show the period before (-1) or after (+1). */
   _go(step) {
-    const date = shiftDate(datesPeriod(this._measure, this._period), this._date(), step);
+    const period = datesPeriod(this._measure, this._period);
+    const date = shiftDate(period, this._date(), step);
     if (step > 0 && !this._dates[this._period]) {
       return;
     }
-    this._dates[this._period] = date >= today() ? undefined : date;
+    this._dates[this._period] = isCurrent(period, date) ? undefined : date;
     this._selected = null;
     this._fetch();
     this._signature = null;

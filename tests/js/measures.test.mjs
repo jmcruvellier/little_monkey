@@ -182,3 +182,15 @@ test("the graduations carry their unit: kW from 1 000 W, kWh, euros", () => {
   assert.equal(plain(card.axisLabel("fr", 40, "kwh")), "40 kWh");
   assert.equal(plain(card.axisLabel("fr", 150, "eur")), "150 €");
 });
+
+test("the month and the year of today are the current ones, whatever the day", () => {
+  // Back a month from the 31st gives the 28th; forward again, the 28th of this month
+  assert.equal(card.shiftDate("calendar", "2026-12-28", 1), "2027-01-28");
+  assert.equal(card.isCurrent("calendar", "2027-01-28", "2027-01-31"), true);
+  assert.equal(card.isCurrent("calendar", "2026-12-28", "2027-01-31"), false);
+  assert.equal(card.isCurrent("year", "2027-01-28", "2027-11-19"), true);
+  assert.equal(card.isCurrent("year", "2026-11-19", "2027-11-19"), false);
+  // A day, a week and the 30 days ending on a day: the day itself
+  assert.equal(card.isCurrent("day", "2027-01-30", "2027-01-31"), false);
+  assert.equal(card.isCurrent("month", "2027-01-31", "2027-01-31"), true);
+});
