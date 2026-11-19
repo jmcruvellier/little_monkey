@@ -1410,6 +1410,23 @@ def test_tariff_setup_ignores_the_previous_contract(api, monkeypatch):
     assert bands == {2: "Heures Pleines", 3: "Heures Creuses"}
     # The contract started this week: the weeks before are not read
     assert session.calls.count("powerstat") == 1
+    assert client.tariff_weeks_missed == 0
+
+
+def test_tariff_setup_counts_the_weeks_not_read(api, monkeypatch):
+    """A week of statistics that fails is counted: the bands may be incomplete."""
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: dt.date(2026, 6, 14))
+    suppliers = {"suppliers": [{"is_active": 1, "offer_type": "UNKNOWN TYPE"}]}
+    session = Session(
+        suppliers=Response(payload=suppliers),
+        powerstat=Response(status=500),
+    )
+    client = make_client(api, session)
+    run(client.async_get_cookiesdata())
+    contract, bands = run(client.async_get_tariff_setup())
+    assert contract["offer_type"] == "UNKNOWN TYPE"
+    assert bands == {}
+    assert client.tariff_weeks_missed == 4
 
 
 def test_tariff_setup_without_contract(api):

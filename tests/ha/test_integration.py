@@ -1012,6 +1012,20 @@ async def test_options_keep_the_bands_when_the_contract_is_unknown(hass, fake_ap
     assert "Heures Creuses – HC/HP" in schema_defaults(result)
 
 
+async def test_options_keep_the_bands_when_statistics_are_missing(hass, fake_api):
+    """A week of statistics not read: a band missing from the others is kept."""
+    weekend = {"id": 13, "label": "Heures Weekend", "key": "band_13",
+               "name": "Week-end", "category": "hc"}
+    entry = add_entry(hass, data={**DATA, "tariff_bands": [*HCHP_BANDS, weekend]})
+    assert await setup_entry(hass, entry)
+    fake_api.weeks_missed = 1
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    defaults = schema_defaults(result)
+    assert defaults["Heures Weekend"] == "Week-end"
+    assert defaults["Heures Weekend – HC/HP"] == "hc"
+
+
 # --- Repair of the bands not configured
 
 

@@ -145,6 +145,8 @@ class FakeApi:
             "offer_type": "HP/HC",
         }
         self.bands = {2: "Heures Pleines", 3: "Heures Creuses"}
+        # Weeks of statistics the setup could not read
+        self.weeks_missed = 0
         # Values of the activity of the account, or the error to raise
         self.activity = dict(ACTIVITY)
         self.activity_error = None
@@ -189,6 +191,7 @@ def fake_api():
     async def tariff_setup(self, weeks=4):
         if state.login_error:
             raise state.login_error
+        self.tariff_weeks_missed = state.weeks_missed
         return state.contract, dict(state.bands)
 
     async def get_data(self):
