@@ -14,7 +14,11 @@
                 "title": "Tariff bands",
                 "description": "Contract found: {contract}.\n\nFor each band of your contract, choose the name of its sensor and the total it counts in (off-peak, peak or none).",
                 "data": {
-                    "use_hchp_feature": "HC and HP total sensors"
+                    "use_hchp_feature": "HC and HP total sensors",
+                    "removed_bands": "Bands to remove"
+                },
+                "data_description": {
+                    "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back."
                 }
             },
             "settings": {
@@ -64,7 +68,11 @@
                 "title": "Tariff bands",
                 "description": "Contract found: {contract}.\n\nFor each band of your contract, choose the name of its sensor and the total it counts in (off-peak, peak or none).",
                 "data": {
-                    "use_hchp_feature": "HC and HP total sensors"
+                    "use_hchp_feature": "HC and HP total sensors",
+                    "removed_bands": "Bands to remove"
+                },
+                "data_description": {
+                    "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back."
                 }
             },
             "settings": {

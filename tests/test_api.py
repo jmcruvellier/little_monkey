@@ -1470,6 +1470,33 @@ def test_configured_bands_are_not_unknown(api, hchp, expected):
     assert client.unknown_bands == expected
 
 
+def test_removed_bands_are_not_unknown(api):
+    """The bands removed by the user are not reported while ecojoko gives them."""
+    payload = powerstat(subconsumption=[
+        {"id": 28, "label": "HC Hiver", "kwh": 6.67},
+        {"id": 29, "label": "HP Hiver", "kwh": 5.63},
+    ])
+    client = api.LittleMonkeyApiClient(
+        username="user", password="secret", poll_interval=5, use_hchp=True,
+        bands=tariff_module(api).legacy_bands(True, False), removed_bands=[28],
+        use_temphum=False, use_prod=False,
+        session=Session(powerstat=Response(payload=payload)))
+    run(client.async_get_data())
+    assert client.unknown_bands == {29: "HP Hiver"}
+
+
+@pytest.mark.parametrize(("key", "expected"), [
+    ("band_28", True),
+    ("blue_hc_grid_consumption", True),
+    ("hc_grid_consumption", False),
+    ("grid_consumption", False),
+    ("band_count", False),
+])
+def test_keys_of_the_band_sensors(api, key, expected):
+    """The sensors of the bands are told apart from the others."""
+    assert tariff_module(api).is_band_key(key) is expected
+
+
 # --- Activity of the account
 
 

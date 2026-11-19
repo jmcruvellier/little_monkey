@@ -674,6 +674,7 @@ class LittleMonkeyApiClient:
         use_prod: bool,
         session: aiohttp.ClientSession,
         bands: list | None = None,
+        removed_bands: list | None = None,
     ) -> None:
         """Initialize."""
         self._username = username
@@ -682,6 +683,8 @@ class LittleMonkeyApiClient:
         self._use_hchp = use_hchp
         # Configured tariff bands (see tariff.py)
         self._configured_bands = list(bands or [])
+        # Bands removed by the user: never reported as missing
+        self._removed_bands = set(removed_bands or [])
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
@@ -1590,6 +1593,7 @@ class LittleMonkeyApiClient:
         values, totals, unclassified = day_values(
             subconsumption, self._configured_bands)
         configured = {band["id"] for band in self._configured_bands}
+        configured |= self._removed_bands
         self._unknown_bands = {
             band_id: label
             for band_id, label in bands_of({}, data[week_day]).items()

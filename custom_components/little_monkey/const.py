@@ -44,6 +44,9 @@ def option_enabled(entry, option) -> bool:
 
 # Tariff bands of the contract and their settings (see tariff.py)
 CONF_TARIFF_BANDS = "tariff_bands"
+# Ids of the bands removed by the user while ecojoko still gives them: they
+# are neither proposed again nor reported as missing (previous contract...)
+CONF_REMOVED_BANDS = "removed_bands"
 
 # Values of the current tariff period sensor, by tariff option
 HCHP_PERIODS = ["hc", "hp"]

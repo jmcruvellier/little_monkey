@@ -14,7 +14,11 @@
                 "title": "Tranches tarifaires",
                 "description": "Contrat détecté : {contract}.\n\nPour chaque tranche de votre contrat, choisissez le nom de son capteur et le total dans lequel elle compte (HC, HP ou aucun).",
                 "data": {
-                    "use_hchp_feature": "Capteurs totaux HC et HP"
+                    "use_hchp_feature": "Capteurs totaux HC et HP",
+                    "removed_bands": "Tranches à supprimer"
+                },
+                "data_description": {
+                    "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre."
                 }
             },
             "settings": {
@@ -64,7 +68,11 @@
                 "title": "Tranches tarifaires",
                 "description": "Contrat détecté : {contract}.\n\nPour chaque tranche de votre contrat, choisissez le nom de son capteur et le total dans lequel elle compte (HC, HP ou aucun).",
                 "data": {
-                    "use_hchp_feature": "Capteurs totaux HC et HP"
+                    "use_hchp_feature": "Capteurs totaux HC et HP",
+                    "removed_bands": "Tranches à supprimer"
+                },
+                "data_description": {
+                    "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre."
                 }
             },
             "settings": {

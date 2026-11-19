@@ -14,7 +14,11 @@
                 "title": "Períodos tarifários",
                 "description": "Contrato detetado: {contract}.\n\nPara cada período do seu contrato, escolha o nome do sensor e o total em que conta (vazio, ponta ou nenhum).",
                 "data": {
-                    "use_hchp_feature": "Sensores totais HC e HP"
+                    "use_hchp_feature": "Sensores totais HC e HP",
+                    "removed_bands": "Faixas a remover"
+                },
+                "data_description": {
+                    "removed_bands": "As faixas marcadas são removidas com o seu sensor, por exemplo as de um contrato anterior que a ecojoko ainda indica. Continuam listadas aqui, marcadas, enquanto aparecerem nas suas estatísticas das últimas semanas; desmarque uma para a repor."
                 }
             },
             "settings": {
@@ -64,7 +68,11 @@
                 "title": "Períodos tarifários",
                 "description": "Contrato detetado: {contract}.\n\nPara cada período do seu contrato, escolha o nome do sensor e o total em que conta (vazio, ponta ou nenhum).",
                 "data": {
-                    "use_hchp_feature": "Sensores totais HC e HP"
+                    "use_hchp_feature": "Sensores totais HC e HP",
+                    "removed_bands": "Faixas a remover"
+                },
+                "data_description": {
+                    "removed_bands": "As faixas marcadas são removidas com o seu sensor, por exemplo as de um contrato anterior que a ecojoko ainda indica. Continuam listadas aqui, marcadas, enquanto aparecerem nas suas estatísticas das últimas semanas; desmarque uma para a repor."
                 }
             },
             "settings": {

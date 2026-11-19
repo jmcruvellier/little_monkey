@@ -26,6 +26,7 @@ from .const import (
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
+    CONF_REMOVED_BANDS,
     CONF_TARIFF_BANDS,
     LOGGER,
     SENSOR_GROUP_OPTIONS,
@@ -175,17 +176,20 @@ async def _async_validate(
     return {}, contract, bands, complete
 
 
-def merge_bands(configured: list, found: dict, complete: bool) -> list:
+def merge_bands(configured: list, found: dict, complete: bool, removed=()) -> list:
     """Return the bands to show: the ones found, with their saved settings.
 
     A band configured before keeps its key, name and category. A band no
     longer found (previous contract) is dropped, unless the bands found are
     not complete: the contract or a week of its statistics was not read,
-    and a band missing from them may still be in the contract.
+    and a band missing from them may still be in the contract. A band
+    removed by the user is not shown, even when it is found.
     """
     saved = {band["id"]: band for band in configured}
     bands = []
     for band_id, label in found.items():
+        if band_id in removed:
+            continue
         band = dict(saved.get(band_id) or new_band(band_id, label))
         band["label"] = label
         bands.append(band)
@@ -231,12 +235,31 @@ class _BandsSteps:
 
     _contract: dict | None = None
     _bands: list = []
+    _removed: dict = {}
+    _kept_removed: list = []
     _default_names: dict = {}
 
-    def _init_bands(self, configured: list, contract, found: dict, complete: bool) -> None:
-        """Keep the contract and the bands to show."""
+    def _init_bands(
+        self, configured: list, contract, found: dict, complete: bool, removed=()
+    ) -> None:
+        """Keep the contract, the bands to show and the removed ones still found.
+
+        A band removed but no longer found is forgotten: if ecojoko gives
+        it again, it is reported as missing like any new band. When the
+        bands found are not complete, it is kept removed instead.
+        """
         self._contract = contract
-        self._bands = merge_bands(configured, found, complete)
+        self._bands = merge_bands(configured, found, complete, removed)
+        self._removed = {
+            band_id: label for band_id, label in found.items() if band_id in removed}
+        self._kept_removed = [] if complete else [
+            band_id for band_id in removed if band_id not in found]
+
+    def _removable(self) -> dict:
+        """Return the bands that can be removed {id as text: label}."""
+        labels = {band["id"]: band.get("label") or f"#{band['id']}" for band in self._bands}
+        labels.update(self._removed)
+        return {str(band_id): label for band_id, label in sorted(labels.items())}
 
     def _contract_text(self) -> str:
         """Return the contract as shown to the user."""
@@ -259,16 +282,35 @@ class _BandsSteps:
             schema[vol.Required(
                 category_field, default=band.get("category") or NO_CATEGORY
             )] = CATEGORY_SELECTOR
+        # Bands to remove: those of a previous contract that ecojoko still
+        # gives, for instance. The ones removed before stay checked
+        removable = self._removable()
+        if removable:
+            schema[vol.Optional(
+                CONF_REMOVED_BANDS,
+                default=[str(band_id) for band_id in self._removed],
+            )] = selector.SelectSelector(selector.SelectSelectorConfig(
+                options=[
+                    selector.SelectOptionDict(value=value, label=label)
+                    for value, label in removable.items()],
+                multiple=True,
+                mode=selector.SelectSelectorMode.LIST,
+            ))
         return self.async_show_form(
             step_id=step_id,
             data_schema=vol.Schema(schema),
             description_placeholders={"contract": self._contract_text()},
         )
 
-    def _read_bands(self, user_input: Mapping[str, Any]) -> list:
-        """Return the bands with the names and categories chosen."""
+    def _read_bands(self, user_input: Mapping[str, Any]) -> tuple[list, list]:
+        """Return the bands with the names and categories chosen, and the removed ids."""
+        removed = sorted(
+            int(value) for value in user_input.get(CONF_REMOVED_BANDS) or []
+            if value in self._removable())
         bands = []
         for band, name_field, category_field in _band_fields(self._bands):
+            if band["id"] in removed:
+                continue
             chosen = {key: band[key] for key in ("id", "label", "key")}
             name = None
             if name_field is not None:
@@ -285,7 +327,24 @@ class _BandsSteps:
             category = user_input.get(category_field)
             chosen["category"] = category if category in (OFF_PEAK, PEAK) else None
             bands.append(chosen)
-        return bands
+        # A band removed before and no longer checked comes back with its
+        # default settings
+        bands += [
+            new_band(band_id, label) for band_id, label in self._removed.items()
+            if band_id not in removed]
+        return bands, removed
+
+    def _save_bands(self, user_input: Mapping[str, Any]) -> None:
+        """Keep the HC/HP option, the bands and the removed ones chosen."""
+        self._data[CONF_USE_HCHP_FEATURE] = (
+            user_input.get(CONF_USE_HCHP_FEATURE) is True)
+        self._data[CONF_TARIFF_BANDS], removed = self._read_bands(user_input)
+        removed = sorted({*removed, *self._kept_removed})
+        # Saved only when there are some: most entries never remove a band
+        if removed:
+            self._data[CONF_REMOVED_BANDS] = removed
+        else:
+            self._data.pop(CONF_REMOVED_BANDS, None)
 
 
 class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
@@ -337,9 +396,7 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         """Show the tariff bands of the contract."""
         if user_input is not None:
-            self._data[CONF_USE_HCHP_FEATURE] = (
-                user_input.get(CONF_USE_HCHP_FEATURE) is True)
-            self._data[CONF_TARIFF_BANDS] = self._read_bands(user_input)
+            self._save_bands(user_input)
             return await self.async_step_settings()
         return await self._async_bands_form("bands", use_hchp=True)
 
@@ -440,6 +497,7 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
                     contract,
                     found,
                     complete,
+                    self._config_entry.data.get(CONF_REMOVED_BANDS) or [],
                 )
                 return await self.async_step_bands()
 
@@ -457,9 +515,7 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
     ) -> ConfigFlowResult:
         """Show the tariff bands of the contract."""
         if user_input is not None:
-            self._data[CONF_USE_HCHP_FEATURE] = (
-                user_input.get(CONF_USE_HCHP_FEATURE) is True)
-            self._data[CONF_TARIFF_BANDS] = self._read_bands(user_input)
+            self._save_bands(user_input)
             return await self.async_step_settings()
         return await self._async_bands_form(
             "bands",

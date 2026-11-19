@@ -221,6 +221,19 @@ def has_sensor(band):
     return band["id"] not in TOTAL_BANDS
 
 
+def is_band_key(key):
+    """Tell whether a sensor key is the one of a band having a sensor.
+
+    The keys of the HC and HP totals are the ones of Heures Creuses and
+    Heures Pleines, which have no sensor of their own: they are not.
+    """
+    if key.startswith("band_"):
+        return key[len("band_"):].isdigit()
+    return any(
+        known_key == key and band_id not in TOTAL_BANDS
+        for band_id, (known_key, _category) in KNOWN_BANDS.items())
+
+
 def day_values(subconsumption, bands):
     """Return the energy of a day by band and by category.
 
