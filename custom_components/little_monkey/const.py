@@ -40,6 +40,8 @@ SENSOR_GROUP_OPTIONS = (
 def option_enabled(entry, option) -> bool:
     """Tell whether an option of a config entry is on."""
     return entry.data.get(option) is True
+
+
 # Tariff bands of the contract and their settings (see tariff.py)
 CONF_TARIFF_BANDS = "tariff_bands"
 

@@ -151,7 +151,7 @@ async def _async_get_savings(hass: HomeAssistant, call: ServiceCall) -> ServiceR
 async def _async_get_consumption_analysis(
     hass: HomeAssistant, call: ServiceCall
 ) -> ServiceResponse:
-    """Return the analysis of the consumption of a week, month or year.
+    """Return the analysis of the consumption of a week or a month.
 
     Without a date, the last period analysed by ecojoko. The answer holds
     the categories (standby, lighting...), or available false and the
