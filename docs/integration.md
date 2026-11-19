@@ -17,6 +17,10 @@ Little Monkey lit les données de votre assistant d'énergie ecojoko<sup>©️</
 | **Ecojoko** (le nom choisi à la configuration) | Tous les capteurs de l'installation. « Micrologiciel » donne la version de Little Monkey, « Matériel » celle de l'assistant ecojoko |
 | **Un appareil par équipement piloté** (le chauffe-eau…), avec l'option Équipements pilotés | Ses capteurs, sa liste « Pilotage » et ses diagnostics, « connecté via » l'appareil Ecojoko. « Matériel » donne la version de l'équipement |
 
+<img src="images/ha/appareil-ecojoko.png" alt="Page de l'appareil Ecojoko" width="560">
+
+<img src="images/ha/appareil-chauffe-eau.png" alt="Page de l'appareil d'un chauffe-eau piloté" width="560">
+
 ## Les capteurs
 
 ### Capteurs de base
