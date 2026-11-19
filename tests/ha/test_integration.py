@@ -990,6 +990,7 @@ async def test_setup_of_a_weekend_contract(hass, fake_api):
         "HC Semaine – HC/HP": "hc",
         "Heures Weekend": "Heures Weekend",
         "Heures Weekend – HC/HP": "none",
+        "removed_bands": [],
     }
     result = await hass.config_entries.flow.async_configure(result["flow_id"], {
         "use_hchp_feature": True,
