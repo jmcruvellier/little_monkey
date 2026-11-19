@@ -160,7 +160,7 @@
                 "name": "Humidité Extérieure"
             },
             "savings_7_days": {
-                "name": "Économies sur 7 Jours",
+                "name": "Écart sur 7 Jours",
                 "state_attributes": {
                     "reference_consumption": {
                         "name": "Consommation de référence"

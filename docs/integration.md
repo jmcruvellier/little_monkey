@@ -43,7 +43,7 @@ Toujours créés, ou selon les cases de la 1.2.8.
 
 | Capteur | Unité | Description |
 |---|---|---|
-| Économies sur 7 Jours | % | Écart de la consommation des 7 derniers jours avec votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
+| Écart sur 7 Jours | % | Écart de la consommation des 7 derniers jours avec votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
 | Consommation sur 7 Jours | kWh | Celle de chaque jour en attribut, du plus ancien au plus récent |
 | Coût sur 7 Jours | € | Selon le tarif renseigné dans ecojoko |
 | Économies Cumulées | € | Depuis le début, négatives en cas de surconsommation |

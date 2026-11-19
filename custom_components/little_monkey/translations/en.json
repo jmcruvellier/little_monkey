@@ -160,7 +160,7 @@
                 "name": "Outdoor Humidity"
             },
             "savings_7_days": {
-                "name": "Savings over 7 Days",
+                "name": "Gap over 7 Days",
                 "state_attributes": {
                     "reference_consumption": {
                         "name": "Reference consumption"

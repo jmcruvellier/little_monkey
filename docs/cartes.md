@@ -63,7 +63,7 @@ entity: sensor.ecojoko_consommation_temps_reel
 | `apparent_power_entity` | Puissance apparente ; par défaut celle du même appareil Little Monkey |
 | `tariff_entity` | Entité donnant la période en cours ; par défaut la Période Tarifaire en Cours. Accepte aussi une source plus réactive : RTE Tempo, téléinformation du compteur Linky (`HCJB`, `HPJR`…), capteur binaire allumé en heures creuses |
 | `tempo_color_entity` | Entité donnant la couleur Tempo du jour, si `tariff_entity` ne la donne pas |
-| `savings_entity` | Économies sur 7 jours, pour l'aiguille du bas ; par défaut celles du même appareil |
+| `savings_entity` | Écart sur 7 jours, pour l'aiguille du bas ; par défaut celui du même appareil |
 | `max_power` | Puissance de la graduation MAX, en W (12 000 par défaut) |
 | `trend_minutes` | Durée de la courbe du disque, en minutes (3 par défaut, de 1 à 60) |
 | `return_seconds` | Délai du retour sur la puissance, en secondes (30 par défaut, 0 pour rester sur la face choisie) |
@@ -126,7 +126,7 @@ Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou
 
 - Les boutons Semaine, Mois et Année changent de période ; le total de la période s'affiche à côté, l'unité choisie en premier.
 - Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
-- Toucher une barre affiche son détail (« Lundi 16 novembre : -0,35 € · -2,58 kWh »).
+- Toucher une barre affiche son détail (« Lundi 16 novembre : -0,35 € · -2,57 kWh »).
 
 ```yaml
 type: custom:little-monkey-savings-detail-card

@@ -1264,7 +1264,7 @@ async def test_activity_sensors(hass, fake_api):
     assert savings.state == "-3"
     assert savings.attributes["unit_of_measurement"] == "%"
     assert savings.attributes["reference_consumption"] == 74.4
-    assert savings.attributes["friendly_name"] == "Ecojoko Savings over 7 Days"
+    assert savings.attributes["friendly_name"] == "Ecojoko Gap over 7 Days"
     cost = hass.states.get("sensor.ecojoko_cost_over_7_days")
     assert cost.state == "16.6"
     assert cost.attributes["device_class"] == "monetary"

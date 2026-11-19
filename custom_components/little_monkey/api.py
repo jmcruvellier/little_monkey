@@ -137,20 +137,30 @@ def _savings_values(item) -> dict:
     """Return the savings of a period or of a bar of savingstat.
 
     ecojoko gives the savings in euros with their sign, negative for an
-    overconsumption, but in kWh without it: the sign of the euros is given
-    to the kWh.
+    overconsumption, and their difference in kWh without it. For a period,
+    this difference is even the sum of the differences of its bars without
+    their sign (26.53 kWh for a week of +12.94, -9.37 and +4.22 kWh, November
+    2026). The savings in kWh are therefore the reference consumption minus
+    the consumption, as the savings in euros are the reference cost minus
+    the cost; ecojoko's difference only stands in when one of them is
+    missing, with the sign of the euros.
     """
     savings = finite_number(item.get("val"))
-    savings_kwh = finite_number(item.get("val_kwh"))
-    if savings_kwh is not None and savings is not None and savings < 0:
-        savings_kwh = -abs(savings_kwh)
+    consumption = finite_number(item.get("kwh", item.get("conso_kwh")))
+    reference_consumption = finite_number(item.get("ref_kwh"))
+    if consumption is not None and reference_consumption is not None:
+        savings_kwh = round_value(reference_consumption - consumption)
+    else:
+        savings_kwh = finite_number(item.get("val_kwh"))
+        if savings_kwh is not None and savings is not None and savings < 0:
+            savings_kwh = -abs(savings_kwh)
     return {
         "savings": savings,
         "savings_kwh": savings_kwh,
         "cost": finite_number(item.get("price", item.get("conso"))),
-        "consumption": finite_number(item.get("kwh", item.get("conso_kwh"))),
+        "consumption": consumption,
         "reference_cost": finite_number(item.get("ref")),
-        "reference_consumption": finite_number(item.get("ref_kwh")),
+        "reference_consumption": reference_consumption,
     }
 
 
