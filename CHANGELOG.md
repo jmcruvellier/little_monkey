@@ -1,6 +1,16 @@
 # Changelog
 
 ## 2.0.0b1
+
+> [!WARNING]
+> Version bêta : à installer pour tester, en activant l'affichage des versions bêta dans HACS. Signalez les problèmes dans les [issues](https://github.com/jmcruvellier/little_monkey/issues).
+
+### Changements majeurs
+- La configuration et les options tiennent sur trois écrans : identifiants, tranches tarifaires du contrat, autres capteurs. Les installations existantes sont converties automatiquement, sans perte d'historique
+- Nouvelles options, chacune avec sa case dans le dernier écran des réglages, **décochée par défaut** : activité du compte, économies, contrat, équipements pilotés, analyse de la conso, mesures. Leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si la case est cochée ; les cartes qui en ont besoin invitent à l'activer
+- Version minimale de Home Assistant : 2024.7.0
+
+### Nouveautés et corrections
 - Nouvelle carte « Little Monkey » pour les tableaux de bord, fournie par l'intégration elle-même : aucune ressource Lovelace à ajouter, elle est chargée automatiquement et suit toujours la version de l'intégration. Elle reprend le cadran du boîtier ecojoko : la puissance en temps réel sur un arc logarithmique, et dans le disque central la puissance, la puissance apparente (VA) quand elle est disponible et la courbe des dernières minutes. Avec l'option HC/HP ou Tempo, le disque prend la couleur de la période en cours, lue sur une entité de votre choix (couleur Tempo, heures creuses, période du compteur Linky...). Elle suit les thèmes clair et sombre de Home Assistant, en français et en anglais, et se configure avec un éditeur visuel qui choisit seul les capteurs de l'appareil Little Monkey
 - Nouveau capteur « Période Tarifaire en Cours », créé avec l'option HC/HP ou Tempo : heures creuses ou pleines, et couleur du jour en Tempo. ecojoko ne donnant que l'énergie de chaque période, la période en cours est celle dont le compteur augmente : elle est connue avec quelques minutes de retard, et conservée quand la consommation est trop faible pour faire avancer un compteur. La carte l'utilise automatiquement pour colorer son disque
 - Nouveaux capteurs tirés de l'activité du compte ecojoko : Économies sur 7 Jours (en % par rapport à la consommation de référence, la donnée de l'aiguille du bas du cadran ecojoko), Consommation (avec celle de chaque jour en attribut) et Coût sur 7 Jours, Économies Cumulées, Puissance Max du mois, de l'année et depuis le début. ecojoko calculant lentement ces valeurs, elles sont lues à part, toutes les dix minutes : une lenteur ou une panne de cette API ne touche jamais les capteurs temps réel, et leurs dernières valeurs sont conservées pendant une heure. Sur la carte, l'aiguille du bas indique désormais les économies sur 7 jours, et le disque central gagne, comme celui d'ecojoko, trois faces que l'on fait défiler en glissant ou avec les points : économies sur 7 jours, coût et consommation sur 7 jours avec l'histogramme des jours, puissance maximale. Il revient seul sur la puissance temps réel après 30 secondes, et titre « INJECTION RÉSEAU » pendant l'injection d'un surplus. Le cadran prend du relief et un fond tiré du thème, réglables dans l'éditeur (relief, fond du cadran : par défaut, transparent, palette de Home Assistant ou couleur libre)
