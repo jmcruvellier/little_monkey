@@ -395,6 +395,16 @@ export function otherDetails(equipment, text, locale) {
   return details;
 }
 
+/**
+ * Tell whether drawing the card again waits: a duration or the end of an
+ * absence is being typed, and nothing but a value of an equipment changed.
+ * Drawn again, its field would lose the focus at each reading of ecojoko.
+ * A touch of the user (forced) always draws the card again.
+ */
+export function keepsTyping(active, forced) {
+  return !forced && active?.tagName === "INPUT";
+}
+
 /** Return the entity of the integration with a translation key, if any. */
 function findEntity(hass, translationKey) {
   return Object.values(hass?.entities || {}).find(
@@ -500,6 +510,8 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     if (entity !== this._config.entity) {
       this._equipments = null;
       this._error = false;
+      // Another installation: its equipments are read at once
+      this._read();
     }
     // Equipment opened, panel shown {id, kind} and command being sent
     this._opened = this._opened ?? null;
@@ -507,6 +519,8 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     this._busy = null;
     this._commandError = null;
     this._built = false;
+    // Built again, the card is empty: it is drawn even if nothing changed
+    this._signature = null;
     this._render();
   }
 
@@ -586,7 +600,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
       this._error = true;
     } finally {
       this._reading = false;
-      this._signature = null;
+      // Not forced: the signature holds what was read
       this._render();
     }
   }
@@ -707,6 +721,10 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
       this._config, locale, now.getHours(), now.getMinutes(), this._shownStates(),
     ]);
     if (signature === this._signature) {
+      return;
+    }
+    if (keepsTyping(this.shadowRoot.activeElement, this._signature === null)) {
+      // Drawn at the next change once the field is left
       return;
     }
     this._signature = signature;
