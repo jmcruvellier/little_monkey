@@ -2165,7 +2165,7 @@ def test_energy_of_a_week_by_band(api):
     assert session.requests[-1][1].endswith("/powerstat/w/2026-11-18")
     assert week["next"] is None and week["previous"] == "2026-11-09T00:00:00+01:00"
     assert week["bars"][0] == {
-        "date": "2026-11-16", "energy": 30.88, "cost": 3.47, "base_energy": 11.69,
+        "date": "2026-11-16", "energy": 30.88, "cost": 5.54, "base_energy": 11.69,
         "production": 0.02, "bands": [
             {"id": 2, "energy": 16.4, "cost": 3.3}, {"id": 3, "energy": 14.47, "cost": 2.24}]}
     # A day to come has no bands
@@ -2196,6 +2196,23 @@ def test_week_of_today_is_asked_at_another_day(api):
     assert session.requests[-1][1].endswith(f"/powerstat/d4/{today.isoformat()}")
 
 
+def test_cost_of_a_bar_includes_the_base_load(api):
+    """The cost of a day is that of its bands, base load included.
+
+    ecojoko gives in « value » the cost without the base load: on 19/11/2026
+    1.08 €, with 0.04 € of base load, where its page shows 1.12 €.
+    """
+    bars = api.parse_energy_bars({"stat": {"data": [
+        {"time": 1795042800000, "value": 1.08, "consobase": 0.04458, "kwh": 3.91,
+         "subconsumption": [{"id": 2, "kwh": 1.67, "price": 0.65},
+                            {"id": 3, "kwh": 2.25, "price": 0.47}]},
+        # Without the bands, its cost and that of the base load
+        {"time": 1795129200000, "value": 1.08, "consobase": 0.04458, "kwh": 3.91},
+        {"time": 1795215600000, "value": 0, "kwh": 0},
+    ]}})["bars"]
+    assert [bar["cost"] for bar in bars] == [1.12, 1.12, 0]
+
+
 def test_measures_without_their_period(api):
     """Measures that ecojoko gives without their period are read all the same.
 
@@ -2213,7 +2230,7 @@ def test_measures_without_their_period(api):
     assert not {"start", "previous", "next"} & measures.keys()
     assert measures["bars"][0]["energy"] == 30.88 and len(measures["bars"]) == 2
     # The totals of the week are those of its days
-    assert measures["energy"] == 30.88 and measures["cost"] == 3.47
+    assert measures["energy"] == 30.88 and measures["cost"] == 5.54
     assert measures["production"] == 0.02
 
     day = copy.deepcopy(POWER_DAY)
