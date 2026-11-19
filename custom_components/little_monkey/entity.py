@@ -388,6 +388,20 @@ def registry_device(registry, identifier, entry_id):
     return registry.async_get_device(identifiers={identifier})
 
 
+def device_entry_ids(device) -> set:
+    """Return the ids of the config entries of a device.
+
+    Since 2026 a device belongs to a single config entry, config_entry_id:
+    config_entries is deprecated, and stops working in 2027.10. The older
+    versions supported (2024.7 at least) only know config_entries.
+    """
+    try:
+        entry_id = device.config_entry_id
+    except AttributeError:
+        return set(device.config_entries)
+    return set() if entry_id is None else {entry_id}
+
+
 # Home Assistant links a device to its parent by the id of the parent since
 # 2026 (via_device_id): its identifiers (via_device) are deprecated, and
 # refused from 2027.8. The older versions supported (2024.7 at least) only

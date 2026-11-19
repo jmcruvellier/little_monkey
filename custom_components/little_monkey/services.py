@@ -36,7 +36,7 @@ from .const import (
     DOMAIN,
     option_enabled,
 )
-from .entity import equipment_identifier, registry_device
+from .entity import device_entry_ids, equipment_identifier, registry_device
 from .utils import get_current_date
 
 SERVICE_GET_SAVINGS = "get_savings"
@@ -248,7 +248,7 @@ def _equipment_of_device(hass: HomeAssistant, device_id: str):
     """Return the loaded entry and the ecojoko id of the equipment of a device."""
     device = dr.async_get(hass).async_get(device_id)
     if device is not None:
-        for entry_id in device.config_entries:
+        for entry_id in device_entry_ids(device):
             entry = hass.config_entries.async_get_entry(entry_id)
             if entry is None or entry.domain != DOMAIN or entry.state is not ConfigEntryState.LOADED:
                 continue
