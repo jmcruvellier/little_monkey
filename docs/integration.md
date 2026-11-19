@@ -167,7 +167,7 @@ Sans son option, un service de lecture répond `enabled: false` sans rien lire c
 > Little Monkey est une intégration **non officielle**. Elle dépend des API d'ecojoko<sup>©️</sup>, qui ne sont pas documentées et peuvent changer ou être indisponibles.
 
 - **Temps réel** : lu à la fréquence choisie (3 à 60 secondes). ecojoko ne sert des données en direct que pendant dix minutes après la lecture de la liste de ses passerelles ; l'intégration la relit toutes les cinq minutes.
-- **Énergie du jour** : les compteurs ne diminuent jamais au cours d'une journée, même si ecojoko renvoie un instant une valeur plus basse ; ils repartent de zéro à minuit.
+- **Énergie du jour** : les compteurs ne diminuent jamais au cours d'une journée, même si ecojoko renvoie un instant une valeur plus basse ; ils repartent de zéro à minuit. Quand ecojoko reclasse après coup de l'énergie d'une tranche dans une autre (des heures creuses vers les heures pleines, par exemple), elle n'est comptée qu'une fois : la somme des totaux HC et HP, comme celle des tranches, ne dépasse jamais la consommation réseau du jour.
 - **Coupures** : une coupure de moins de deux minutes conserve les dernières valeurs ; au-delà, les capteurs passent à « indisponible ». Les données lues à part (activité, économies, équipements) gardent leurs dernières valeurs une heure.
 - **Liste des équipements** : ecojoko ne la met à jour que toutes les cinq minutes ; l'état d'un équipement piloté est lu directement, plus souvent.
 - **Diagnostics** : téléchargeables depuis la page de l'intégration, sans vos identifiants ni le nom de l'installation.

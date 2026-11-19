@@ -38,8 +38,8 @@ from .const import (
     TEMPO_PERIODS,
     tariff_periods,
 )
-from .tariff import band_key
-from .utils import TariffPeriod, get_current_date
+from .tariff import band_key, has_sensor
+from .utils import DayParts, TariffPeriod, get_current_date
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
 
@@ -75,6 +75,14 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             for band in entry.data.get(CONF_TARIFF_BANDS) or []
         }
         self._tariff_band = TariffPeriod()
+        # The HC and HP totals, and the tariff bands having a sensor, split
+        # the grid consumption: their sum never exceeds it (see DayParts)
+        self._day_parts = [
+            DayParts(("hc_grid_consumption", "hp_grid_consumption")),
+            DayParts(
+                band["key"] for band in entry.data.get(CONF_TARIFF_BANDS) or []
+                if has_sensor(band)),
+        ]
 
         super().__init__(
             hass=hass,
@@ -98,6 +106,13 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         if self._failing_since is None:
             self._failing_since = now
         return now - self._failing_since < CONF_API_FAILURE_GRACE
+
+    def day_parts(self, key):
+        """Return the parts of the grid consumption a sensor belongs to, or None."""
+        for parts in self._day_parts:
+            if key in parts.keys:
+                return parts
+        return None
 
     @property
     def unknown_bands_issue_id(self) -> str:

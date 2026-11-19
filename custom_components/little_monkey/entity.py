@@ -121,6 +121,18 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
         )
         self._holding = False
 
+    @property
+    def _day_parts(self):
+        """Return the parts of the grid consumption of the sensor, or None.
+
+        The HC and HP totals and the tariff bands are published by them
+        (see DayParts), the other daily totals by their DailyCounter.
+        """
+        if self._daily_counter is None:
+            return None
+        day_parts = getattr(self.coordinator, "day_parts", None)
+        return None if day_parts is None else day_parts(self._sensor_name)
+
     async def async_added_to_hass(self) -> None:
         """Restore the value published before a restart of Home Assistant."""
         await super().async_added_to_hass()
@@ -135,7 +147,11 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
             return
         # The value belongs to the day it was last written
         day = last_state.last_updated.astimezone(TZ).date().isoformat()
-        self._daily_counter.restore(day, value)
+        parts = self._day_parts
+        if parts is not None:
+            parts.restore(self._sensor_name, day, value)
+        else:
+            self._daily_counter.restore(day, value)
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -155,11 +171,15 @@ class EcojokoSensor(CoordinatorEntity, RestoreSensor):
         value = _as_number(data.get(self._sensor_name))
         if self._daily_counter is None or value is None:
             return value
-        published = self._daily_counter.update(data.get("stat_date"), value)
-        holding = published > value
+        parts = self._day_parts
+        if parts is not None:
+            published = parts.value(self._sensor_name, data)
+        else:
+            published = self._daily_counter.update(data.get("stat_date"), value)
+        holding = published != value
         if holding and not self._holding:
             LOGGER.debug(
-                "%s: ecojoko lowered the value to %s, %s is kept until it catches up",
+                "%s: ecojoko gives %s, %s is published to count each kWh once",
                 self._sensor_name, value, published)
         self._holding = holding
         return published

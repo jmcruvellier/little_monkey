@@ -447,6 +447,24 @@ async def test_energy_is_held_when_ecojoko_lowers_it(hass, fake_api):
         assert hass.states.get(GRID).state == published, received
 
 
+async def test_energy_moved_from_hc_to_hp_is_counted_once(hass, fake_api):
+    """HC + HP never exceeds the grid consumption when ecojoko moves energy."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    hc, hp = "sensor.ecojoko_hc_grid_consumption", "sensor.ecojoko_hp_grid_consumption"
+    assert (hass.states.get(hc).state, hass.states.get(hp).state) == ("1.5", "2.5")
+
+    # ecojoko moves 1 kWh from HC to HP: HP only gains the 0.2 kWh left up
+    # to the grid consumption; then the consumption grows in HC
+    for values, published in (
+        ({"_kwh_hc_ns": 0.5, "_kwh_hp_ns": 3.5}, ("1.5", "2.7")),
+        ({"_kwh": 4.6, "_kwh_hc_ns": 0.9, "_kwh_hp_ns": 3.5}, ("1.9", "2.7")),
+    ):
+        fake_api.values.update(values)
+        await refresh(hass, entry)
+        assert (hass.states.get(hc).state, hass.states.get(hp).state) == published
+
+
 async def test_power_follows_ecojoko_both_ways(hass, fake_api):
     """Sensors that are not totals are not held."""
     entry = add_entry(hass)
@@ -984,6 +1002,7 @@ async def test_setup_of_a_weekend_contract(hass, fake_api):
     })
     fake_api.values["_band_values"] = {
         "band_8": 0, "band_9": 0, "band_13": 26.19}
+    fake_api.values["_kwh"] = 26.19
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], dict(SETTINGS))
     await hass.async_block_till_done()
@@ -1122,6 +1141,7 @@ async def test_unknown_bands_are_repaired(hass, fake_api):
     # Once the entry reloads, the bands are configured
     fake_api.values["_unknown_bands"] = {}
     fake_api.values["_band_values"] = {"band_8": 6.43, "band_9": 18.29}
+    fake_api.values["_kwh"] = 24.72
     result = await flow.async_step_confirm({})
     await hass.async_block_till_done()
     assert result["type"] == CREATE_ENTRY
