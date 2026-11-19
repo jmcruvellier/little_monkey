@@ -710,6 +710,9 @@ class LittleMonkeyApiClient:
         # ecojoko gives them (with a water heater it pilots)
         self._day_costs = {}
         self._exact_prices = None
+        # Weeks of statistics the last setup of the tariff bands could not
+        # read: its bands may then be incomplete
+        self.tariff_weeks_missed = 0
 
         # Internal
         # Monotonic time the contract is due to be read again
@@ -942,8 +945,11 @@ class LittleMonkeyApiClient:
         the ones met in the statistics of the last weeks since the start of
         the contract. The contract is None and the bands are empty when
         ecojoko does not give them: the setup goes on without them.
+        tariff_weeks_missed counts the weeks that could not be read: a band
+        met only in them is missing from the answer.
         Must be called after a successful login.
         """
+        self.tariff_weeks_missed = 0
         if self._gateway_id is None:
             await self.async_get_gatewaydata()
         gateway_url = f"{ECOJOKO_GATEWAY_URL}/{self._gateway_id}"
@@ -979,6 +985,7 @@ class LittleMonkeyApiClient:
             except LittleMonkeyApiClientAuthenticationError:
                 raise
             except (LittleMonkeyApiClientError, *PARSE_ERRORS) as exception:
+                self.tariff_weeks_missed += 1
                 LOGGER.debug("Statistics of %s not read: %r", day, exception)
         offer_type = None if contract is None else contract.get("offer_type")
         return contract, bands_of_offer(offer_type, observed)

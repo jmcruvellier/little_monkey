@@ -123,11 +123,12 @@ async def _async_validate(
     data: Mapping[str, Any],
     check_gateway: bool = False,
     discover: bool = False,
-) -> tuple[dict[str, str], dict | None, dict]:
+) -> tuple[dict[str, str], dict | None, dict, bool]:
     """Log in to ecojoko and, if asked, read the contract and its bands.
 
-    Return the form errors (empty if it worked), the active contract and
-    its tariff bands {id: label}.
+    Return the form errors (empty if it worked), the active contract, its
+    tariff bands {id: label}, and whether these bands are complete: the
+    contract and every week of its statistics were read.
     """
     # A session used for this check only, released as soon as it is done
     session = async_create_clientsession(hass, auto_cleanup=False)
@@ -149,24 +150,26 @@ async def _async_validate(
             contract, bands = await client.async_get_tariff_setup()
     except LittleMonkeyApiClientAuthenticationError as exception:
         LOGGER.warning(exception)
-        return {"base": "auth"}, None, {}
+        return {"base": "auth"}, None, {}, False
     except LittleMonkeyApiClientCommunicationError as exception:
         LOGGER.error(exception)
-        return {"base": "connection"}, None, {}
+        return {"base": "connection"}, None, {}, False
     except LittleMonkeyApiClientError as exception:
         LOGGER.exception(exception)
-        return {"base": "unknown"}, None, {}
+        return {"base": "unknown"}, None, {}, False
     finally:
         session.detach()
-    return {}, contract, bands
+    complete = contract is not None and not client.tariff_weeks_missed
+    return {}, contract, bands, complete
 
 
-def merge_bands(configured: list, found: dict, contract_read: bool) -> list:
+def merge_bands(configured: list, found: dict, complete: bool) -> list:
     """Return the bands to show: the ones found, with their saved settings.
 
     A band configured before keeps its key, name and category. A band no
-    longer found (previous contract) is dropped, unless the contract could
-    not be read.
+    longer found (previous contract) is dropped, unless the bands found are
+    not complete: the contract or a week of its statistics was not read,
+    and a band missing from them may still be in the contract.
     """
     saved = {band["id"]: band for band in configured}
     bands = []
@@ -174,7 +177,7 @@ def merge_bands(configured: list, found: dict, contract_read: bool) -> list:
         band = dict(saved.get(band_id) or new_band(band_id, label))
         band["label"] = label
         bands.append(band)
-    if not contract_read:
+    if not complete:
         bands += [band for band_id, band in saved.items() if band_id not in found]
     return bands
 
@@ -218,10 +221,10 @@ class _BandsSteps:
     _bands: list = []
     _default_names: dict = {}
 
-    def _init_bands(self, configured: list, contract, found: dict) -> None:
+    def _init_bands(self, configured: list, contract, found: dict, complete: bool) -> None:
         """Keep the contract and the bands to show."""
         self._contract = contract
-        self._bands = merge_bands(configured, found, contract is not None)
+        self._bands = merge_bands(configured, found, complete)
 
     def _contract_text(self) -> str:
         """Return the contract as shown to the user."""
@@ -299,12 +302,12 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
             self._abort_if_unique_id_configured()
             _errors = _name_errors(user_input)
             if not _errors:
-                _errors, contract, found = await _async_validate(
+                _errors, contract, found, complete = await _async_validate(
                     self.hass, user_input, discover=True
                 )
             if not _errors:
                 self._data = dict(user_input)
-                self._init_bands([], contract, found)
+                self._init_bands([], contract, found, complete)
                 return await self.async_step_bands()
 
         return self.async_show_form(
@@ -364,7 +367,7 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
         _errors = {}
         if user_input is not None:
             data = {**entry.data, CONF_PASSWORD: user_input[CONF_PASSWORD]}
-            _errors, _contract, _found = await _async_validate(self.hass, data)
+            _errors, _contract, _found, _complete = await _async_validate(self.hass, data)
             if not _errors:
                 self.hass.config_entries.async_update_entry(entry, data=data)
                 # A loaded entry is reloaded by its update listener
@@ -410,7 +413,7 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
         if user_input is not None:
             _errors = _name_errors(user_input)
             if not _errors:
-                _errors, contract, found = await _async_validate(
+                _errors, contract, found, complete = await _async_validate(
                     self.hass, user_input, discover=True
                 )
             if not _errors:
@@ -419,6 +422,7 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
                     self._config_entry.data.get(CONF_TARIFF_BANDS) or [],
                     contract,
                     found,
+                    complete,
                 )
                 return await self.async_step_bands()
 
