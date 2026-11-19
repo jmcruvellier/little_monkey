@@ -160,3 +160,15 @@ test("the statistics are used only when they cover the period from its start", (
   assert.equal(card.statisticsCover(climate("2026-11-18T14:00:00.000Z"), range, "week"), false);
   assert.equal(card.statisticsCover({ points: [] }, range, "week"), false);
 });
+
+test("the month of the temperature and humidity is the calendar month", () => {
+  assert.equal(card.datesPeriod("temperature", "month"), "calendar");
+  assert.equal(card.datesPeriod("electricity", "month"), "month");
+  assert.equal(card.datesPeriod("humidity", "week"), "week");
+  const iso = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const range = card.periodRange("calendar", "2026-11-18");
+  assert.deepEqual([iso(range.start), iso(range.end)], ["2026-11-01", "2026-12-01"]);
+  assert.equal(card.shiftDate("calendar", "2026-01-31", -1), "2025-12-28");
+  assert.equal(card.periodLabel("fr", "calendar", "2026-11-01"), "Novembre 2026");
+  assert.equal(card.climateLabels("fr", "calendar", range).length, 6);
+});

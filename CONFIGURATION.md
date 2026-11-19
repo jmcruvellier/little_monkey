@@ -364,7 +364,7 @@ title: Mesures
 |---|---|---|
 | `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
 | `measure` | Non | Onglet affiché d'abord : `electricity` (par défaut), `temperature` ou `humidity` |
-| `period` | Non | Période affichée d'abord : `day` (par défaut), `week`, `month` (30 jours, comme le « Mois » d'ecojoko) ou `year` |
+| `period` | Non | Période affichée d'abord : `day` (par défaut), `week`, `month` (30 jours pour l'électricité, comme le « Mois » d'ecojoko ; le mois calendaire pour la température et l'humidité) ou `year` |
 | `unit` | Non | Unité des barres : `kwh` (par défaut) ou `eur` |
 | `title` | Non | Titre de la carte |
 
@@ -380,7 +380,7 @@ title: Mesures
 | Champ | Obligatoire | Description |
 |---|---|---|
 | `measure` | Oui | `electricity`, `temperature` ou `humidity` |
-| `period` | Oui | `day`, `week`, `month` (les 30 jours qui finissent à la date, comme le « Mois » d'ecojoko) ou `year` |
+| `period` | Oui | `day`, `week`, `month` ou `year`. Pour l'électricité, le mois est formé des 30 jours qui finissent à la date, comme le « Mois » d'ecojoko ; pour la température et l'humidité, c'est le mois calendaire, le seul que la sonde connaisse |
 | `date` | Non | Un jour de la période, aujourd'hui par défaut |
 
 La réponse donne le début de la période (`start`) et celui des périodes précédente et suivante (`previous`, `next`). Pour l'électricité, elle donne aussi l'énergie (`energy`), le coût (`cost`), la production injectée (`production`) et les tranches tarifaires avec leur couleur (`bands`). Un jour a sa puissance toutes les quelques minutes (`points` : `time`, `power`, le talon `base` et la tranche `band`). Une semaine, un mois ou une année a ses jours ou ses mois (`bars` : `date`, `energy`, `cost`, `base_energy`, `production` et le détail par tranche `bands`). Pour la température et l'humidité, elle donne l'unité (`unit`) et les mesures intérieure et extérieure (`points` : `time`, `inside`, `outside`).

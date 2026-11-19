@@ -311,6 +311,9 @@ def parse_activations(payload) -> dict:
 MEASURE_PERIODS = {"day": "d4", "week": "w", "month": "m6", "year": "y"}
 # Kinds of measures: the API and the device that measures them
 MEASURES = {"electricity": "powerstat", "temperature": "tempstat", "humidity": "humstat"}
+# The temperature and humidity sensor has no 30 days ending on a date (m6
+# gives a single day): its month is the calendar month
+CLIMATE_MONTH = "m"
 
 
 def _measure_period(period) -> dict:
@@ -1049,6 +1052,8 @@ class LittleMonkeyApiClient:
         temperature and humidity are inside and outside, as curves.
         """
         scale = MEASURE_PERIODS[period]
+        if measure != "electricity" and period == "month":
+            scale = CLIMATE_MONTH
         path = f"{MEASURES[measure]}/{scale}/{day.isoformat()}"
         if measure != "electricity":
             if self._temp_hum_id is None:
