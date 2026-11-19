@@ -40,6 +40,11 @@ async def async_get_config_entry_diagnostics(
     # The equipments hold their ids and names: the client gives what matters
     diagnostics["data"] = None if coordinator.data is None else {
         key: value for key, value in coordinator.data.items() if key != "equipments"}
+    # The contract without the price of its subscription, as in the client
+    contract = (diagnostics["data"] or {}).get("contract")
+    if isinstance(contract, dict):
+        diagnostics["data"]["contract"] = {
+            key: value for key, value in contract.items() if key != "subscription_price"}
     # Data read apart from the polls
     for name in ("activity", "savings"):
         slow = getattr(coordinator, name, None)
