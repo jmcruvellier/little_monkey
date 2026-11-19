@@ -85,6 +85,7 @@ Le bouton **Configurer** de l'intégration reprend les trois écrans. Les nouvea
 - **Décocher une des six cases de la version 2.0.0** supprime ses capteurs, et les appareils des équipements pour « Équipements pilotés ». Les cartes qui en ont besoin affichent alors un message qui invite à la réactiver.
 - **Décocher une autre case, ou changer de contrat**, laisse les capteurs concernés dans Home Assistant, à l'état « indisponible » : leur historique et leurs statistiques sont conservés. Les cartes n'en tiennent plus compte ; supprimez-les depuis leur page si vous n'en avez plus besoin.
 - **Changer le nom** renomme l'appareil et le nom affiché des capteurs ; leurs identifiants et leur historique sont conservés.
+- **Changer le nom d'utilisateur**, après l'avoir changé chez ecojoko, ne touche à aucun capteur : ils sont attachés à l'installation, pas au compte. Le titre de l'intégration suit le nouveau nom d'utilisateur, sauf si vous l'avez renommée. Un compte déjà utilisé par une autre installation Little Monkey est refusé.
 
 ## Mettre à jour depuis la 1.2.8
 
