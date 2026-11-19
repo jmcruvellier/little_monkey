@@ -32,6 +32,7 @@ from .const import (
     CONF_USE_ANALYSIS_FEATURE,
     CONF_USE_EQUIPMENT_FEATURE,
     CONF_USE_MEASURES_FEATURE,
+    CONF_USE_SAVINGS_FEATURE,
     DOMAIN,
     option_enabled,
 )
@@ -144,7 +145,8 @@ async def _async_get_savings(hass: HomeAssistant, call: ServiceCall) -> ServiceR
     period = call.data[ATTR_PERIOD]
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
     savings = await _async_read(
-        hass, call, lambda client: client.async_get_savings_period(period, day))
+        hass, call, lambda client: client.async_get_savings_period(period, day),
+        CONF_USE_SAVINGS_FEATURE)
     return {"period": period, "date": day.isoformat(), **savings}
 
 

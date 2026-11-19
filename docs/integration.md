@@ -139,7 +139,7 @@ Les services renvoient une réponse : appelez-les depuis un script ou une automa
 
 | Service | Option requise | Réponse |
 |---|---|---|
-| `little_monkey.get_savings` | — | Économies d'une semaine, d'un mois ou d'une année (`period`, `date`) : `savings`, `savings_kwh`, coûts et consommations, détail `bars` |
+| `little_monkey.get_savings` | Économies | Économies d'une semaine, d'un mois ou d'une année (`period`, `date`) : `savings`, `savings_kwh`, coûts et consommations, détail `bars` |
 | `little_monkey.get_consumption_analysis` | Analyse de la conso | Répartition d'une semaine ou d'un mois par poste (`period` : `week` ou `month`, `date`) : `categories` avec `name`, `cost`, `consumption`, `percentage`, `trend` et sous-postes. Sans date, la dernière période analysée ; une période pas encore analysée renvoie `available: false` et le message d'ecojoko |
 | `little_monkey.get_category_history` | Analyse de la conso | Consommation d'un poste (`category`) semaine par semaine sur une année |
 | `little_monkey.get_activations` | Analyse de la conso | Démarrages d'appareils sur 48 heures (`page` 0 pour les dernières, 1 pour les précédentes…) : heures, puissance moyenne, énergie, forme |

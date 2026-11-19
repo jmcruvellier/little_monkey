@@ -1772,6 +1772,8 @@ async def test_groups_of_sensors_are_off_by_default(hass, fake_api):
     # So do the cards read on demand, without reading ecojoko
     calls = len(fake_api.analysis_calls)
     assert (await call_service(hass, "get_activations"))["enabled"] is False
+    assert (await call_service(hass, "get_savings", period="week"))["enabled"] is False
+    assert fake_api.savings_periods == []
     assert (await call_service(hass, "get_consumption_analysis", period="week"))["enabled"] is False
     assert (await call_service(hass, "get_category_history", category=8))["enabled"] is False
     answer = await call_service(hass, "get_measures", measure="electricity", period="day")
