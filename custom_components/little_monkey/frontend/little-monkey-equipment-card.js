@@ -366,6 +366,37 @@ export function otherMeasures(equipment, locale, states) {
     .map(({ key, value, digits, unit }) => ({ key, value: formatNumber(locale, value, digits, unit) }));
 }
 
+/**
+ * Return the details of an equipment that is not piloted, under its name:
+ * where it is placed, its connection, its batteries (level and voltage) and
+ * its signal, each with the key of its entity.
+ */
+export function otherDetails(equipment, text, locale) {
+  const details = [];
+  const given = (value) => value !== null && value !== undefined;
+  if (equipment?.install_state) {
+    details.push({ key: "install_state", value: String(equipment.install_state) });
+  }
+  if (equipment?.connected === false) {
+    details.push({ key: "connection", value: equipment.status || text.disconnected, disconnected: true });
+  }
+  if (given(equipment?.battery) || given(equipment?.battery_voltage)) {
+    const values = [];
+    if (given(equipment.battery)) {
+      values.push(formatNumber(locale, equipment.battery, 0, "%"));
+    }
+    if (given(equipment.battery_voltage)) {
+      values.push(formatNumber(locale, equipment.battery_voltage, 2, "V"));
+    }
+    details.push({ key: given(equipment.battery) ? "battery" : "battery_voltage",
+      value: text.battery.replace("{value}", values.join(" · ")) });
+  }
+  if (given(equipment?.signal)) {
+    details.push({ key: "signal", value: text.signal.replace("{value}", formatNumber(locale, equipment.signal, 0, "%")) });
+  }
+  return details;
+}
+
 /** Return the entity of the integration with a translation key, if any. */
 function findEntity(hass, translationKey) {
   return Object.values(hass?.entities || {}).find(
@@ -448,7 +479,11 @@ const STYLES = `
   .other { display: flex; align-items: center; gap: 10px; padding: 4px 2px; }
   .other .icon { width: 28px; height: 28px; background: var(--secondary-background-color, #e5e5e5); color: var(--primary-text-color); }
   .other .icon ha-icon { --mdc-icon-size: 16px; }
-  .other .name { flex: 1; min-width: 0; color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .other .text { flex: 1; min-width: 0; }
+  .other .name { color: var(--primary-text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .other .other-details { color: var(--secondary-text-color); font-size: 0.8em; line-height: 1.4; }
+  .other .detail { white-space: nowrap; }
+  .other .detail.disconnected { color: var(--error-color, #db4437); }
   .other .info { color: var(--secondary-text-color); font-size: 0.85em; white-space: nowrap; }
   [data-entity] { cursor: pointer; }
   [data-entity]:hover { text-decoration: underline dotted; }
@@ -821,22 +856,20 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
   /** Return the HTML of an equipment that is not piloted. */
   _other(equipment, text, locale) {
     // Its measures first, then its connection
-    const infos = otherMeasures(equipment, locale, this._hass.states).map((measure) =>
+    const measures = otherMeasures(equipment, locale, this._hass.states).map((measure) =>
       `<span class="info measure"${entityAttribute(equipment, measure.key)}>${escapeHtml(measure.value)}</span>`);
-    if (equipment.connected === false) {
-      infos.push(`<span class="info disconnected"${entityAttribute(equipment, "connection")}>${escapeHtml(equipment.status || text.disconnected)}</span>`);
-    }
-    if (equipment.battery !== null && equipment.battery !== undefined) {
-      infos.push(`<span class="info"${entityAttribute(equipment, "battery")}>${escapeHtml(text.battery.replace("{value}", `${equipment.battery} %`))}</span>`);
-    }
-    if (equipment.signal !== null && equipment.signal !== undefined) {
-      infos.push(`<span class="info"${entityAttribute(equipment, "signal")}>${escapeHtml(text.signal.replace("{value}", `${equipment.signal} %`))}</span>`);
-    }
+    // Under its name, where it is placed, its connection, batteries and signal
+    const details = otherDetails(equipment, text, locale).map((detail) =>
+      `<span class="detail${detail.disconnected ? " disconnected" : ""}"${entityAttribute(equipment, detail.key)}>${
+        escapeHtml(detail.value)}</span>`);
     return `
       <div class="other" data-id="${escapeHtml(equipment.id)}">
         <div class="icon"><ha-icon icon="${equipmentIcon(equipment)}"></ha-icon></div>
-        <div class="name">${escapeHtml(equipment.name)}</div>
-        ${infos.join("")}
+        <div class="text">
+          <div class="name">${escapeHtml(equipment.name)}</div>
+          ${details.length ? `<div class="other-details">${details.join('<span class="separator"> · </span>')}</div>` : ""}
+        </div>
+        ${measures.join("")}
       </div>`;
   }
 }

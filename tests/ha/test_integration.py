@@ -127,7 +127,8 @@ SAVINGS_KEYS = [
 WATER_HEATER = {
     "id": "630220", "type": "LULO", "model": "LULO", "name": "Chauffe-eau",
     "firmware": "1.01.11", "connected": True, "status": "Connecté",
-    "signal": 29, "battery": None, "wifi_signal": 30,
+    "signal": 29, "battery": None, "battery_voltage": None, "install_state": None,
+    "wifi_signal": 30,
     "controls": ["forced", "absence", "auto"], "measures": True, "switches": True,
     "state": {
         "power": 2784, "on": True, "forced": True, "mode": "forced",
@@ -140,7 +141,8 @@ WATER_HEATER = {
 TEMP_HUM_EQUIPMENT = {
     "id": "3", "type": "TEMP_HUM", "model": None, "name": "Sonde",
     "firmware": None, "connected": True, "status": "Connecté",
-    "signal": 66, "battery": 80, "wifi_signal": None,
+    "signal": 66, "battery": 80, "battery_voltage": 5.09, "install_state": "Bien placé",
+    "wifi_signal": None,
     "controls": [], "measures": False, "switches": False,
     "state": {"power": None, "on": None, "forced": None, "mode": None, "switch_state": None,
               "since": None, "until": None, "source": None, "voltage": None,
@@ -1517,6 +1519,9 @@ async def test_equipment_diagnostic_sensors(hass, fake_api):
     assert hass.states.get("sensor.ecojoko_sonde_connection_to_the_assistant").state == "connected"
     assert hass.states.get("sensor.ecojoko_sonde_connection_strength").state == "66"
     assert hass.states.get("sensor.ecojoko_sonde_battery").state == "80"
+    assert hass.states.get("sensor.ecojoko_sonde_battery_voltage").state == "5.09"
+    assert hass.states.get("sensor.ecojoko_sonde_installation_state").state == "Bien placé"
+    assert hass.states.get("sensor.chauffe_eau_battery_voltage") is None
     # Given for the water heater only
     assert hass.states.get("sensor.ecojoko_sonde_wifi_connection") is None
     assert hass.states.get("sensor.chauffe_eau_wifi_connection").state == "30"

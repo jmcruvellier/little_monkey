@@ -457,6 +457,18 @@ def _percent(value) -> float | None:
     return number if number is not None and 0 <= number <= 100 else None
 
 
+def _voltage(value) -> float | None:
+    """Return a voltage given as a text such as "5.09V", or None."""
+    if isinstance(value, str):
+        value = value.strip().upper().rstrip("V").strip().replace(",", ".")
+        try:
+            value = float(value)
+        except ValueError:
+            return None
+    number = finite_number(value)
+    return number if number is not None and number > 0 else None
+
+
 def _local_time(text) -> dt.datetime | None:
     """Return a time "YYYY-MM-DD HH:MM:SS" in Paris, or None."""
     try:
@@ -527,6 +539,7 @@ def parse_equipment(device) -> dict:
                 if isinstance(command, str)]
     controls = equipment_controls(commands, device.get("device_showable_settings"))
     battery = device.get("battery") or {}
+    device_state = device.get("device_state") if isinstance(device.get("device_state"), dict) else {}
     wifi = (device.get("lulo_network_status") or {}).get("wifi") or {}
     status = device.get("device_status")
     return {
@@ -539,6 +552,10 @@ def parse_equipment(device) -> dict:
         "status": device.get("device_status_desc"),
         "signal": _percent((device.get("signal") or {}).get("value")),
         "battery": battery_percent(battery.get("level")),
+        # The voltage of the batteries, "5.09V" (empty on the mains)
+        "battery_voltage": _voltage(battery.get("value")),
+        # Where the electricity sensor is placed, as ecojoko words it: "Bien placé"
+        "install_state": device_state.get("install_state_desc") or None,
         "wifi_signal": _percent(wifi.get("signal")) if wifi.get("state") == 1 else None,
         "controls": controls,
         # Measures of the day: power and energy, and the changes of state

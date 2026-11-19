@@ -202,7 +202,7 @@ L'écran « Équipements » d'ecojoko, avec le pilotage du chauffe-eau.
 - **Un bloc par équipement piloté** : son mode (« Forcé jusqu'à 21:30 », « Automatique · éteint »), sa puissance et les boutons d'ecojoko. **Forcé** propose 1, 2, 3 ou 4 heures, ou une autre durée en minutes ; **Absence** demande la date et l'heure de retour (minuit par défaut) ; **Automatique**, **Allumer** et **Éteindre** demandent une confirmation.
 - **Ouvert**, le bloc montre la consommation et le coût du jour, la tension, la puissance maximale et la frise de la journée : les périodes allumé, forcé et absent, et la courbe de puissance.
 - **Avec plusieurs équipements**, chaque bloc tient sur une ligne et un seul est ouvert à la fois.
-- **Les autres équipements** (clé Linky, sonde…) sont listés en dessous avec leurs mesures, leur batterie et la force de leur signal.
+- **Les autres équipements** (capteur d'électricité, sonde…) sont listés en dessous avec leurs mesures et, sous leur nom, l'état de l'installation, la batterie et la tension des piles, et la force du signal.
 
 La carte ne connaît pas les types d'équipements : ses boutons sont ceux qu'ecojoko propose pour chacun. Elle se met à jour dès que le mode d'un équipement change, par exemple à la fin d'un forçage.
 

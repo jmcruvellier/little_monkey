@@ -195,3 +195,20 @@ test("a short period at the end of the day stays within the day", () => {
   const [segment] = card.dayTimeline(day).segments;
   assert.deepEqual([segment.x, segment.width], [1440 - 12, 12]);
 });
+
+test("an equipment that is not piloted shows its placement, batteries and signal", () => {
+  const text = { battery: "Batterie {value}", signal: "Signal {value}", disconnected: "Déconnecté" };
+  const meter = { install_state: "Bien placé", connected: true, battery: 80, battery_voltage: 5.09, signal: 33,
+    entities: { battery: "sensor.b" } };
+  assert.deepEqual(card.otherDetails(meter, text, "fr"), [
+    { key: "install_state", value: "Bien placé" },
+    { key: "battery", value: "Batterie 80 % · 5,09 V" },
+    { key: "signal", value: "Signal 33 %" },
+  ]);
+  // The voltage alone, and a lost connection
+  assert.deepEqual(card.otherDetails({ connected: false, status: "Déconnecté depuis 2 h", battery_voltage: 3.1 }, text, "fr"), [
+    { key: "connection", value: "Déconnecté depuis 2 h", disconnected: true },
+    { key: "battery_voltage", value: "Batterie 3,1 V" },
+  ]);
+  assert.deepEqual(card.otherDetails({ connected: true, battery: null, signal: null }, text, "fr"), []);
+});

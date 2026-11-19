@@ -320,6 +320,8 @@ EQUIPMENT_ENTITIES = {
     "signal": ("sensor", "equipment_signal"),
     "wifi_signal": ("sensor", "equipment_wifi_signal"),
     "battery": ("sensor", "equipment_battery"),
+    "battery_voltage": ("sensor", "equipment_battery_voltage"),
+    "install_state": ("sensor", "equipment_install_state"),
 }
 # Sensors of the Ecojoko device that give the measures of an equipment, by type
 DEVICE_MEASURES = {

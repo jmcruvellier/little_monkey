@@ -81,7 +81,8 @@ Pour chaque équipement piloté par ecojoko (chauffe-eau, prise…), sur son app
 | Puissance | W | |
 | Consommation du Jour, Coût du Jour | kWh, € | Si l'équipement mesure sa consommation |
 | Tension, Puissance Max Mesurée | V, W | Si ecojoko les donne |
-| Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie | —, % | Diagnostics, quand ecojoko les donne |
+| Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie | —, % | Diagnostics, quand ecojoko les donne. La batterie est affichée comme dans l'application ecojoko, par paliers de 20 % |
+| Tension des Piles, État de l'Installation | V, — | Diagnostics des équipements à piles : la tension des piles, et l'emplacement du capteur d'électricité tel qu'ecojoko le juge (« Bien placé ») |
 
 Les équipements non pilotés (clé Linky, sonde…) n'ont pas d'appareil : leurs diagnostics sont sur l'appareil Ecojoko, nommés d'après eux (« Clé Linky : force de la connexion »).
 

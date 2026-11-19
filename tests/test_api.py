@@ -222,7 +222,10 @@ GATEWAYS_WITH_EQUIPMENTS = {
         {
             "gateway_id": 1,
             "gateway_firmware_version": "9",
-            "devices": [{"device_type": "POWER_METER", "device_id": 2}, TEMP_HUM_DEVICE,
+            "devices": [{"device_type": "POWER_METER", "device_id": 2,
+                         "device_state": {"power_level": 24, "install_state": 5,
+                                          "install_state_desc": "Bien placé"}},
+                        TEMP_HUM_DEVICE,
                         WATER_HEATER],
         }
     ]
@@ -1772,6 +1775,15 @@ def test_battery_is_shown_as_in_the_ecojoko_application(api):
     assert api.battery_percent(-1) is None
 
 
+def test_battery_voltage_is_read_from_its_text(api):
+    """The voltage of the batteries comes as "5.09V", empty on the mains."""
+    assert api._voltage("5.09V") == 5.09
+    assert api._voltage(" 3,1 v ") == 3.1
+    assert api._voltage("") is None
+    assert api._voltage("n/a") is None
+    assert api._voltage(None) is None
+
+
 def test_equipments_are_read_with_the_gateways(api):
     """Every equipment of the gateway is described the same way."""
     client, _session = equipment_client(api)
@@ -1779,13 +1791,17 @@ def test_equipments_are_read_with_the_gateways(api):
     assert power_meter["controls"] == [] and power_meter["state"]["mode"] is None
     assert sensor["name"] == "Sonde de température"
     assert sensor["battery"] == 80 and sensor["signal"] == 66
+    # The voltage of its batteries, and where the electricity sensor is placed
+    assert sensor["battery_voltage"] == 5.09 and sensor["install_state"] is None
+    assert power_meter["install_state"] == "Bien placé" and power_meter["battery_voltage"] is None
     # Its measures, the temperature in tenths of a degree
     assert sensor["state"]["temperature"] == 20.8 and sensor["state"]["humidity"] == 50
     assert sensor["controls"] == [] and sensor["measures"] is False
     assert heater == {
         "id": "630220", "type": "LULO", "model": "LULO", "name": "Chauffe-eau",
         "firmware": "1.01.11", "connected": True, "status": "Connecté",
-        "signal": 29, "battery": None, "wifi_signal": 30,
+        "signal": 29, "battery": None, "battery_voltage": None, "install_state": None,
+        "wifi_signal": 30,
         "controls": ["forced", "absence", "auto"], "measures": True, "switches": True,
         "state": {
             "power": 0, "on": False, "forced": True, "mode": "absence",
