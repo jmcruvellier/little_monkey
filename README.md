@@ -17,30 +17,30 @@ Elle intègre dans Home Assistant les capteurs suivants:
 | 1.0.0 | Consommation HC Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
 | 1.0.0 | Consommation HP Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
 | 1.0.0 | Consommation HC/HP Bleu, Blanc, Rouge Réseau | Energie | kWh | Automatique | Une par tranche d'un contrat Tempo |
-| 1.3.0 | Consommation d'une tranche tarifaire | Energie | kWh | Automatique | Une par tranche du contrat (Semaine, Week-end, Jour Spécial…), nommée à la configuration |
-| 1.3.0 | Période Tarifaire en Cours | Énumération | | Optionnel | Avec les totaux HC/HP ou un contrat Tempo : HC / HP, ou période et couleur Tempo (HC Bleu, HP Rouge...), déduite du compteur qui augmente ; la tranche en cours (Semaine, Week-end, Jour Spécial…) en attribut |
+| 2.0.0 | Consommation d'une tranche tarifaire | Energie | kWh | Automatique | Une par tranche du contrat (Semaine, Week-end, Jour Spécial…), nommée à la configuration |
+| 2.0.0 | Période Tarifaire en Cours | Énumération | | Optionnel | Avec les totaux HC/HP ou un contrat Tempo : HC / HP, ou période et couleur Tempo (HC Bleu, HP Rouge...), déduite du compteur qui augmente ; la tranche en cours (Semaine, Week-end, Jour Spécial…) en attribut |
 | 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
-| 1.3.0 | Économies sur 7 Jours | Pourcentage | % | Permanent | Écart de la consommation des 7 derniers jours par rapport à votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
-| 1.3.0 | Consommation sur 7 Jours | Energie | kWh | Permanent | Consommation des 7 derniers jours ; celle de chaque jour, du plus ancien au plus récent, en attribut |
-| 1.3.0 | Coût sur 7 Jours | Monétaire | EUR | Permanent | Coût des 7 derniers jours, selon le tarif renseigné dans ecojoko |
-| 1.3.0 | Économies Cumulées | Monétaire | EUR | Permanent | Économies depuis le début, négatives en cas de surconsommation |
-| 1.3.0 | Puissance Max du Mois | Puissance | W | Permanent | |
-| 1.3.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
-| 1.3.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
-| 1.3.0 | Contrat | Texte | | Permanent (diagnostic) | Nom de l'offre lue chez ecojoko ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches tarifaires configurées, chacune avec le prix d'un kWh (`price`, exact ou estimé selon `price_exact`) |
-| 1.3.0 | Coût de la Consommation sur 12 Mois | Monétaire | EUR | Permanent | Coût de la consommation des 12 derniers mois (« Conso en cours » du résumé des économies d'ecojoko) ; consommation en kWh en attribut |
-| 1.3.0 | Coût de Référence sur 12 Mois | Monétaire | EUR | Permanent | Coût de votre consommation de référence sur 12 mois ; consommation de référence en kWh en attribut |
-| 1.3.0 | Économies sur 12 Mois | Monétaire | EUR | Permanent | Différence entre les deux, négative en cas de surconsommation ; économies en kWh et niveau (1 à 5) en attribut |
-| 1.3.0 | Économies de la Semaine | Monétaire | EUR | Permanent | Économies de la semaine en cours (du lundi au dimanche), négatives en cas de surconsommation ; en attribut, les économies en kWh, les coûts et consommations réels et de référence, et le détail de chaque jour (`bars`, non historisé) |
-| 1.3.0 | Économies du Mois | Monétaire | EUR | Permanent | Idem pour le mois en cours, détaillé par semaine |
-| 1.3.0 | Économies de l'Année | Monétaire | EUR | Permanent | Idem pour l'année en cours, détaillée par mois |
-| 1.3.0 | Mode (équipement piloté) | Énumération | | Automatique | Un par équipement piloté par ecojoko (chauffe-eau, prise…), sur l'appareil de l'équipement : Automatique, Forcé ou Absence (Allumé ou Éteint pour un équipement sans mode forcé) ; en attribut, l'état du contacteur tel qu'ecojoko l'écrit, depuis et jusqu'à quand, et l'origine du changement (commande, programmation, fin de durée) |
-| 1.3.0 | Pilotage (équipement piloté) | Liste | | Automatique | Pilote l'équipement comme l'application ecojoko : Automatique, Forcé (pendant une heure) ou Absence (jusqu'à minuit) ; Allumé ou Éteint pour un équipement sans mode forcé. Le service « Piloter un équipement » choisit n'importe quelle durée |
-| 1.3.0 | Puissance (équipement piloté) | Puissance | W | Automatique | Puissance consommée par l'équipement |
-| 1.3.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Automatique | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
-| 1.3.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Automatique | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
-| 1.3.0 | Tension, Puissance Max Mesurée (équipement piloté) | Tension, Puissance | V, W | Automatique | Tension mesurée par l'équipement et puissance maximale qu'il a mesurée, quand ecojoko les donne |
-| 1.3.0 | Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie (équipement) | Diagnostic | %  | Automatique | Pour chaque équipement de l'installation, quand ecojoko donne la valeur : sur l'appareil d'un équipement piloté (chauffe-eau…), sur l'appareil Little Monkey pour les autres (« Clé Linky : force de la connexion », « Sonde de température : connexion à l'assistant »…) |
+| 2.0.0 | Économies sur 7 Jours | Pourcentage | % | Permanent | Écart de la consommation des 7 derniers jours par rapport à votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
+| 2.0.0 | Consommation sur 7 Jours | Energie | kWh | Permanent | Consommation des 7 derniers jours ; celle de chaque jour, du plus ancien au plus récent, en attribut |
+| 2.0.0 | Coût sur 7 Jours | Monétaire | EUR | Permanent | Coût des 7 derniers jours, selon le tarif renseigné dans ecojoko |
+| 2.0.0 | Économies Cumulées | Monétaire | EUR | Permanent | Économies depuis le début, négatives en cas de surconsommation |
+| 2.0.0 | Puissance Max du Mois | Puissance | W | Permanent | |
+| 2.0.0 | Puissance Max de l'Année | Puissance | W | Permanent | |
+| 2.0.0 | Puissance Max Depuis le Début | Puissance | W | Permanent | |
+| 2.0.0 | Contrat | Texte | | Permanent (diagnostic) | Nom de l'offre lue chez ecojoko ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches tarifaires configurées, chacune avec le prix d'un kWh (`price`, exact ou estimé selon `price_exact`) |
+| 2.0.0 | Coût de la Consommation sur 12 Mois | Monétaire | EUR | Permanent | Coût de la consommation des 12 derniers mois (« Conso en cours » du résumé des économies d'ecojoko) ; consommation en kWh en attribut |
+| 2.0.0 | Coût de Référence sur 12 Mois | Monétaire | EUR | Permanent | Coût de votre consommation de référence sur 12 mois ; consommation de référence en kWh en attribut |
+| 2.0.0 | Économies sur 12 Mois | Monétaire | EUR | Permanent | Différence entre les deux, négative en cas de surconsommation ; économies en kWh et niveau (1 à 5) en attribut |
+| 2.0.0 | Économies de la Semaine | Monétaire | EUR | Permanent | Économies de la semaine en cours (du lundi au dimanche), négatives en cas de surconsommation ; en attribut, les économies en kWh, les coûts et consommations réels et de référence, et le détail de chaque jour (`bars`, non historisé) |
+| 2.0.0 | Économies du Mois | Monétaire | EUR | Permanent | Idem pour le mois en cours, détaillé par semaine |
+| 2.0.0 | Économies de l'Année | Monétaire | EUR | Permanent | Idem pour l'année en cours, détaillée par mois |
+| 2.0.0 | Mode (équipement piloté) | Énumération | | Automatique | Un par équipement piloté par ecojoko (chauffe-eau, prise…), sur l'appareil de l'équipement : Automatique, Forcé ou Absence (Allumé ou Éteint pour un équipement sans mode forcé) ; en attribut, l'état du contacteur tel qu'ecojoko l'écrit, depuis et jusqu'à quand, et l'origine du changement (commande, programmation, fin de durée) |
+| 2.0.0 | Pilotage (équipement piloté) | Liste | | Automatique | Pilote l'équipement comme l'application ecojoko : Automatique, Forcé (pendant une heure) ou Absence (jusqu'à minuit) ; Allumé ou Éteint pour un équipement sans mode forcé. Le service « Piloter un équipement » choisit n'importe quelle durée |
+| 2.0.0 | Puissance (équipement piloté) | Puissance | W | Automatique | Puissance consommée par l'équipement |
+| 2.0.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Automatique | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
+| 2.0.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Automatique | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
+| 2.0.0 | Tension, Puissance Max Mesurée (équipement piloté) | Tension, Puissance | V, W | Automatique | Tension mesurée par l'équipement et puissance maximale qu'il a mesurée, quand ecojoko les donne |
+| 2.0.0 | Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie (équipement) | Diagnostic | %  | Automatique | Pour chaque équipement de l'installation, quand ecojoko donne la valeur : sur l'appareil d'un équipement piloté (chauffe-eau…), sur l'appareil Little Monkey pour les autres (« Clé Linky : force de la connexion », « Sonde de température : connexion à l'assistant »…) |
 | 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
 | 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
 | 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |

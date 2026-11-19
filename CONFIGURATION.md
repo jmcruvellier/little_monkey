@@ -81,7 +81,7 @@ Les options reprennent les mêmes écrans : après un changement de contrat, ouv
 
 ## Carte du tableau de bord
 
-Depuis la version 1.3.0, l'intégration fournit la carte « Little Monkey ». Elle est chargée automatiquement par Home Assistant : il n'y a pas de ressource Lovelace à ajouter, ni de dépôt HACS supplémentaire à installer. Elle nécessite Home Assistant 2024.7 ou plus récent.
+Depuis la version 2.0.0, l'intégration fournit la carte « Little Monkey ». Elle est chargée automatiquement par Home Assistant : il n'y a pas de ressource Lovelace à ajouter, ni de dépôt HACS supplémentaire à installer. Elle nécessite Home Assistant 2024.7 ou plus récent.
 
 Elle reprend le cadran du boîtier ecojoko<sup>©️</sup> :
 
@@ -96,7 +96,7 @@ Comme sur le cadran d'ecojoko<sup>©️</sup>, le disque central a plusieurs fac
 3. le coût et la consommation sur 7 jours, avec la consommation de chaque jour en histogramme ;
 4. la puissance maximale du mois en cours, de l'année en cours et depuis le début.
 
-Les faces 2 à 4 n'apparaissent qu'avec les capteurs de l'activité du compte (Little Monkey 1.3.0 ou plus récent). Après le choix d'une autre face, la carte revient d'elle-même sur la puissance temps réel au bout de 30 secondes (option `return_seconds`, 0 pour rester sur la face choisie).
+Les faces 2 à 4 n'apparaissent qu'avec les capteurs de l'activité du compte (Little Monkey 2.0.0 ou plus récent). Après le choix d'une autre face, la carte revient d'elle-même sur la puissance temps réel au bout de 30 secondes (option `return_seconds`, 0 pour rester sur la face choisie).
 
 Le disque central est bleu ecojoko<sup>©️</sup> par défaut. Si l'option Capteurs HP/HC ou Capteurs Tempo est cochée dans l'intégration, il prend la couleur de la période en cours :
 
@@ -142,7 +142,7 @@ La carte détecte seule les options HC/HP et Tempo, d'après les capteurs du mê
 
 ## Cartes des économies
 
-L'intégration fournit aussi deux cartes qui reprennent l'onglet « Économies » de l'application ecojoko<sup>©️</sup>. Comme la carte du cadran, elles sont chargées automatiquement : cherchez « Petit Singe » (« Little Monkey » en anglais) ou « économies » dans le choix des cartes. Elles s'appuient sur les capteurs des économies (Little Monkey 1.3.0 ou plus récent), que leur éditeur visuel choisit seul.
+L'intégration fournit aussi deux cartes qui reprennent l'onglet « Économies » de l'application ecojoko<sup>©️</sup>. Comme la carte du cadran, elles sont chargées automatiquement : cherchez « Petit Singe » (« Little Monkey » en anglais) ou « économies » dans le choix des cartes. Elles s'appuient sur les capteurs des économies (Little Monkey 2.0.0 ou plus récent), que leur éditeur visuel choisit seul.
 
 ### Résumé des économies
 
