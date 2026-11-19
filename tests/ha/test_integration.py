@@ -241,7 +241,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert entry.unique_id == "user@example.com"
 
     # Same entity ids, new unique ids, nothing duplicated; only the sensors
-    # added by 1.3.0 are created
+    # added by 2.0.0 are created
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
     assert len(entities) == count_before + 2 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
     assert not [e.entity_id for e in entities if e.entity_id.endswith("_2")]

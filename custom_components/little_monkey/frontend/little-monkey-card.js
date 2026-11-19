@@ -561,7 +561,7 @@ export function fromFormData(previous, value) {
  * Return the faces of the disc that have their sensors, in their order.
  *
  * The real-time power is always there; the other faces need the sensors of
- * the activity of the account (integration 1.3.0 or later).
+ * the activity of the account (integration 2.0.0 or later).
  */
 export function availableFaces(sensors, savingsEntity) {
   const faces = ["power"];
