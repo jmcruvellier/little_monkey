@@ -60,8 +60,10 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
   - Économies : coûts et économies sur 12 mois, économies de la semaine, du mois et de l'année ; nécessaire aux cartes des économies
   - Contrat : l'offre, les tranches et le prix d'un kWh ; nécessaire à la carte « Contrat »
   - Équipements pilotés : les appareils, capteurs et le pilotage des équipements (chauffe-eau…) ; nécessaire à la carte « Équipements »
+  - Analyse de la conso : la répartition par poste et les activations des appareils, lues à la demande ; nécessaire aux cartes « Analyse de la conso » et « Activations »
+  - Mesures : la puissance du jour, l'énergie par tranche, la température et l'humidité, lues à la demande ; nécessaire à la carte « Mesures »
 
-  Ces quatre groupes de capteurs, apparus avec la version 2.0.0, sont décochés par défaut : leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que s'ils sont cochés. Décocher un groupe supprime ses capteurs. Une carte dont le groupe est décoché l'indique et invite à l'activer ; les cartes Mesures, Analyse de la conso et Activations n'ont pas de capteurs et fonctionnent toujours.
+  Ces six options, apparues avec la version 2.0.0, sont décochées par défaut : leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si elles sont cochées. Décocher une option supprime ses capteurs. Les options Analyse de la conso et Mesures n'ont pas de capteurs : sans elles, leurs services répondent `enabled: false` sans rien lire chez ecojoko. Une carte dont l'option est décochée l'indique et invite à l'activer.
   - Fréquence de rafraîchissement des données (en secondes): le minimum autorisé est de 3 secondes (afin de ne pas surcharger les serveurs d'ecojoko<sup>©️</sup>), et le maximum est de 60 secondes
 
 Les options reprennent les mêmes écrans : après un changement de contrat, ouvrez-les pour retrouver les tranches du nouveau contrat.

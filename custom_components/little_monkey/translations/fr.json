@@ -27,7 +27,9 @@
                     "use_activity_feature": "Activité du compte : économies, consommation et coût sur 7 jours, puissance max (faces du cadran)",
                     "use_savings_feature": "Économies : sur 12 mois, de la semaine, du mois et de l'année (cartes Économies)",
                     "use_contract_feature": "Contrat : offre, tranches et prix du kWh (carte Contrat)",
-                    "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)"
+                    "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)",
+                    "use_analysis_feature": "Analyse de la conso : répartition par poste et activations des appareils (cartes Analyse de la conso et Activations)",
+                    "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)"
                 }
             },
             "reauth_confirm": {
@@ -75,7 +77,9 @@
                     "use_activity_feature": "Activité du compte : économies, consommation et coût sur 7 jours, puissance max (faces du cadran)",
                     "use_savings_feature": "Économies : sur 12 mois, de la semaine, du mois et de l'année (cartes Économies)",
                     "use_contract_feature": "Contrat : offre, tranches et prix du kWh (carte Contrat)",
-                    "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)"
+                    "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)",
+                    "use_analysis_feature": "Analyse de la conso : répartition par poste et activations des appareils (cartes Analyse de la conso et Activations)",
+                    "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)"
                 }
             }
         },
@@ -588,6 +592,10 @@
                 "date": {
                     "name": "Date",
                     "description": "Un jour de la période ; aujourd'hui par défaut. Pour l'électricité, le mois est formé des 30 jours qui finissent ce jour-là ; pour la température et l'humidité, c'est le mois calendaire."
+                },
+                "check": {
+                    "name": "Vérifier l'option",
+                    "description": "Indique seulement si l'option « Mesures » est activée, sans rien lire chez ecojoko."
                 }
             }
         }
