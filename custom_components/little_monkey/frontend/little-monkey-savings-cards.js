@@ -691,6 +691,8 @@ class LittleMonkeySavingsSummaryCard extends HTMLElement {
     const missing = !this._config.entity || !this._hass.states[this._config.entity];
     warning.textContent = !enabled ? text.option : missing ? text.missing : "";
     warning.style.display = !enabled || missing ? "" : "none";
+    // Not an error: an option to turn on
+    warning.style.color = enabled ? "" : "var(--secondary-text-color)";
     root.querySelector(".rows").style.display = enabled ? "" : "none";
     if (!enabled) {
       return;
@@ -1023,6 +1025,8 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     // Without the option of the savings, the card only asks to turn it on
     warning.textContent = !enabled ? text.option : missing ? text.missing : "";
     warning.style.display = !enabled || missing ? "" : "none";
+    // Not an error: an option to turn on
+    warning.style.color = enabled ? "" : "var(--secondary-text-color)";
     root.querySelector("ha-card").classList.toggle("disabled", !enabled);
     if (!enabled) {
       return;

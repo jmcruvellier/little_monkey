@@ -67,6 +67,7 @@ const TRANSLATIONS = {
     error: "Equipments not read",
     command_error: "Command not sent: {error}",
     missing: "Little Monkey sensor not found",
+    missing_option: "Little Monkey sensor not found. If it was a sensor of an equipment, turn on the “Piloted equipments” option in the options of the integration, or choose a sensor of the Little Monkey device, such as Real-Time Consumption.",
     option: "Turn on the “Piloted equipments” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     editor: {
       entity: "A sensor of the Little Monkey device",
@@ -109,6 +110,7 @@ const TRANSLATIONS = {
     error: "Équipements non lus",
     command_error: "Commande non envoyée : {error}",
     missing: "Capteur Little Monkey introuvable",
+    missing_option: "Capteur Little Monkey introuvable. S'il s'agissait d'un capteur d'un équipement, activez l'option « Équipements pilotés » dans les options de l'intégration, ou choisissez un capteur de l'appareil Little Monkey, comme Consommation Temps Réel.",
     option: "Activez l'option « Équipements pilotés » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     editor: {
       entity: "Un capteur de l'appareil Little Monkey",
@@ -679,9 +681,14 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     root.querySelector(".title").textContent = this._config.title || text.title;
     const missing = !this._config.entity || !this._hass.states[this._config.entity];
     const warning = root.querySelector(".warning");
-    warning.textContent = missing ? text.missing : "";
-    warning.style.display = missing ? "" : "none";
+    warning.style.display = "none";
     const body = root.querySelector(".body");
+    if (missing) {
+      // Its sensor is gone, most likely a sensor of an equipment removed
+      // with the option of the equipments: the installation is unknown
+      body.innerHTML = `<div class="message">${escapeHtml(text.missing_option)}</div>`;
+      return;
+    }
     if (!this._equipments) {
       body.innerHTML = `<div class="message">${escapeHtml(this._error ? text.error : "…")}</div>`;
       return;
