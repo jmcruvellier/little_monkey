@@ -419,21 +419,22 @@ def parse_energy_bars(payload) -> dict:
     period = _stat_period(stat)
     bars = []
     for item in stat.get("data") or []:
+        bands = [
+            {
+                "id": band.get("id"),
+                "energy": finite_number(band.get("kwh")),
+                "cost": finite_number(band.get("price")),
+            }
+            for band in item.get("subconsumption") or []
+            if isinstance(band, dict)
+        ]
         bars.append({
             "date": _iso_day(item.get("time")),
             "energy": finite_number(item.get("kwh")),
-            "cost": finite_number(item.get("value")),
+            "cost": _bar_cost(item, bands),
             "base_energy": finite_number(item.get("consobase_kwh")),
             "production": _positive(item.get("kwh_prod")),
-            "bands": [
-                {
-                    "id": band.get("id"),
-                    "energy": finite_number(band.get("kwh")),
-                    "cost": finite_number(band.get("price")),
-                }
-                for band in item.get("subconsumption") or []
-                if isinstance(band, dict)
-            ],
+            "bands": bands,
         })
     energy = finite_number(period.get("kwh"))
     cost = finite_number(period.get("price"))
@@ -450,6 +451,23 @@ def parse_energy_bars(payload) -> dict:
         "bands": _measure_bands(stat),
         "bars": bars,
     }
+
+
+def _bar_cost(item, bands):
+    """Return the cost of a day or month, base load included.
+
+    ecojoko gives in « value » the cost without the base load, whose cost is
+    « consobase »: on 19/11/2026, 1.08 € and 0.04 €, where its page
+    « Mesures » shows 1.12 €, the sum of the costs of the bands.
+    """
+    costs = [band["cost"] for band in bands if band["cost"] is not None]
+    if costs:
+        return round_value(sum(costs))
+    value = finite_number(item.get("value"))
+    base = finite_number(item.get("consobase"))
+    if value is None or base is None:
+        return value
+    return round_value(value + base)
 
 
 def _bars_total(bars, key):
