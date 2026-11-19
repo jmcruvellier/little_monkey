@@ -230,3 +230,9 @@ test("a new detail card shows the week of the first device", () => {
     "entity", "period", "unit", "title",
   ]);
 });
+
+test("the savings cards need the option of the savings", () => {
+  const sensor = (key) => ({ entity_id: `sensor.${key}`, platform: "little_monkey", translation_key: key });
+  assert.equal(cards.savingsEnabled({ entities: { "sensor.a": sensor("realtime_consumption") } }), false);
+  assert.equal(cards.savingsEnabled({ entities: { "sensor.b": sensor("savings_week") } }), true);
+});

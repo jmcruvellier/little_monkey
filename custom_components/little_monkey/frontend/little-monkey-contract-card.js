@@ -40,6 +40,7 @@ const TRANSLATIONS = {
     off_peak_legend: "Off-peak hours",
     unknown: "Contract not read yet",
     missing: "Contract sensor not found",
+    option: "Turn on the “Contract” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     editor: { entity: "Contract sensor", title: "Title" },
   },
   fr: {
@@ -62,6 +63,7 @@ const TRANSLATIONS = {
     off_peak_legend: "Heures creuses",
     unknown: "Contrat pas encore lu",
     missing: "Capteur Contrat introuvable",
+    option: "Activez l'option « Contrat » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     editor: { entity: "Capteur Contrat", title: "Titre" },
   },
 };
@@ -393,14 +395,17 @@ class LittleMonkeyContractCard extends HTMLElement {
     const text = TRANSLATIONS[language(this._hass)];
     const locale = this._hass.locale?.language || this._hass.language;
     const view = contractView(this._hass, this._config.entity);
-    const signature = JSON.stringify([view, this._config.title, locale]);
+    const signature = JSON.stringify([view, this._config.title, locale, Boolean(findEntity(this._hass, "contract"))]);
     if (signature === this._signature) {
       return;
     }
     this._signature = signature;
     const title = this._config.title ? `<div class="title">${escapeHtml(this._config.title)}</div>` : "";
     let body;
-    if (!this._hass.states[this._config.entity]) {
+    if (!findEntity(this._hass, "contract")) {
+      // Without the option of the contract, the card only asks to turn it on
+      body = `<div class="warning">${escapeHtml(text.option)}</div>`;
+    } else if (!this._hass.states[this._config.entity]) {
       body = `<div class="warning">${escapeHtml(text.missing)}</div>`;
     } else if (!view) {
       body = `<div class="message">${escapeHtml(text.unknown)}</div>`;

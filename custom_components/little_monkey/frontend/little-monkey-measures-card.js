@@ -42,6 +42,7 @@ const TRANSLATIONS = {
     error: "Measures not read",
     empty: "No measure for this period",
     missing: "Little Monkey sensor not found",
+    option: "Turn on the “Measures” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     editor: {
       entity: "A sensor of the Little Monkey device",
       period: "Period shown first",
@@ -69,6 +70,7 @@ const TRANSLATIONS = {
     error: "Mesures non lues",
     empty: "Aucune mesure sur cette période",
     missing: "Capteur Little Monkey introuvable",
+    option: "Activez l'option « Mesures » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     editor: {
       entity: "Un capteur de l'appareil Little Monkey",
       period: "Période affichée d'abord",
@@ -622,6 +624,9 @@ const STYLES = `
   .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
   .legend .value { color: var(--primary-text-color); }
   .legend .entity { cursor: pointer; }
+  .message-option { color: var(--secondary-text-color); text-align: center; padding: 0 8px; }
+  ha-card.disabled .message-option { padding: 24px 8px; }
+  ha-card.disabled .tabs, ha-card.disabled .top, ha-card.disabled svg, ha-card.disabled .nav { display: none; }
   .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
   .nav button { border: none; background: none; color: var(--primary-text-color); cursor: pointer; padding: 4px 10px; font-size: 1.4em; line-height: 1; }
   .nav button:disabled { visibility: hidden; }
@@ -708,11 +713,39 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     }
     this._cache.set(key, { ...cached, loading: true });
     const entities = this._measure === "electricity" ? {} : climateEntities(this._hass, this._config.entity, this._measure);
+    if ((entities.inside || entities.outside) && !(await this._enabled())) {
+      // Without the option of the measures, not even the statistics
+      this._cache.set(key, { measures: { enabled: false } });
+      this._signature = null;
+      this._render();
+      return;
+    }
     if (entities.inside || entities.outside) {
       await this._fetchStatistics(key, entities, cached);
       return;
     }
     await this._fetchService(key, cached);
+  }
+
+  /** Tell whether the option of the measures is on, asked once to the service. */
+  async _enabled() {
+    if (this._optionEnabled === undefined) {
+      const data = { measure: this._measure, period: this._period, check: true };
+      const entry = configEntryId(this._hass, this._config.entity);
+      if (entry) {
+        data.config_entry_id = entry;
+      }
+      try {
+        const result = await this._hass.callWS({
+          type: "call_service", domain: DOMAIN, service: "get_measures", service_data: data, return_response: true,
+        });
+        this._optionEnabled = result.response?.enabled !== false;
+      } catch (error) {
+        console.debug("Little Monkey card: option of the measures not read", error);
+        return true;
+      }
+    }
+    return this._optionEnabled;
   }
 
   /** Read the measures of the period from ecojoko, with the service get_measures. */
@@ -821,6 +854,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
         <div class="warning"></div>
         <div class="tabs">${tabs}</div>
         <div class="top"><div class="periods">${periods}</div><div class="total"></div></div>
+        <div class="message-option"></div>
         <div class="details"></div>
         <svg viewBox="0 0 ${CHART.width} ${CHART.height}" role="img"></svg>
         <div class="legend"></div>
@@ -914,6 +948,16 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       button.classList.toggle("active", button.dataset.measure === this._measure);
     }
     const measures = shown.measures;
+    root.querySelector("ha-card").classList.toggle("disabled", measures?.enabled === false);
+    if (measures?.enabled === false) {
+      root.querySelector(".total").innerHTML = "";
+      root.querySelector(".details").textContent = "";
+      root.querySelector(".legend").innerHTML = "";
+      root.querySelector("svg").innerHTML = "";
+      root.querySelector(".message-option").textContent = text.option;
+      return;
+    }
+    root.querySelector(".message-option").textContent = "";
     const period = datesPeriod(this._measure, this._period);
     root.querySelector(".name").textContent = periodLabel(
       locale, period, this._measure === "electricity" && measures?.start
