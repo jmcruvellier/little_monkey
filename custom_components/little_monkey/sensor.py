@@ -163,6 +163,11 @@ EQUIPMENT_DIAGNOSTIC_SENSORS = (
      "wifi_signal"),
     ("equipment_battery", (SensorStateClass.MEASUREMENT, SensorDeviceClass.BATTERY, PERCENTAGE,
                            None), "battery"),
+    ("equipment_battery_voltage", (SensorStateClass.MEASUREMENT, SensorDeviceClass.VOLTAGE,
+                                   UnitOfElectricPotential.VOLT, "mdi:battery-outline"),
+     "battery_voltage"),
+    ("equipment_install_state", (None, None, None, "mdi:map-marker-check-outline"),
+     "install_state"),
 )
 
 # Keys of the sensors of the groups of 2.0.0, by option: they are created

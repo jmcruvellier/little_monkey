@@ -6,6 +6,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.sensor import (
     RestoreSensor,
+    SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
@@ -484,6 +485,8 @@ EQUIPMENT_DIAGNOSTIC_VALUES = {
     "equipment_signal": lambda equipment: equipment.get("signal"),
     "equipment_wifi_signal": lambda equipment: equipment.get("wifi_signal"),
     "equipment_battery": lambda equipment: equipment.get("battery"),
+    "equipment_battery_voltage": lambda equipment: equipment.get("battery_voltage"),
+    "equipment_install_state": lambda equipment: equipment.get("install_state"),
 }
 
 
@@ -514,6 +517,9 @@ class EcojokoEquipmentDiagnosticSensor(EcojokoEquipmentEntity, SensorEntity):
         if unit_of_measurement == PERCENTAGE:
             # A signal or a battery level, without decimals
             self._attr_suggested_display_precision = 0
+        elif device_class == SensorDeviceClass.VOLTAGE:
+            # The voltage of the batteries, as ecojoko gives it
+            self._attr_suggested_display_precision = 2
         if key == "equipment_connection":
             self._attr_options = ["connected", "disconnected"]
 

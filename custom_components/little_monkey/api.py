@@ -429,6 +429,22 @@ SWITCH_SOURCES = {1: "command", 2: "schedule", 3: "timer"}
 MAINS_BATTERY_LEVEL = 255
 
 
+def battery_percent(level) -> int | None:
+    """Return the battery of an equipment as ecojoko shows it, in percent.
+
+    ecojoko gives a level from 0 to 10 (the voltage of the batteries apart),
+    which its application draws as a battery of five bars: 7 is shown as
+    80 %. None for an equipment plugged in the mains or without a level.
+    """
+    level = finite_number(level)
+    if level is None or level == MAINS_BATTERY_LEVEL or level < 0:
+        return None
+    for top, percent in ((0, 0), (2, 20), (4, 40), (6, 60), (8, 80)):
+        if level <= top:
+            return percent
+    return 100
+
+
 def _percent(value) -> float | None:
     """Return a percentage given as a number or as a text such as "66%"."""
     if isinstance(value, str):
@@ -439,6 +455,18 @@ def _percent(value) -> float | None:
             return None
     number = finite_number(value)
     return number if number is not None and 0 <= number <= 100 else None
+
+
+def _voltage(value) -> float | None:
+    """Return a voltage given as a text such as "5.09V", or None."""
+    if isinstance(value, str):
+        value = value.strip().upper().rstrip("V").strip().replace(",", ".")
+        try:
+            value = float(value)
+        except ValueError:
+            return None
+    number = finite_number(value)
+    return number if number is not None and number > 0 else None
 
 
 def _local_time(text) -> dt.datetime | None:
@@ -511,7 +539,7 @@ def parse_equipment(device) -> dict:
                 if isinstance(command, str)]
     controls = equipment_controls(commands, device.get("device_showable_settings"))
     battery = device.get("battery") or {}
-    level = finite_number(battery.get("level"))
+    device_state = device.get("device_state") if isinstance(device.get("device_state"), dict) else {}
     wifi = (device.get("lulo_network_status") or {}).get("wifi") or {}
     status = device.get("device_status")
     return {
@@ -523,8 +551,11 @@ def parse_equipment(device) -> dict:
         "connected": None if status is None else status == 1,
         "status": device.get("device_status_desc"),
         "signal": _percent((device.get("signal") or {}).get("value")),
-        # Mains powered equipments have no battery level
-        "battery": None if level == MAINS_BATTERY_LEVEL else _percent(level),
+        "battery": battery_percent(battery.get("level")),
+        # The voltage of the batteries, "5.09V" (empty on the mains)
+        "battery_voltage": _voltage(battery.get("value")),
+        # Where the electricity sensor is placed, as ecojoko words it: "Bien placé"
+        "install_state": device_state.get("install_state_desc") or None,
         "wifi_signal": _percent(wifi.get("signal")) if wifi.get("state") == 1 else None,
         "controls": controls,
         # Measures of the day: power and energy, and the changes of state

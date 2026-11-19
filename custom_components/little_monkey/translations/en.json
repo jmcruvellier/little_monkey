@@ -383,6 +383,12 @@
             "equipment_battery": {
                 "name": "Battery"
             },
+            "equipment_battery_voltage": {
+                "name": "Battery voltage"
+            },
+            "equipment_install_state": {
+                "name": "Installation state"
+            },
             "equipment_connection_of": {
                 "name": "{equipment}: connection to the assistant",
                 "state": {
@@ -398,6 +404,12 @@
             },
             "equipment_battery_of": {
                 "name": "{equipment}: battery"
+            },
+            "equipment_battery_voltage_of": {
+                "name": "{equipment}: battery voltage"
+            },
+            "equipment_install_state_of": {
+                "name": "{equipment}: installation state"
             },
             "equipment_voltage": {
                 "name": "Voltage"

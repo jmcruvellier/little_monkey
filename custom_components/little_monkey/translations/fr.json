@@ -383,6 +383,12 @@
             "equipment_battery": {
                 "name": "Batterie"
             },
+            "equipment_battery_voltage": {
+                "name": "Tension des piles"
+            },
+            "equipment_install_state": {
+                "name": "État de l'installation"
+            },
             "equipment_connection_of": {
                 "name": "{equipment} : connexion à l'assistant",
                 "state": {
@@ -398,6 +404,12 @@
             },
             "equipment_battery_of": {
                 "name": "{equipment} : batterie"
+            },
+            "equipment_battery_voltage_of": {
+                "name": "{equipment} : tension des piles"
+            },
+            "equipment_install_state_of": {
+                "name": "{equipment} : état de l'installation"
             },
             "equipment_voltage": {
                 "name": "Tension"
