@@ -387,6 +387,23 @@ export function shiftPeriod(period, iso, step) {
   return isoDate(date);
 }
 
+/**
+ * Return the first period ecojoko has, when it answered with it instead of
+ * the period asked for, null otherwise.
+ *
+ * Asked for a period before its first measures, ecojoko does not answer an
+ * empty period: it answers with the first one it has, whose start it gives.
+ * A month may start a few days around its first day (its first Monday): only
+ * a later period counts.
+ */
+export function firstPeriod(period, asked, savings) {
+  if (!savings?.start) {
+    return null;
+  }
+  const actual = periodStart(period, savings.start);
+  return actual > periodStart(period, asked) ? actual : null;
+}
+
 /** Return the name of a period: its days, its month or its year. */
 export function periodLabel(locale, period, iso) {
   const start = utcDate(periodStart(period, iso));
@@ -825,6 +842,8 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     this._selected = null;
     // Savings of the past periods, read by the service: by "period:start"
     this._cache = new Map();
+    // First period ecojoko has, by period, once known: nothing before it
+    this._earliest = {};
     this._pending = new Set();
     this._errors = new Set();
     this._built = false;
@@ -880,13 +899,19 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
   /** Show the period before (-1) or after (+1). */
   _go(step) {
     const start = shiftPeriod(this._period, this._start || this._current(), step);
-    if (start > this._current()) {
+    if (start > this._current() || (step < 0 && this._isEarliest())) {
       return;
     }
     this._start = start === this._current() ? null : start;
     this._selected = null;
     this._errors.delete(`${this._period}:${start}`);
     this._render();
+  }
+
+  /** Tell whether the period shown is the first one ecojoko has. */
+  _isEarliest() {
+    const earliest = this._earliest[this._period];
+    return Boolean(earliest) && (this._start || this._current()) <= earliest;
   }
 
   /** Return the savings shown: from the sensor now, from the service before. */
@@ -930,7 +955,18 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
         service_data: data,
         return_response: true,
       });
-      this._cache.set(key, result.response);
+      const first = firstPeriod(period, start, result.response);
+      if (first) {
+        // Nothing before the first period of ecojoko: it is shown instead
+        // of the one asked for, and the card goes no further back
+        this._earliest[period] = first;
+        this._cache.set(`${period}:${first}`, result.response);
+        if (this._period === period && this._start === start) {
+          this._start = first === this._current() ? null : first;
+        }
+      } else {
+        this._cache.set(key, result.response);
+      }
     } catch (error) {
       console.debug("Little Monkey card: savings not read", error);
       this._errors.add(key);
@@ -1029,7 +1065,8 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     const unit = this._config.unit === "kwh" ? "kwh" : "eur";
     const shown = this._savings();
     const enabled = savingsEnabled(this._hass);
-    const signature = JSON.stringify([this._period, shown, this._selected, unit, this._config.title, locale, enabled]);
+    const signature = JSON.stringify([
+      this._period, shown, this._selected, unit, this._config.title, locale, enabled, this._isEarliest()]);
     if (signature === this._signature) {
       return;
     }
@@ -1052,6 +1089,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     }
     root.querySelector(".name").textContent = periodLabel(locale, this._period, shown.start);
     root.querySelector(".next").disabled = shown.start >= this._current();
+    root.querySelector(".previous").disabled = this._isEarliest();
 
     const savings = shown.savings;
     const total = root.querySelector(".total");
