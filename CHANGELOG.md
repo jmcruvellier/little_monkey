@@ -7,7 +7,7 @@
 
 ### Changements majeurs
 - La configuration et les options tiennent sur trois écrans : identifiants, tranches tarifaires du contrat, autres capteurs. Les installations existantes sont converties automatiquement, sans perte d'historique
-- Nouveaux groupes de capteurs, chacun avec sa case dans le dernier écran des réglages, **décochée par défaut** : activité du compte, économies, contrat, équipements pilotés. Leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si la case est cochée ; les cartes qui en ont besoin invitent à l'activer
+- Nouvelles options, chacune avec sa case dans le dernier écran des réglages, **décochée par défaut** : activité du compte, économies, contrat, équipements pilotés, analyse de la conso, mesures. Leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si la case est cochée ; les cartes qui en ont besoin invitent à l'activer
 - Version minimale de Home Assistant : 2024.7.0
 
 ### Nouveautés et corrections
