@@ -3,7 +3,7 @@
 ## 2.0.0b1
 
 > [!WARNING]
-> Version bêta : à installer pour tester, en activant l'affichage des versions bêta dans HACS. Signalez les problèmes dans les [issues](https://github.com/jmcruvellier/little_monkey/issues).
+> Version bêta : à installer pour tester, depuis le Marketplace (anciennement HACS) : menu ⋮ de Little Monkey › **Installer une autre version**, puis v2.0.0b1. Signalez les problèmes dans les [issues](https://github.com/jmcruvellier/little_monkey/issues).
 
 ### Changements majeurs
 - La configuration et les options tiennent sur trois écrans : identifiants, tranches tarifaires du contrat, autres capteurs. Les installations existantes sont converties automatiquement, sans perte d'historique

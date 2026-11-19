@@ -2,7 +2,7 @@
 
 [← Retour à l'accueil](../README.md) · [Installation](installation.md) · [L'intégration](integration.md)
 
-Little Monkey fournit huit cartes qui reprennent les écrans de l'application ecojoko<sup>©️</sup>. Elles sont chargées automatiquement par l'intégration : il n'y a ni ressource Lovelace ni dépôt HACS à ajouter, et elles suivent toujours la version de l'intégration.
+Little Monkey fournit huit cartes qui reprennent les écrans de l'application ecojoko<sup>©️</sup>. Elles sont chargées automatiquement par l'intégration : il n'y a ni ressource Lovelace ni dépôt à ajouter au Marketplace, et elles suivent toujours la version de l'intégration.
 
 - [Ajouter une carte](#ajouter-une-carte)
 - [Little Monkey (cadran)](#little-monkey-cadran)
