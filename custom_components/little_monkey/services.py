@@ -28,7 +28,7 @@ from .api import (
     LittleMonkeyApiClientError,
     TZ,
 )
-from .const import DOMAIN
+from .const import CONF_USE_EQUIPMENT_FEATURE, DOMAIN, option_enabled
 from .entity import equipment_identifier, registry_device
 from .utils import get_current_date
 
@@ -199,6 +199,9 @@ async def _async_get_equipments(
     ecojoko: the answer is immediate.
     """
     entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
+    # Without the option of the equipments, the card asks to turn it on
+    if not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE):
+        return {"enabled": False, "equipments": []}
     coordinator = entry.runtime_data
     piloted = coordinator.equipment.data or {}
     registry = dr.async_get(hass)
@@ -211,7 +214,7 @@ async def _async_get_equipments(
             "device_id": None if device is None else device.id,
             "entities": equipment_entities(hass, entry.entry_id, equipment),
         })
-    return {"equipments": equipments}
+    return {"enabled": True, "equipments": equipments}
 
 
 def _equipment_of_device(hass: HomeAssistant, device_id: str):
@@ -264,6 +267,9 @@ async def _async_set_equipment_mode(hass: HomeAssistant, call: ServiceCall) -> N
     lasts the duration given or until the end given.
     """
     entry, equipment = _equipment_of_device(hass, call.data[ATTR_DEVICE_ID])
+    if not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE):
+        raise ServiceValidationError(
+            translation_domain=DOMAIN, translation_key="equipment_disabled")
     mode = call.data[ATTR_MODE]
     if mode not in equipment["controls"]:
         raise ServiceValidationError(

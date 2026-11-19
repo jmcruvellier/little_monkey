@@ -6,6 +6,7 @@ import datetime as dt
 from homeassistant.components.select import SelectEntity
 
 from .api import TZ
+from .const import CONF_USE_EQUIPMENT_FEATURE, option_enabled
 from .entity import EcojokoEntity, EcojokoEquipmentEntity, equipment_modes
 
 # Duration of a forced mode chosen in the list: the shortest one of ecojoko
@@ -59,6 +60,8 @@ class EcojokoEquipmentSelect(EcojokoEquipmentEntity, SelectEntity):
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the mode of each piloted equipment."""
     coordinator = config_entry.runtime_data
+    if not option_enabled(config_entry, CONF_USE_EQUIPMENT_FEATURE):
+        return
     main_device = EcojokoEntity(
         coordinator, config_entry.entry_id, None, coordinator.data["gateway_firmware_version"])
     async_add_entities([

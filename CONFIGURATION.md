@@ -56,6 +56,12 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 4. Troisième écran, les autres capteurs :
   - Capteur de production: à ne sélectionner que si vous êtes producteur d'énergie solaire et que vous avez un capteur ecojoko<sup>©️</sup> ancienne génération
   - Capteurs d'humidité et de température: à ne sélectionner que si vous désirez remonter ces données depuis votre ecojoko<sup>©️</sup>
+  - Activité du compte : économies, consommation et coût sur 7 jours, économies cumulées et puissances maximales ; elles alimentent les faces 2 à 4 et l'aiguille du bas de la carte « Little Monkey »
+  - Économies : coûts et économies sur 12 mois, économies de la semaine, du mois et de l'année ; nécessaire aux cartes des économies
+  - Contrat : l'offre, les tranches et le prix d'un kWh ; nécessaire à la carte « Contrat »
+  - Équipements pilotés : les appareils, capteurs et le pilotage des équipements (chauffe-eau…) ; nécessaire à la carte « Équipements »
+
+  Ces quatre groupes de capteurs, apparus avec la version 2.0.0, sont décochés par défaut : leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que s'ils sont cochés. Décocher un groupe supprime ses capteurs. Une carte dont le groupe est décoché l'indique et invite à l'activer ; les cartes Mesures, Analyse de la conso et Activations n'ont pas de capteurs et fonctionnent toujours.
   - Fréquence de rafraîchissement des données (en secondes): le minimum autorisé est de 3 secondes (afin de ne pas surcharger les serveurs d'ecojoko<sup>©️</sup>), et le maximum est de 60 secondes
 
 Les options reprennent les mêmes écrans : après un changement de contrat, ouvrez-les pour retrouver les tranches du nouveau contrat.

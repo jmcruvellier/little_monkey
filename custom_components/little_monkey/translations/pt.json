@@ -19,11 +19,15 @@
             },
             "settings": {
                 "title": "Outros sensores",
-                "description": "Escolha os outros sensores e o intervalo de atualização.",
+                "description": "Escolha os outros sensores e a frequência de atualização. Cada grupo de sensores só é lido na ecojoko se estiver marcado; os cartões que precisam dele pedem-no.",
                 "data": {
                     "use_prod_feature": "Sensor de Produção",
                     "use_temphum_feature": "Sensores de Humidade e Temperatura",
-                    "poll_interval": "Intervalo de sondagem (em segundos)"
+                    "poll_interval": "Intervalo de sondagem (em segundos)",
+                    "use_activity_feature": "Atividade da conta: poupanças, consumo e custo em 7 dias, potência máxima (faces do mostrador)",
+                    "use_savings_feature": "Poupanças: em 12 meses, da semana, do mês e do ano (cartões Poupanças)",
+                    "use_contract_feature": "Contrato: oferta, escalões e preço do kWh (cartão Contrato)",
+                    "use_equipment_feature": "Equipamentos pilotados: termoacumulador…, os seus sensores e pilotagem (cartão Equipamentos)"
                 }
             },
             "reauth_confirm": {
@@ -63,11 +67,15 @@
             },
             "settings": {
                 "title": "Outros sensores",
-                "description": "Escolha os outros sensores e o intervalo de atualização.",
+                "description": "Escolha os outros sensores e a frequência de atualização. Cada grupo de sensores só é lido na ecojoko se estiver marcado; os cartões que precisam dele pedem-no.",
                 "data": {
                     "use_prod_feature": "Sensor de Produção",
                     "use_temphum_feature": "Sensores de Humidade e Temperatura",
-                    "poll_interval": "Intervalo de sondagem (em segundos)"
+                    "poll_interval": "Intervalo de sondagem (em segundos)",
+                    "use_activity_feature": "Atividade da conta: poupanças, consumo e custo em 7 dias, potência máxima (faces do mostrador)",
+                    "use_savings_feature": "Poupanças: em 12 meses, da semana, do mês e do ano (cartões Poupanças)",
+                    "use_contract_feature": "Contrato: oferta, escalões e preço do kWh (cartão Contrato)",
+                    "use_equipment_feature": "Equipamentos pilotados: termoacumulador…, os seus sensores e pilotagem (cartão Equipamentos)"
                 }
             }
         },
@@ -608,6 +616,9 @@
         },
         "command_failed": {
             "message": "O comando não pôde ser enviado à ecojoko: {error}. Pode ter sido aplicado mesmo assim."
+        },
+        "equipment_disabled": {
+            "message": "Ative a opção “Equipamentos pilotados” nas opções da integração Little Monkey."
         }
     }
 }

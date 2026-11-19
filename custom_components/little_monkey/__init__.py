@@ -32,6 +32,10 @@ from .const import (
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
     CONF_TARIFF_BANDS,
+    CONF_USE_ACTIVITY_FEATURE,
+    CONF_USE_EQUIPMENT_FEATURE,
+    CONF_USE_SAVINGS_FEATURE,
+    option_enabled,
 )
 from .coordinator import (
     LittleMonkeyActivityCoordinator,
@@ -40,7 +44,7 @@ from .coordinator import (
     LittleMonkeySavingsCoordinator,
 )
 from .entity import equipment_identifier, registry_device
-from .sensor import SENSOR_KEYS
+from .sensor import GROUP_SENSOR_KEYS, SENSOR_KEYS
 from .services import async_register_services
 from .tariff import legacy_bands
 from .utils import account_unique_id
@@ -89,18 +93,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     # answer, the setup does not wait for it
     coordinator.activity = LittleMonkeyActivityCoordinator(
         hass=hass, entry=entry, client=coordinator.client)
-    entry.async_create_background_task(
-        hass, coordinator.activity.async_refresh(), "little_monkey activity")
+    # Each one is read only when its option is on: no call to ecojoko
+    # otherwise
+    if option_enabled(entry, CONF_USE_ACTIVITY_FEATURE):
+        entry.async_create_background_task(
+            hass, coordinator.activity.async_refresh(), "little_monkey activity")
     # Savings of the account, read the same way
     coordinator.savings = LittleMonkeySavingsCoordinator(
         hass=hass, entry=entry, client=coordinator.client)
-    entry.async_create_background_task(
-        hass, coordinator.savings.async_refresh(), "little_monkey savings")
+    if option_enabled(entry, CONF_USE_SAVINGS_FEATURE):
+        entry.async_create_background_task(
+            hass, coordinator.savings.async_refresh(), "little_monkey savings")
     # Piloted equipments, read the same way
     coordinator.equipment = LittleMonkeyEquipmentCoordinator(
         hass=hass, entry=entry, client=coordinator.client)
-    entry.async_create_background_task(
-        hass, coordinator.equipment.async_refresh(), "little_monkey equipment")
+    if option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE):
+        entry.async_create_background_task(
+            hass, coordinator.equipment.async_refresh(), "little_monkey equipment")
     entry.async_on_unload(coordinator.equipment.async_cancel_end_reading)
 
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
@@ -123,12 +132,40 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     _async_remove_old_equipment_devices(hass, entry)
+    _async_remove_disabled_entities(hass, entry)
 
     return True
 
 
+def _async_remove_disabled_entities(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Remove the sensors of the groups whose option is off.
+
+    They were created while it was on; otherwise they would stay
+    unavailable. Turned on again, the option creates them again.
+    """
+    keys = set()
+    for option, group in GROUP_SENSOR_KEYS.items():
+        if not option_enabled(entry, option):
+            keys |= set(group)
+    equipment_prefix = f"{entry.entry_id}_"
+    registry = er.async_get(hass)
+    for entity in er.async_entries_for_config_entry(registry, entry.entry_id):
+        key = entity.unique_id.removeprefix(equipment_prefix)
+        # The sensors of the equipments: <entry>_<equipment id>_<key>
+        equipment = key.split("_", 1)[0].isdigit()
+        if (key in keys and not equipment) or (
+            equipment and not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE)
+        ):
+            registry.async_remove(entity.entity_id)
+
+
 def _equipment_devices(entry: ConfigEntry) -> set:
-    """Return the identifiers of the devices of the piloted equipments."""
+    """Return the identifiers of the devices of the piloted equipments.
+
+    None without the option of the equipments.
+    """
+    if not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE):
+        return set()
     return {
         equipment_identifier(entry.entry_id, equipment["id"])
         for equipment in entry.runtime_data.client.equipments
@@ -141,10 +178,12 @@ def _async_remove_old_equipment_devices(hass: HomeAssistant, entry: ConfigEntry)
 
     Only a piloted equipment has a device. The device of an equipment
     removed from ecojoko, or left empty by a version under development that
-    gave one to every equipment, is removed. Nothing is removed while the
-    equipments are unknown.
+    gave one to every equipment, is removed, and every one without the
+    option of the equipments. Nothing is removed while the equipments are
+    unknown, the option being on.
     """
-    if not entry.runtime_data.client.equipments:
+    if not entry.runtime_data.client.equipments and option_enabled(
+            entry, CONF_USE_EQUIPMENT_FEATURE):
         return
     current = _equipment_devices(entry)
     prefix = f"{entry.entry_id}_"

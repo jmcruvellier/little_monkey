@@ -19,11 +19,15 @@
             },
             "settings": {
                 "title": "Autres capteurs",
-                "description": "Choisissez les autres capteurs et la fréquence de rafraîchissement.",
+                "description": "Choisissez les autres capteurs et la fréquence de rafraîchissement. Chaque groupe de capteurs n'est lu chez ecojoko que s'il est coché ; les cartes qui en ont besoin le demandent.",
                 "data": {
                     "use_prod_feature": "Capteur de production",
                     "use_temphum_feature": "Capteurs d'humidité et de température",
-                    "poll_interval": "Fréquence de rafraîchissement des données (en secondes)"
+                    "poll_interval": "Fréquence de rafraîchissement des données (en secondes)",
+                    "use_activity_feature": "Activité du compte : économies, consommation et coût sur 7 jours, puissance max (faces du cadran)",
+                    "use_savings_feature": "Économies : sur 12 mois, de la semaine, du mois et de l'année (cartes Économies)",
+                    "use_contract_feature": "Contrat : offre, tranches et prix du kWh (carte Contrat)",
+                    "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)"
                 }
             },
             "reauth_confirm": {
@@ -63,11 +67,15 @@
             },
             "settings": {
                 "title": "Autres capteurs",
-                "description": "Choisissez les autres capteurs et la fréquence de rafraîchissement.",
+                "description": "Choisissez les autres capteurs et la fréquence de rafraîchissement. Chaque groupe de capteurs n'est lu chez ecojoko que s'il est coché ; les cartes qui en ont besoin le demandent.",
                 "data": {
                     "use_prod_feature": "Capteur de production",
                     "use_temphum_feature": "Capteurs d'humidité et de température",
-                    "poll_interval": "Fréquence de rafraîchissement des données (en secondes)"
+                    "poll_interval": "Fréquence de rafraîchissement des données (en secondes)",
+                    "use_activity_feature": "Activité du compte : économies, consommation et coût sur 7 jours, puissance max (faces du cadran)",
+                    "use_savings_feature": "Économies : sur 12 mois, de la semaine, du mois et de l'année (cartes Économies)",
+                    "use_contract_feature": "Contrat : offre, tranches et prix du kWh (carte Contrat)",
+                    "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)"
                 }
             }
         },
@@ -608,6 +616,9 @@
         },
         "command_failed": {
             "message": "La commande n'a pas pu être envoyée à ecojoko : {error}. Elle a peut-être été appliquée quand même."
+        },
+        "equipment_disabled": {
+            "message": "Activez l'option « Équipements pilotés » dans les options de l'intégration Little Monkey."
         }
     }
 }

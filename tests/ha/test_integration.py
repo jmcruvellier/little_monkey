@@ -63,6 +63,13 @@ HCHP_BANDS = [
     {"id": 3, "label": "Heures Creuses", "key": "hc_grid_consumption",
      "name": None, "category": "hc"},
 ]
+# The groups of sensors of 2.0.0, all on in the entry of the tests
+GROUPS = {
+    "use_activity_feature": True,
+    "use_savings_feature": True,
+    "use_contract_feature": True,
+    "use_equipment_feature": True,
+}
 # Data of an entry of the current version: tariff bands
 DATA = {
     "name": "Ecojoko",
@@ -71,6 +78,7 @@ DATA = {
     "use_hchp_feature": True,
     "use_temphum_feature": True,
     "use_prod_feature": False,
+    **GROUPS,
     "poll_interval": 5,
     "tariff_bands": HCHP_BANDS,
 }
@@ -82,7 +90,7 @@ HCHP_SCREEN = {
     "Heures Pleines – HC/HP": "hp",
     "Heures Creuses – HC/HP": "hc",
 }
-SETTINGS = {"use_prod_feature": False, "use_temphum_feature": True, "poll_interval": 5}
+SETTINGS = {"use_prod_feature": False, "use_temphum_feature": True, **GROUPS, "poll_interval": 5}
 # Sensors created with the options of DATA by 1.2.7
 ENABLED = [
     "realtime_consumption",
@@ -240,10 +248,10 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert entry.data["name"] == "Ecojoko"
     assert entry.unique_id == "user@example.com"
 
-    # Same entity ids, new unique ids, nothing duplicated; only the sensors
-    # added by 2.0.0 are created
+    # Same entity ids, new unique ids, nothing duplicated; only the current
+    # tariff period is created: the groups of sensors of 2.0.0 are off
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 2 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
+    assert len(entities) == count_before + 1
     assert not [e.entity_id for e in entities if e.entity_id.endswith("_2")]
     assert entity_registry.async_get(entity_ids["main"]).unique_id == entry.entry_id
     for key in [*ENABLED, "production_surplus"]:
@@ -272,7 +280,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
     assert await hass.config_entries.async_reload(entry.entry_id)
     await hass.async_block_till_done()
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    assert len(entities) == count_before + 2 + len(ACTIVITY_KEYS) + len(SAVINGS_KEYS)
+    assert len(entities) == count_before + 1
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
 
 
@@ -1693,3 +1701,51 @@ async def test_equipment_device_is_linked_by_the_id_of_the_ecojoko_device(hass, 
     assert entry.runtime_data.main_device_id == main.id
     assert heater.via_device_id == main.id
     assert main.name == "Ecojoko"
+
+
+async def test_groups_of_sensors_are_off_by_default(hass, fake_api):
+    """Without their options, no sensor of the groups and no reading of them."""
+    fake_api.equipments = [WATER_HEATER, TEMP_HUM_EQUIPMENT]
+    entry = add_entry(hass, data={key: value for key, value in DATA.items() if key not in GROUPS})
+    assert await setup_entry(hass, entry)
+
+    unique_ids = {
+        entity.unique_id
+        for entity in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)}
+    for key in [*ACTIVITY_KEYS, *SAVINGS_KEYS, "contract"]:
+        assert f"{entry.entry_id}_{key}" not in unique_ids, key
+    assert not [unique_id for unique_id in unique_ids if "_630220_" in unique_id or "_3_" in unique_id]
+    assert hass.states.get("select.chauffe_eau_control") is None
+    # Nothing read from ecojoko for them
+    assert fake_api.activity_calls == 0
+    assert fake_api.equipment_reads == 0
+    devices = dr.async_entries_for_config_entry(dr.async_get(hass), entry.entry_id)
+    assert [device.identifiers for device in devices] == [{(DOMAIN, entry.entry_id)}]
+
+    # The card of the equipments asks to turn the option on
+    answer = await call_service(hass, "get_equipments")
+    assert answer == {"enabled": False, "equipments": []}
+
+
+async def test_sensors_of_a_group_turned_off_are_removed(hass, fake_api):
+    """Turning an option off removes its sensors and the devices of the equipments."""
+    fake_api.equipments = [WATER_HEATER, TEMP_HUM_EQUIPMENT]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    entities = er.async_get(hass)
+    assert entities.async_get("sensor.ecojoko_savings_over_7_days") is not None
+    assert entities.async_get("sensor.chauffe_eau_power") is not None
+
+    hass.config_entries.async_update_entry(entry, data={
+        **entry.data, "use_activity_feature": False, "use_equipment_feature": False})
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert entities.async_get("sensor.ecojoko_savings_over_7_days") is None
+    assert entities.async_get("sensor.chauffe_eau_power") is None
+    assert entities.async_get("sensor.ecojoko_sonde_connection_to_the_assistant") is None
+    assert entities.async_get("select.chauffe_eau_control") is None
+    # The other groups are kept
+    assert entities.async_get("sensor.ecojoko_contract") is not None
+    assert entities.async_get("sensor.ecojoko_savings_this_week") is not None
+    devices = dr.async_entries_for_config_entry(dr.async_get(hass), entry.entry_id)
+    assert [device.identifiers for device in devices] == [{(DOMAIN, entry.entry_id)}]

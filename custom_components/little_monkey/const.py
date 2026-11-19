@@ -17,6 +17,23 @@ CONF_USE_HCHP_FEATURE = "use_hchp_feature"
 CONF_USE_TEMPO_FEATURE = "use_tempo_feature"
 CONF_USE_TEMPHUM_FEATURE = "use_temphum_feature"
 CONF_USE_PROD_FEATURE = "use_prod_feature"
+# Groups of sensors added in 2.0.0, off by default: their sensors are
+# created, and their data read from ecojoko, only when they are on
+CONF_USE_ACTIVITY_FEATURE = "use_activity_feature"
+CONF_USE_SAVINGS_FEATURE = "use_savings_feature"
+CONF_USE_CONTRACT_FEATURE = "use_contract_feature"
+CONF_USE_EQUIPMENT_FEATURE = "use_equipment_feature"
+SENSOR_GROUP_OPTIONS = (
+    CONF_USE_ACTIVITY_FEATURE,
+    CONF_USE_SAVINGS_FEATURE,
+    CONF_USE_CONTRACT_FEATURE,
+    CONF_USE_EQUIPMENT_FEATURE,
+)
+
+
+def option_enabled(entry, option) -> bool:
+    """Tell whether an option of a config entry is on."""
+    return entry.data.get(option) is True
 # Tariff bands of the contract and their settings (see tariff.py)
 CONF_TARIFF_BANDS = "tariff_bands"
 

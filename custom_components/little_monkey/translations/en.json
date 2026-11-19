@@ -19,11 +19,15 @@
             },
             "settings": {
                 "title": "Other sensors",
-                "description": "Choose the other sensors and the refresh interval.",
+                "description": "Choose the other sensors and the refresh interval. Each group of sensors is read from ecojoko only when checked; the cards that need one ask for it.",
                 "data": {
                     "use_prod_feature": "Production sensor",
                     "use_temphum_feature": "Humidity and temperature sensors",
-                    "poll_interval": "Poll interval (in seconds)"
+                    "poll_interval": "Poll interval (in seconds)",
+                    "use_activity_feature": "Account activity: savings, consumption and cost over 7 days, max power (faces of the dial)",
+                    "use_savings_feature": "Savings: over 12 months, this week, month and year (Savings cards)",
+                    "use_contract_feature": "Contract: offer, tariff bands and price of a kWh (Contract card)",
+                    "use_equipment_feature": "Piloted equipments: water heater…, their sensors and their control (Equipments card)"
                 }
             },
             "reauth_confirm": {
@@ -63,11 +67,15 @@
             },
             "settings": {
                 "title": "Other sensors",
-                "description": "Choose the other sensors and the refresh interval.",
+                "description": "Choose the other sensors and the refresh interval. Each group of sensors is read from ecojoko only when checked; the cards that need one ask for it.",
                 "data": {
                     "use_prod_feature": "Production sensor",
                     "use_temphum_feature": "Humidity and temperature sensors",
-                    "poll_interval": "Poll interval (in seconds)"
+                    "poll_interval": "Poll interval (in seconds)",
+                    "use_activity_feature": "Account activity: savings, consumption and cost over 7 days, max power (faces of the dial)",
+                    "use_savings_feature": "Savings: over 12 months, this week, month and year (Savings cards)",
+                    "use_contract_feature": "Contract: offer, tariff bands and price of a kWh (Contract card)",
+                    "use_equipment_feature": "Piloted equipments: water heater…, their sensors and their control (Equipments card)"
                 }
             }
         },
@@ -608,6 +616,9 @@
         },
         "command_failed": {
             "message": "The command could not be sent to ecojoko: {error}. It may have been applied all the same."
+        },
+        "equipment_disabled": {
+            "message": "Turn on the “Piloted equipments” option in the options of the Little Monkey integration."
         }
     }
 }
