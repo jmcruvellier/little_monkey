@@ -69,6 +69,8 @@ GROUPS = {
     "use_savings_feature": True,
     "use_contract_feature": True,
     "use_equipment_feature": True,
+    "use_analysis_feature": True,
+    "use_measures_feature": True,
 }
 # Data of an entry of the current version: tariff bands
 DATA = {
@@ -1725,6 +1727,16 @@ async def test_groups_of_sensors_are_off_by_default(hass, fake_api):
     # The card of the equipments asks to turn the option on
     answer = await call_service(hass, "get_equipments")
     assert answer == {"enabled": False, "equipments": []}
+    # So do the cards read on demand, without reading ecojoko
+    calls = len(fake_api.analysis_calls)
+    assert (await call_service(hass, "get_activations"))["enabled"] is False
+    assert (await call_service(hass, "get_consumption_analysis", period="week"))["enabled"] is False
+    assert (await call_service(hass, "get_category_history", category=8))["enabled"] is False
+    answer = await call_service(hass, "get_measures", measure="electricity", period="day")
+    assert answer["enabled"] is False
+    assert len(fake_api.analysis_calls) == calls
+    answer = await call_service(hass, "get_measures", measure="temperature", period="day", check=True)
+    assert answer == {"enabled": False}
 
 
 async def test_sensors_of_a_group_turned_off_are_removed(hass, fake_api):

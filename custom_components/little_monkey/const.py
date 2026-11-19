@@ -23,11 +23,17 @@ CONF_USE_ACTIVITY_FEATURE = "use_activity_feature"
 CONF_USE_SAVINGS_FEATURE = "use_savings_feature"
 CONF_USE_CONTRACT_FEATURE = "use_contract_feature"
 CONF_USE_EQUIPMENT_FEATURE = "use_equipment_feature"
+# Cards without sensors, read on demand with services: their services
+# answer only when their option is on, as the other groups
+CONF_USE_ANALYSIS_FEATURE = "use_analysis_feature"
+CONF_USE_MEASURES_FEATURE = "use_measures_feature"
 SENSOR_GROUP_OPTIONS = (
     CONF_USE_ACTIVITY_FEATURE,
     CONF_USE_SAVINGS_FEATURE,
     CONF_USE_CONTRACT_FEATURE,
     CONF_USE_EQUIPMENT_FEATURE,
+    CONF_USE_ANALYSIS_FEATURE,
+    CONF_USE_MEASURES_FEATURE,
 )
 
 
