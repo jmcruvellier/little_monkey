@@ -212,3 +212,13 @@ test("a period before the first measures gives the first period of ecojoko", () 
   assert.equal(card.isFirstPeriod({ points: [] }), false);
   assert.equal(card.isFirstPeriod(undefined), false);
 });
+
+test("the axis labels are shown at 0.75 em, whatever the width of the card", () => {
+  // A chart 280 wide shown on 450 pixels, text of 14 pixels: 10.5 pixels
+  assert.equal(card.axisFontSize(450, 280, 14), 6.5);
+  // Never above the size the margins are made for, on a narrow card
+  assert.equal(card.axisFontSize(200, 280, 14), 9.5);
+  // Not measured yet: the size of the margins
+  assert.equal(card.axisFontSize(0, 280, 14), 9.5);
+  assert.equal(card.axisFontSize(450, 280, Number.NaN), 9.5);
+});
