@@ -236,3 +236,9 @@ test("the savings cards need the option of the savings", () => {
   assert.equal(cards.savingsEnabled({ entities: { "sensor.a": sensor("realtime_consumption") } }), false);
   assert.equal(cards.savingsEnabled({ entities: { "sensor.b": sensor("savings_week") } }), true);
 });
+
+test("the graduations of the savings carry their unit", () => {
+  const plain = (value) => value.replace(/\s/g, " ");
+  assert.equal(plain(cards.axisLabel("fr", 600, "kwh")), "600 kWh");
+  assert.equal(plain(cards.axisLabel("fr", 80, "eur")), "80 €");
+});

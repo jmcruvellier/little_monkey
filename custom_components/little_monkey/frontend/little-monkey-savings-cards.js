@@ -166,6 +166,21 @@ export function formatValue(locale, value, unit) {
 }
 
 /**
+ * Return the label of a graduation with its unit: euros, kWh, or watts
+ * (kW from 1 000 W, so that "6 kW" fits beside the chart).
+ */
+export function axisLabel(locale, value, unit) {
+  const number = (amount, digits) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(amount);
+  if (unit === "eur") {
+    return `${number(value, 2)} €`;
+  }
+  if (unit === "w") {
+    return Math.abs(value) >= 1000 ? `${number(value / 1000, 1)} kW` : `${number(value, 0)} W`;
+  }
+  return `${number(value, 2)} kWh`;
+}
+
+/**
  * Return the rows of the summary: consumption, reference and savings.
  *
  * values: {consumption, reference, savings}, in euros or kWh. The bars are
@@ -325,7 +340,8 @@ const PERIOD_SENSORS = { week: "savings_week", month: "savings_month", year: "sa
 // Bars: savings in green, overconsumption in grey blue, as in ecojoko
 export const DETAIL_COLORS = { savings: "#5fdcab", overconsumption: "#a9bfd0" };
 // Drawing of the bars, in the units of the SVG
-const CHART = { width: 280, height: 160, left: 40, right: 4, top: 8, bottom: 20 };
+// The left margin holds the graduations with their unit ("600 kWh")
+const CHART = { width: 280, height: 160, left: 48, right: 4, top: 8, bottom: 20 };
 // Distance of a swipe that changes the period, in pixels
 const SWIPE_DISTANCE = 40;
 
@@ -1041,9 +1057,11 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     const total = root.querySelector(".total");
     if (savings && savings.savings !== null && savings.savings !== undefined) {
       const color = DETAIL_COLORS[savings.savings < 0 ? "overconsumption" : "savings"];
+      // The unit of the bars first, in the color of the savings
+      const values = { eur: formatValue(locale, savings.savings, "eur"), kwh: formatValue(locale, savings.savings_kwh, "kwh") };
+      const other = unit === "kwh" ? "eur" : "kwh";
       total.innerHTML = `<span class="money" style="color: color-mix(in srgb, ${color} 65%, var(--primary-text-color, #212121))">${
-        escapeHtml(formatValue(locale, savings.savings, "eur"))}</span> <span class="energy">| ${
-        escapeHtml(formatValue(locale, savings.savings_kwh, "kwh"))}</span>`;
+        escapeHtml(values[unit])}</span> <span class="energy">| ${escapeHtml(values[other])}</span>`;
     } else {
       total.textContent = "";
     }
@@ -1052,10 +1070,14 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     const details = root.querySelector(".details");
     const bar = this._selected === null ? null : bars[this._selected];
     if (bar && bar.savings !== null && bar.savings !== undefined) {
+      const values = [formatValue(locale, bar.savings, "eur"), formatValue(locale, bar.savings_kwh, "kwh")];
+      if (unit === "kwh") {
+        values.reverse();
+      }
       details.textContent = text.bar
         .replace("{name}", barTitle(locale, this._period, bar.date))
-        .replace("{savings}", formatValue(locale, bar.savings, "eur"))
-        .replace("{energy}", formatValue(locale, bar.savings_kwh, "kwh"));
+        .replace("{savings}", values[0])
+        .replace("{energy}", values[1]);
     } else {
       details.textContent = "";
     }
@@ -1069,11 +1091,9 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
       return `<text class="message" x="${CHART.width / 2}" y="${CHART.height / 2}">${escapeHtml(message)}</text>`;
     }
     const { rects, ticks, zero } = chartGeometry(barValues(bars, unit));
-    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
-    const suffix = unit === "kwh" ? "" : " €";
     const grid = ticks.map((tick) => `
       <line class="grid" x1="${CHART.left}" x2="${CHART.width - CHART.right}" y1="${tick.y}" y2="${tick.y}" />
-      <text class="tick" x="${CHART.left - 4}" y="${tick.y}">${escapeHtml(format.format(tick.value) + suffix)}</text>`).join("");
+      <text class="tick" x="${CHART.left - 4}" y="${tick.y}">${escapeHtml(axisLabel(locale, tick.value, unit))}</text>`).join("");
     const columns = rects.map((rect, index) => {
       const value = rect.value === null ? "" : `<rect class="value" x="${rect.x}" y="${rect.y}" width="${rect.width}" height="${rect.height}" rx="1.5" fill="${rect.color}" />`;
       const selected = index === this._selected ? " selected" : "";

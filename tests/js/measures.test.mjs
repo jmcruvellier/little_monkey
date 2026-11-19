@@ -172,3 +172,13 @@ test("the month of the temperature and humidity is the calendar month", () => {
   assert.equal(card.periodLabel("fr", "calendar", "2026-11-01"), "Novembre 2026");
   assert.equal(card.climateLabels("fr", "calendar", range).length, 6);
 });
+
+test("the graduations carry their unit: kW from 1 000 W, kWh, euros", () => {
+  const plain = (value) => value.replace(/\s/g, " ");
+  assert.equal(plain(card.axisLabel("fr", 6000, "w")), "6 kW");
+  assert.equal(plain(card.axisLabel("fr", 2500, "w")), "2,5 kW");
+  assert.equal(plain(card.axisLabel("fr", 500, "w")), "500 W");
+  assert.equal(plain(card.axisLabel("fr", -1000, "w")), "-1 kW");
+  assert.equal(plain(card.axisLabel("fr", 40, "kwh")), "40 kWh");
+  assert.equal(plain(card.axisLabel("fr", 150, "eur")), "150 €");
+});
