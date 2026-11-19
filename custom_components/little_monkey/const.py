@@ -80,6 +80,11 @@ def tariff_periods(data):
 # APIs
 CONF_API_TIMEOUT = 3
 CONF_API_STAT_REFRESH = 30
+# Timeout of the statistics APIs, read in the background: ecojoko often
+# takes more than CONF_API_TIMEOUT to answer them with a short poll
+# interval. Shorter than CONF_API_STAT_REFRESH, so that a statistic is not
+# asked for again while it is read
+CONF_API_STAT_TIMEOUT = 15
 # A communication failure shorter than this many seconds keeps the last
 # values instead of making the sensors unavailable
 CONF_API_FAILURE_GRACE = 120
