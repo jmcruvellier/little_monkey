@@ -80,7 +80,7 @@ entity: sensor.ecojoko_consommation_temps_reel
 Votre contrat d'électricité en un coup d'œil.
 
 - Le fournisseur, l'offre, sa date de début et la puissance souscrite.
-- Un cadran des 24 heures avec les heures creuses, une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:30, dans 1 h 45 ») ; aux couleurs du jour avec Tempo.
+- Un cadran des 24 heures avec les heures creuses, une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:30, dans 1 h 45 ») ; aux couleurs du jour avec Tempo. L'heure est celle de la France, comme les heures creuses d'ecojoko, où que soit le navigateur. Pour un contrat sans heures creuses, le cadran n'indique pas de période.
 - Les tranches tarifaires avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras, et l'abonnement mensuel. Un prix estimé est précédé de « ≈ » ([voir pourquoi](integration.md#contrat)) ; toucher une tranche ouvre sa consommation du jour.
 
 ```yaml
@@ -125,7 +125,7 @@ unit: eur
 Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou d'une année (mois par mois), en barres vertes pour une économie et gris-bleu pour une surconsommation.
 
 - Les boutons Semaine, Mois et Année changent de période ; le total de la période s'affiche à côté, l'unité choisie en premier.
-- Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko.
+- Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
 - Toucher une barre affiche son détail (« Lundi 16 novembre : -0,35 € · -2,58 kWh »).
 
 ```yaml
@@ -228,8 +228,9 @@ entity: sensor.ecojoko_consommation_temps_reel
 La page « Mesures » d'ecojoko, avec trois onglets.
 
 - **Électricité, Jour** : la courbe de puissance colorée selon la tranche tarifaire de chaque instant (heures pleines, heures creuses, couleurs Tempo…), le talon de consommation en bleu foncé dessous et la production injectée sous l'axe. Toucher la courbe donne la puissance à cette heure.
-- **Électricité, Semaine, Mois, Année** : les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec la production injectée sous l'axe. La légende donne le total de chaque tranche ; toucher une barre affiche son détail. Le mois est formé des 30 derniers jours, comme dans ecojoko.
-- **Température, Humidité** : les courbes intérieure et extérieure, avec la moyenne intérieure. Elles viennent des statistiques des capteurs de Home Assistant quand ceux-ci couvrent toute la période, sinon d'ecojoko, qui a tout l'historique de la sonde. Le mois est le mois calendaire.
+- **Électricité, Semaine, Mois, Année** : les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec la production injectée sous l'axe. La légende donne le total de chaque tranche ; toucher une barre affiche son détail.
+- **Température, Humidité** : les courbes intérieure et extérieure, avec la moyenne intérieure. Elles viennent des statistiques des capteurs de Home Assistant quand ceux-ci couvrent toute la période, sinon d'ecojoko, qui a tout l'historique de la sonde.
+- **Navigation** : les flèches, ou un glissement du doigt, passent à la période précédente ou suivante. Le mois est le mois calendaire, pour les trois onglets. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
 
 ```yaml
 type: custom:little-monkey-measures-card
