@@ -831,6 +831,33 @@ function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, (character) => `&#${character.charCodeAt(0)};`);
 }
 
+// Axis labels: 0.75 em, as the hours of the timelines of the activations,
+// never above the size the margins of the charts are made for
+const AXIS_SCALE = 0.75;
+const AXIS_FONT = 9.5;
+
+/**
+ * Return the size of the axis labels in units of a chart, to show them at
+ * 0.75 em. A chart is drawn in a box of fixed width: it grows with the card,
+ * and its text with it.
+ */
+export function axisFontSize(width, boxWidth, fontSize) {
+  if (!(width > 0) || !(fontSize > 0)) {
+    return AXIS_FONT;
+  }
+  return Math.min(AXIS_FONT, Math.round((AXIS_SCALE * fontSize * boxWidth / width) * 10) / 10);
+}
+
+/** Size the axis labels of a chart for its width, on its card. */
+function fitAxisLabels(host, svg, boxWidth) {
+  const width = svg?.getBoundingClientRect().width;
+  if (!width) {
+    return;
+  }
+  const size = axisFontSize(width, boxWidth, parseFloat(getComputedStyle(svg).fontSize));
+  host.style.setProperty("--lm-axis-font", `${size}px`);
+}
+
 class LittleMonkeySavingsDetailCard extends HTMLElement {
   setConfig(config) {
     if (!config) {
@@ -997,10 +1024,10 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
         .total .energy { color: var(--secondary-text-color); }
         .details { min-height: 1.4em; font-size: 0.9em; color: var(--secondary-text-color); text-align: center; }
         svg { width: 100%; display: block; touch-action: pan-y; user-select: none; }
-        .tick { fill: var(--secondary-text-color, #727272); font-size: 9.5px; text-anchor: end; dominant-baseline: central; }
+        .tick { fill: var(--secondary-text-color, #727272); font-size: var(--lm-axis-font, 9.5px); text-anchor: end; dominant-baseline: central; }
         .grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 0.5; }
         .zero { stroke: var(--secondary-text-color, #727272); stroke-width: 0.6; }
-        .label { fill: var(--secondary-text-color, #727272); font-size: 9.5px; text-anchor: middle; }
+        .label { fill: var(--secondary-text-color, #727272); font-size: var(--lm-axis-font, 9.5px); text-anchor: middle; }
         .bar { cursor: pointer; }
         .bar rect.hit { fill: transparent; }
         .bar.selected rect.value { stroke: var(--primary-text-color); stroke-width: 1; }
@@ -1030,6 +1057,9 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     root.querySelector(".previous").addEventListener("click", () => this._go(-1));
     root.querySelector(".next").addEventListener("click", () => this._go(1));
     const svg = root.querySelector("svg");
+    this._axisObserver?.disconnect();
+    this._axisObserver = new ResizeObserver(() => fitAxisLabels(this, svg, CHART.width));
+    this._axisObserver.observe(svg);
     svg.addEventListener("click", (event) => {
       const bar = event.target.closest?.(".bar");
       if (bar) {
