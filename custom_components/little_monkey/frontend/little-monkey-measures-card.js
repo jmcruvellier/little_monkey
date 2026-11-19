@@ -39,6 +39,7 @@ const TRANSLATIONS = {
     base: "Base load",
     production: "Production",
     power_at: "{time}: {power}",
+    bar: "{name}: {values}",
     error: "Measures not read",
     empty: "No measure for this period",
     missing: "Little Monkey sensor not found",
@@ -67,6 +68,7 @@ const TRANSLATIONS = {
     base: "Talon",
     production: "Production",
     power_at: "{time} : {power}",
+    bar: "{name} : {values}",
     error: "Mesures non lues",
     empty: "Aucune mesure sur cette période",
     missing: "Capteur Little Monkey introuvable",
@@ -97,7 +99,8 @@ export const PERIODS = ["day", "week", "month", "year"];
 // Colors of ecojoko: base load, production, and a band without its color
 export const MEASURE_COLORS = { base: "#022469", production: "#ffcc47", band: "#7ed2df" };
 // Chart, in the units of the SVG
-export const CHART = { width: 280, height: 160, left: 40, right: 4, top: 8, bottom: 20 };
+// The left margin holds the graduations with their unit ("600 kWh")
+export const CHART = { width: 280, height: 160, left: 48, right: 4, top: 8, bottom: 20 };
 const SWIPE_DISTANCE = 40;
 const MINUTES_A_DAY = 1440;
 
@@ -467,7 +470,8 @@ export function barLabel(locale, period, iso, index) {
     // One day out of five: thirty days do not fit
     return index % 5 === 0 ? String(date.getUTCDate()) : "";
   }
-  return new Intl.DateTimeFormat(locale, { weekday: "narrow", timeZone: "UTC" }).format(date);
+  // Short names, as the savings card: "lun.", "Mon"
+  return new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" }).format(date);
 }
 
 /** Return the long label of a bar, for its details. */
@@ -480,6 +484,21 @@ export function barTitle(locale, period, iso) {
     : { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" };
   const text = new Intl.DateTimeFormat(locale, options).format(utcDate(iso));
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/**
+ * Return the label of a graduation with its unit: euros, kWh, or watts
+ * (kW from 1 000 W, so that "6 kW" fits beside the chart).
+ */
+export function axisLabel(locale, value, unit) {
+  const number = (amount, digits) => new Intl.NumberFormat(locale, { maximumFractionDigits: digits }).format(amount);
+  if (unit === "eur") {
+    return `${number(value, 2)} €`;
+  }
+  if (unit === "w") {
+    return Math.abs(value) >= 1000 ? `${number(value / 1000, 1)} kW` : `${number(value, 0)} W`;
+  }
+  return `${number(value, 2)} kWh`;
 }
 
 /** Return a temperature or a humidity with its unit, "—" without it. */
@@ -511,7 +530,7 @@ export function climateLabels(locale, period, range) {
     for (let index = 0; index < days; index += every) {
       const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + index, 12);
       labels.push({ time: date.toISOString(), text: period === "week"
-        ? new Intl.DateTimeFormat(locale, { weekday: "narrow" }).format(date) : String(date.getDate()) });
+        ? new Intl.DateTimeFormat(locale, { weekday: "short" }).format(date) : String(date.getDate()) });
     }
   }
   return labels;
@@ -970,8 +989,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       ? (average === null ? "" : `<span class="main">${escapeHtml(text.climate_total.replace(
         "{value}", climateValue(locale, average, measures.unit)))}</span>`)
       : measures
-      ? `<span class="main">${escapeHtml(formatValue(locale, measures.energy, "kwh"))}</span> <span class="other">| ${
-        escapeHtml(formatValue(locale, measures.cost, "eur"))}</span>`
+      ? this._total(measures, unit, locale)
       : "";
     const svg = root.querySelector("svg");
     const details = root.querySelector(".details");
@@ -992,12 +1010,18 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     }
   }
 
-  /** Return the SVG of the graduations of a scale, with their unit. */
-  _grid(ticks, suffix, locale) {
-    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 2, notation: "compact" });
+  /** Return the HTML of the energy and the cost of a period, the unit of the bars first. */
+  _total(measures, unit, locale) {
+    const values = { kwh: formatValue(locale, measures.energy, "kwh"), eur: formatValue(locale, measures.cost, "eur") };
+    const other = unit === "eur" ? "kwh" : "eur";
+    return `<span class="main">${escapeHtml(values[unit])}</span> <span class="other">| ${escapeHtml(values[other])}</span>`;
+  }
+
+  /** Return the SVG of the graduations of a scale, with their unit: w, kwh or eur. */
+  _grid(ticks, unit, locale) {
     return ticks.map((tick) => `
       <line class="grid" x1="${CHART.left}" x2="${CHART.width - CHART.right}" y1="${tick.y}" y2="${tick.y}" />
-      <text class="tick" x="${CHART.left - 4}" y="${tick.y}">${escapeHtml(format.format(tick.value) + suffix)}</text>`).join("");
+      <text class="tick" x="${CHART.left - 4}" y="${tick.y}">${escapeHtml(axisLabel(locale, tick.value, unit))}</text>`).join("");
   }
 
   /** Draw the power of a day. */
@@ -1024,7 +1048,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       details.textContent = text.power_at.replace("{time}", time).replace("{power}", formatValue(locale, point.power, "w"));
       cursor = `<line class="cursor" x1="${areas.x(point.minutes)}" x2="${areas.x(point.minutes)}" y1="${CHART.top}" y2="${CHART.height - CHART.bottom}" />`;
     }
-    svg.innerHTML = `${this._grid(areas.ticks, " W", locale)}
+    svg.innerHTML = `${this._grid(areas.ticks, "w", locale)}
       ${areas.bands.map((band) => `<path d="${band.path}" fill="${band.color}" />`).join("")}
       ${areas.base ? `<path d="${areas.base}" fill="${MEASURE_COLORS.base}" />` : ""}
       ${areas.injected ? `<path d="${areas.injected}" fill="${MEASURE_COLORS.production}" />` : ""}
@@ -1109,7 +1133,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
         <text class="label" x="${rect.center}" y="${CHART.height - 4}">${escapeHtml(barLabel(locale, this._period, bars[rect.index]?.date, rect.index))}</text>
       </g>`;
     }).join("");
-    svg.innerHTML = `${this._grid(chart.ticks, unit === "eur" ? " €" : "", locale)}${columns}
+    svg.innerHTML = `${this._grid(chart.ticks, unit, locale)}${columns}
       <line class="zero" x1="${CHART.left}" x2="${CHART.width - CHART.right}" y1="${chart.zero}" y2="${chart.zero}" />`;
     const labels = Object.fromEntries((measures.bands || []).map((band) => [band.id, band.label]));
     const bar = this._selected === null ? null : bars[this._selected];
@@ -1121,8 +1145,14 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       if (bar.production) {
         parts.push(`${text.production} ${formatValue(locale, bar.production, "kwh")}`);
       }
-      details.textContent = `${barTitle(locale, this._period, bar.date)} : ${
-        formatValue(locale, bar.energy, "kwh")} · ${formatValue(locale, bar.cost, "eur")}${parts.length ? ` — ${parts.join(" · ")}` : ""}`;
+      // The unit of the bars first
+      const values = [formatValue(locale, bar.energy, "kwh"), formatValue(locale, bar.cost, "eur")];
+      if (unit === "eur") {
+        values.reverse();
+      }
+      details.textContent = text.bar
+        .replace("{name}", barTitle(locale, this._period, bar.date))
+        .replace("{values}", `${values.join(" · ")}${parts.length ? ` — ${parts.join(" · ")}` : ""}`);
     } else {
       details.textContent = "";
     }
