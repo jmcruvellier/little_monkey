@@ -306,13 +306,13 @@ def parse_activations(payload) -> dict:
 
 
 # Scales of the measures of ecojoko, by period: as its page « Mesures », a
-# day of power every few minutes, 7 days, 30 days ending on the date (its
-# « Mois »), and the 12 months of a year
+# day of power every few minutes, the 7 days of a week, the days of the
+# calendar month holding the date (its « Mois »), and the 12 months of a year
 MEASURE_PERIODS = {"day": "d4", "week": "w", "month": "m6", "year": "y"}
 # Kinds of measures: the API and the device that measures them
 MEASURES = {"electricity": "powerstat", "temperature": "tempstat", "humidity": "humstat"}
-# The temperature and humidity sensor has no 30 days ending on a date (m6
-# gives a single day): its month is the calendar month
+# The temperature and humidity sensor has another scale for its calendar
+# month (m6 gives a single day)
 CLIMATE_MONTH = "m"
 
 

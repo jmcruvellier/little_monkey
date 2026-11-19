@@ -161,9 +161,10 @@ test("the statistics are used only when they cover the period from its start", (
   assert.equal(card.statisticsCover({ points: [] }, range, "week"), false);
 });
 
-test("the month of the temperature and humidity is the calendar month", () => {
+test("the month of every measure is the calendar month", () => {
   assert.equal(card.datesPeriod("temperature", "month"), "calendar");
-  assert.equal(card.datesPeriod("electricity", "month"), "month");
+  // As ecojoko answers: October 2026 for the 15th, from the 1st to the 31st
+  assert.equal(card.datesPeriod("electricity", "month"), "calendar");
   assert.equal(card.datesPeriod("humidity", "week"), "week");
   const iso = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
   const range = card.periodRange("calendar", "2026-11-18");
@@ -193,4 +194,21 @@ test("the month and the year of today are the current ones, whatever the day", (
   // A day, a week and the 30 days ending on a day: the day itself
   assert.equal(card.isCurrent("day", "2027-01-30", "2027-01-31"), false);
   assert.equal(card.isCurrent("month", "2027-01-31", "2027-01-31"), true);
+});
+
+test("a period before the first measures gives the first period of ecojoko", () => {
+  // Asked for a week of January 2025, ecojoko answers with its first week
+  const first = { start: "2026-04-27T00:00:00+02:00", previous: null, next: "2026-05-04T00:00:00+02:00" };
+  assert.equal(card.firstPeriod("week", "2025-01-15", first), "2026-04-27");
+  assert.equal(card.firstPeriod("calendar", "2025-01-15", first), "2026-04-27");
+  assert.equal(card.isFirstPeriod(first), true);
+  // The period asked for
+  const october = { start: "2026-10-01T00:00:00+02:00", previous: "2026-09-01T00:00:00+02:00" };
+  assert.equal(card.firstPeriod("calendar", "2026-10-15", october), null);
+  assert.equal(card.isFirstPeriod(october), false);
+  assert.equal(card.firstPeriod("week", "2026-04-29", first), null);
+  // Curves of the statistics of Home Assistant: no start, nothing known before
+  assert.equal(card.firstPeriod("day", "2025-01-15", { points: [] }), null);
+  assert.equal(card.isFirstPeriod({ points: [] }), false);
+  assert.equal(card.isFirstPeriod(undefined), false);
 });

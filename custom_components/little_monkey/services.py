@@ -182,7 +182,7 @@ async def _async_get_measures(hass: HomeAssistant, call: ServiceCall) -> Service
     """Return the measures of a period holding a day, as the page « Mesures ».
 
     The day is today by default. The electricity of a day is its power every
-    few minutes with its tariff band; of a week, 30 days or a year, the
+    few minutes with its tariff band; of a week, a month or a year, the
     energy and cost of its days or months by band. The temperature and the
     humidity are inside and outside, as curves.
     """

@@ -604,7 +604,7 @@
                 },
                 "date": {
                     "name": "Data",
-                    "description": "Um dia do período; hoje por omissão. Para a eletricidade, o mês são os 30 dias que terminam nesse dia; para a temperatura e a humidade, o mês civil."
+                    "description": "Um dia do período; hoje por omissão. O mês é o mês civil que contém esse dia."
                 },
                 "check": {
                     "name": "Verificar a opção",

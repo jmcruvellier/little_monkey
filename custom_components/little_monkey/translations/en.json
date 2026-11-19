@@ -604,7 +604,7 @@
                 },
                 "date": {
                     "name": "Date",
-                    "description": "A day of the period; today by default. For the electricity, the month is the 30 days ending that day; for the temperature and humidity, the calendar month."
+                    "description": "A day of the period; today by default. The month is the calendar month holding that day."
                 },
                 "check": {
                     "name": "Check the option",
