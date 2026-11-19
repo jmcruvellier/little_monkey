@@ -29,9 +29,14 @@ Modifiez un tableau de bord, cliquez sur **Ajouter une carte** et cherchez **Pet
 
 Sans son option, une carte affiche un message qui indique où l'activer : Paramètres › Appareils et services › Little Monkey › **Configurer** ([voir les options](installation.md#3-les-autres-capteurs-et-fonctions)).
 
-Dans les cartes, toucher une valeur ouvre ses détails dans Home Assistant, avec son historique, quand elle a un capteur. Les cartes suivent les thèmes clair et sombre, en français et en anglais.
+Dans les cartes, toucher une valeur ouvre ses détails dans Home Assistant, avec son historique, quand elle a un capteur. Les cartes suivent les thèmes clair et sombre, en français et en anglais. Les captures de ce guide utilisent des données fictives.
 
 ## Little Monkey (cadran)
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/dial-dark.png">
+  <img src="images/cards/dial-light.png" alt="Carte Little Monkey" width="400">
+</picture>
 
 Le cadran du boîtier ecojoko.
 
@@ -67,6 +72,11 @@ entity: sensor.ecojoko_consommation_temps_reel
 
 ## Contrat
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/contract-dark.png">
+  <img src="images/cards/contract-light.png" alt="Carte Contrat" width="400">
+</picture>
+
 Votre contrat d'électricité en un coup d'œil.
 
 - Le fournisseur, l'offre, sa date de début et la puissance souscrite.
@@ -85,6 +95,11 @@ entity: sensor.ecojoko_contrat
 
 ## Économies
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/savings-dark.png">
+  <img src="images/cards/savings-light.png" alt="Carte Économies" width="400">
+</picture>
+
 Le résumé de l'onglet « Économies » d'ecojoko : trois barres pour les 12 derniers mois, la consommation en cours, la consommation de référence et les économies (« Surconsommation », en orange, quand elles sont négatives).
 
 ```yaml
@@ -101,6 +116,11 @@ unit: eur
 | `title` | Titre de la carte |
 
 ## Économies en détail
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/detail-dark.png">
+  <img src="images/cards/detail-light.png" alt="Carte Économies en détail" width="400">
+</picture>
 
 Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou d'une année (mois par mois), en barres vertes pour une économie et gris-bleu pour une surconsommation.
 
@@ -124,6 +144,11 @@ unit: eur
 
 ## Analyse de la conso
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/analysis-dark.png">
+  <img src="images/cards/analysis-light.png" alt="Carte Analyse de la conso" width="400">
+</picture>
+
 La page « Analyse de votre conso » d'ecojoko : la consommation d'une semaine ou d'un mois par poste (talon, éclairage, froid, cuisson, chauffage, eau chaude…).
 
 - Un anneau coloré avec le coût et l'énergie au centre et, à côté, les principaux postes sur une ligne chacun, avec leur part, leur coût et une flèche quand ils sont en hausse ou en baisse.
@@ -146,6 +171,11 @@ period: week
 
 ## Activations des appareils
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/activations-dark.png">
+  <img src="images/cards/activations-light.png" alt="Carte Activations des appareils" width="400">
+</picture>
+
 Les démarrages d'appareils détectés par ecojoko sur 48 heures, en une frise de 24 heures par jour : chaque activation est une impulsion à son heure, aussi large qu'elle dure, aussi haute que sa puissance, à la couleur d'ecojoko. Toucher une impulsion affiche ses heures, sa durée, son énergie et sa puissance moyenne ; les flèches passent aux 48 heures précédentes. La carte se met à jour toutes les dix minutes. Avec `mode: list`, elle affiche la liste des dernières activations.
 
 ```yaml
@@ -161,6 +191,11 @@ mode: timeline
 | `title` | Titre de la carte |
 
 ## Équipements
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/equipment-dark.png">
+  <img src="images/cards/equipment-light.png" alt="Carte Équipements" width="400">
+</picture>
 
 L'écran « Équipements » d'ecojoko, avec le pilotage du chauffe-eau.
 
@@ -184,6 +219,11 @@ entity: sensor.ecojoko_consommation_temps_reel
 | `title` | Titre de la carte |
 
 ## Mesures
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="images/cards/measures-dark.png">
+  <img src="images/cards/measures-light.png" alt="Carte Mesures" width="400">
+</picture>
 
 La page « Mesures » d'ecojoko, avec trois onglets.
 
