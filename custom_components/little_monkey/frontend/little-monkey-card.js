@@ -626,12 +626,27 @@ function deviceEntities(hass, entityId) {
   return result;
 }
 
-/** Return the tariff option enabled on the device: "tempo", "hchp" or null. */
-function tariffMode(sensors) {
-  if (TEMPO_KEYS.some((key) => sensors[key])) {
+/**
+ * Tell whether a sensor is no longer provided by the integration: Home
+ * Assistant keeps the entity of a tariff band left by a previous contract,
+ * or of an option turned off, with its history, and restores its state.
+ */
+function isOrphan(hass, entityId) {
+  return hass?.states?.[entityId]?.attributes?.restored === true;
+}
+
+/**
+ * Return the tariff option enabled on the device: "tempo", "hchp" or null.
+ *
+ * The sensors left by a previous contract do not count: after a change from
+ * Tempo to HC/HP, the Tempo sensors are still in Home Assistant.
+ */
+export function tariffMode(sensors, hass) {
+  const provided = (key) => sensors[key] && !isOrphan(hass, sensors[key]);
+  if (TEMPO_KEYS.some(provided)) {
     return "tempo";
   }
-  if (HCHP_KEYS.some((key) => sensors[key])) {
+  if (HCHP_KEYS.some(provided)) {
     return "hchp";
   }
   return null;
@@ -698,7 +713,7 @@ export function editedConfig(hass, previous, value) {
 
 /** Return the fields of the editor, depending on the options of the device. */
 export function editorSchema(hass, config) {
-  const mode = tariffMode(deviceEntities(hass, config.entity));
+  const mode = tariffMode(deviceEntities(hass, config.entity), hass);
   const schema = [
     {
       name: "entity",
@@ -1032,7 +1047,7 @@ class LittleMonkeyCard extends HTMLElement {
     const sensors = this._sensors;
 
     // Color of the central disc
-    const mode = tariffMode(sensors);
+    const mode = tariffMode(sensors, hass);
     const tariff = { period: null, color: null };
     // Without entity chosen, the period sensor of the integration
     const tariffEntity = config.tariff_entity || sensors.current_tariff_period;

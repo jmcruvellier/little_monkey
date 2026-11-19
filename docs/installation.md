@@ -82,7 +82,8 @@ Les six dernières cases, apparues avec la version 2.0.0, sont décochées par d
 Le bouton **Configurer** de l'intégration reprend les trois écrans. Les nouveaux réglages ne sont enregistrés qu'après validation des identifiants par ecojoko, et l'intégration n'est rechargée qu'une fois.
 
 - **Cocher une case** crée ses capteurs ; ceux qui existaient avant retrouvent leur historique.
-- **Décocher une case** supprime ses capteurs, et les appareils des équipements pour « Équipements pilotés ». Les cartes qui en ont besoin affichent alors un message qui invite à la réactiver.
+- **Décocher une des six cases de la version 2.0.0** supprime ses capteurs, et les appareils des équipements pour « Équipements pilotés ». Les cartes qui en ont besoin affichent alors un message qui invite à la réactiver.
+- **Décocher une autre case, ou changer de contrat**, laisse les capteurs concernés dans Home Assistant, à l'état « indisponible » : leur historique et leurs statistiques sont conservés. Les cartes n'en tiennent plus compte ; supprimez-les depuis leur page si vous n'en avez plus besoin.
 - **Changer le nom** renomme l'appareil et le nom affiché des capteurs ; leurs identifiants et leur historique sont conservés.
 
 ## Mettre à jour depuis la 1.2.8
