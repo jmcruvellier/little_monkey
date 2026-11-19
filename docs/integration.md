@@ -84,7 +84,9 @@ Pour chaque équipement piloté par ecojoko (chauffe-eau, prise…), sur son app
 | Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie | —, % | Diagnostics, quand ecojoko les donne. La batterie est affichée comme dans l'application ecojoko, par paliers de 20 % |
 | Tension des Piles, État de l'Installation | V, — | Diagnostics des équipements à piles : la tension des piles, et l'emplacement du capteur d'électricité tel qu'ecojoko le juge (« Bien placé ») |
 
-Les équipements non pilotés (clé Linky, sonde…) n'ont pas d'appareil : leurs diagnostics sont sur l'appareil Ecojoko, nommés d'après eux (« Clé Linky : force de la connexion »).
+Les équipements non pilotés (capteur d'électricité, sonde…) n'ont pas d'appareil : leurs diagnostics sont sur l'appareil Ecojoko, nommés d'après eux (« Capteur d'électricité : force de la connexion »).
+
+<img src="images/ha/appareil-ecojoko-diagnostic.png" alt="Diagnostics de l'appareil Ecojoko" width="420">
 
 L'état et les mesures d'un équipement piloté sont lus toutes les deux minutes, juste après une commande, et dix secondes après la fin prévue d'un forçage ou d'une absence. L'intégration ne connaît pas les types d'équipements à l'avance : elle lit les commandes qu'ecojoko reconnaît à chacun, si bien qu'un équipement d'un type inconnu est pris en charge dès qu'il accepte les commandes de pilotage. Un équipement ajouté dans ecojoko apparaît après un rechargement de l'intégration ; l'appareil d'un équipement retiré est supprimé au démarrage suivant.
 
