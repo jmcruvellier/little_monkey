@@ -2176,6 +2176,26 @@ def test_energy_of_a_week_by_band(api):
     assert session.requests[-1][1].endswith("/powerstat/y/2026-11-18")
 
 
+def test_week_of_today_is_asked_at_another_day(api):
+    """The week of today is asked at another day of the same week.
+
+    ecojoko answers it at the date of today, which the polls read, without
+    its period.
+    """
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    session.routes["powerstat"] = Response(payload=ENERGY_WEEK)
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    run(client.async_get_measures("electricity", "week", today))
+    asked = dt.date.fromisoformat(session.requests[-1][1].rsplit("/", 1)[1])
+    assert asked != today
+    assert asked.isocalendar()[:2] == today.isocalendar()[:2]
+    # The day and the month of today are asked at their date
+    run(client.async_get_measures("electricity", "day", today))
+    assert session.requests[-1][1].endswith(f"/powerstat/d4/{today.isoformat()}")
+
+
 def test_measures_without_their_period(api):
     """Measures that ecojoko gives without their period are read all the same.
 

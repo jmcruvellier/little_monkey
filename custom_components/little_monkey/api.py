@@ -326,6 +326,19 @@ MEASURES = {"electricity": "powerstat", "temperature": "tempstat", "humidity": "
 CLIMATE_MONTH = "m"
 
 
+def _unpolled_day_of_week(day):
+    """Return a day of the week of a day, other than today.
+
+    The polls read the week of today at its date. ecojoko answers that URL,
+    and only it, without the period nor its totals: on 19/11/2026, for two
+    accounts, the week was read whole at any other date of the same week.
+    Another day of the week of today is therefore asked for.
+    """
+    if day != get_current_date(TZ):
+        return day
+    return day + dt.timedelta(days=1 if day.weekday() < 6 else -1)
+
+
 def _measure_period(period) -> dict:
     """Return the start of a period of measures, and of the ones around it.
 
@@ -344,9 +357,9 @@ def _measure_period(period) -> dict:
 def _stat_period(stat) -> dict:
     """Return the period of a statistics response, empty when it has none.
 
-    ecojoko sometimes answers without it, as on 19/11/2026 for the week
-    under way: the measures are read all the same, and the answer is logged
-    to tell what ecojoko gave.
+    ecojoko answers without it at a URL the polls read, as the week of
+    today at its date (see _unpolled_day_of_week): the measures are read
+    all the same, and the answer is logged to tell what ecojoko gave.
     """
     period = stat.get("period")
     if not period:
@@ -1136,6 +1149,8 @@ class LittleMonkeyApiClient:
         temperature and humidity are inside and outside, as curves.
         """
         scale = MEASURE_PERIODS[period]
+        if measure == "electricity" and period == "week":
+            day = _unpolled_day_of_week(day)
         if measure != "electricity" and period == "month":
             scale = CLIMATE_MONTH
         path = f"{MEASURES[measure]}/{scale}/{day.isoformat()}"

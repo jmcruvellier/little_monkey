@@ -147,7 +147,7 @@ Les services renvoient une réponse : appelez-les depuis un script ou une automa
 | `little_monkey.get_equipments` | Équipements pilotés | Équipements de l'installation, leur état, leurs diagnostics, leurs entités et les mesures du jour des équipements pilotés ; immédiat, sans interroger ecojoko |
 | `little_monkey.set_equipment_mode` | Équipements pilotés | Pilote un équipement ([voir plus haut](#le-pilotage-des-équipements)) |
 
-Sans son option, un service de lecture répond `enabled: false` sans rien lire chez ecojoko. Pour le mois, `get_measures` donne le mois calendaire qui contient la date. Pour une date antérieure aux premières mesures, ecojoko répond avec sa première période : `start` indique la période réellement renvoyée, et `previous` est vide quand il n'y a rien avant. Il arrive qu'ecojoko réponde sans les dates de la période : `start`, `previous` et `next` sont alors absents, et les totaux de la semaine, du mois ou de l'année sont la somme de ses barres.
+Sans son option, un service de lecture répond `enabled: false` sans rien lire chez ecojoko. Pour le mois, `get_measures` donne le mois calendaire qui contient la date. Pour une date antérieure aux premières mesures, ecojoko répond avec sa première période : `start` indique la période réellement renvoyée, et `previous` est vide quand il n'y a rien avant. La semaine en cours est demandée à un autre jour de la même semaine : à la date du jour, que l'intégration interroge en continu, ecojoko répond sans la période ni ses totaux. S'il arrive malgré tout qu'ecojoko réponde sans les dates de la période : `start`, `previous` et `next` sont alors absents, et les totaux de la semaine, du mois ou de l'année sont la somme de ses barres.
 
 ```yaml
 # Économies du mois dernier dans une notification
