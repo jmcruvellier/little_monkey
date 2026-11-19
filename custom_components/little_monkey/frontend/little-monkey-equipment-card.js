@@ -67,6 +67,7 @@ const TRANSLATIONS = {
     error: "Equipments not read",
     command_error: "Command not sent: {error}",
     missing: "Little Monkey sensor not found",
+    option: "Turn on the “Piloted equipments” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     editor: {
       entity: "A sensor of the Little Monkey device",
       equipment: "Only this equipment (its name or ecojoko id)",
@@ -108,6 +109,7 @@ const TRANSLATIONS = {
     error: "Équipements non lus",
     command_error: "Commande non envoyée : {error}",
     missing: "Capteur Little Monkey introuvable",
+    option: "Activez l'option « Équipements pilotés » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     editor: {
       entity: "Un capteur de l'appareil Little Monkey",
       equipment: "Seulement cet équipement (son nom ou son id ecojoko)",
@@ -539,6 +541,8 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
         type: "call_service", domain: DOMAIN, service: "get_equipments", service_data: data, return_response: true,
       });
       this._equipments = result.response?.equipments || [];
+      // The option of the equipments is off: the card asks to turn it on
+      this._disabled = result.response?.enabled === false;
       this._error = false;
       // The modes read: a change of them makes the card read again
       this._states = JSON.stringify(this._modeStates());
@@ -664,7 +668,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     const locale = this._locale();
     const now = new Date();
     const signature = JSON.stringify([
-      this._equipments, this._error, this._opened, this._panel, this._busy, this._commandError,
+      this._equipments, this._disabled, this._error, this._opened, this._panel, this._busy, this._commandError,
       this._config, locale, now.getHours(), now.getMinutes(), this._shownStates(),
     ]);
     if (signature === this._signature) {
@@ -680,6 +684,10 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
     const body = root.querySelector(".body");
     if (!this._equipments) {
       body.innerHTML = `<div class="message">${escapeHtml(this._error ? text.error : "…")}</div>`;
+      return;
+    }
+    if (this._disabled) {
+      body.innerHTML = `<div class="message">${escapeHtml(text.option)}</div>`;
       return;
     }
     // The end of an absence being typed is kept when the card is drawn again

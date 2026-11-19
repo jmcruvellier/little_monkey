@@ -33,6 +33,7 @@ const TRANSLATIONS = {
       savings: "Savings",
       overconsumption: "Overconsumption",
       missing: "Savings sensor not found",
+      option: "Turn on the “Savings” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     },
     editor: {
       entity: "Savings over 12 months",
@@ -52,6 +53,7 @@ const TRANSLATIONS = {
       bar: "{name}: {savings} · {energy}",
       error: "The savings of this period could not be read",
       missing: "Savings sensor not found",
+      option: "Turn on the “Savings” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     },
     detail_editor: {
       entity: "Savings this week (or month, or year)",
@@ -72,6 +74,7 @@ const TRANSLATIONS = {
       savings: "Économies",
       overconsumption: "Surconsommation",
       missing: "Capteur des économies introuvable",
+      option: "Activez l'option « Économies » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     },
     editor: {
       entity: "Économies sur 12 mois",
@@ -91,6 +94,7 @@ const TRANSLATIONS = {
       bar: "{name} : {savings} · {energy}",
       error: "Les économies de cette période n'ont pas pu être lues",
       missing: "Capteur des économies introuvable",
+      option: "Activez l'option « Économies » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     },
     detail_editor: {
       entity: "Économies de la semaine (ou du mois, ou de l'année)",
@@ -494,6 +498,14 @@ export function chartGeometry(values, box = CHART) {
   return { rects, ticks, zero, scale };
 }
 
+/**
+ * Tell whether the savings sensors exist: they are created only with the
+ * option « Économies » of the integration.
+ */
+export function savingsEnabled(hass) {
+  return Boolean(findEntity(hass, "savings_12_months") || findEntity(hass, "savings_week"));
+}
+
 /** Return the sensors of the current periods of the device of an entity. */
 export function periodEntities(hass, entityId) {
   const sensors = deviceEntities(hass, entityId);
@@ -674,9 +686,15 @@ class LittleMonkeySavingsSummaryCard extends HTMLElement {
     root.querySelector(".title").textContent = this._config.title || text.title;
     root.querySelector(".subtitle").textContent = text.subtitle;
     const warning = root.querySelector(".warning");
+    // Without the option of the savings, the card only asks to turn it on
+    const enabled = savingsEnabled(this._hass);
     const missing = !this._config.entity || !this._hass.states[this._config.entity];
-    warning.textContent = missing ? text.missing : "";
-    warning.style.display = missing ? "" : "none";
+    warning.textContent = !enabled ? text.option : missing ? text.missing : "";
+    warning.style.display = !enabled || missing ? "" : "none";
+    root.querySelector(".rows").style.display = enabled ? "" : "none";
+    if (!enabled) {
+      return;
+    }
 
     const locale = this._hass.locale?.language || this._hass.language;
     const unit = this._config.unit === "kwh" ? "kwh" : "eur";
@@ -937,6 +955,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
         .nav button { border: none; background: none; color: var(--primary-text-color); cursor: pointer; padding: 4px 10px; font-size: 1.4em; line-height: 1; border-radius: 50%; }
         .nav button:disabled { visibility: hidden; }
         .nav .name { font-size: 0.95em; color: var(--primary-text-color); text-align: center; }
+        ha-card.disabled .top, ha-card.disabled .details, ha-card.disabled svg, ha-card.disabled .nav { display: none; }
       </style>
       <ha-card>
         <div class="header"><div class="title"></div></div>
@@ -991,7 +1010,8 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     const locale = this._locale();
     const unit = this._config.unit === "kwh" ? "kwh" : "eur";
     const shown = this._savings();
-    const signature = JSON.stringify([this._period, shown, this._selected, unit, this._config.title, locale]);
+    const enabled = savingsEnabled(this._hass);
+    const signature = JSON.stringify([this._period, shown, this._selected, unit, this._config.title, locale, enabled]);
     if (signature === this._signature) {
       return;
     }
@@ -1000,8 +1020,13 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     root.querySelector(".title").textContent = this._config.title || text.title;
     const missing = !this._config.entity || !this._hass.states[this._config.entity];
     const warning = root.querySelector(".warning");
-    warning.textContent = missing ? text.missing : "";
-    warning.style.display = missing ? "" : "none";
+    // Without the option of the savings, the card only asks to turn it on
+    warning.textContent = !enabled ? text.option : missing ? text.missing : "";
+    warning.style.display = !enabled || missing ? "" : "none";
+    root.querySelector("ha-card").classList.toggle("disabled", !enabled);
+    if (!enabled) {
+      return;
+    }
     for (const button of root.querySelectorAll(".period")) {
       button.classList.toggle("active", button.dataset.period === this._period);
     }
