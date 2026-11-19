@@ -242,3 +242,17 @@ test("the graduations of the savings carry their unit", () => {
   assert.equal(plain(cards.axisLabel("fr", 600, "kwh")), "600 kWh");
   assert.equal(plain(cards.axisLabel("fr", 80, "eur")), "80 €");
 });
+
+test("a period before the first measures gives the first period of ecojoko", () => {
+  // Asked for a week of 2025, ecojoko answers with its first week
+  assert.equal(cards.firstPeriod("week", "2025-01-13", { start: "2026-04-27" }), "2026-04-27");
+  assert.equal(cards.firstPeriod("year", "2024-01-01", { start: "2026-01-01" }), "2026-01-01");
+  assert.equal(cards.firstPeriod("month", "2025-06-01", { start: "2026-05-04" }), "2026-05-01");
+  // The period asked for: a month starts on its first Monday, or a few days before
+  assert.equal(cards.firstPeriod("week", "2026-04-27", { start: "2026-04-27" }), null);
+  assert.equal(cards.firstPeriod("month", "2026-11-01", { start: "2026-11-02" }), null);
+  assert.equal(cards.firstPeriod("month", "2026-09-01", { start: "2026-08-31" }), null);
+  // Without a start, the answer is taken as it is
+  assert.equal(cards.firstPeriod("week", "2025-01-13", {}), null);
+  assert.equal(cards.firstPeriod("week", "2025-01-13", undefined), null);
+});
