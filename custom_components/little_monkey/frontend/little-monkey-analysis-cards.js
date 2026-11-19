@@ -34,6 +34,7 @@ const TRANSLATIONS = {
       next: "Next period",
       error: "The analysis of this period could not be read",
       missing: "Little Monkey sensor not found",
+      option: "Turn on the “Consumption analysis” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
       up: "Up on the previous period",
       down: "Down on the previous period",
       back: "Back to the categories",
@@ -57,6 +58,7 @@ const TRANSLATIONS = {
       none: "No activation detected over these 48 hours",
       error: "The activations could not be read",
       missing: "Little Monkey sensor not found",
+      option: "Turn on the “Consumption analysis” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
       average: "Average {power}",
       seconds: "{n} s",
       minutes: "{n} min",
@@ -85,6 +87,7 @@ const TRANSLATIONS = {
       next: "Période suivante",
       error: "L'analyse de cette période n'a pas pu être lue",
       missing: "Capteur Little Monkey introuvable",
+      option: "Activez l'option « Analyse de la conso » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
       up: "En hausse par rapport à la période précédente",
       down: "En baisse par rapport à la période précédente",
       back: "Retour aux postes",
@@ -104,6 +107,7 @@ const TRANSLATIONS = {
       none: "Aucune activation détectée sur ces 48 heures",
       error: "Les activations n'ont pas pu être lues",
       missing: "Capteur Little Monkey introuvable",
+      option: "Activez l'option « Analyse de la conso » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
       average: "Moyenne {power}",
       seconds: "{n} s",
       minutes: "{n} min",
@@ -635,6 +639,7 @@ const STYLES = `
   .nav button:disabled { visibility: hidden; }
   .nav .name { font-size: 0.95em; color: var(--primary-text-color); text-align: center; }
   .message { color: var(--secondary-text-color); text-align: center; padding: 24px 8px; }
+  ha-card.disabled .periods, ha-card.disabled .nav { display: none; }
 `;
 
 class LittleMonkeyAnalysisCard extends HTMLElement {
@@ -804,6 +809,8 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     }
     try {
       const analysis = await callService(this._hass, this._config.entity, "get_consumption_analysis", data);
+      // Without the option of the analysis, the card asks to turn it on
+      this._disabled = analysis?.enabled === false;
       this._cache.set(key, analysis);
       if (!start && analysis?.start) {
         this._latest[period] = analysis.start;
@@ -986,6 +993,11 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
     warning.style.display = missing ? "" : "none";
     for (const button of root.querySelectorAll(".period")) {
       button.classList.toggle("active", !this._history && button.dataset.period === this._period);
+    }
+    root.querySelector("ha-card").classList.toggle("disabled", Boolean(this._disabled));
+    if (this._disabled) {
+      root.querySelector(".body").innerHTML = `<div class="message">${escapeHtml(text.option)}</div>`;
+      return;
     }
     if (this._history) {
       root.querySelector(".name").textContent = String(this._history.year);
@@ -1179,6 +1191,8 @@ class LittleMonkeyActivationsCard extends HTMLElement {
     this._reading = page;
     try {
       const answer = await callService(this._hass, this._config.entity, "get_activations", { page });
+      // Without the option of the analysis, the card asks to turn it on
+      this._disabled = answer?.enabled === false;
       this._pages[page] = answer;
       this._loaded = Math.max(this._loaded, page + 1);
       this._error = false;
@@ -1290,7 +1304,7 @@ class LittleMonkeyActivationsCard extends HTMLElement {
       : mergeActivations([this._pages[this._page]]);
     const signature = JSON.stringify([
       mode, activations, this._page, this._selected, this._expanded, this._error, this._reading, this._loaded,
-      this._config.title, locale,
+      this._config.title, locale, this._disabled,
     ]);
     if (signature === this._signature) {
       return;
@@ -1305,6 +1319,11 @@ class LittleMonkeyActivationsCard extends HTMLElement {
     warning.textContent = missing ? text.missing : "";
     warning.style.display = missing ? "" : "none";
     const body = root.querySelector(".body");
+    if (this._disabled) {
+      root.querySelector(".count").textContent = "";
+      body.innerHTML = `<div class="message">${escapeHtml(text.option)}</div>`;
+      return;
+    }
     if (!activations.length) {
       const read = mode === "list" ? this._loaded : this._pages[this._page];
       const message = this._error ? text.error : read ? text.none : "…";
