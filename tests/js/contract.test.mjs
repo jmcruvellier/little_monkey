@@ -89,7 +89,7 @@ function fakeHass(period) {
 }
 
 test("the card shows the contract, the period and the bands", () => {
-  const view = card.contractView(fakeHass("hp"), "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  const view = card.contractView(fakeHass("hp"), "sensor.eco_contract", new Date("2026-11-17T05:15:00+01:00"));
   assert.equal(view.offer, "Zen Fixe - Option HP/HC");
   assert.equal(view.power, 9);
   // The off-peak hours of the contract win over the period of the integration
@@ -100,13 +100,13 @@ test("the card shows the contract, the period and the bands", () => {
     ["Heures Creuses", 4.63, "sensor.eco_hc"],
     ["Inconnue", null, undefined],
   ]);
-  const tempo = card.contractView(fakeHass("hc_blue"), "sensor.eco_contract", new Date(2026, 10, 17, 12, 0));
+  const tempo = card.contractView(fakeHass("hc_blue"), "sensor.eco_contract", new Date("2026-11-17T12:00:00+01:00"));
   assert.equal(tempo.tempo, "blue");
   assert.equal(tempo.offPeak, false);
   // Without off-peak hours in the contract, the period of the integration decides
   const hass = fakeHass("hc");
   hass.states["sensor.eco_contract"].attributes.off_peak_timeslots = [];
-  assert.equal(card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 12, 0)).offPeak, true);
+  assert.equal(card.contractView(hass, "sensor.eco_contract", new Date("2026-11-17T12:00:00+01:00")).offPeak, true);
 });
 
 test("an unknown contract gives nothing to show", () => {
@@ -142,11 +142,11 @@ test("the current band: named by the period sensor, or the only one of the perio
     { key: "hc_grid_consumption", name: "Heures Creuses", category: "hc" },
   ];
   // 05:15 is in the off-peak hours of the contract
-  let view = card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  let view = card.contractView(hass, "sensor.eco_contract", new Date("2026-11-17T05:15:00+01:00"));
   assert.deepEqual(view.bands.map((band) => band.current), [false, true]);
   // The period sensor names it
   hass.states["sensor.eco_period"].attributes = { tariff_band: "Heures Pleines" };
-  view = card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  view = card.contractView(hass, "sensor.eco_contract", new Date("2026-11-17T05:15:00+01:00"));
   assert.deepEqual(view.bands.map((band) => band.current), [true, false]);
 });
 
@@ -157,6 +157,26 @@ test("without its name, no current band for Tempo: it depends on the day", () =>
     { key: "band_18", name: "HP Bleu", category: "hp" },
     { key: "band_20", name: "HP Blanc", category: "hp" },
   ];
-  const view = card.contractView(hass, "sensor.eco_contract", new Date(2026, 10, 17, 5, 15));
+  const view = card.contractView(hass, "sensor.eco_contract", new Date("2026-11-17T05:15:00+01:00"));
   assert.deepEqual(view.bands.map((band) => band.current), [false, false, false]);
+});
+
+test("the time of the dial is the one of Paris, whatever the browser", () => {
+  // 05:15 in Paris in winter, 04:15 UTC
+  assert.equal(card.parisMinutes(new Date("2026-11-17T04:15:00Z")), 315);
+  // In summer, two hours after UTC
+  assert.equal(card.parisMinutes(new Date("2026-07-01T22:30:00Z")), 30);
+});
+
+test("a contract without off-peak hours nor a known period shows no period", () => {
+  const hass = fakeHass("unknown");
+  hass.states["sensor.eco_contract"].attributes.off_peak_timeslots = [];
+  const view = card.contractView(hass, "sensor.eco_contract", new Date("2026-11-17T12:00:00+01:00"));
+  assert.equal(view.known, false);
+  assert.equal(view.next, null);
+  // With off-peak hours, or with the period of the integration, it is known
+  assert.equal(card.contractView(fakeHass("unknown"), "sensor.eco_contract").known, true);
+  const period = fakeHass("hp");
+  period.states["sensor.eco_contract"].attributes.off_peak_timeslots = [];
+  assert.equal(card.contractView(period, "sensor.eco_contract").known, true);
 });

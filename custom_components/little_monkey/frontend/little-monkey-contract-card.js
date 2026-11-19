@@ -140,6 +140,18 @@ export function nextChange(slots, minutes) {
   return null;
 }
 
+/**
+ * Return the minutes since midnight in Paris: the off-peak hours of ecojoko
+ * are French times, whatever the time zone of the browser.
+ */
+export function parisMinutes(now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  }).formatToParts(now);
+  const value = (type) => Number(parts.find((part) => part.type === type)?.value);
+  return value("hour") * 60 + value("minute");
+}
+
 /** Return a duration in minutes: "1 h 45", "20 min". */
 export function durationLabel(text, minutes) {
   if (minutes < 60) {
@@ -268,7 +280,7 @@ export function contractView(hass, entityId, now = new Date()) {
   // Current band (Heures Pleines, HP Rouge, HC Weekend...), named by the period sensor
   const currentBand = periodState?.attributes?.tariff_band;
   const slots = offPeakSlots(attributes.off_peak_timeslots);
-  const minutes = now.getHours() * 60 + now.getMinutes();
+  const minutes = parisMinutes(now);
   // The off-peak hours of the contract give the period at once; the period
   // of the integration, deduced from the counters a few minutes late, is
   // taken only without them. It always gives the Tempo color of the day
@@ -294,6 +306,9 @@ export function contractView(hass, entityId, now = new Date()) {
     start: attributes.start_date,
     slots,
     minutes,
+    // A contract without off-peak hours, read before any period is known,
+    // has no period to show: neither peak nor off-peak
+    known: slots.length > 0 || /^h[cp]/.test(period ?? ""),
     offPeak,
     tempo: tempoDay(period),
     next: nextChange(slots, minutes),
@@ -434,8 +449,8 @@ class LittleMonkeyContractCard extends HTMLElement {
       const [x, y] = dialPoint(minutes, DIAL.radius + DIAL.width / 2 + 10);
       return `<text class="dial-label" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${label}</text>`;
     }).join("");
-    const periodName = view.offPeak ? text.off_peak : text.peak;
-    const caption = view.tempo ? `${text.today} · ${text.tempo[view.tempo]}` : text.now;
+    const periodName = view.known ? (view.offPeak ? text.off_peak : text.peak) : "";
+    const caption = view.tempo ? `${text.today} · ${text.tempo[view.tempo]}` : view.known ? text.now : "";
     const periodColor = view.offPeak ? colors.off : colors.peak;
     let change = "";
     if (view.next) {
@@ -472,7 +487,7 @@ class LittleMonkeyContractCard extends HTMLElement {
         <div><div class="name">${escapeHtml(view.offer)}</div><div class="details">${escapeHtml(details.join(" · "))}</div></div>
       </div>
       <div class="now">
-        <svg viewBox="-14 -14 188 188" role="img" aria-label="${escapeHtml(periodName)}">
+        <svg viewBox="-14 -14 188 188" role="img" aria-label="${escapeHtml(periodName || view.offer)}">
           <circle cx="${center}" cy="${center}" r="${DIAL.radius}" fill="none" stroke="${colors.peak}" stroke-width="${DIAL.width}" />
           ${offArcs}${labels}
           <line class="needle" x1="${center}" y1="${center}" x2="${needleX.toFixed(2)}" y2="${needleY.toFixed(2)}" />
