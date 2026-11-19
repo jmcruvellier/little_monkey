@@ -98,3 +98,77 @@ test("the configuration: the day and kWh by default", () => {
   assert.equal(card.barUnit({ unit: "eur" }), "eur");
   assert.equal(card.minutesOf("2026-11-18T07:30:00+01:00"), 450);
 });
+
+test("the periods of the climate: the day, its week, its 30 days, its year", () => {
+  const iso = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const range = (period) => { const r = card.periodRange(period, "2026-11-18"); return [iso(r.start), iso(r.end)]; };
+  assert.deepEqual(range("day"), ["2026-11-18", "2026-11-19"]);
+  assert.deepEqual(range("week"), ["2026-11-16", "2026-11-23"]);
+  assert.deepEqual(range("month"), ["2026-10-20", "2026-11-19"]);
+  assert.deepEqual(range("year"), ["2026-01-01", "2027-01-01"]);
+  assert.equal(card.shiftDate("day", "2026-11-01", -1), "2026-10-31");
+  assert.equal(card.shiftDate("week", "2026-11-18", 1), "2026-11-25");
+  assert.equal(card.shiftDate("month", "2026-11-18", -1), "2026-10-19");
+  assert.equal(card.shiftDate("year", "2026-11-18", -1), "2025-11-18");
+});
+
+test("the sensors of the temperature and humidity of the device", () => {
+  const entity = (id, key, device = "d") => ({ entity_id: id, platform: "little_monkey", translation_key: key, device_id: device });
+  const hass = { entities: {
+    "sensor.rt": entity("sensor.rt", "realtime_consumption"),
+    "sensor.in": entity("sensor.in", "indoor_temp"),
+    "sensor.out": entity("sensor.out", "outdoor_temp"),
+    "sensor.other": entity("sensor.other", "indoor_hum", "another"),
+  } };
+  assert.deepEqual(card.climateEntities(hass, "sensor.rt", "temperature"), { inside: "sensor.in", outside: "sensor.out" });
+  // A sensor of another installation is not taken
+  assert.deepEqual(card.climateEntities(hass, "sensor.rt", "humidity"), {});
+});
+
+test("the curves come from the statistics of the sensors", () => {
+  const statistics = {
+    "sensor.in": [{ start: Date.UTC(2026, 10, 18, 10), mean: 21.2 }, { start: "2026-11-18T11:00:00+00:00", mean: 21.6 }],
+    "sensor.out": [{ start: Date.UTC(2026, 10, 18, 10), mean: 9.5 }],
+  };
+  const climate = card.climateFromStatistics(statistics, { inside: "sensor.in", outside: "sensor.out" }, "°C");
+  assert.deepEqual(climate.points, [
+    { time: "2026-11-18T10:00:00.000Z", inside: 21.2, outside: 9.5 },
+    { time: "2026-11-18T11:00:00.000Z", inside: 21.6, outside: null },
+  ]);
+  assert.ok(Math.abs(card.climateAverage(climate) - 21.4) < 1e-9);
+  const lines = card.climateLines(climate, { start: new Date(Date.UTC(2026, 10, 18)), end: new Date(Date.UTC(2026, 10, 19)) });
+  assert.ok(lines.inside.startsWith("M") && lines.inside.includes("L"));
+  assert.ok(lines.outside.startsWith("M") && !lines.outside.includes("L"));
+  // Around the values, not from zero
+  assert.ok(lines.ticks[0].value > 0);
+});
+
+test("the values of the climate and the measure shown first", () => {
+  assert.equal(card.climateValue("fr", 21.25, "°C"), "21,3 °C");
+  assert.equal(card.climateValue("fr", 47, "%"), "47 %");
+  assert.equal(card.climateValue("fr", null, "%"), "—");
+  assert.equal(card.initialMeasure({}), "electricity");
+  assert.equal(card.initialMeasure({ measure: "humidity" }), "humidity");
+  assert.equal(card.climateLabels("fr", "week", card.periodRange("week", "2026-11-18")).length, 7);
+});
+
+test("the statistics are used only when they cover the period from its start", () => {
+  const range = { start: new Date(Date.UTC(2026, 10, 16)), end: new Date(Date.UTC(2026, 10, 23)) };
+  const climate = (time) => ({ points: [{ time, inside: 20, outside: 10 }] });
+  assert.equal(card.statisticsCover(climate("2026-11-16T01:00:00.000Z"), range, "week"), true);
+  // Recorded since Wednesday only: ecojoko has the week
+  assert.equal(card.statisticsCover(climate("2026-11-18T14:00:00.000Z"), range, "week"), false);
+  assert.equal(card.statisticsCover({ points: [] }, range, "week"), false);
+});
+
+test("the month of the temperature and humidity is the calendar month", () => {
+  assert.equal(card.datesPeriod("temperature", "month"), "calendar");
+  assert.equal(card.datesPeriod("electricity", "month"), "month");
+  assert.equal(card.datesPeriod("humidity", "week"), "week");
+  const iso = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  const range = card.periodRange("calendar", "2026-11-18");
+  assert.deepEqual([iso(range.start), iso(range.end)], ["2026-11-01", "2026-12-01"]);
+  assert.equal(card.shiftDate("calendar", "2026-01-31", -1), "2025-12-28");
+  assert.equal(card.periodLabel("fr", "calendar", "2026-11-01"), "Novembre 2026");
+  assert.equal(card.climateLabels("fr", "calendar", range).length, 6);
+});

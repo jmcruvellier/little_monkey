@@ -575,11 +575,11 @@
                 },
                 "period": {
                     "name": "Period",
-                    "description": "Day, week, 30 days (month) or year."
+                    "description": "Day, week, month or year."
                 },
                 "date": {
                     "name": "Date",
-                    "description": "A day of the period; today by default. For the month, the 30 days ending that day."
+                    "description": "A day of the period; today by default. For the electricity, the month is the 30 days ending that day; for the temperature and humidity, the calendar month."
                 }
             }
         }

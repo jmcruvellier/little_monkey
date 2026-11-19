@@ -2091,6 +2091,9 @@ def test_temperature_and_humidity(api):
         {"time": "2026-11-18T00:00:00+01:00", "inside": 23.8, "outside": 10.66}]
     run(client.async_get_measures("humidity", "week", dt.date(2026, 11, 18)))
     assert session.requests[-1][1].endswith("/device/3/humstat/w/2026-11-18")
+    # The month of the sensor is the calendar month
+    run(client.async_get_measures("humidity", "month", dt.date(2026, 11, 18)))
+    assert session.requests[-1][1].endswith("/device/3/humstat/m/2026-11-18")
 
 
 def test_climate_measures_need_the_sensor(api):

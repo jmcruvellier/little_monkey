@@ -10,7 +10,9 @@
  * the get_measures service. The electricity of a day is its power curve,
  * coloured by tariff band over the base load; of a week, 30 days or a year,
  * its days or months in bars stacked by band, in kWh or in euros, with the
- * production injected under the axis.
+ * production injected under the axis. The temperature and the humidity,
+ * inside and outside, are curves read from the statistics of the sensors of
+ * Home Assistant when they exist, from ecojoko otherwise.
  */
 
 const DOMAIN = "little_monkey";
@@ -26,7 +28,11 @@ const TRANSLATIONS = {
     name: "Little Monkey measures",
     description: "The measures of ecojoko: power of the day and energy by tariff band, in kWh or euros.",
     title: "Measures",
-    measures: { electricity: "Electricity" },
+    measures: { electricity: "Electricity", temperature: "Temperature", humidity: "Humidity" },
+    inside: "Inside",
+    outside: "Outside",
+    climate_total: "Average {value}",
+    climate_at: "{time}: inside {inside} · outside {outside}",
     periods: { day: "Day", week: "Week", month: "Month", year: "Year" },
     previous: "Previous period",
     next: "Next period",
@@ -39,6 +45,7 @@ const TRANSLATIONS = {
     editor: {
       entity: "A sensor of the Little Monkey device",
       period: "Period shown first",
+      measure: "Measure shown first",
       unit: "Unit of the bars",
       units: { kwh: "kWh", eur: "Euros" },
       title: "Title",
@@ -48,7 +55,11 @@ const TRANSLATIONS = {
     name: "Petit Singe : mesures",
     description: "Les mesures d'ecojoko : la puissance du jour et l'énergie par tranche tarifaire, en kWh ou en euros.",
     title: "Mesures",
-    measures: { electricity: "Électricité" },
+    measures: { electricity: "Électricité", temperature: "Température", humidity: "Humidité" },
+    inside: "Intérieur",
+    outside: "Extérieur",
+    climate_total: "Moyenne {value}",
+    climate_at: "{time} : intérieur {inside} · extérieur {outside}",
     periods: { day: "Jour", week: "Semaine", month: "Mois", year: "Année" },
     previous: "Période précédente",
     next: "Période suivante",
@@ -61,6 +72,7 @@ const TRANSLATIONS = {
     editor: {
       entity: "Un capteur de l'appareil Little Monkey",
       period: "Période affichée d'abord",
+      measure: "Mesure affichée d'abord",
       unit: "Unité des barres",
       units: { kwh: "kWh", eur: "Euros" },
       title: "Titre",
@@ -86,6 +98,180 @@ export const MEASURE_COLORS = { base: "#022469", production: "#ffcc47", band: "#
 export const CHART = { width: 280, height: 160, left: 40, right: 4, top: 8, bottom: 20 };
 const SWIPE_DISTANCE = 40;
 const MINUTES_A_DAY = 1440;
+
+export const MEASURES = ["electricity", "temperature", "humidity"];
+// Colors of the curves, inside and outside
+export const CLIMATE_COLORS = {
+  temperature: { inside: "#f28c38", outside: "#7ed2df" },
+  humidity: { inside: "#00b2e2", outside: "#a9bfd0" },
+};
+// Sensors of the Little Monkey device that measure the temperature and the
+// humidity, inside and outside, by translation key
+const CLIMATE_SENSORS = {
+  temperature: { inside: "indoor_temp", outside: "outdoor_temp" },
+  humidity: { inside: "indoor_hum", outside: "outdoor_hum" },
+};
+// Period of the statistics of Home Assistant read for each period shown
+const STATISTICS_PERIODS = { day: "5minute", week: "hour", month: "hour", calendar: "hour", year: "day" };
+
+/**
+ * Return the period of the dates of a measure: the month of the electricity
+ * is the 30 days ending on a date, as ecojoko shows it day by day, the one
+ * of the temperature and humidity is the calendar month, the only one of
+ * its sensor.
+ */
+export function datesPeriod(measure, period) {
+  return measure !== "electricity" && period === "month" ? "calendar" : period;
+}
+
+/** Return the measure shown first by a card: the electricity by default. */
+export function initialMeasure(config) {
+  return MEASURES.includes(config?.measure) ? config.measure : "electricity";
+}
+
+/** Return a date as an ISO date, in the time zone of the browser. */
+function localIso(date) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+/** Return the day of the period before (-1) or after (+1) a period holding a day. */
+export function shiftDate(period, iso, step) {
+  const [year, month, day] = iso.split("-").map(Number);
+  if (period === "year") {
+    return localIso(new Date(year + step, month - 1, Math.min(day, 28)));
+  }
+  if (period === "calendar") {
+    return localIso(new Date(year, month - 1 + step, Math.min(day, 28)));
+  }
+  const days = { day: 1, week: 7, month: 30 }[period];
+  return localIso(new Date(year, month - 1, day + step * days));
+}
+
+/**
+ * Return the bounds of a period holding a day, in the time zone of the
+ * browser: the day, its week from Monday, the 30 days ending on it (the
+ * « Mois » of ecojoko), or its year.
+ */
+export function periodRange(period, iso) {
+  const [year, month, day] = iso.split("-").map(Number);
+  if (period === "year") {
+    return { start: new Date(year, 0, 1), end: new Date(year + 1, 0, 1) };
+  }
+  if (period === "calendar") {
+    return { start: new Date(year, month - 1, 1), end: new Date(year, month, 1) };
+  }
+  if (period === "week") {
+    const date = new Date(year, month - 1, day);
+    const monday = new Date(year, month - 1, day - ((date.getDay() + 6) % 7));
+    return { start: monday, end: new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 7) };
+  }
+  if (period === "month") {
+    return { start: new Date(year, month - 1, day - 29), end: new Date(year, month - 1, day + 1) };
+  }
+  return { start: new Date(year, month - 1, day), end: new Date(year, month - 1, day + 1) };
+}
+
+/** Return the sensors of the temperature or humidity of the device of an entity. */
+export function climateEntities(hass, entityId, measure) {
+  const entities = hass?.entities || {};
+  const deviceId = entities[entityId]?.device_id;
+  const wanted = CLIMATE_SENSORS[measure] || {};
+  const found = {};
+  for (const entity of Object.values(entities)) {
+    if (entity.device_id !== deviceId || entity.platform !== DOMAIN) {
+      continue;
+    }
+    for (const [side, key] of Object.entries(wanted)) {
+      if (entity.translation_key === key) {
+        found[side] = entity.entity_id;
+      }
+    }
+  }
+  return found;
+}
+
+/** Return the time of a statistic, given in milliseconds or as an ISO text. */
+function statisticTime(value) {
+  const time = typeof value === "number" ? new Date(value) : new Date(value);
+  return Number.isNaN(time.getTime()) ? null : time.toISOString();
+}
+
+/** Return the curves of the statistics of Home Assistant, inside and outside. */
+export function climateFromStatistics(statistics, entities, unit) {
+  const points = new Map();
+  for (const side of ["inside", "outside"]) {
+    for (const item of statistics?.[entities[side]] || []) {
+      const time = statisticTime(item.start);
+      const value = Number(item.mean);
+      if (time && Number.isFinite(value)) {
+        points.set(time, { ...(points.get(time) || { time, inside: null, outside: null }), [side]: value });
+      }
+    }
+  }
+  return { unit, points: [...points.values()].sort((a, b) => a.time.localeCompare(b.time)) };
+}
+
+// Margin of the statistics at the start of a period: their first value may
+// come a few minutes, hours or days after it
+const STATISTICS_MARGIN = {
+  day: 15 * 60000, week: 3 * 3600000, month: 3 * 3600000, calendar: 3 * 3600000, year: 2 * 86400000,
+};
+
+/**
+ * Tell whether the statistics of Home Assistant cover a period from its
+ * start. They begin when the sensor was created, and the short-term ones of
+ * a day are kept for ten days only: before, the curves come from ecojoko,
+ * which has the whole history of the sensor.
+ */
+export function statisticsCover(climate, range, period) {
+  const first = climate?.points?.[0];
+  return Boolean(first) && new Date(first.time).getTime() <= range.start.getTime() + STATISTICS_MARGIN[period];
+}
+
+/** Return the average of the inside values of curves, null without one. */
+export function climateAverage(climate) {
+  const values = (climate?.points || []).map((point) => point.inside).filter((value) => Number.isFinite(value));
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+}
+
+/** Return the lines of the curves of a period, inside and outside, and their scale. */
+export function climateLines(climate, range, box = CHART) {
+  const start = range.start.getTime();
+  const length = range.end.getTime() - start;
+  const plot = box.width - box.left - box.right;
+  const x = (time) => box.left + ((new Date(time).getTime() - start) / length) * plot;
+  const points = (climate?.points || []).filter((point) => {
+    const time = new Date(point.time).getTime();
+    return time >= start && time <= range.end.getTime();
+  });
+  const values = points.flatMap((point) => [point.inside, point.outside]).filter((value) => Number.isFinite(value));
+  const low = Math.min(...values);
+  const high = Math.max(...values);
+  // Around the values, not from zero: a temperature varies by a few degrees
+  const step = values.length ? niceStep(Math.max((high - low) / 4, 0.5)) : 1;
+  const scale = values.length
+    ? { min: Math.floor(low / step) * step, max: Math.ceil(high / step) * step || step, step }
+    : { min: 0, max: 1, step: 0.5 };
+  if (scale.max === scale.min) {
+    scale.max += step;
+  }
+  const { y, ticks } = axis(scale, box);
+  const line = (side) => {
+    let path = "";
+    let drawing = false;
+    for (const point of points) {
+      if (!Number.isFinite(point[side])) {
+        drawing = false;
+        continue;
+      }
+      path += `${drawing ? "L" : "M"}${x(point.time).toFixed(1)},${y(point[side]).toFixed(1)} `;
+      drawing = true;
+    }
+    return path.trim();
+  };
+  return { inside: line("inside"), outside: line("outside"), ticks, x, points };
+}
 
 /** Return the period shown first by a card: the day by default. */
 export function initialPeriod(config) {
@@ -249,6 +435,10 @@ export function periodLabel(locale, period, start) {
   if (period === "year") {
     return String(date.getUTCFullYear());
   }
+  if (period === "calendar") {
+    const text = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(date);
+    return text.charAt(0).toUpperCase() + text.slice(1);
+  }
   if (period === "day") {
     const text = new Intl.DateTimeFormat(locale, {
       weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
@@ -288,6 +478,41 @@ export function barTitle(locale, period, iso) {
     : { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" };
   const text = new Intl.DateTimeFormat(locale, options).format(utcDate(iso));
   return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+/** Return a temperature or a humidity with its unit, "—" without it. */
+export function climateValue(locale, value, unit) {
+  if (value === null || value === undefined || !Number.isFinite(Number(value))) {
+    return "—";
+  }
+  const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(Number(value));
+  return unit === "%" ? `${number} %` : `${number} ${unit || ""}`.trim();
+}
+
+/** Return the labels under the curves of a period: hours, days or months. */
+export function climateLabels(locale, period, range) {
+  const labels = [];
+  const start = range.start;
+  if (period === "day") {
+    for (const hour of [0, 6, 12, 18, 24]) {
+      labels.push({ time: new Date(start.getFullYear(), start.getMonth(), start.getDate(), hour).toISOString(),
+        text: `${hour}h`, anchor: hour === 0 ? "start" : hour === 24 ? "end" : null });
+    }
+  } else if (period === "year") {
+    for (let month = 0; month < 12; month += 1) {
+      const date = new Date(start.getFullYear(), month, 15);
+      labels.push({ time: date.toISOString(), text: new Intl.DateTimeFormat(locale, { month: "narrow" }).format(date) });
+    }
+  } else {
+    const days = period === "week" ? 7 : Math.round((range.end - range.start) / 86400000);
+    const every = period === "week" ? 1 : 5;
+    for (let index = 0; index < days; index += every) {
+      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + index, 12);
+      labels.push({ time: date.toISOString(), text: period === "week"
+        ? new Intl.DateTimeFormat(locale, { weekday: "narrow" }).format(date) : String(date.getDate()) });
+    }
+  }
+  return labels;
 }
 
 /** Return an energy, a cost or a power, in the language of the user. */
@@ -356,6 +581,10 @@ export function measuresSchema(hass) {
       selector: { select: { mode: "dropdown", options: PERIODS.map((value) => ({ value, label: text.periods[value] })) } },
     },
     {
+      name: "measure",
+      selector: { select: { mode: "dropdown", options: MEASURES.map((value) => ({ value, label: text.measures[value] })) } },
+    },
+    {
       name: "unit",
       selector: { select: { mode: "dropdown", options: ["kwh", "eur"].map((value) => ({ value, label: text.editor.units[value] })) } },
     },
@@ -392,6 +621,7 @@ const STYLES = `
   .legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 12px; font-size: 0.8em; color: var(--secondary-text-color); margin-top: 4px; }
   .legend .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
   .legend .value { color: var(--primary-text-color); }
+  .legend .entity { cursor: pointer; }
   .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
   .nav button { border: none; background: none; color: var(--primary-text-color); cursor: pointer; padding: 4px 10px; font-size: 1.4em; line-height: 1; }
   .nav button:disabled { visibility: hidden; }
@@ -408,7 +638,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     if (!this._cache || entity !== this._config.entity) {
       this._cache = new Map();
       this._period = initialPeriod(this._config);
-      this._measure = "electricity";
+      this._measure = initialMeasure(this._config);
       // Day of the period shown, by period: today until the user moves
       this._dates = {};
       this._selected = null;
@@ -477,6 +707,16 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       return;
     }
     this._cache.set(key, { ...cached, loading: true });
+    const entities = this._measure === "electricity" ? {} : climateEntities(this._hass, this._config.entity, this._measure);
+    if (entities.inside || entities.outside) {
+      await this._fetchStatistics(key, entities, cached);
+      return;
+    }
+    await this._fetchService(key, cached);
+  }
+
+  /** Read the measures of the period from ecojoko, with the service get_measures. */
+  async _fetchService(key, cached) {
     const data = { measure: this._measure, period: this._period, date: this._date() };
     const entry = configEntryId(this._hass, this._config.entity);
     if (entry) {
@@ -493,6 +733,46 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     }
     this._signature = null;
     this._render();
+  }
+
+  /** Read the temperature or humidity of the period from the statistics of the sensors. */
+  async _fetchStatistics(key, entities, cached) {
+    const period = datesPeriod(this._measure, this._period);
+    const range = periodRange(period, this._date());
+    const ids = Object.values(entities);
+    try {
+      const statistics = await this._hass.callWS({
+        type: "recorder/statistics_during_period",
+        start_time: range.start.toISOString(),
+        end_time: range.end.toISOString(),
+        statistic_ids: ids,
+        period: STATISTICS_PERIODS[period],
+        types: ["mean"],
+      });
+      const unit = this._hass.states[ids[0]]?.attributes?.unit_of_measurement
+        || (this._measure === "temperature" ? "°C" : "%");
+      const climate = climateFromStatistics(statistics, entities, unit);
+      if (statisticsCover(climate, range, period)) {
+        this._cache.set(key, { measures: climate, entities });
+        this._signature = null;
+        this._render();
+        return;
+      }
+    } catch (error) {
+      console.debug("Little Monkey card: statistics not read", error);
+    }
+    // Home Assistant has not recorded the whole period: ecojoko has it
+    await this._fetchService(key, cached);
+  }
+
+  _chooseMeasure(measure) {
+    if (measure !== this._measure) {
+      this._measure = measure;
+      this._selected = null;
+      this._fetch();
+      this._signature = null;
+      this._render();
+    }
   }
 
   /** Read the current period again: its measures go on. */
@@ -512,19 +792,11 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     }
   }
 
-  /** Show the period before (-1) or after (+1), as ecojoko gives them. */
+  /** Show the period before (-1) or after (+1). */
   _go(step) {
-    const measures = this._cache.get(this._key())?.measures;
-    const start = step < 0 ? measures?.previous : measures?.next;
-    if (!start) {
+    const date = shiftDate(datesPeriod(this._measure, this._period), this._date(), step);
+    if (step > 0 && !this._dates[this._period]) {
       return;
-    }
-    // ecojoko gives the start of a period; its month ends on the date asked
-    let date = start.slice(0, 10);
-    if (this._period === "month") {
-      const end = utcDate(date);
-      end.setUTCDate(end.getUTCDate() + 29);
-      date = end.toISOString().slice(0, 10);
     }
     this._dates[this._period] = date >= today() ? undefined : date;
     this._selected = null;
@@ -538,6 +810,8 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       this.attachShadow({ mode: "open" });
     }
     const text = this._text();
+    const tabs = MEASURES.map((measure) =>
+      `<button class="tab" data-measure="${measure}">${escapeHtml(text.measures[measure])}</button>`).join("");
     const periods = PERIODS.map((period) =>
       `<button class="period" data-period="${period}">${escapeHtml(text.periods[period])}</button>`).join("");
     this.shadowRoot.innerHTML = `
@@ -545,6 +819,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       <ha-card>
         <div class="title"></div>
         <div class="warning"></div>
+        <div class="tabs">${tabs}</div>
         <div class="top"><div class="periods">${periods}</div><div class="total"></div></div>
         <div class="details"></div>
         <svg viewBox="0 0 ${CHART.width} ${CHART.height}" role="img"></svg>
@@ -559,10 +834,21 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     for (const button of root.querySelectorAll(".period")) {
       button.addEventListener("click", () => this._choose(button.dataset.period));
     }
+    for (const button of root.querySelectorAll(".tab")) {
+      button.addEventListener("click", () => this._chooseMeasure(button.dataset.measure));
+    }
     root.querySelector(".previous").addEventListener("click", () => this._go(-1));
     root.querySelector(".next").addEventListener("click", () => this._go(1));
     const svg = root.querySelector("svg");
     svg.addEventListener("click", (event) => this._select(event, svg));
+    root.querySelector(".legend").addEventListener("click", (event) => {
+      const item = event.target.closest?.("[data-entity]");
+      if (item) {
+        this.dispatchEvent(new CustomEvent("hass-more-info", {
+          detail: { entityId: item.dataset.entity }, bubbles: true, composed: true,
+        }));
+      }
+    });
     svg.addEventListener("pointerdown", (event) => {
       this._swipeStart = event.clientX;
     });
@@ -587,11 +873,12 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     if (bar) {
       const index = Number(bar.dataset.index);
       this._selected = this._selected === index ? null : index;
-    } else if (this._period === "day") {
+    } else if (this._period === "day" || this._measure !== "electricity") {
+      // A share of the period, from 0 to 1
       const box = svg.getBoundingClientRect();
       const x = ((event.clientX - box.left) / box.width) * CHART.width;
-      const minutes = ((x - CHART.left) / (CHART.width - CHART.left - CHART.right)) * MINUTES_A_DAY;
-      this._selected = minutes >= 0 && minutes <= MINUTES_A_DAY ? minutes : null;
+      const share = (x - CHART.left) / (CHART.width - CHART.left - CHART.right);
+      this._selected = share >= 0 && share <= 1 ? share : null;
     }
     this._signature = null;
     this._render();
@@ -623,12 +910,22 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     for (const button of root.querySelectorAll(".period")) {
       button.classList.toggle("active", button.dataset.period === this._period);
     }
+    for (const button of root.querySelectorAll(".tab")) {
+      button.classList.toggle("active", button.dataset.measure === this._measure);
+    }
     const measures = shown.measures;
-    root.querySelector(".name").textContent = periodLabel(locale, this._period, measures?.start || this._date());
-    root.querySelector(".previous").disabled = !measures?.previous;
+    const period = datesPeriod(this._measure, this._period);
+    root.querySelector(".name").textContent = periodLabel(
+      locale, period, this._measure === "electricity" && measures?.start
+        ? measures.start : localIso(periodRange(period, this._date()).start));
+    root.querySelector(".previous").disabled = false;
     root.querySelector(".next").disabled = !this._dates[this._period];
     const total = root.querySelector(".total");
-    total.innerHTML = measures
+    const average = this._measure === "electricity" ? null : climateAverage(measures);
+    total.innerHTML = this._measure !== "electricity"
+      ? (average === null ? "" : `<span class="main">${escapeHtml(text.climate_total.replace(
+        "{value}", climateValue(locale, average, measures.unit)))}</span>`)
+      : measures
       ? `<span class="main">${escapeHtml(formatValue(locale, measures.energy, "kwh"))}</span> <span class="other">| ${
         escapeHtml(formatValue(locale, measures.cost, "eur"))}</span>`
       : "";
@@ -642,7 +939,9 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       legend.innerHTML = "";
       return;
     }
-    if (this._period === "day") {
+    if (this._measure !== "electricity") {
+      this._renderClimate(measures, svg, details, legend, text, locale);
+    } else if (this._period === "day") {
       this._renderDay(measures, svg, details, legend, text, locale);
     } else {
       this._renderBars(measures, unit, svg, details, legend, text, locale);
@@ -674,8 +973,9 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     let cursor = "";
     details.textContent = "";
     if (this._selected !== null) {
+      const minutes = this._selected * MINUTES_A_DAY;
       const point = areas.points.reduce((best, item) =>
-        Math.abs(item.minutes - this._selected) < Math.abs(best.minutes - this._selected) ? item : best);
+        Math.abs(item.minutes - minutes) < Math.abs(best.minutes - minutes) ? item : best);
       const time = String(point.time).slice(11, 16);
       details.textContent = text.power_at.replace("{time}", time).replace("{power}", formatValue(locale, point.power, "w"));
       cursor = `<line class="cursor" x1="${areas.x(point.minutes)}" x2="${areas.x(point.minutes)}" y1="${CHART.top}" y2="${CHART.height - CHART.bottom}" />`;
@@ -696,6 +996,51 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       items.push(`<span><span class="swatch" style="background: ${MEASURE_COLORS.production}"></span>${escapeHtml(text.production)}</span>`);
     }
     legend.innerHTML = items.join("");
+  }
+
+  /** Draw the temperature or the humidity of a period, inside and outside. */
+  _renderClimate(measures, svg, details, legend, text, locale) {
+    const period = datesPeriod(this._measure, this._period);
+    const range = periodRange(period, this._date());
+    const lines = climateLines(measures, range);
+    if (!lines.points.length) {
+      svg.innerHTML = `<text class="message" x="${CHART.width / 2}" y="${CHART.height / 2}">${escapeHtml(text.empty)}</text>`;
+      details.textContent = "";
+      legend.innerHTML = "";
+      return;
+    }
+    const colors = CLIMATE_COLORS[this._measure];
+    const labels = climateLabels(locale, period, range).map((label) =>
+      `<text class="label" x="${lines.x(label.time).toFixed(1)}" y="${CHART.height - 4}"${
+        label.anchor ? ` style="text-anchor: ${label.anchor}"` : ""}>${escapeHtml(label.text)}</text>`).join("");
+    let cursor = "";
+    details.textContent = "";
+    if (this._selected !== null && this._selected <= 1) {
+      const time = range.start.getTime() + this._selected * (range.end.getTime() - range.start.getTime());
+      const point = lines.points.reduce((best, item) =>
+        Math.abs(new Date(item.time) - time) < Math.abs(new Date(best.time) - time) ? item : best);
+      const when = new Intl.DateTimeFormat(locale, this._period === "day"
+        ? { hour: "2-digit", minute: "2-digit" }
+        : { weekday: "short", day: "numeric", month: "short", ...(this._period === "year" ? {} : { hour: "2-digit", minute: "2-digit" }) })
+        .format(new Date(point.time));
+      details.textContent = text.climate_at.replace("{time}", when)
+        .replace("{inside}", climateValue(locale, point.inside, measures.unit))
+        .replace("{outside}", climateValue(locale, point.outside, measures.unit));
+      cursor = `<line class="cursor" x1="${lines.x(point.time)}" x2="${lines.x(point.time)}" y1="${CHART.top}" y2="${CHART.height - CHART.bottom}" />`;
+    }
+    const format = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+    const grid = lines.ticks.map((tick) => `
+      <line class="grid" x1="${CHART.left}" x2="${CHART.width - CHART.right}" y1="${tick.y}" y2="${tick.y}" />
+      <text class="tick" x="${CHART.left - 4}" y="${tick.y}">${escapeHtml(`${format.format(tick.value)} ${measures.unit || ""}`.trim())}</text>`).join("");
+    svg.innerHTML = `${grid}
+      ${lines.outside ? `<path d="${lines.outside}" fill="none" stroke="${colors.outside}" stroke-width="1.4" />` : ""}
+      ${lines.inside ? `<path d="${lines.inside}" fill="none" stroke="${colors.inside}" stroke-width="1.6" />` : ""}
+      ${cursor}${labels}`;
+    // The legend opens the sensors when the curves come from them
+    const entities = this._cache.get(this._key())?.entities || {};
+    legend.innerHTML = ["inside", "outside"].filter((side) => lines[side]).map((side) =>
+      `<span${entities[side] ? ` class="entity" data-entity="${escapeHtml(entities[side])}"` : ""}><span class="swatch" style="background: ${
+        colors[side]}"></span>${escapeHtml(text[side])}</span>`).join("");
   }
 
   /** Draw the bars of a week, 30 days or a year. */

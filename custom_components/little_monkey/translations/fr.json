@@ -575,11 +575,11 @@
                 },
                 "period": {
                     "name": "Période",
-                    "description": "Jour, semaine, 30 jours (mois) ou année."
+                    "description": "Jour, semaine, mois ou année."
                 },
                 "date": {
                     "name": "Date",
-                    "description": "Un jour de la période ; aujourd'hui par défaut. Pour le mois, les 30 jours qui finissent ce jour-là."
+                    "description": "Un jour de la période ; aujourd'hui par défaut. Pour l'électricité, le mois est formé des 30 jours qui finissent ce jour-là ; pour la température et l'humidité, c'est le mois calendaire."
                 }
             }
         }

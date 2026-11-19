@@ -350,6 +350,8 @@ La carte « Petit Singe : mesures » reprend la page « Mesures » d'ecojoko. El
 ```yaml
 type: custom:little-monkey-measures-card
 entity: sensor.ecojoko_consommation_temps_reel
+# Facultatif : mesure affichée d'abord, electricity (par défaut), temperature ou humidity
+measure: electricity
 # Facultatif : période affichée d'abord, day (par défaut), week, month ou year
 period: day
 # Facultatif : unité des barres, kwh (par défaut) ou eur
@@ -361,13 +363,15 @@ title: Mesures
 | Option | Obligatoire | Description |
 |---|---|---|
 | `entity` | Oui | Un capteur de l'appareil Little Monkey, qui désigne l'installation |
-| `period` | Non | Période affichée d'abord : `day` (par défaut), `week`, `month` (30 jours, comme le « Mois » d'ecojoko) ou `year` |
+| `measure` | Non | Onglet affiché d'abord : `electricity` (par défaut), `temperature` ou `humidity` |
+| `period` | Non | Période affichée d'abord : `day` (par défaut), `week`, `month` (30 jours pour l'électricité, comme le « Mois » d'ecojoko ; le mois calendaire pour la température et l'humidité) ou `year` |
 | `unit` | Non | Unité des barres : `kwh` (par défaut) ou `eur` |
 | `title` | Non | Titre de la carte |
 
 - **Jour :** la courbe de puissance de la journée, colorée selon la tranche tarifaire de chaque instant (heures pleines, heures creuses, couleurs Tempo…) aux couleurs d'ecojoko, avec le talon de consommation en bleu foncé dessous et la production injectée sous l'axe. Toucher la courbe donne la puissance à cette heure.
 - **Semaine, Mois, Année :** les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec la production injectée sous l'axe (en kWh). La légende donne le total de chaque tranche sur la période ; toucher une barre affiche son détail.
-- En haut, l'énergie et le coût de la période ; les flèches, ou un glissement du doigt, changent de période.
+- **Température, Humidité :** les courbes intérieure et extérieure de la période, avec la moyenne intérieure en haut ; toucher la courbe donne les deux valeurs à cet instant. Elles viennent des statistiques de Home Assistant quand les capteurs de température et d'humidité existent (option de l'intégration) et qu'elles couvrent toute la période, et la légende ouvre alors ces capteurs. Sinon elles sont lues chez ecojoko, qui a tout l'historique de la sonde : les statistiques de Home Assistant ne remontent qu'à la création des capteurs, et celles d'une journée ne sont gardées que dix jours.
+- En haut, l'énergie et le coût de la période pour l'électricité ; les onglets changent de mesure, les flèches ou un glissement du doigt changent de période.
 
 ## Service « Lire les mesures »
 
@@ -376,7 +380,7 @@ title: Mesures
 | Champ | Obligatoire | Description |
 |---|---|---|
 | `measure` | Oui | `electricity`, `temperature` ou `humidity` |
-| `period` | Oui | `day`, `week`, `month` (les 30 jours qui finissent à la date, comme le « Mois » d'ecojoko) ou `year` |
+| `period` | Oui | `day`, `week`, `month` ou `year`. Pour l'électricité, le mois est formé des 30 jours qui finissent à la date, comme le « Mois » d'ecojoko ; pour la température et l'humidité, c'est le mois calendaire, le seul que la sonde connaisse |
 | `date` | Non | Un jour de la période, aujourd'hui par défaut |
 
 La réponse donne le début de la période (`start`) et celui des périodes précédente et suivante (`previous`, `next`). Pour l'électricité, elle donne aussi l'énergie (`energy`), le coût (`cost`), la production injectée (`production`) et les tranches tarifaires avec leur couleur (`bands`). Un jour a sa puissance toutes les quelques minutes (`points` : `time`, `power`, le talon `base` et la tranche `band`). Une semaine, un mois ou une année a ses jours ou ses mois (`bars` : `date`, `energy`, `cost`, `base_energy`, `production` et le détail par tranche `bands`). Pour la température et l'humidité, elle donne l'unité (`unit`) et les mesures intérieure et extérieure (`points` : `time`, `inside`, `outside`).
