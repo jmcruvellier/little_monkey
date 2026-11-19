@@ -7,6 +7,9 @@
 
 Cette intégration permet de récupérer les informations collectées par l'assistant d'énergie ecojoko<sup>©️</sup>.
 
+> [!NOTE]
+> La version 2.0.0 est en bêta : elle apporte de nouvelles cartes (cadran, économies, analyse de la consommation, contrat, équipements, mesures) et le pilotage du chauffe-eau. Pour la tester, activez l'affichage des versions bêta de Little Monkey dans HACS. Ses nouveaux groupes de capteurs sont à activer dans les options de l'intégration.
+
 Elle intègre dans Home Assistant les capteurs suivants:
 
 | Version | Capteur | Type | Unité | Disponibilité | Commentaire |
