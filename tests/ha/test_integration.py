@@ -40,7 +40,7 @@ from custom_components.little_monkey import (
     repairs,
     select as lm_select,
 )
-from custom_components.little_monkey.entity import registry_device
+from custom_components.little_monkey.entity import device_entry_ids, registry_device
 from custom_components.little_monkey.diagnostics import (
     async_get_config_entry_diagnostics,
 )
@@ -1788,6 +1788,17 @@ async def test_contactor_of_an_equipment_in_automatic_mode(hass, fake_api):
     await hass.async_block_till_done(wait_background_tasks=True)
     assert hass.states.get("binary_sensor.chauffe_eau_contactor").state == "on"
     assert hass.states.get("sensor.chauffe_eau_mode").state == "auto"
+
+
+def test_config_entries_of_a_device():
+    """The config entry of a device, whatever the version of Home Assistant.
+
+    Since 2026 a device has a single one, config_entry_id; the older
+    versions only know config_entries, deprecated since.
+    """
+    assert device_entry_ids(types.SimpleNamespace(config_entry_id="a")) == {"a"}
+    assert device_entry_ids(types.SimpleNamespace(config_entry_id=None)) == set()
+    assert device_entry_ids(types.SimpleNamespace(config_entries={"a", "b"})) == {"a", "b"}
 
 
 def test_absence_of_the_list_ends_at_midnight():
