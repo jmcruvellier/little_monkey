@@ -135,7 +135,7 @@ ecojoko accepte des durées que son application ne propose pas (un forçage de 3
 
 ## Les services
 
-Les services renvoient une réponse : appelez-les depuis un script ou une automatisation avec `response_variable`, ou depuis Outils de développement › Actions. `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
+Les services renvoient une réponse : appelez-les depuis un script ou une automatisation avec `response_variable`, ou depuis Outils de développement › Actions. Les exemples de ce guide utilisent `action:` ; avec Home Assistant 2024.7, écrivez `service:` à la place. `config_entry_id` est facultatif s'il n'y a qu'une installation Little Monkey.
 
 | Service | Option requise | Réponse |
 |---|---|---|

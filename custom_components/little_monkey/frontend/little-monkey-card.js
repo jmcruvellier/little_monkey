@@ -117,7 +117,7 @@ const POWER_END = 100;
 const POWER_TICKS = [0, 50, 100, 500, 1000, 5000, 10000];
 const POWER_LABELS = ["0", "50", "100", "500", "1K", "5K", "10K", "MAX"];
 const DEFAULT_MAX_POWER = 12000;
-// Lower arc, decorative until the integration provides its value
+// Lower arc: the savings over 7 days, in % of the reference consumption
 const LOWER_START = 125; // +20 %
 const LOWER_END = 235; // -20 %
 const LOWER_RANGE = 20;
