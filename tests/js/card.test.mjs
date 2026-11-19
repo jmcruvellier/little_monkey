@@ -367,3 +367,24 @@ test("the editor shows the picker of the chosen background", () => {
   assert.ok(names({ dial_color: "amber" }).includes("dial_color"));
   assert.ok(names({ dial_color: [1, 2, 3] }).includes("dial_rgb"));
 });
+
+test("the sensors left by a previous contract do not choose the tariff mode", () => {
+  const sensors = {
+    blue_hc_grid_consumption: "sensor.eco_hc_bleu",
+    hc_grid_consumption: "sensor.eco_hc",
+    hp_grid_consumption: "sensor.eco_hp",
+  };
+  const live = { state: "1.2", attributes: {} };
+  const orphan = { state: "unavailable", attributes: { restored: true } };
+  // A Tempo contract
+  let hass = { states: { "sensor.eco_hc_bleu": live, "sensor.eco_hc": live, "sensor.eco_hp": live } };
+  assert.equal(card.tariffMode(sensors, hass), "tempo");
+  // Changed for HC/HP: Home Assistant keeps the Tempo sensor, restored
+  hass = { states: { "sensor.eco_hc_bleu": orphan, "sensor.eco_hc": live, "sensor.eco_hp": live } };
+  assert.equal(card.tariffMode(sensors, hass), "hchp");
+  // No tariff option any more
+  hass = { states: { "sensor.eco_hc_bleu": orphan, "sensor.eco_hc": orphan, "sensor.eco_hp": orphan } };
+  assert.equal(card.tariffMode(sensors, hass), null);
+  // A sensor without a state yet counts, as before
+  assert.equal(card.tariffMode(sensors, { states: {} }), "tempo");
+});
