@@ -15,6 +15,25 @@ import pytest
 
 from custom_components.little_monkey import api as lm_api
 
+
+@pytest.fixture(autouse=True, scope="session")
+def pycares_shutdown_thread():
+    """Start the shutdown thread of pycares before the first test.
+
+    From pycares 4.9.0, the first destroyed DNS channel starts a thread
+    that lasts until the end. The test tooling of the oldest supported Home
+    Assistant fails the test that starts it, as a thread left behind: started
+    beforehand, it is among the threads that every test finds.
+    """
+    try:
+        import pycares
+    except ImportError:
+        return
+    manager = getattr(pycares, "_shutdown_manager", None)
+    if manager is not None and hasattr(manager, "destroy_channel"):
+        # Nothing to destroy: the thread starts and waits
+        manager.destroy_channel(None)
+
 # What the patched client reports after a successful poll
 VALUES = {
     "_gateway_firmware_version": "1.9",

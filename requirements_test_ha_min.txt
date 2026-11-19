@@ -7,5 +7,6 @@ pytest-homeassistant-custom-component==0.13.144
 # latest versions are no longer compatible with it or with its test tooling:
 # josepy 2 removed a class used by acme
 josepy<2.0.0
-# pycares 4.9.0 fixes a use-after-free (GHSA-5qpg-rh4j-qp35)
+# pycares 4.9.0 fixes a use-after-free (GHSA-5qpg-rh4j-qp35); its shutdown
+# thread is started before the tests (tests/ha/conftest.py)
 pycares==4.9.0
