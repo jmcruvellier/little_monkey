@@ -318,6 +318,7 @@ EQUIPMENT_ENTITIES = {
     "voltage": ("sensor", "equipment_voltage"),
     "max_power": ("sensor", "equipment_max_power"),
     "control": ("select", "equipment_mode"),
+    "switch": ("binary_sensor", "equipment_switch"),
     "connection": ("sensor", "equipment_connection"),
     "signal": ("sensor", "equipment_signal"),
     "wifi_signal": ("sensor", "equipment_wifi_signal"),

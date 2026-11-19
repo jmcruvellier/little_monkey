@@ -438,6 +438,28 @@
                     "off": "Off"
                 }
             }
+        },
+        "binary_sensor": {
+            "equipment_switch": {
+                "name": "Contactor",
+                "state": {
+                    "on": "On",
+                    "off": "Off"
+                },
+                "state_attributes": {
+                    "since": {
+                        "name": "Since"
+                    },
+                    "source": {
+                        "name": "Origin",
+                        "state": {
+                            "command": "Command",
+                            "schedule": "Schedule",
+                            "timer": "End of duration"
+                        }
+                    }
+                }
+            }
         }
     },
     "selector": {

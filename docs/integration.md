@@ -78,6 +78,7 @@ Pour chaque équipement piloté par ecojoko (chauffe-eau, prise…), sur son app
 |---|---|---|
 | Pilotage (liste) | — | Voir [le pilotage](#le-pilotage-des-équipements) |
 | Mode | — | Automatique, Forcé ou Absence (Allumé ou Éteint sans mode forcé) ; en attribut, l'état du contacteur tel qu'ecojoko l'écrit, depuis et jusqu'à quand, et l'origine du changement (commande, programmation, fin de durée) |
+| Contacteur | — | Allumé ou Éteint, quel que soit le mode : en mode Automatique, ecojoko allume et éteint l'équipement sans que le mode change. En attribut, depuis quand et l'origine du changement. Seulement pour les équipements qui ont un mode Automatique (chauffe-eau) : pour les autres, le mode est déjà l'état du contacteur |
 | Puissance | W | |
 | Consommation du Jour, Coût du Jour | kWh, € | Si l'équipement mesure sa consommation |
 | Tension, Puissance Max Mesurée | V, W | Si ecojoko les donne |

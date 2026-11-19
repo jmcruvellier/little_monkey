@@ -1635,6 +1635,11 @@ async def test_piloted_equipment_has_its_device(hass, fake_api):
     assert mode.attributes["options"] == ["auto", "forced", "absence"]
     assert mode.attributes["until"] == "2026-11-18T21:00:00+01:00"
     assert mode.attributes["source"] == "command"
+    # The contactor, apart from the mode: on, since when and why
+    contactor = hass.states.get("binary_sensor.chauffe_eau_contactor")
+    assert contactor.state == "on"
+    assert contactor.attributes["since"] == "2026-11-18T20:00:00+01:00"
+    assert contactor.attributes["source"] == "command"
 
     devices = dr.async_get(hass)
     heater = registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
@@ -1669,6 +1674,7 @@ async def test_equipments_service(hass, fake_api):
     assert heater["entities"]["voltage"] == "sensor.chauffe_eau_voltage"
     assert heater["entities"]["max_power"] == "sensor.chauffe_eau_max_measured_power"
     assert heater["entities"]["control"] == "select.chauffe_eau_control"
+    assert heater["entities"]["switch"] == "binary_sensor.chauffe_eau_contactor"
     assert heater["entities"]["wifi_signal"] == "sensor.chauffe_eau_wifi_connection"
     assert hass.states.get("sensor.chauffe_eau_voltage").state == "232.5"
     # The sensor: its diagnostics, and its measures on the Ecojoko device
@@ -1756,6 +1762,32 @@ async def test_equipment_mode_select(hass, fake_api):
     assert fake_api.commands[1] == ("630220", "forced", 3600)
     mode, seconds = fake_api.commands[2][1:]
     assert mode == "absence" and 0 < seconds <= 24 * 3600
+
+
+async def test_contactor_of_an_equipment_in_automatic_mode(hass, fake_api):
+    """The contactor follows ecojoko in automatic mode, the mode does not change.
+
+    An equipment switched only on and off has no contactor sensor: its mode
+    is the state of its contactor already.
+    """
+    heater = copy.deepcopy(WATER_HEATER)
+    heater["state"].update(on=False, forced=False, mode="auto", source="schedule")
+    plug = copy.deepcopy(WATER_HEATER)
+    plug.update(id="630221", name="Prise", controls=["on", "off"])
+    plug["state"].update(mode="on")
+    fake_api.equipments = [heater, plug]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    assert hass.states.get("binary_sensor.chauffe_eau_contactor").state == "off"
+    assert hass.states.get("binary_sensor.prise_contactor") is None
+    assert hass.states.get("sensor.prise_mode").state == "on"
+
+    # ecojoko switches the heater on: the mode stays automatic
+    fake_api.equipments[0]["state"].update(on=True, power=2850)
+    await hass.config_entries.async_reload(entry.entry_id)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert hass.states.get("binary_sensor.chauffe_eau_contactor").state == "on"
+    assert hass.states.get("sensor.chauffe_eau_mode").state == "auto"
 
 
 def test_absence_of_the_list_ends_at_midnight():
@@ -1948,6 +1980,7 @@ async def test_sensors_of_a_group_turned_off_are_removed(hass, fake_api):
     assert entities.async_get("sensor.chauffe_eau_power") is None
     assert entities.async_get("sensor.ecojoko_sonde_connection_to_the_assistant") is None
     assert entities.async_get("select.chauffe_eau_control") is None
+    assert entities.async_get("binary_sensor.chauffe_eau_contactor") is None
     # The other groups are kept
     assert entities.async_get("sensor.ecojoko_contract") is not None
     assert entities.async_get("sensor.ecojoko_savings_this_week") is not None

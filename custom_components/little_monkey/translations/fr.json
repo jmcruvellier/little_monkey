@@ -438,6 +438,28 @@
                     "off": "Éteint"
                 }
             }
+        },
+        "binary_sensor": {
+            "equipment_switch": {
+                "name": "Contacteur",
+                "state": {
+                    "on": "Allumé",
+                    "off": "Éteint"
+                },
+                "state_attributes": {
+                    "since": {
+                        "name": "Depuis"
+                    },
+                    "source": {
+                        "name": "Origine",
+                        "state": {
+                            "command": "Commande",
+                            "schedule": "Programmation",
+                            "timer": "Fin de durée"
+                        }
+                    }
+                }
+            }
         }
     },
     "selector": {

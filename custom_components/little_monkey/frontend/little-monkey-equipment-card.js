@@ -857,7 +857,7 @@ class LittleMonkeyEquipmentCard extends HTMLElement {
           `<span><span class="swatch" style="background: ${STATE_COLORS[kind]}"></span>${escapeHtml(text.legend[kind])}</span>`).join("")}</div>`
         : "";
       timeline = `
-        <svg class="timeline"${entityAttribute(equipment, "mode")} viewBox="0 0 ${DAY_BOX.width} ${DAY_BOX.height}" preserveAspectRatio="none" role="img">
+        <svg class="timeline"${entityAttribute(equipment, equipment.entities?.switch ? "switch" : "mode")} viewBox="0 0 ${DAY_BOX.width} ${DAY_BOX.height}" preserveAspectRatio="none" role="img">
           ${rects}<line class="base" x1="0" x2="${DAY_BOX.width}" y1="${DAY_BOX.base}" y2="${DAY_BOX.base}" />
           ${curve ? `<path class="curve" d="${curve}" />` : ""}
         </svg>
