@@ -21,6 +21,9 @@ from .card import async_register_card
 from .const import (
     DEFAULT_POLL_INTERVAL,
     DOMAIN,
+    MANUFACTURER,
+    MODEL,
+    VERSION,
     LOGGER,
     PLATFORMS,
     POLL_INTERVAL,
@@ -104,6 +107,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Home Assistant removes it when the entry is unloaded
     entry.runtime_data = coordinator
+
+    # The Ecojoko device exists before the devices of the equipments, which
+    # are linked to it by its id
+    main_device = dr.async_get(hass).async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, entry.entry_id)},
+        name=entry.data.get(CONF_NAME),
+        manufacturer=MANUFACTURER,
+        model=MODEL,
+        sw_version=VERSION,
+        hw_version=coordinator.data.get("gateway_firmware_version"),
+    )
+    coordinator.main_device_id = main_device.id
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     _async_remove_old_equipment_devices(hass, entry)
