@@ -21,7 +21,7 @@ const ANALYSIS_EDITOR_TYPE = "little-monkey-analysis-card-editor";
 const ACTIVATIONS_TYPE = "little-monkey-activations-card";
 const ACTIVATIONS_EDITOR_TYPE = "little-monkey-activations-card-editor";
 const DOCUMENTATION =
-  "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-de-lanalyse-de-la-consommation";
+  "https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#analyse-de-la-conso";
 
 const TRANSLATIONS = {
   en: {

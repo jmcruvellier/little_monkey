@@ -17,7 +17,7 @@ const DOMAIN = "little_monkey";
 const CONTRACT_TYPE = "little-monkey-contract-card";
 const CONTRACT_EDITOR_TYPE = "little-monkey-contract-card-editor";
 const DOCUMENTATION =
-  "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-contrat";
+  "https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#contrat";
 
 const TRANSLATIONS = {
   en: {

@@ -1338,6 +1338,6 @@ if (!customElements.get(CARD_TYPE)) {
     name: text.name,
     description: text.description,
     preview: true,
-    documentationURL: "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord",
+    documentationURL: "https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#little-monkey-cadran",
   });
 }

@@ -2,95 +2,66 @@
 [![Validate](https://github.com/jmcruvellier/little_monkey/actions/workflows/validate.yml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/validate.yml)
 [![Tests](https://github.com/jmcruvellier/little_monkey/actions/workflows/tests.yml/badge.svg)](https://github.com/jmcruvellier/little_monkey/actions/workflows/tests.yml)
 
-![](/custom_components/little_monkey/res/logo_small.png)
+![Little Monkey](https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/logo_small.png)
+
 # Little Monkey / Petit Singe
 
-Cette intégration permet de récupérer les informations collectées par l'assistant d'énergie ecojoko<sup>©️</sup>.
+Votre assistant d'énergie ecojoko<sup>©️</sup> dans Home Assistant : la consommation en temps réel, l'énergie de chaque tranche tarifaire pour le tableau de bord Énergie, vos économies, votre contrat, le pilotage du chauffe-eau, et des cartes qui reprennent les écrans de l'application ecojoko.
 
 > [!NOTE]
-> La version 2.0.0 est en bêta : elle apporte de nouvelles cartes (cadran, économies, analyse de la consommation, contrat, équipements, mesures) et le pilotage du chauffe-eau. Pour la tester, activez l'affichage des versions bêta de Little Monkey dans HACS. Ses nouvelles fonctions (capteurs et cartes) sont à activer dans les options de l'intégration.
+> La version 2.0.0 est en bêta. Pour l'essayer, activez l'affichage des versions bêta de Little Monkey dans HACS ([voir comment](https://github.com/jmcruvellier/little_monkey/blob/main/docs/installation.md#installer-avec-hacs)). Ses nouvelles fonctions sont à cocher dans les options de l'intégration.
 
-Elle intègre dans Home Assistant les capteurs suivants:
+## L'intégration
 
-| Version | Capteur | Type | Unité | Disponibilité | Commentaire |
-| ------- | ------- | ---- | ----- | ------------- | ----------- |
-| 1.0.0 | Consommation Temps Réel | Puissance | W | Permanent | |
-| 1.2.8 | Puissance Apparente | Puissance apparente | VA | Automatique | Créé si ecojoko fournit cette mesure, lue sur le compteur Linky |
-| 1.0.0 | Consommation Réseau | Energie | kWh | Permanent | |
-| 1.0.0 | Consommation HC Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
-| 1.0.0 | Consommation HP Réseau | Energie | kWh | Optionnel | Si vous avez un contrat d'énergie incluant les HC/HP |
-| 1.0.0 | Consommation HC/HP Bleu, Blanc, Rouge Réseau | Energie | kWh | Automatique | Une par tranche d'un contrat Tempo |
-| 2.0.0 | Consommation d'une tranche tarifaire | Energie | kWh | Automatique | Une par tranche du contrat (Semaine, Week-end, Jour Spécial…), nommée à la configuration |
-| 2.0.0 | Période Tarifaire en Cours | Énumération | | Optionnel | Avec les totaux HC/HP ou un contrat Tempo : HC / HP, ou période et couleur Tempo (HC Bleu, HP Rouge...), déduite du compteur qui augmente ; la tranche en cours (Semaine, Week-end, Jour Spécial…) en attribut |
-| 1.0.0 | Surplus de Production | Energie | kWh | Optionnel | Si vous êtes producteur d'énergie grâce à des panneaux photovoltaïques et possesseur d'un capteur ecojoko ancienne génération |
-| 2.0.0 | Économies sur 7 Jours | Pourcentage | % | Optionnel | Écart de la consommation des 7 derniers jours par rapport à votre consommation de référence, négatif pour une économie ; inconnu tant qu'ecojoko n'a pas de semaine de référence. Consommation de référence en attribut |
-| 2.0.0 | Consommation sur 7 Jours | Energie | kWh | Optionnel | Consommation des 7 derniers jours ; celle de chaque jour, du plus ancien au plus récent, en attribut |
-| 2.0.0 | Coût sur 7 Jours | Monétaire | EUR | Optionnel | Coût des 7 derniers jours, selon le tarif renseigné dans ecojoko |
-| 2.0.0 | Économies Cumulées | Monétaire | EUR | Optionnel | Économies depuis le début, négatives en cas de surconsommation |
-| 2.0.0 | Puissance Max du Mois | Puissance | W | Optionnel | |
-| 2.0.0 | Puissance Max de l'Année | Puissance | W | Optionnel | |
-| 2.0.0 | Puissance Max Depuis le Début | Puissance | W | Optionnel | |
-| 2.0.0 | Contrat | Texte | | Optionnel (diagnostic) | Nom de l'offre lue chez ecojoko ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches tarifaires configurées, chacune avec le prix d'un kWh (`price`, exact ou estimé selon `price_exact`) |
-| 2.0.0 | Coût de la Consommation sur 12 Mois | Monétaire | EUR | Optionnel | Coût de la consommation des 12 derniers mois (« Conso en cours » du résumé des économies d'ecojoko) ; consommation en kWh en attribut |
-| 2.0.0 | Coût de Référence sur 12 Mois | Monétaire | EUR | Optionnel | Coût de votre consommation de référence sur 12 mois ; consommation de référence en kWh en attribut |
-| 2.0.0 | Économies sur 12 Mois | Monétaire | EUR | Optionnel | Différence entre les deux, négative en cas de surconsommation ; économies en kWh et niveau (1 à 5) en attribut |
-| 2.0.0 | Économies de la Semaine | Monétaire | EUR | Optionnel | Économies de la semaine en cours (du lundi au dimanche), négatives en cas de surconsommation ; en attribut, les économies en kWh, les coûts et consommations réels et de référence, et le détail de chaque jour (`bars`, non historisé) |
-| 2.0.0 | Économies du Mois | Monétaire | EUR | Optionnel | Idem pour le mois en cours, détaillé par semaine |
-| 2.0.0 | Économies de l'Année | Monétaire | EUR | Optionnel | Idem pour l'année en cours, détaillée par mois |
-| 2.0.0 | Mode (équipement piloté) | Énumération | | Optionnel | Un par équipement piloté par ecojoko (chauffe-eau, prise…), sur l'appareil de l'équipement : Automatique, Forcé ou Absence (Allumé ou Éteint pour un équipement sans mode forcé) ; en attribut, l'état du contacteur tel qu'ecojoko l'écrit, depuis et jusqu'à quand, et l'origine du changement (commande, programmation, fin de durée) |
-| 2.0.0 | Pilotage (équipement piloté) | Liste | | Optionnel | Pilote l'équipement comme l'application ecojoko : Automatique, Forcé (pendant une heure) ou Absence (jusqu'à minuit) ; Allumé ou Éteint pour un équipement sans mode forcé. Le service « Piloter un équipement » choisit n'importe quelle durée |
-| 2.0.0 | Puissance (équipement piloté) | Puissance | W | Optionnel | Puissance consommée par l'équipement |
-| 2.0.0 | Consommation du Jour (équipement piloté) | Energie | kWh | Optionnel | Énergie consommée par l'équipement depuis minuit, s'il mesure sa consommation |
-| 2.0.0 | Coût du Jour (équipement piloté) | Monétaire | EUR | Optionnel | Coût de cette énergie, selon le tarif renseigné dans ecojoko |
-| 2.0.0 | Tension, Puissance Max Mesurée (équipement piloté) | Tension, Puissance | V, W | Optionnel | Tension mesurée par l'équipement et puissance maximale qu'il a mesurée, quand ecojoko les donne |
-| 2.0.0 | Connexion à l'Assistant, Force de la Connexion, Connexion au WiFi, Batterie (équipement) | Diagnostic | %  | Optionnel | Pour chaque équipement de l'installation, quand ecojoko donne la valeur : sur l'appareil d'un équipement piloté (chauffe-eau…), sur l'appareil Little Monkey pour les autres (« Clé Linky : force de la connexion », « Sonde de température : connexion à l'assistant »…) |
-| 1.0.0 | Température Intérieure | Température | °C | Optionnel | |
-| 1.0.0 | Température Extérieure | Température | °C | Optionnel | |
-| 1.0.0 | Humidité Intérieure | Humidité | % | Optionnel | |
-| 1.0.0 | Humidité Extérieure | Humidité | % | Optionnel | |
+Little Monkey lit vos données sur les serveurs d'ecojoko et crée :
 
-Elle fournit aussi une carte « Little Monkey » pour vos tableaux de bord, chargée automatiquement : voir [la configuration de la carte](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-du-tableau-de-bord). Les cartes des économies reprennent l'onglet « Économies » d'ecojoko : voir [leur configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies). La carte des équipements reprend l'écran « Équipements » et pilote le chauffe-eau : voir [sa configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-des-%C3%A9quipements).
+- **les capteurs de base** : puissance en temps réel et apparente, consommation du jour au total et par tranche tarifaire (HC/HP, Tempo, Week-end…), période tarifaire en cours, production injectée, température et humidité ;
+- **à la demande**, six groupes de fonctions à cocher dans les options : l'activité du compte (économies et coût sur 7 jours, puissances maximales), les économies (sur 12 mois, la semaine, le mois, l'année), le contrat et le prix du kWh, les équipements pilotés (le chauffe-eau, avec son mode, sa consommation et son pilotage), l'analyse de la consommation par poste et les mesures détaillées ;
+- **des services** pour lire ces données détaillées dans vos scripts et automatisations, et piloter un équipement pour la durée de votre choix.
+
+👉 [Tout sur l'intégration](https://github.com/jmcruvellier/little_monkey/blob/main/docs/integration.md) : appareils, capteurs, pilotage, services.
+
+## Les cartes
+
+Huit cartes pour vos tableaux de bord, fournies par l'intégration elle-même, sans autre installation :
+
+| Carte | Ce qu'elle montre |
+|---|---|
+| [Little Monkey](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#little-monkey-cadran) | Le cadran du boîtier : puissance en temps réel aux couleurs de la période tarifaire, économies, coût et puissances maximales |
+| [Contrat](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#contrat) | L'offre, les heures creuses sur 24 heures, les tranches et leur prix |
+| [Économies](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#%C3%A9conomies) | Les économies sur 12 mois |
+| [Économies en détail](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#%C3%A9conomies-en-d%C3%A9tail) | Les économies jour par jour, semaine par semaine ou mois par mois |
+| [Analyse de la conso](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#analyse-de-la-conso) | La consommation de la semaine ou du mois par poste |
+| [Activations des appareils](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#activations-des-appareils) | Les démarrages d'appareils détectés sur 48 heures |
+| [Équipements](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#%C3%A9quipements) | Le chauffe-eau et son pilotage, les autres équipements ecojoko |
+| [Mesures](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#mesures) | La courbe de puissance du jour, l'énergie par tranche, la température et l'humidité |
+
+👉 [Tout sur les cartes](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md) : interactions et options.
+
+## Installation
+
+Il vous faut un assistant ecojoko, vos identifiants [ecojoko](https://service.ecojoko.com/), Home Assistant 2024.7 ou plus récent et [HACS](https://hacs.xyz/).
+
+1. Ajoutez le dépôt à HACS et téléchargez Little Monkey :
+
+   [![Ouvrir HACS sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
+
+2. Redémarrez Home Assistant.
+3. Ajoutez l'intégration Little Monkey dans Paramètres › Appareils et services, et laissez-vous guider.
+
+👉 [Le guide d'installation](https://github.com/jmcruvellier/little_monkey/blob/main/docs/installation.md) : configuration, options, mise à jour depuis la 1.2.8, dépannage.
 
 > [!IMPORTANT]
-> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette __intégration non-officielle__ dépend des APIs d'ecojoko<sup>©️</sup> et n'est donc pas responsable en cas d'indisponibilité de vos données.**
+> Si vous êtes un utilisateur régulier de l'application ecojoko<sup>©️</sup>, vous n'êtes pas sans savoir que le petit singe glisse souvent sur sa peau de banane. **Cette intégration non officielle dépend des API d'ecojoko<sup>©️</sup> et n'est pas responsable de l'indisponibilité de vos données.**
 
-Bienvenue dans la jungle!
+Bienvenue dans la jungle !
 
-## Pourquoi avoir développé cette intégration?
+## Pourquoi cette intégration ?
 
-Les données de votre compteur sont stockées sur les serveurs d'ecojoko<sup>©️</sup>. C'est de là que l'application mobile ou le site web d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/) chargent les informations que vous consultez.
-Jusque là tout va bien, on peut suivre sa consommation en temps réel, ce qui est la première étape quand on cherche à optimiser/réduire de sa consommation énergétique.
-Dans le monde de la domotique on souhaite aller plus loin, comme par exemple:
-
-* recevoir des alertes en fonction de seuils de consommation ou de production
-* lancer des automatisations
-* et beaucoup d'autres choses
-
-Ecojoko<sup>©️</sup> ne proposant pas d'intégration officielle pour Home Assistant, je me suis donc lancé dans le développement de celle-ci.
-
-## Prérequis
-
-Avant de vous lancer dans l'installation, il est nécessaire:
-
-1. d'être en possession d'un capteur ecojoko<sup>©️</sup>
-1. de connaitre ses identifiants de connexion au site d'[ecojoko<sup>©️</sup>](https://service.ecojoko.com/)
-
-## Installation & configuration
-
-### Ajouter le dépôt de l'intégration dans Home Assistant avec HACS
-
-Cliquer sur le lien ci-dessous pour ajouter le dépôt de l'intégration:
-
-[![Ouvre votre instance Home Assistant et ajoute un dépôt dans la boutique communautaire Home Assistant.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
-
-### Installation & Configuration de l'intégration
-
-Suivre les [instructions d'installation et de configuration](https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md)
+Les données de votre compteur sont stockées sur les serveurs d'ecojoko<sup>©️</sup>, d'où l'application mobile et le site [ecojoko](https://service.ecojoko.com/) les chargent. Suivre sa consommation en temps réel est la première étape pour la réduire ; avec la domotique, on veut aller plus loin : recevoir des alertes selon des seuils de consommation ou de production, lancer des automatisations, profiter du surplus solaire… ecojoko ne proposant pas d'intégration officielle pour Home Assistant, je me suis lancé dans celle-ci.
 
 ## Liens utiles
-Pour les possesseurs:
-* d'un contrat d'énergie Tempo
-  - l'intégration d'Edouard Hur qui permet d'avoir le calendrier des jours Tempo ainsi que des capteurs très utiles [RTE Tempo](https://github.com/hekmon/rtetempo)
-* de panneaux photovoltaïques, Mathieu Carbou propose :
-  - un boitier [OpenDTU](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1) clé en main déjà prêt pour être connecté aux micro-onduleurs de vos panneaux
-  - des [Cartes pour Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant) afin de rendre plus facile le suivi de production de vos panneaux dans les tableaux de bord
+
+- Contrat Tempo : l'intégration [RTE Tempo](https://github.com/hekmon/rtetempo) d'Edouard Hur donne le calendrier des jours Tempo et des capteurs très utiles, que la carte Little Monkey sait utiliser.
+- Panneaux photovoltaïques : Mathieu Carbou propose un boîtier [OpenDTU](https://docs.google.com/document/u/0/d/e/2PACX-1vRaGy2E91kmr014nAi-rfvNxdpZqR6lFIXln1kMKg_T6_YWh72ZNLnwXHxUjQQexczNPZR3GftG7w-r/pub?pli=1) prêt à connecter aux micro-onduleurs, et des [cartes pour Home Assistant](https://gist.github.com/mathieucarbou/70539ced8f330be6205a91897ea1c639#opendtu--home-assistant) pour suivre la production.
+- [Contribuer](CONTRIBUTING.md) · [Historique des versions](CHANGELOG.md) · [Signaler un problème](https://github.com/jmcruvellier/little_monkey/issues)

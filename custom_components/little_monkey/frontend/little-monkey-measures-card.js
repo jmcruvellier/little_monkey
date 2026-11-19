@@ -19,7 +19,7 @@ const DOMAIN = "little_monkey";
 const MEASURES_TYPE = "little-monkey-measures-card";
 const MEASURES_EDITOR_TYPE = "little-monkey-measures-card-editor";
 const DOCUMENTATION =
-  "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-des-mesures";
+  "https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#mesures";
 // The measures of the current period are read again every five minutes
 const MEASURES_REFRESH = 300000;
 

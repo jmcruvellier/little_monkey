@@ -18,7 +18,7 @@ const DOMAIN = "little_monkey";
 const EQUIPMENT_TYPE = "little-monkey-equipment-card";
 const EQUIPMENT_EDITOR_TYPE = "little-monkey-equipment-card-editor";
 const DOCUMENTATION =
-  "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#carte-des-%C3%A9quipements";
+  "https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#%C3%A9quipements";
 // The equipments are read again every minute: the service answers at once
 const EQUIPMENT_REFRESH = 60000;
 // Hours of forced mode offered, as in ecojoko
