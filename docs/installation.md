@@ -3,7 +3,7 @@
 [← Retour à l'accueil](../README.md) · [L'intégration](integration.md) · [Les cartes](cartes.md)
 
 - [Prérequis](#prérequis)
-- [Installer avec HACS](#installer-avec-hacs)
+- [Installer avec le Marketplace](#installer-avec-le-marketplace)
 - [Ajouter l'intégration](#ajouter-lintégration)
 - [Les options](#les-options)
 - [Mettre à jour depuis la 1.2.8](#mettre-à-jour-depuis-la-128)
@@ -14,19 +14,19 @@
 
 - Un assistant d'énergie ecojoko<sup>©️</sup> installé et relié à votre compteur.
 - Les identifiants de votre compte sur [service.ecojoko.com](https://service.ecojoko.com/).
-- Home Assistant 2024.7 ou plus récent, et [HACS](https://hacs.xyz/).
+- Home Assistant 2024.7 ou plus récent, et le Marketplace (anciennement [HACS](https://hacs.xyz/)).
 
-## Installer avec HACS
+## Installer avec le Marketplace
 
-1. Ajoutez le dépôt de l'intégration à HACS en cliquant sur ce bouton, puis sur **Ajouter** :
+1. Ajoutez le dépôt de l'intégration au Marketplace en cliquant sur ce bouton, puis sur **Ajouter** :
 
-   [![Ouvrir HACS sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
+   [![Ouvrir le Marketplace sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
 
-2. Sur la page de Little Monkey dans HACS, cliquez sur **Télécharger**.
-   Pour tester une version bêta, ouvrez le menu ⋮ › **Retélécharger**, activez **Afficher les versions bêta** et choisissez la version.
+2. Sur la page de Little Monkey dans le Marketplace, cliquez sur **Télécharger**.
+   Pour tester une version bêta, cherchez Little Monkey dans le Marketplace, ouvrez le menu ⋮ de sa ligne › **Installer une autre version**, et choisissez dans la liste **Version** celle qui est marquée « Pré-version » (v2.0.0b1 par exemple). Faites une sauvegarde avant.
 3. Redémarrez Home Assistant (Paramètres › Système › menu ⏻ › **Redémarrer Home Assistant**).
 
-Les cartes du tableau de bord sont fournies par l'intégration elle-même : il n'y a ni ressource Lovelace ni dépôt HACS supplémentaire à installer.
+Les cartes du tableau de bord sont fournies par l'intégration elle-même : il n'y a ni ressource Lovelace ni dépôt supplémentaire à ajouter au Marketplace.
 
 ## Ajouter l'intégration
 
@@ -107,4 +107,4 @@ L'installation est convertie automatiquement au premier démarrage :
 
 ## Désinstaller
 
-Supprimez l'entrée de l'intégration (page de l'intégration › menu ⋮ › **Supprimer**), puis Little Monkey dans HACS, et redémarrez Home Assistant.
+Supprimez l'entrée de l'intégration (page de l'intégration › menu ⋮ › **Supprimer**), puis Little Monkey dans le Marketplace, et redémarrez Home Assistant.

@@ -9,7 +9,7 @@
 Votre assistant d'énergie ecojoko<sup>©️</sup> dans Home Assistant : la consommation en temps réel, l'énergie de chaque tranche tarifaire pour le tableau de bord Énergie, vos économies, votre contrat, le pilotage du chauffe-eau, et des cartes qui reprennent les écrans de l'application ecojoko.
 
 > [!NOTE]
-> La version 2.0.0 est en bêta. Pour l'essayer, activez l'affichage des versions bêta de Little Monkey dans HACS ([voir comment](https://github.com/jmcruvellier/little_monkey/blob/main/docs/installation.md#installer-avec-hacs)). Ses nouvelles fonctions sont à cocher dans les options de l'intégration.
+> La version 2.0.0 est en bêta. Pour l'essayer, ouvrez le menu ⋮ de Little Monkey dans le Marketplace (anciennement HACS), choisissez **Installer une autre version**, puis **v2.0.0b1** ([voir comment](https://github.com/jmcruvellier/little_monkey/blob/main/docs/installation.md#installer-avec-le-marketplace)). Ses nouvelles fonctions sont à cocher dans les options de l'intégration.
 
 ## L'intégration
 
@@ -47,11 +47,11 @@ Huit cartes pour vos tableaux de bord, fournies par l'intégration elle-même, s
 
 ## Installation
 
-Il vous faut un assistant ecojoko, vos identifiants [ecojoko](https://service.ecojoko.com/), Home Assistant 2024.7 ou plus récent et [HACS](https://hacs.xyz/).
+Il vous faut un assistant ecojoko, vos identifiants [ecojoko](https://service.ecojoko.com/), Home Assistant 2024.7 ou plus récent et le Marketplace (anciennement [HACS](https://hacs.xyz/)).
 
-1. Ajoutez le dépôt à HACS et téléchargez Little Monkey :
+1. Ajoutez le dépôt au Marketplace et téléchargez Little Monkey :
 
-   [![Ouvrir HACS sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
+   [![Ouvrir le Marketplace sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
 
 2. Redémarrez Home Assistant.
 3. Ajoutez l'intégration Little Monkey dans Paramètres › Appareils et services, et laissez-vous guider.
