@@ -120,13 +120,33 @@ const CLIMATE_SENSORS = {
 const STATISTICS_PERIODS = { day: "5minute", week: "hour", month: "hour", calendar: "hour", year: "day" };
 
 /**
- * Return the period of the dates of a measure: the month of the electricity
- * is the 30 days ending on a date, as ecojoko shows it day by day, the one
- * of the temperature and humidity is the calendar month, the only one of
- * its sensor.
+ * Return the period of the dates of a measure: the month is the calendar
+ * month holding a date, for the electricity as for the temperature and the
+ * humidity. ecojoko answers with it, day by day, whatever the day asked.
  */
-export function datesPeriod(measure, period) {
-  return measure !== "electricity" && period === "month" ? "calendar" : period;
+export function datesPeriod(_measure, period) {
+  return period === "month" ? "calendar" : period;
+}
+
+/**
+ * Return the day of the first period ecojoko has, when it answered with it
+ * instead of the period asked for, null otherwise.
+ *
+ * Asked for a period before its first measures, ecojoko does not answer an
+ * empty period: it answers with the first one it has, whose start it gives.
+ * Only a period starting after the end of the one asked for counts.
+ */
+export function firstPeriod(period, iso, measures) {
+  const actual = typeof measures?.start === "string" ? measures.start.slice(0, 10) : null;
+  if (!actual) {
+    return null;
+  }
+  return actual >= localIso(periodRange(period, iso).end) ? actual : null;
+}
+
+/** Tell whether ecojoko has no period before the measures shown. */
+export function isFirstPeriod(measures) {
+  return measures?.previous === null;
 }
 
 /** Return the measure shown first by a card: the electricity by default. */
@@ -805,7 +825,21 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       const result = await this._hass.callWS({
         type: "call_service", domain: DOMAIN, service: "get_measures", service_data: data, return_response: true,
       });
-      this._cache.set(key, { measures: result.response });
+      const period = datesPeriod(request.measure, request.period);
+      const first = firstPeriod(period, request.date, result.response);
+      if (first) {
+        // Nothing before the first period of ecojoko: it is shown instead
+        // of the one asked for, under its own date
+        this._cache.delete(key);
+        let shown = `${request.measure}:${request.period}:${first}`;
+        if (this._key() === key) {
+          this._dates[request.period] = isCurrent(period, first) ? undefined : first;
+          shown = this._key();
+        }
+        this._cache.set(shown, { measures: result.response });
+      } else {
+        this._cache.set(key, { measures: result.response });
+      }
     } catch (error) {
       console.debug("Little Monkey card: measures not read", error);
       this._cache.set(key, cached?.measures ? cached : { error: true });
@@ -876,6 +910,9 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     const period = datesPeriod(this._measure, this._period);
     const date = shiftDate(period, this._date(), step);
     if (step > 0 && !this._dates[this._period]) {
+      return;
+    }
+    if (step < 0 && isFirstPeriod(this._cache.get(this._key())?.measures)) {
       return;
     }
     this._dates[this._period] = isCurrent(period, date) ? undefined : date;
@@ -1009,7 +1046,8 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     root.querySelector(".name").textContent = periodLabel(
       locale, period, this._measure === "electricity" && measures?.start
         ? measures.start : localIso(periodRange(period, this._date()).start));
-    root.querySelector(".previous").disabled = false;
+    // ecojoko has nothing before its first period
+    root.querySelector(".previous").disabled = isFirstPeriod(measures);
     root.querySelector(".next").disabled = !this._dates[this._period];
     const total = root.querySelector(".total");
     const average = this._measure === "electricity" ? null : climateAverage(measures);

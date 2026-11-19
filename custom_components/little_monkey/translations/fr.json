@@ -603,7 +603,7 @@
                 },
                 "date": {
                     "name": "Date",
-                    "description": "Un jour de la période ; aujourd'hui par défaut. Pour l'électricité, le mois est formé des 30 jours qui finissent ce jour-là ; pour la température et l'humidité, c'est le mois calendaire."
+                    "description": "Un jour de la période ; aujourd'hui par défaut. Le mois est le mois calendaire qui contient ce jour."
                 },
                 "check": {
                     "name": "Vérifier l'option",
