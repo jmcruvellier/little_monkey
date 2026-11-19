@@ -27,7 +27,9 @@
                     "use_activity_feature": "Atividade da conta: poupanças, consumo e custo em 7 dias, potência máxima (faces do mostrador)",
                     "use_savings_feature": "Poupanças: em 12 meses, da semana, do mês e do ano (cartões Poupanças)",
                     "use_contract_feature": "Contrato: oferta, escalões e preço do kWh (cartão Contrato)",
-                    "use_equipment_feature": "Equipamentos pilotados: termoacumulador…, os seus sensores e pilotagem (cartão Equipamentos)"
+                    "use_equipment_feature": "Equipamentos pilotados: termoacumulador…, os seus sensores e pilotagem (cartão Equipamentos)",
+                    "use_analysis_feature": "Análise do consumo: repartição por categoria e ativações dos aparelhos (cartões Análise do consumo e Ativações)",
+                    "use_measures_feature": "Medidas: potência do dia, energia por escalão, temperatura e humidade (cartão Medidas)"
                 }
             },
             "reauth_confirm": {
@@ -75,7 +77,9 @@
                     "use_activity_feature": "Atividade da conta: poupanças, consumo e custo em 7 dias, potência máxima (faces do mostrador)",
                     "use_savings_feature": "Poupanças: em 12 meses, da semana, do mês e do ano (cartões Poupanças)",
                     "use_contract_feature": "Contrato: oferta, escalões e preço do kWh (cartão Contrato)",
-                    "use_equipment_feature": "Equipamentos pilotados: termoacumulador…, os seus sensores e pilotagem (cartão Equipamentos)"
+                    "use_equipment_feature": "Equipamentos pilotados: termoacumulador…, os seus sensores e pilotagem (cartão Equipamentos)",
+                    "use_analysis_feature": "Análise do consumo: repartição por categoria e ativações dos aparelhos (cartões Análise do consumo e Ativações)",
+                    "use_measures_feature": "Medidas: potência do dia, energia por escalão, temperatura e humidade (cartão Medidas)"
                 }
             }
         },
@@ -588,6 +592,10 @@
                 "date": {
                     "name": "Data",
                     "description": "Um dia do período; hoje por omissão. Para a eletricidade, o mês são os 30 dias que terminam nesse dia; para a temperatura e a humidade, o mês civil."
+                },
+                "check": {
+                    "name": "Verificar a opção",
+                    "description": "Indica apenas se a opção “Medidas” está ativa, sem ler nada na ecojoko."
                 }
             }
         }

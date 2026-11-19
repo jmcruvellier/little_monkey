@@ -129,3 +129,8 @@ get_measures:
     date:
       selector:
         date:
+    check:
+      advanced: true
+      default: false
+      selector:
+        boolean:
