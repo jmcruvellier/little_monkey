@@ -620,6 +620,10 @@ async def test_diagnostics_are_redacted(hass, fake_api):
     assert diagnostics["coordinator"]["update_interval_seconds"] == 5
     assert diagnostics["data"]["realtime_consumption"] == 512
     assert set(diagnostics["client"]) >= {"logged_in", "failing_apis"}
+    # The contract, without the price of its subscription
+    assert diagnostics["data"]["contract"]["supplier_name"] == "EDF"
+    assert "subscription_price" not in diagnostics["data"]["contract"]
+    assert "24.77" not in text
 
 
 async def test_diagnostics_when_setup_failed(hass, fake_api):
@@ -1070,6 +1074,20 @@ async def test_unknown_bands_are_repaired(hass, fake_api):
     state = hass.states.get(entity_id)
     assert state.state == "6.43"
     assert state.attributes["friendly_name"] == "Ecojoko HP Semaine"
+    assert issue_registry.async_get_issue(DOMAIN, issue_id) is None
+
+
+async def test_repair_issue_is_removed_with_the_entry(hass, fake_api):
+    """Removing the entry removes its repair issue."""
+    fake_api.values["_unknown_bands"] = {8: "HP Semaine"}
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    issue_registry = ir.async_get(hass)
+    issue_id = f"unknown_bands_{entry.entry_id}"
+    assert issue_registry.async_get_issue(DOMAIN, issue_id) is not None
+
+    await hass.config_entries.async_remove(entry.entry_id)
+    await hass.async_block_till_done()
     assert issue_registry.async_get_issue(DOMAIN, issue_id) is None
 
 
@@ -1598,6 +1616,8 @@ def test_absence_of_the_list_ends_at_midnight():
     assert lm_select.seconds_until_midnight(dt.datetime(2026, 11, 18, 23, 0, tzinfo=paris)) == 3600
     # The day the clocks go back lasts 25 hours
     assert lm_select.seconds_until_midnight(dt.datetime(2026, 10, 25, 0, 0, tzinfo=paris)) == 25 * 3600
+    # In the last minute of the day, the shortest absence accepted
+    assert lm_select.seconds_until_midnight(dt.datetime(2026, 11, 18, 23, 59, 30, tzinfo=paris)) == 60
 
 
 async def test_set_equipment_mode_service(hass, fake_api):

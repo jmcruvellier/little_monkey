@@ -12,6 +12,7 @@ from homeassistant.helpers import (
     config_validation as cv,
     device_registry as dr,
     entity_registry as er,
+    issue_registry as ir,
 )
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.helpers.typing import ConfigType
@@ -42,6 +43,7 @@ from .coordinator import (
     LittleMonkeyDataUpdateCoordinator,
     LittleMonkeyEquipmentCoordinator,
     LittleMonkeySavingsCoordinator,
+    unknown_bands_issue_id,
 )
 from .entity import equipment_identifier, registry_device
 from .sensor import GROUP_SENSOR_KEYS, SENSOR_KEYS
@@ -284,6 +286,14 @@ def _migrate_unique_ids(hass: HomeAssistant, entry: ConfigEntry) -> None:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Handle removal of an entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Remove the repair issue of an entry that is removed.
+
+    Nothing reads its tariff bands any more: the issue would stay for ever.
+    """
+    ir.async_delete_issue(hass, DOMAIN, unknown_bands_issue_id(entry.entry_id))
 
 
 async def async_remove_config_entry_device(

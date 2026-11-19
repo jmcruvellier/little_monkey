@@ -5,7 +5,7 @@ import datetime as dt
 
 from homeassistant.components.select import SelectEntity
 
-from .api import TZ
+from .api import EQUIPMENT_DURATIONS, TZ
 from .const import CONF_USE_EQUIPMENT_FEATURE, option_enabled
 from .entity import EcojokoEntity, EcojokoEquipmentEntity, equipment_modes
 
@@ -17,14 +17,16 @@ def seconds_until_midnight(now: dt.datetime) -> int:
     """Return the seconds until the next midnight in Paris.
 
     An absence chosen in the list lasts until then, as the first day offered
-    by ecojoko: its web application ends an absence at midnight.
+    by ecojoko: its web application ends an absence at midnight. In the
+    last minute of the day, the shortest absence the integration sends.
     """
     local = now.astimezone(TZ)
     midnight = dt.datetime.combine(local.date() + dt.timedelta(days=1), dt.time(), TZ)
     # Through the timestamps: a difference of two times of the same time
     # zone ignores the change of the clocks, and the day it changes lasts
     # 23 or 25 hours
-    return int(midnight.timestamp() - local.timestamp())
+    seconds = int(midnight.timestamp() - local.timestamp())
+    return max(seconds, EQUIPMENT_DURATIONS["absence"][0])
 
 
 class EcojokoEquipmentSelect(EcojokoEquipmentEntity, SelectEntity):

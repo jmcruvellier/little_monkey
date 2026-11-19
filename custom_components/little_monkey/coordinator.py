@@ -44,6 +44,11 @@ from .utils import TariffPeriod, get_current_date
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
 
 
+def unknown_bands_issue_id(entry_id: str) -> str:
+    """Return the id of the repair issue of the bands not configured of an entry."""
+    return f"unknown_bands_{entry_id}"
+
+
 class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the Ecojoko APIs."""
 
@@ -97,7 +102,7 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
     @property
     def unknown_bands_issue_id(self) -> str:
         """Return the id of the repair issue of the bands not configured."""
-        return f"unknown_bands_{self.config_entry.entry_id}"
+        return unknown_bands_issue_id(self.config_entry.entry_id)
 
     def _check_unknown_bands(self) -> None:
         """Report the tariff bands of the contract not configured yet.
