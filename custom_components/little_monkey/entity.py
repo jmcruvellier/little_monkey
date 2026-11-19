@@ -367,6 +367,21 @@ def registry_device(registry, identifier, entry_id):
     return registry.async_get_device(identifiers={identifier})
 
 
+# Home Assistant links a device to its parent by the id of the parent since
+# 2026 (via_device_id): its identifiers (via_device) are deprecated, and
+# refused from 2027.8. The older versions supported (2024.7 at least) only
+# know them
+VIA_DEVICE_ID = "via_device_id" in getattr(DeviceInfo, "__annotations__", {})
+
+
+def parent_device(main_device) -> dict:
+    """Return how the device of an equipment is linked to the Ecojoko device."""
+    device_id = getattr(main_device.coordinator, "main_device_id", None)
+    if VIA_DEVICE_ID and device_id:
+        return {"via_device_id": device_id}
+    return {"via_device": (DOMAIN, main_device.unique_id)}
+
+
 def equipment_identifier(entry_id, equipment_id) -> tuple:
     """Return the identifier of the device of an equipment of the gateway."""
     return (DOMAIN, f"{entry_id}_{equipment_id}")
@@ -403,7 +418,7 @@ class EcojokoEquipmentEntity(CoordinatorEntity):
             "manufacturer": MODEL,
             "model": equipment.get("model") or equipment.get("type"),
             "sw_version": equipment.get("firmware"),
-            "via_device": (DOMAIN, main_device.unique_id),
+            **parent_device(main_device),
         }
 
     def _equipment(self) -> dict | None:

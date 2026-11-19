@@ -1680,3 +1680,16 @@ async def test_measures_service(hass, fake_api):
     assert fake_api.analysis_calls[-1] == ("measures", "humidity", "day", dt.date(2026, 11, 18))
     with pytest.raises(vol.Invalid):
         await call_service(hass, "get_measures", measure="water", period="day")
+
+
+async def test_equipment_device_is_linked_by_the_id_of_the_ecojoko_device(hass, fake_api):
+    """The device of an equipment is linked to the Ecojoko device by its id."""
+    fake_api.equipments = [WATER_HEATER]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    devices = dr.async_get(hass)
+    main = registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
+    heater = registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
+    assert entry.runtime_data.main_device_id == main.id
+    assert heater.via_device_id == main.id
+    assert main.name == "Ecojoko"
