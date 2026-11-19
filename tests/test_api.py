@@ -2177,7 +2177,7 @@ def test_energy_of_a_week_by_band(api):
 
 
 def test_measures_without_their_period(api):
-    """ecojoko sometimes answers without the period: the measures are read.
+    """Measures that ecojoko gives without their period are read all the same.
 
     On 19/11/2026 the week under way came without it. The dates of the
     period are left out, not given as empty: the card would take an empty
