@@ -34,6 +34,8 @@ Allez dans **Paramètres › Appareils et services**, cliquez sur **Ajouter une 
 
 ### 1. Votre compte
 
+<img src="images/ha/config-1-compte.png" alt="Écran du compte ecojoko" width="380">
+
 | Champ | Description |
 |---|---|
 | Nom | Nom de l'appareil, qui préfixe le nom de tous les capteurs (« Ecojoko Consommation Temps Réel »…) |
@@ -42,6 +44,8 @@ Allez dans **Paramètres › Appareils et services**, cliquez sur **Ajouter une 
 **Suivant** vérifie vos identifiants et lit le contrat d'électricité renseigné dans ecojoko. Un même compte ne peut être ajouté qu'une fois ; plusieurs comptes ecojoko peuvent coexister, chacun avec son entrée.
 
 ### 2. Les tranches tarifaires
+
+<img src="images/ha/config-2-tranches.png" alt="Écran des tranches tarifaires" width="380">
 
 L'écran affiche le contrat détecté et ses tranches (Heures Pleines et Creuses, Tempo Bleu, Blanc et Rouge, Semaine, Week-end, Jour Spécial…).
 
@@ -53,6 +57,8 @@ L'écran affiche le contrat détecté et ses tranches (Heures Pleines et Creuses
 Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez donné. Après un changement de contrat, ouvrez les options : elles reprennent cet écran avec les tranches du nouveau contrat, et une réparation le signale dans Home Assistant quand une tranche n'a pas de capteur.
 
 ### 3. Les autres capteurs et fonctions
+
+<img src="images/ha/config-3-capteurs.png" alt="Écran des autres capteurs" width="380">
 
 | Case | Par défaut | Effet |
 |---|---|---|

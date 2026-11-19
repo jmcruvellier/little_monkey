@@ -25,6 +25,13 @@ Little Monkey lit vos données sur les serveurs d'ecojoko et crée :
 
 Huit cartes pour vos tableaux de bord, fournies par l'intégration elle-même, sans autre installation :
 
+<p>
+<a href="https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#little-monkey-cadran"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/dial-dark.png"><img src="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/dial-light.png" alt="Carte Little Monkey" width="200"></picture></a>
+<a href="https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#mesures"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/measures-dark.png"><img src="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/measures-light.png" alt="Carte Mesures" width="200"></picture></a>
+<a href="https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#%C3%A9quipements"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/equipment-dark.png"><img src="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/equipment-light.png" alt="Carte Équipements" width="200"></picture></a>
+<a href="https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#analyse-de-la-conso"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/analysis-dark.png"><img src="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/cards/analysis-light.png" alt="Carte Analyse de la conso" width="200"></picture></a>
+</p>
+
 | Carte | Ce qu'elle montre |
 |---|---|
 | [Little Monkey](https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#little-monkey-cadran) | Le cadran du boîtier : puissance en temps réel aux couleurs de la période tarifaire, économies, coût et puissances maximales |
