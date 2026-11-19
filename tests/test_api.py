@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import copy
 import datetime as dt
 import json
 import logging
@@ -2173,6 +2174,34 @@ def test_energy_of_a_week_by_band(api):
     assert session.requests[-1][1].endswith("/powerstat/m6/2026-11-18")
     run(client.async_get_measures("electricity", "year", dt.date(2026, 11, 18)))
     assert session.requests[-1][1].endswith("/powerstat/y/2026-11-18")
+
+
+def test_measures_without_their_period(api):
+    """ecojoko sometimes answers without the period: the measures are read.
+
+    On 19/11/2026 the week under way came without it. The dates of the
+    period are left out, not given as empty: the card would take an empty
+    previous period for the first one.
+    """
+    session = Session()
+    client = make_client(api, session)
+    run(client.async_get_data())
+    week = copy.deepcopy(ENERGY_WEEK)
+    del week["stat"]["period"]
+    session.routes["powerstat"] = Response(payload=week)
+    measures = run(client.async_get_measures("electricity", "week", dt.date(2026, 11, 19)))
+    assert not {"start", "previous", "next"} & measures.keys()
+    assert measures["bars"][0]["energy"] == 30.88 and len(measures["bars"]) == 2
+    # The totals of the week are those of its days
+    assert measures["energy"] == 30.88 and measures["cost"] == 3.47
+    assert measures["production"] == 0.02
+
+    day = copy.deepcopy(POWER_DAY)
+    del day["stat"]["period"]
+    session.routes["powerstat"] = Response(payload=day)
+    measures = run(client.async_get_measures("electricity", "day", dt.date(2026, 11, 19)))
+    assert "previous" not in measures and measures["energy"] is None
+    assert measures["points"][0]["power"] == 299
 
 
 def test_temperature_and_humidity(api):
