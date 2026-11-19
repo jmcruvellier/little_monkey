@@ -722,6 +722,70 @@ async def test_options_flow_requires_a_name(hass, fake_api):
     assert entry.data["name"] == "Ecojoko"
 
 
+async def test_options_flow_follows_a_new_username(hass, fake_api):
+    """A new username keeps the entities and renames the entry named after it."""
+    entry = add_entry(hass, title="User@Example.com")
+    assert await setup_entry(hass, entry)
+    before = {
+        entity.entity_id: entity.unique_id
+        for entity in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)}
+
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**ACCOUNT, "username": "new@example.com"})
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(HCHP_SCREEN))
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert result["type"] == CREATE_ENTRY
+    assert entry.data["username"] == "new@example.com"
+    assert entry.title == "new@example.com"
+    assert entry.unique_id == "new@example.com"
+    after = {
+        entity.entity_id: entity.unique_id
+        for entity in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)}
+    assert after == before
+
+
+async def test_options_flow_keeps_a_title_chosen_by_the_user(hass, fake_api):
+    """A title that is not the username is not changed with the username."""
+    entry = add_entry(hass, title="Maison")
+    assert await setup_entry(hass, entry)
+
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**ACCOUNT, "username": "new@example.com"})
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], dict(HCHP_SCREEN))
+    await hass.config_entries.options.async_configure(result["flow_id"], dict(SETTINGS))
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert entry.data["username"] == "new@example.com"
+    assert entry.title == "Maison"
+
+
+async def test_options_flow_refuses_the_account_of_another_entry(hass, fake_api):
+    """The account of another entry, written differently, is refused."""
+    entry = add_entry(hass)
+    other = add_entry(hass, data={**DATA, "username": "other@example.com"})
+    assert await setup_entry(hass, entry)
+    assert other.entry_id != entry.entry_id
+
+    result = await hass.config_entries.options.async_init(entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**ACCOUNT, "username": " Other@Example.COM "})
+    assert result["type"] == FORM
+    assert result["errors"] == {"base": "already_configured"}
+    assert entry.data["username"] == "User@Example.com"
+
+    # Its own account, written differently, is accepted
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {**ACCOUNT, "username": "user@example.com"})
+    assert result["step_id"] == "bands"
+
+
 async def test_user_flow_refuses_an_account_twice(hass, fake_api):
     """The same ecojoko account, written differently, cannot be added again."""
     entry = add_entry(hass)
