@@ -14,9 +14,9 @@ Github is used to host code, to track issues and feature requests, as well as ac
 Pull requests are the best way to propose changes to the codebase.
 
 1. Fork the repo and create your branch from `main`.
-2. If you've changed something, update the documentation.
+2. If you've changed something, update the documentation: [`docs/`](docs/) holds the guides (installation, integration, dashboard cards) and their screenshots in `docs/images`.
 3. Make sure your code lints (using `scripts/lint`).
-4. Run the tests (`python -m pytest tests`, after `pip install -r requirements_test.txt`) and test your contribution. With `pip install -r requirements_test_ha.txt` instead (Python 3.14), the same command also runs the tests of `tests/ha` inside a Home Assistant core; `requirements_test_ha_min.txt` (Python 3.12) does the same on the oldest supported Home Assistant.
+4. Run the tests (`python -m pytest tests`, after `pip install -r requirements_test.txt`) and test your contribution. With `pip install -r requirements_test_ha.txt` instead (Python 3.14), the same command also runs the tests of `tests/ha` inside a Home Assistant core; `requirements_test_ha_min.txt` (Python 3.12) does the same on the oldest supported Home Assistant. The tests of the dashboard cards run with Node.js 22 or later: `node --test "tests/js/*.test.mjs"`.
 5. Issue that pull request!
 
 ## Any contributions you make will be under the MIT Software License

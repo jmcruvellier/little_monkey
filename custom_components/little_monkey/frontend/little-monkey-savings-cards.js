@@ -19,7 +19,7 @@ const SUMMARY_EDITOR_TYPE = "little-monkey-savings-summary-card-editor";
 const DETAIL_TYPE = "little-monkey-savings-detail-card";
 const DETAIL_EDITOR_TYPE = "little-monkey-savings-detail-card-editor";
 const DOCUMENTATION =
-  "https://github.com/jmcruvellier/little_monkey/blob/main/CONFIGURATION.md#cartes-des-%C3%A9conomies";
+  "https://github.com/jmcruvellier/little_monkey/blob/main/docs/cartes.md#%C3%A9conomies";
 
 const TRANSLATIONS = {
   en: {
