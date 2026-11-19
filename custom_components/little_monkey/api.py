@@ -12,6 +12,7 @@ from .const import (
     CONF_API_ACTIVITY_TIMEOUT,
     CONF_API_TIMEOUT,
     CONF_API_STAT_REFRESH,
+    CONF_API_STAT_TIMEOUT,
     CONF_API_KEEP_LIVE,
     CONF_API_KEEP_LIVE_RETRY,
     CONF_API_CONTRACT_REFRESH,
@@ -805,6 +806,9 @@ class LittleMonkeyApiClient:
             "tempstat": None,
             "humstat": None,
         }
+        # Statistics being read in the background: {name: (task, API name,
+        # day of the poll that started it)}
+        self._stat_tasks = {}
         # APIs whose failure has already been logged as a warning
         self._warned = set()
         # Statistics APIs that failed once to answer, not yet a warning
@@ -1437,8 +1441,9 @@ class LittleMonkeyApiClient:
             enabled += ["tempstat", "humstat"]
         due = [
             name for name in enabled
-            if self._last_stat_refresh[name] is None
-            or now - self._last_stat_refresh[name] >= CONF_API_STAT_REFRESH
+            if name not in self._stat_tasks
+            and (self._last_stat_refresh[name] is None
+                 or now - self._last_stat_refresh[name] >= CONF_API_STAT_REFRESH)
         ]
         # Oldest first, the ones never called before the others
         due.sort(key=lambda name: -math.inf
@@ -1461,37 +1466,29 @@ class LittleMonkeyApiClient:
         current_date = get_current_date(TZ)
         formatted_date = current_date.strftime('%Y-%m-%d')
         # Statistics APIs to call during this poll
+        start = asyncio.get_running_loop().time()
         now = time.monotonic()
         stats_to_call = self._stats_to_call(now)
-        #   - powerstat (for Total Consumption + HC/HP + Tempo)
-        refresh_powerstat = "powerstat" in stats_to_call
-        #   - Temperature
-        refresh_tempstat = "tempstat" in stats_to_call
-        #   - Humidity
-        refresh_humstat = "humstat" in stats_to_call
         #   - Contract, read rarely: it changes a few times in years
         refresh_contract = (
             self._contract_due is None or now >= self._contract_due)
 
-        apis = []
         powermeterurl = f"/{self._gateway_id}/device/{self._power_meter_id}"
+        temphumurl = f"/{self._gateway_id}/device/{self._temp_hum_id}"
+        stat_apis = {
+            # Total Consumption + HC/HP + Tempo
+            "powerstat": ("powerstat (w)", ECOJOKO_GATEWAY_URL + powermeterurl
+                          + f"/powerstat/w/{formatted_date}"),
+            "tempstat": ("tempstat (d)", ECOJOKO_GATEWAY_URL + temphumurl
+                         + f"/tempstat/d4/{formatted_date}"),
+            "humstat": ("humstat (d)", ECOJOKO_GATEWAY_URL + temphumurl
+                        + f"/humstat/d4/{formatted_date}"),
+        }
+        apis = []
         apis.append({"name": "realtime_conso",
                      "url": ECOJOKO_GATEWAY_URL + powermeterurl +
                      "/realtime_conso",
                      "call": True})
-        apis.append({"name": "powerstat (w)",
-                     "url": ECOJOKO_GATEWAY_URL + powermeterurl +
-                     f"/powerstat/w/{formatted_date}",
-                     "call": refresh_powerstat})
-        temphumurl = f"/{self._gateway_id}/device/{self._temp_hum_id}"
-        apis.append({"name": "tempstat (d)",
-                     "url": ECOJOKO_GATEWAY_URL + temphumurl +
-                     f"/tempstat/d4/{formatted_date}",
-                     "call": refresh_tempstat})
-        apis.append({"name": "humstat (d)",
-                     "url": ECOJOKO_GATEWAY_URL + temphumurl +
-                     f"/humstat/d4/{formatted_date}",
-                     "call": refresh_humstat})
         apis.append({"name": "suppliers",
                      "url": ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}"
                      "/suppliers",
@@ -1503,7 +1500,18 @@ class LittleMonkeyApiClient:
                      f"/powerstat/w/{previous_week}",
                      "call": refresh_contract})
 
-        tasks = [self.fetch_data(api) for api in apis]
+        # The real-time consumption first, then the statistics
+        tasks = [asyncio.ensure_future(self.fetch_data(apis[0]))]
+        # The statistics are read in the background with a longer timeout:
+        # a slow answer does not hold the real-time consumption
+        for stat in stats_to_call:
+            name, url = stat_apis[stat]
+            task = asyncio.create_task(self._async_request(
+                name, url, cookies=self._cookies, timeout=CONF_API_STAT_TIMEOUT))
+            self._stat_tasks[stat] = (task, name, current_date)
+            # Called again after the usual delay, even when it fails
+            self._last_stat_refresh[stat] = now
+        tasks += [self.fetch_data(api) for api in apis[1:]]
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         # An expired session concerns every API: let the caller log in again
@@ -1543,51 +1551,69 @@ class LittleMonkeyApiClient:
                 f"Unexpected data from API realtime_conso: {exception!r}"
             ) from exception
 
-        # A statistics API that failed or returned an unexpected format
-        # is called again after the usual delay, not at each poll
-        for name in stats_to_call:
-            self._last_stat_refresh[name] = now
-
-        # Total Consumption + HC/HP + Tempo
-        if results[1] is not None:
-            try:
-                self._parse_powerstat(results[1], current_date)
-            except PARSE_ERRORS as exception:
-                self._warn_once(apis[1]['name'], exception)
-            else:
-                self._clear_warning(apis[1]['name'])
-        # Temperature
-        if results[2] is not None:
-            try:
-                # 101 bug fix
-                data = results[2]['stat']['data']
-                # No measure yet just after midnight: the values are kept
-                if len(data) > 0:
-                    last = data[-1]
-                    self._indoor_temp = round_value(last['value'])
-                    self._outdoor_temp = round_value(last['ext_value'])
-            except PARSE_ERRORS as exception:
-                self._warn_once(apis[2]['name'], exception)
-            else:
-                self._clear_warning(apis[2]['name'])
-        # Humidity
-        if results[3] is not None:
-            try:
-                # 101 bug fix
-                data = results[3]['stat']['data']
-                # No measure yet just after midnight: the values are kept
-                if len(data) > 0:
-                    last = data[-1]
-                    self._indoor_hum = round_value(last['value'])
-                    self._outdoor_hum = round_value(last['ext_value'])
-            except PARSE_ERRORS as exception:
-                self._warn_once(apis[3]['name'], exception)
-            else:
-                self._clear_warning(apis[3]['name'])
         # Contract
         if refresh_contract:
-            self._parse_contract(results[4], now, apis[4]['name'])
-            self._parse_previous_week(results[5], current_date, apis[5]['name'])
+            self._parse_contract(results[1], now, apis[1]['name'])
+            self._parse_previous_week(results[2], current_date, apis[2]['name'])
+
+        # The statistics that answer within the usual timeout are used by
+        # this poll, the slower ones by the poll after their answer
+        pending = [task for task, _name, _day in self._stat_tasks.values()
+                   if not task.done()]
+        if pending:
+            remaining = start + CONF_API_TIMEOUT - asyncio.get_running_loop().time()
+            await asyncio.wait(pending, timeout=max(remaining, 0))
+        self._use_statistics()
+
+    def cancel_statistics(self) -> None:
+        """Stop reading the statistics in the background, on unload."""
+        for task, _name, _day in self._stat_tasks.values():
+            task.cancel()
+        self._stat_tasks = {}
+
+    def _use_statistics(self) -> None:
+        """Update the properties from the statistics read in the background."""
+        for stat, (task, name, day) in list(self._stat_tasks.items()):
+            if not task.done():
+                continue
+            del self._stat_tasks[stat]
+            if task.cancelled():
+                continue
+            error = task.exception()
+            if isinstance(error, LittleMonkeyApiClientAuthenticationError):
+                # The session has expired: the next poll logs in again
+                LOGGER.debug("API %s rejected the session: %r", name, error)
+                continue
+            if error is not None:
+                self._warn_once(name, error)
+                continue
+            payload, _cookies = task.result()
+            if payload is None:
+                continue
+            try:
+                if stat == "powerstat":
+                    self._parse_powerstat(payload, day)
+                else:
+                    self._parse_climate_stat(stat, payload)
+            except PARSE_ERRORS as exception:
+                self._warn_once(name, exception)
+            else:
+                self._clear_warning(name)
+
+    def _parse_climate_stat(self, stat, payload) -> None:
+        """Update the temperature or humidity from its statistics of the day."""
+        # 101 bug fix
+        data = payload['stat']['data']
+        # No measure yet just after midnight: the values are kept
+        if len(data) == 0:
+            return
+        last = data[-1]
+        if stat == "tempstat":
+            self._indoor_temp = round_value(last['value'])
+            self._outdoor_temp = round_value(last['ext_value'])
+        else:
+            self._indoor_hum = round_value(last['value'])
+            self._outdoor_hum = round_value(last['ext_value'])
 
     def _parse_contract(self, payload, now, name) -> None:
         """Update the active contract from the suppliers response.

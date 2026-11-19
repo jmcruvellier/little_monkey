@@ -575,6 +575,51 @@ def test_slow_api_times_out(api, monkeypatch):
         run(client.async_get_data())
 
 
+def test_slow_statistic_does_not_hold_the_real_time(api, monkeypatch):
+    """A statistic slower than the usual timeout is used by a later poll.
+
+    With a short poll interval, ecojoko often takes more than the usual
+    timeout to answer the statistics: they have a longer one, in the
+    background, and the real-time consumption does not wait for them.
+    """
+    monkeypatch.setattr(api, "CONF_API_TIMEOUT", 0.05)
+    session = Session(powerstat=Response(payload=powerstat(), delay=0.2))
+    client = make_client(api, session)
+
+    async def polls():
+        loop = asyncio.get_running_loop()
+        start = loop.time()
+        await client.async_get_data()
+        # The poll ends after the usual timeout, without the statistic
+        assert loop.time() - start < 0.2
+        assert client.realtime_conso == 512 and client.kwh is None
+        await asyncio.sleep(0.3)
+        await client.async_get_data()
+
+    run(polls())
+    # Its answer is used by the next poll, without asking for it again
+    assert client.kwh == 4.2
+    assert session.calls.count("powerstat") == 2  # the week, and the week before
+
+
+def test_statistics_are_not_read_after_the_unload(api, monkeypatch):
+    """The statistics read in the background stop with the entry."""
+    monkeypatch.setattr(api, "CONF_API_TIMEOUT", 0.01)
+    session = Session(powerstat=Response(payload=powerstat(), delay=5))
+    client = make_client(api, session)
+
+    async def poll_then_unload():
+        await client.async_get_data()
+        tasks = [task for task, _name, _day in client._stat_tasks.values()]
+        assert tasks
+        client.cancel_statistics()
+        await asyncio.sleep(0)
+        assert all(task.cancelled() for task in tasks)
+        assert client._stat_tasks == {}
+
+    run(poll_then_unload())
+
+
 def test_realtime_unexpected_format(api):
     """An unexpected real-time payload raises the generic error."""
     session = Session(realtime_conso=Response(payload={"oops": 1}))
