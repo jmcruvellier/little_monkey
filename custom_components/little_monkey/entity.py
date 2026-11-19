@@ -1,7 +1,7 @@
 """LittleMonkeyEntity class."""
 from __future__ import annotations
 
-from homeassistant.const import EntityCategory
+from homeassistant.const import PERCENTAGE, EntityCategory
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.components.sensor import (
@@ -508,6 +508,9 @@ class EcojokoEquipmentDiagnosticSensor(EcojokoEquipmentEntity, SensorEntity):
         self._attr_device_class = device_class
         self._attr_native_unit_of_measurement = unit_of_measurement
         self._attr_icon = icon
+        if unit_of_measurement == PERCENTAGE:
+            # A signal or a battery level, without decimals
+            self._attr_suggested_display_precision = 0
         if key == "equipment_connection":
             self._attr_options = ["connected", "disconnected"]
 

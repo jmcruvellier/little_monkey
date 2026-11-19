@@ -31,6 +31,11 @@ from .const import (
     CONF_TARIFF_BANDS,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
+    CONF_USE_ACTIVITY_FEATURE,
+    CONF_USE_CONTRACT_FEATURE,
+    CONF_USE_EQUIPMENT_FEATURE,
+    CONF_USE_SAVINGS_FEATURE,
+    option_enabled,
     tariff_periods,
 )
 
@@ -160,6 +165,14 @@ EQUIPMENT_DIAGNOSTIC_SENSORS = (
                            None), "battery"),
 )
 
+# Keys of the sensors of the groups of 2.0.0, by option: they are created
+# only when it is on, and removed when it is turned off
+GROUP_SENSOR_KEYS = {
+    CONF_USE_ACTIVITY_FEATURE: [key for key, _kind in ACTIVITY_SENSORS],
+    CONF_USE_SAVINGS_FEATURE: [key for key, _kind in SAVINGS_SENSORS],
+    CONF_USE_CONTRACT_FEATURE: ["contract"],
+}
+
 # Option that enables a sensor: None (always), one option, or several (any)
 
 
@@ -210,15 +223,21 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 main_device, band["key"], *ENERGY, name=name))
 
     # Contract of the installation, with its tariff bands
-    main_device.add_child_entity(EcojokoContractSensor(
-        main_device, "contract", config_entry.data.get(CONF_TARIFF_BANDS) or []))
+    if option_enabled(config_entry, CONF_USE_CONTRACT_FEATURE):
+        main_device.add_child_entity(EcojokoContractSensor(
+            main_device, "contract", config_entry.data.get(CONF_TARIFF_BANDS) or []))
 
-    for key, kind in ACTIVITY_SENSORS:
-        main_device.add_child_entity(
-            EcojokoActivitySensor(main_device, coordinator.activity, key, *kind))
-    for key, kind in SAVINGS_SENSORS:
-        main_device.add_child_entity(
-            EcojokoSavingsSensor(main_device, coordinator.savings, key, *kind))
+    if option_enabled(config_entry, CONF_USE_ACTIVITY_FEATURE):
+        for key, kind in ACTIVITY_SENSORS:
+            main_device.add_child_entity(
+                EcojokoActivitySensor(main_device, coordinator.activity, key, *kind))
+    if option_enabled(config_entry, CONF_USE_SAVINGS_FEATURE):
+        for key, kind in SAVINGS_SENSORS:
+            main_device.add_child_entity(
+                EcojokoSavingsSensor(main_device, coordinator.savings, key, *kind))
+    if not option_enabled(config_entry, CONF_USE_EQUIPMENT_FEATURE):
+        async_add_entities([main_device] + main_device.child_entities)
+        return
     # Every equipment: its connection, signal... on the device of a piloted
     # one, on the Ecojoko device for the others
     for equipment in coordinator.client.equipments:

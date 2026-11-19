@@ -28,7 +28,13 @@ from .api import (
     LittleMonkeyApiClientError,
     TZ,
 )
-from .const import DOMAIN
+from .const import (
+    CONF_USE_ANALYSIS_FEATURE,
+    CONF_USE_EQUIPMENT_FEATURE,
+    CONF_USE_MEASURES_FEATURE,
+    DOMAIN,
+    option_enabled,
+)
 from .entity import equipment_identifier, registry_device
 from .utils import get_current_date
 
@@ -39,6 +45,7 @@ SERVICE_GET_ACTIVATIONS = "get_activations"
 SERVICE_GET_EQUIPMENTS = "get_equipments"
 SERVICE_GET_MEASURES = "get_measures"
 ATTR_MEASURE = "measure"
+ATTR_CHECK = "check"
 SERVICE_SET_EQUIPMENT_MODE = "set_equipment_mode"
 ATTR_DEVICE_ID = "device_id"
 ATTR_MODE = "mode"
@@ -76,6 +83,8 @@ GET_MEASURES_SCHEMA = vol.Schema({
     vol.Required(ATTR_MEASURE): vol.In(list(MEASURES)),
     vol.Required(ATTR_PERIOD): vol.In(list(MEASURE_PERIODS)),
     vol.Optional(ATTR_DATE): cv.date,
+    # Only whether the option of the measures is on
+    vol.Optional(ATTR_CHECK, default=False): cv.boolean,
 })
 GET_EQUIPMENTS_SCHEMA = vol.Schema({
     vol.Optional(ATTR_CONFIG_ENTRY_ID): cv.string,
@@ -106,9 +115,15 @@ def _loaded_entry(hass: HomeAssistant, entry_id: str | None):
     )
 
 
-async def _async_read(hass: HomeAssistant, call: ServiceCall, read):
-    """Read data from ecojoko for a service, with the client of the entry."""
+async def _async_read(hass: HomeAssistant, call: ServiceCall, read, option=None):
+    """Read data from ecojoko for a service, with the client of the entry.
+
+    Without the option of the service, nothing is read: the answer is
+    {"enabled": false}, and the card asks to turn the option on.
+    """
     entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
+    if option is not None and not option_enabled(entry, option):
+        return {"enabled": False}
     try:
         return await read(entry.runtime_data.client)
     except LittleMonkeyApiClientError as exception:
@@ -145,7 +160,8 @@ async def _async_get_consumption_analysis(
     period = call.data[ATTR_PERIOD]
     day = call.data.get(ATTR_DATE)
     analysis = await _async_read(
-        hass, call, lambda client: client.async_get_analysis(period, day))
+        hass, call, lambda client: client.async_get_analysis(period, day),
+        CONF_USE_ANALYSIS_FEATURE)
     return {"period": period, **analysis}
 
 
@@ -156,7 +172,8 @@ async def _async_get_category_history(
     category = call.data[ATTR_CATEGORY]
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
     return await _async_read(
-        hass, call, lambda client: client.async_get_category_history(category, day))
+        hass, call, lambda client: client.async_get_category_history(category, day),
+        CONF_USE_ANALYSIS_FEATURE)
 
 
 async def _async_get_measures(hass: HomeAssistant, call: ServiceCall) -> ServiceResponse:
@@ -170,8 +187,15 @@ async def _async_get_measures(hass: HomeAssistant, call: ServiceCall) -> Service
     measure = call.data[ATTR_MEASURE]
     period = call.data[ATTR_PERIOD]
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
+    if call.data.get(ATTR_CHECK):
+        # Only whether the option is on, without reading ecojoko: the card
+        # of the measures asks it before reading the statistics of Home
+        # Assistant
+        entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
+        return {"enabled": option_enabled(entry, CONF_USE_MEASURES_FEATURE)}
     measures = await _async_read(
-        hass, call, lambda client: client.async_get_measures(measure, period, day))
+        hass, call, lambda client: client.async_get_measures(measure, period, day),
+        CONF_USE_MEASURES_FEATURE)
     return {"measure": measure, "period": period, "date": day.isoformat(), **measures}
 
 
@@ -184,7 +208,8 @@ async def _async_get_activations(
     """
     page = call.data[ATTR_PAGE]
     activations = await _async_read(
-        hass, call, lambda client: client.async_get_activations(page))
+        hass, call, lambda client: client.async_get_activations(page),
+        CONF_USE_ANALYSIS_FEATURE)
     return {"page": page, **activations}
 
 
@@ -199,6 +224,9 @@ async def _async_get_equipments(
     ecojoko: the answer is immediate.
     """
     entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
+    # Without the option of the equipments, the card asks to turn it on
+    if not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE):
+        return {"enabled": False, "equipments": []}
     coordinator = entry.runtime_data
     piloted = coordinator.equipment.data or {}
     registry = dr.async_get(hass)
@@ -211,7 +239,7 @@ async def _async_get_equipments(
             "device_id": None if device is None else device.id,
             "entities": equipment_entities(hass, entry.entry_id, equipment),
         })
-    return {"equipments": equipments}
+    return {"enabled": True, "equipments": equipments}
 
 
 def _equipment_of_device(hass: HomeAssistant, device_id: str):
@@ -264,6 +292,9 @@ async def _async_set_equipment_mode(hass: HomeAssistant, call: ServiceCall) -> N
     lasts the duration given or until the end given.
     """
     entry, equipment = _equipment_of_device(hass, call.data[ATTR_DEVICE_ID])
+    if not option_enabled(entry, CONF_USE_EQUIPMENT_FEATURE):
+        raise ServiceValidationError(
+            translation_domain=DOMAIN, translation_key="equipment_disabled")
     mode = call.data[ATTR_MODE]
     if mode not in equipment["controls"]:
         raise ServiceValidationError(

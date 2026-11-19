@@ -27,7 +27,8 @@ from .const import (
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
     CONF_TARIFF_BANDS,
-    LOGGER
+    LOGGER,
+    SENSOR_GROUP_OPTIONS,
 )
 from .tariff import (
     KNOWN_BANDS,
@@ -54,7 +55,8 @@ CATEGORY_SELECTOR = selector.SelectSelector(
     )
 )
 # Settings of the last screen
-SETTINGS_KEYS = (CONF_USE_PROD_FEATURE, CONF_USE_TEMPHUM_FEATURE, POLL_INTERVAL)
+SETTINGS_KEYS = (
+    CONF_USE_PROD_FEATURE, CONF_USE_TEMPHUM_FEATURE, *SENSOR_GROUP_OPTIONS, POLL_INTERVAL)
 # Suffix of the field of the category of a band
 CATEGORY_SUFFIX = " – HC/HP"
 
@@ -88,6 +90,12 @@ def _settings_schema(defaults: Mapping[str, Any]) -> vol.Schema:
                 CONF_USE_TEMPHUM_FEATURE,
                 default=defaults.get(CONF_USE_TEMPHUM_FEATURE, False),
             ): cv.boolean,
+            # The groups of sensors of 2.0.0, off by default, after the
+            # options of the earlier versions
+            **{
+                vol.Optional(option, default=defaults.get(option, False)): cv.boolean
+                for option in SENSOR_GROUP_OPTIONS
+            },
             vol.Required(
                 POLL_INTERVAL,
                 default=defaults.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),

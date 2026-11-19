@@ -56,6 +56,14 @@ Une fois Home Assistant redémarré, l'intégration peut maintenant être config
 4. Troisième écran, les autres capteurs :
   - Capteur de production: à ne sélectionner que si vous êtes producteur d'énergie solaire et que vous avez un capteur ecojoko<sup>©️</sup> ancienne génération
   - Capteurs d'humidité et de température: à ne sélectionner que si vous désirez remonter ces données depuis votre ecojoko<sup>©️</sup>
+  - Activité du compte : économies, consommation et coût sur 7 jours, économies cumulées et puissances maximales ; elles alimentent les faces 2 à 4 et l'aiguille du bas de la carte « Little Monkey »
+  - Économies : coûts et économies sur 12 mois, économies de la semaine, du mois et de l'année ; nécessaire aux cartes des économies
+  - Contrat : l'offre, les tranches et le prix d'un kWh ; nécessaire à la carte « Contrat »
+  - Équipements pilotés : les appareils, capteurs et le pilotage des équipements (chauffe-eau…) ; nécessaire à la carte « Équipements »
+  - Analyse de la conso : la répartition par poste et les activations des appareils, lues à la demande ; nécessaire aux cartes « Analyse de la conso » et « Activations »
+  - Mesures : la puissance du jour, l'énergie par tranche, la température et l'humidité, lues à la demande ; nécessaire à la carte « Mesures »
+
+  Ces six options, apparues avec la version 2.0.0, sont décochées par défaut : leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si elles sont cochées. Décocher une option supprime ses capteurs. Les options Analyse de la conso et Mesures n'ont pas de capteurs : sans elles, leurs services répondent `enabled: false` sans rien lire chez ecojoko. Une carte dont l'option est décochée l'indique et invite à l'activer.
   - Fréquence de rafraîchissement des données (en secondes): le minimum autorisé est de 3 secondes (afin de ne pas surcharger les serveurs d'ecojoko<sup>©️</sup>), et le maximum est de 60 secondes
 
 Les options reprennent les mêmes écrans : après un changement de contrat, ouvrez-les pour retrouver les tranches du nouveau contrat.
