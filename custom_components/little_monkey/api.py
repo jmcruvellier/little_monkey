@@ -326,13 +326,46 @@ MEASURES = {"electricity": "powerstat", "temperature": "tempstat", "humidity": "
 CLIMATE_MONTH = "m"
 
 
+def _unpolled_day_of_week(day):
+    """Return a day of the week of a day, other than today.
+
+    The polls read the week of today at its date. ecojoko answers that URL,
+    and only it, without the period nor its totals: on 19/11/2026, for two
+    accounts, the week was read whole at any other date of the same week.
+    Another day of the week of today is therefore asked for.
+    """
+    if day != get_current_date(TZ):
+        return day
+    return day + dt.timedelta(days=1 if day.weekday() < 6 else -1)
+
+
 def _measure_period(period) -> dict:
-    """Return the start of a period of measures, and of the ones around it."""
+    """Return the start of a period of measures, and of the ones around it.
+
+    ecojoko sometimes answers without the period: its dates are then left
+    out, so that nothing tells the period has none before or after it.
+    """
+    if not period:
+        return {}
     return {
         "start": _iso_time(period.get("this"), 1000),
         "previous": _iso_time(period.get("prev"), 1000),
         "next": _iso_time(period.get("next"), 1000),
     }
+
+
+def _stat_period(stat) -> dict:
+    """Return the period of a statistics response, empty when it has none.
+
+    ecojoko answers without it at a URL the polls read, as the week of
+    today at its date (see _unpolled_day_of_week): the measures are read
+    all the same, and the answer is logged to tell what ecojoko gave.
+    """
+    period = stat.get("period")
+    if not period:
+        LOGGER.debug("ecojoko gave measures without their period: %s",
+                     json.dumps(stat, default=str)[:2000])
+    return period or {}
 
 
 def _measure_bands(stat) -> list:
@@ -351,7 +384,7 @@ def parse_power_day(payload) -> dict:
     id of the band of its time.
     """
     stat = payload["stat"]
-    period = stat["period"]
+    period = _stat_period(stat)
     return {
         **_measure_period(period),
         "energy": finite_number(period.get("kwh")),
@@ -383,7 +416,7 @@ def parse_energy_bars(payload) -> dict:
     the production injected into the grid.
     """
     stat = payload["stat"]
-    period = stat["period"]
+    period = _stat_period(stat)
     bars = []
     for item in stat.get("data") or []:
         bars.append({
@@ -402,14 +435,27 @@ def parse_energy_bars(payload) -> dict:
                 if isinstance(band, dict)
             ],
         })
+    energy = finite_number(period.get("kwh"))
+    cost = finite_number(period.get("price"))
+    production = _positive(period.get("kwh_prod"))
+    if not period:
+        # Without the period, its totals are those of its days
+        energy, cost, production = (
+            _bars_total(bars, key) for key in ("energy", "cost", "production"))
     return {
         **_measure_period(period),
-        "energy": finite_number(period.get("kwh")),
-        "cost": finite_number(period.get("price")),
-        "production": _positive(period.get("kwh_prod")),
+        "energy": energy,
+        "cost": cost,
+        "production": production,
         "bands": _measure_bands(stat),
         "bars": bars,
     }
+
+
+def _bars_total(bars, key):
+    """Return the total of a value of the bars, None when none has it."""
+    values = [bar[key] for bar in bars if bar[key] is not None]
+    return round_value(sum(values)) if values else None
 
 
 def parse_climate(payload) -> dict:
@@ -1103,6 +1149,8 @@ class LittleMonkeyApiClient:
         temperature and humidity are inside and outside, as curves.
         """
         scale = MEASURE_PERIODS[period]
+        if measure == "electricity" and period == "week":
+            day = _unpolled_day_of_week(day)
         if measure != "electricity" and period == "month":
             scale = CLIMATE_MONTH
         path = f"{MEASURES[measure]}/{scale}/{day.isoformat()}"
