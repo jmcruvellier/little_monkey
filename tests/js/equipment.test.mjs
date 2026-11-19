@@ -202,7 +202,8 @@ test("an equipment that is not piloted shows its placement, batteries and signal
     entities: { battery: "sensor.b" } };
   assert.deepEqual(card.otherDetails(meter, text, "fr"), [
     { key: "install_state", value: "Bien placé" },
-    { key: "battery", value: "Batterie 80 % · 5,09 V" },
+    { key: "battery", value: "Batterie 80 %" },
+    { key: "battery_voltage", value: "5,09 V" },
     { key: "signal", value: "Signal 33 %" },
   ]);
   // The voltage alone, and a lost connection

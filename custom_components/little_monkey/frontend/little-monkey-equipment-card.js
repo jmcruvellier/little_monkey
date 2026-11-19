@@ -380,16 +380,14 @@ export function otherDetails(equipment, text, locale) {
   if (equipment?.connected === false) {
     details.push({ key: "connection", value: equipment.status || text.disconnected, disconnected: true });
   }
-  if (given(equipment?.battery) || given(equipment?.battery_voltage)) {
-    const values = [];
-    if (given(equipment.battery)) {
-      values.push(formatNumber(locale, equipment.battery, 0, "%"));
-    }
-    if (given(equipment.battery_voltage)) {
-      values.push(formatNumber(locale, equipment.battery_voltage, 2, "V"));
-    }
-    details.push({ key: given(equipment.battery) ? "battery" : "battery_voltage",
-      value: text.battery.replace("{value}", values.join(" · ")) });
+  // The level and the voltage of the batteries, each opening its own entity
+  const battery = given(equipment?.battery);
+  if (battery) {
+    details.push({ key: "battery", value: text.battery.replace("{value}", formatNumber(locale, equipment.battery, 0, "%")) });
+  }
+  if (given(equipment?.battery_voltage)) {
+    const voltage = formatNumber(locale, equipment.battery_voltage, 2, "V");
+    details.push({ key: "battery_voltage", value: battery ? voltage : text.battery.replace("{value}", voltage) });
   }
   if (given(equipment?.signal)) {
     details.push({ key: "signal", value: text.signal.replace("{value}", formatNumber(locale, equipment.signal, 0, "%")) });
