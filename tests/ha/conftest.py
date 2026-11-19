@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import copy
 import datetime as dt
+import inspect
 from unittest.mock import patch
 from zoneinfo import ZoneInfo
 
@@ -30,9 +31,12 @@ def pycares_shutdown_thread():
     except ImportError:
         return
     manager = getattr(pycares, "_shutdown_manager", None)
-    if manager is not None and hasattr(manager, "destroy_channel"):
+    destroy = getattr(manager, "destroy_channel", None)
+    # Only the pycares of that time, which destroys a channel alone: later
+    # ones work differently, and recent test tooling accepts their thread
+    if destroy is not None and len(inspect.signature(destroy).parameters) == 1:
         # Nothing to destroy: the thread starts and waits
-        manager.destroy_channel(None)
+        destroy(None)
 
 
 # What the patched client reports after a successful poll
