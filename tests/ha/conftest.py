@@ -34,6 +34,7 @@ def pycares_shutdown_thread():
         # Nothing to destroy: the thread starts and waits
         manager.destroy_channel(None)
 
+
 # What the patched client reports after a successful poll
 VALUES = {
     "_gateway_firmware_version": "1.9",
