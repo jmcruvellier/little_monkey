@@ -438,6 +438,28 @@
                     "off": "Desligado"
                 }
             }
+        },
+        "binary_sensor": {
+            "equipment_switch": {
+                "name": "Contactor",
+                "state": {
+                    "on": "Ligado",
+                    "off": "Desligado"
+                },
+                "state_attributes": {
+                    "since": {
+                        "name": "Desde"
+                    },
+                    "source": {
+                        "name": "Origem",
+                        "state": {
+                            "command": "Comando",
+                            "schedule": "Programação",
+                            "timer": "Fim da duração"
+                        }
+                    }
+                }
+            }
         }
     },
     "selector": {
