@@ -213,3 +213,14 @@ test("an equipment that is not piloted shows its placement, batteries and signal
   ]);
   assert.deepEqual(card.otherDetails({ connected: true, battery: null, signal: null }, text, "fr"), []);
 });
+
+test("a field being typed is not drawn again by a reading, only by a touch", () => {
+  const input = { tagName: "INPUT" };
+  // A reading of ecojoko changed a value: the field keeps the focus
+  assert.equal(card.keepsTyping(input, false), true);
+  // The user touched a button: the card is drawn again
+  assert.equal(card.keepsTyping(input, true), false);
+  // No field has the focus
+  assert.equal(card.keepsTyping({ tagName: "BUTTON" }, false), false);
+  assert.equal(card.keepsTyping(null, false), false);
+});
