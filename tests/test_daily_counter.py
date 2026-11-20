@@ -130,6 +130,23 @@ def test_restored_parts_of_the_day(parts):
     assert parts.update(DAY, {HC: 6.67, HP: 5.63}, 12.4) == {HC: 8.88, HP: 3.52}
 
 
+def test_part_restored_after_another_sensor_read_the_poll(parts):
+    """A sensor restored after another one read the poll keeps its value.
+
+    On 19/11/2026, at a restart, HC was restored and published first: HP,
+    restored afterwards, published the 1.72 of ecojoko instead of its 1.83.
+    """
+    data = {"stat_date": DAY, "grid_consumption": 3.0, HC: 1.28, HP: 1.72}
+    parts.restore(HC, DAY, 1.28)
+    assert parts.value(HC, data) == 1.28
+    parts.restore(HP, DAY, 1.83)
+    assert parts.value(HP, data) == 1.83
+    assert parts.value(HC, data) == 1.28
+    # The next reading adds its increase, within the growth of the grid
+    # consumption: 3.2 - 1.28 - 1.83
+    assert parts.value(HP, {**data, HP: 1.9, "grid_consumption": 3.2}) == 1.92
+
+
 def test_parts_are_updated_once_per_poll(parts):
     """Every sensor of a poll gets the values of the same update."""
     data = {"stat_date": DAY, "grid_consumption": 4.0, HC: 3.0, HP: 1.0}
