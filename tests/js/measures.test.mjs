@@ -245,6 +245,8 @@ test("with a resale contract, the totals are what was bought and what was sold",
   const html = card.electricityTotal(measures, "kwh", "fr", text, true);
   const lines = html.split('<div class="line">').slice(1);
   assert.equal(lines.length, 2);
+  // Not the class of the labels of the axis, whose size is that of the chart
+  assert.doesNotMatch(html, /class="label"/);
   assert.match(lines[0], /Achat : <\/span>.*5 kWh.*1,42/);
   assert.match(lines[1], /Revente : <\/span>.*248 kWh.*9,92/);
   // The amount sold in its own color
