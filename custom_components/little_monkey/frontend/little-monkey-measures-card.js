@@ -98,6 +98,10 @@ function escapeHtml(text) {
 export const PERIODS = ["day", "week", "month", "year"];
 // Colors of ecojoko: base load, production, and a band without its color
 export const MEASURE_COLORS = { base: "#022469", production: "#ffcc47", band: "#7ed2df" };
+// Heures Pleines (2) and Heures Creuses (3) of ecojoko: the off-peak hours
+// dark and the peak hours light, as on the other cards. ecojoko gives them
+// the other way round
+const PEAK_COLORS = { 2: "#6BBED8", 3: "#0087B1" };
 // Chart, in the units of the SVG
 // The left margin holds the graduations with their unit ("600 kWh")
 export const CHART = { width: 280, height: 160, left: 48, right: 4, top: 8, bottom: 20 };
@@ -376,7 +380,8 @@ function axis(scale, box) {
 export function bandColors(bands) {
   const colors = {};
   for (const band of bands || []) {
-    colors[band.id] = /^#[0-9a-f]{3,8}$/i.test(band.color || "") ? band.color : MEASURE_COLORS.band;
+    colors[band.id] = PEAK_COLORS[band.id]
+      ?? (/^#[0-9a-f]{3,8}$/i.test(band.color || "") ? band.color : MEASURE_COLORS.band);
   }
   return colors;
 }

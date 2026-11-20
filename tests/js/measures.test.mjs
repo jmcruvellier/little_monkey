@@ -29,7 +29,7 @@ test("the bars are stacked by band, in the order of ecojoko, with its colors", (
   const chart = card.stackedBars(WEEK, "kwh");
   const first = chart.rects[0];
   assert.deepEqual(first.blocks.map((block) => [block.id, block.value, block.color]), [
-    [2, 20, "#0087B1"], [3, 10, "#6BBED8"],
+    [2, 20, "#6BBED8"], [3, 10, "#0087B1"],
   ]);
   // The blocks touch each other, the first one on the axis
   assert.ok(Math.abs(first.blocks[0].y + first.blocks[0].height - chart.zero) < 1e-9);
@@ -61,7 +61,7 @@ test("the power of a day is coloured by band, over the base load", () => {
     { time: "2026-11-18T13:00:00+01:00", power: -500, base: 6, band: 2 },
   ] };
   const areas = card.dayAreas(day);
-  assert.deepEqual(areas.bands.map((band) => [band.band, band.color]), [[3, "#6BBED8"], [2, "#0087B1"]]);
+  assert.deepEqual(areas.bands.map((band) => [band.band, band.color]), [[3, "#0087B1"], [2, "#6BBED8"]]);
   assert.ok(areas.base.startsWith("M"));
   // Injected power under the axis
   assert.ok(areas.injected.startsWith("M"));
