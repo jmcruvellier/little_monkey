@@ -268,3 +268,17 @@ test("a resale contract is the one whose Contract sensor gives a price of the su
   assert.equal(card.hasResaleContract(hass, "sensor.eco_power"), true);
   assert.equal(card.hasResaleContract(hass, "sensor.unknown"), false);
 });
+
+test("partial statistics are shown when ecojoko gives a single point", () => {
+  const now = { points: [{ time: "2026-11-20T18:19:25+01:00", inside: 19.7, outside: 9.41 }] };
+  const partial = { points: [
+    { time: "2026-11-19T13:00:00+00:00", inside: 20, outside: 10 },
+    { time: "2026-11-19T14:00:00+00:00", inside: 20.2, outside: 10.4 },
+  ] };
+  assert.equal(card.statisticsShowMore(now, partial), true);
+  assert.equal(card.statisticsShowMore({ points: [] }, partial), true);
+  // The history of ecojoko wins over partial statistics
+  assert.equal(card.statisticsShowMore({ points: [...partial.points, ...now.points] }, partial), false);
+  // A single statistic shows no more than ecojoko
+  assert.equal(card.statisticsShowMore(now, { points: partial.points.slice(0, 1) }), false);
+});
