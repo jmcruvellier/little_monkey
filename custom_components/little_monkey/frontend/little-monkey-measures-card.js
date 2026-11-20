@@ -151,7 +151,7 @@ export function electricityTotal(measures, unit, locale, text, resale = false) {
       kwh: value("production", formatValue(locale, measures?.production ?? 0, "kwh")),
       eur: value("resale", formatValue(locale, measures?.resale ?? 0, "eur")),
     };
-    const line = (label, first, second) => `<div class="line"><span class="label">${
+    const line = (label, first, second) => `<div class="line"><span class="line-label">${
       escapeHtml(text.total_label.replace("{label}", label))}</span>${first}${separator}${second}</div>`;
     return line(text.purchase, `<span class="main">${value(unit, values[unit])}</span>`, value(other, values[other]))
       + line(text.resale, `<span class="main">${sold[unit]}</span>`, sold[other]);
@@ -734,7 +734,7 @@ const STYLES = `
   .total .other { color: var(--secondary-text-color); }
   .total .separator { color: var(--secondary-text-color); }
   .total .line { text-align: right; }
-  .total .label { color: var(--secondary-text-color); }
+  .total .line-label { color: var(--secondary-text-color); }
   .details { min-height: 1.4em; font-size: 0.85em; color: var(--secondary-text-color); text-align: center; }
   svg { width: 100%; display: block; touch-action: pan-y; user-select: none; }
   .tick { fill: var(--secondary-text-color, #727272); font-size: var(--lm-axis-font, 9.5px); text-anchor: end; dominant-baseline: central; }
