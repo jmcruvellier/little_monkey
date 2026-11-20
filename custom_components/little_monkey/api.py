@@ -408,6 +408,8 @@ def parse_power_day(payload) -> dict:
         "energy": finite_number(period.get("kwh")),
         "cost": finite_number(period.get("price")),
         "production": _positive(period.get("kwh_prod")),
+        # Amount of the surplus sold, given negative by ecojoko
+        "resale": _positive(period.get("price_prod")),
         "bands": _measure_bands(stat),
         "points": [
             {
@@ -452,20 +454,24 @@ def parse_energy_bars(payload) -> dict:
             "cost": _bar_cost(item, bands),
             "base_energy": finite_number(item.get("consobase_kwh")),
             "production": _positive(item.get("kwh_prod")),
+            # Amount of the surplus sold: 0 the days it is not (no_prod_sale)
+            "resale": _positive(item.get("value_prod")),
             "bands": bands,
         })
     energy = finite_number(period.get("kwh"))
     cost = finite_number(period.get("price"))
     production = _positive(period.get("kwh_prod"))
+    resale = _positive(period.get("price_prod"))
     if not period:
         # Without the period, its totals are those of its days
-        energy, cost, production = (
-            _bars_total(bars, key) for key in ("energy", "cost", "production"))
+        energy, cost, production, resale = (
+            _bars_total(bars, key) for key in ("energy", "cost", "production", "resale"))
     return {
         **_measure_period(period),
         "energy": energy,
         "cost": cost,
         "production": production,
+        "resale": resale,
         "bands": _measure_bands(stat),
         "bars": bars,
     }

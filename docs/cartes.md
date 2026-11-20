@@ -229,6 +229,7 @@ La page « Mesures » d'ecojoko, avec trois onglets.
 
 - **Électricité, Jour** : la courbe de puissance colorée selon la tranche tarifaire de chaque instant (heures pleines, heures creuses, couleurs Tempo…), le talon de consommation en bleu foncé dessous et la production injectée sous l'axe. Toucher la courbe donne la puissance à cette heure.
 - **Électricité, Semaine, Mois, Année** : les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec la production injectée sous l'axe. La légende donne le total de chaque tranche ; toucher une barre affiche son détail.
+- **Totaux** : en haut à droite, la consommation et son coût, avec le surplus injecté entre les deux. Si vous revendez votre surplus, deux lignes : « Achat » (consommation et coût) et « Revente » (surplus et montant de la revente) ; le détail d'une barre donne aussi le montant de sa revente.
 - **Température, Humidité** : les courbes intérieure et extérieure, avec la moyenne intérieure. Elles viennent des statistiques des capteurs de Home Assistant quand ceux-ci couvrent toute la période, sinon d'ecojoko, qui a tout l'historique de la sonde.
 - **Navigation** : les flèches, ou un glissement du doigt, passent à la période précédente ou suivante. Le mois est le mois calendaire, pour les trois onglets. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
 

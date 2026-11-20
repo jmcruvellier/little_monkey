@@ -2216,7 +2216,8 @@ def test_band_prices_of_the_client(api):
 
 POWER_DAY = {"stat": {
     "period": {"this": 1794956400000, "prev": 1794870000000, "next": 1795042800000,
-               "measure_unit": "W", "kwh": 15.3736, "price": 3.063763571, "kwh_prod": 0.6286},
+               "measure_unit": "W", "kwh": 15.3736, "price": 3.063763571, "kwh_prod": 0.6286,
+               "price_prod": -0.02514},
     "pricing_details": [{"color": "#0087B1", "id": 2, "label": "Heures Pleines"},
                         {"color": "#6BBED8", "id": 3, "label": "Heures Creuses"}],
     "data": [{"time": 1794956400000, "consobase": 6, "value": 299, "price": 0.00057,
@@ -2224,10 +2225,10 @@ POWER_DAY = {"stat": {
 }}
 ENERGY_WEEK = {"stat": {
     "period": {"this": 1794783600000, "prev": 1794178800000, "measure_unit": "EUR",
-               "price": 16.3, "kwh": 95.32, "kwh_prod": 1.35},
+               "price": 16.3, "kwh": 95.32, "kwh_prod": 1.35, "price_prod": -0.05},
     "pricing_details": [{"id": 2, "label": "Heures Pleines", "color": "#0087B1", "enable_filter": 1}],
     "data": [{"time": 1794783600000, "value": 3.47, "consobase_kwh": 11.69, "kwh": 30.88,
-              "kwh_prod": -0.02, "subconsumption": [
+              "kwh_prod": -0.02, "value_prod": -0.01, "subconsumption": [
                   {"id": 2, "kwh": 16.4, "price": 3.3, "label": "Heures Pleines"},
                   {"id": 3, "kwh": 14.47, "price": 2.24, "label": "Heures Creuses"}]},
              {"time": 1795302000000, "value": 0, "kwh": 0, "consobase_kwh": 0, "kwh_prod": 0}],
@@ -2250,6 +2251,7 @@ def test_power_of_a_day(api):
     assert day["start"] == "2026-11-18T00:00:00+01:00"
     assert day["previous"] == "2026-11-17T00:00:00+01:00"
     assert day["energy"] == 15.37 and day["cost"] == 3.06 and day["production"] == 0.63
+    assert day["resale"] == 0.03
     assert day["bands"][0] == {"id": 2, "label": "Heures Pleines", "color": "#0087B1"}
     assert day["points"] == [
         {"time": "2026-11-18T00:00:00+01:00", "power": 299, "base": 6, "band": 3}]
@@ -2266,8 +2268,10 @@ def test_energy_of_a_week_by_band(api):
     assert week["next"] is None and week["previous"] == "2026-11-09T00:00:00+01:00"
     assert week["bars"][0] == {
         "date": "2026-11-16", "energy": 30.88, "cost": 5.54, "base_energy": 11.69,
-        "production": 0.02, "bands": [
+        "production": 0.02, "resale": 0.01, "bands": [
             {"id": 2, "energy": 16.4, "cost": 3.3}, {"id": 3, "energy": 14.47, "cost": 2.24}]}
+    # The amount of the surplus sold, positive
+    assert week["resale"] == 0.05
     # A day to come has no bands
     assert week["bars"][1]["bands"] == [] and week["bars"][1]["energy"] == 0
     run(client.async_get_measures("electricity", "month", dt.date(2026, 11, 18)))
@@ -2332,6 +2336,7 @@ def test_measures_without_their_period(api):
     # The totals of the week are those of its days
     assert measures["energy"] == 30.88 and measures["cost"] == 5.54
     assert measures["production"] == 0.02
+    assert measures["resale"] == 0.01
 
     day = copy.deepcopy(POWER_DAY)
     del day["stat"]["period"]

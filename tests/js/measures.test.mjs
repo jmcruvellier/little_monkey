@@ -238,3 +238,31 @@ test("the totals give the energy, the surplus injected and the cost", () => {
   // Without a surplus, the energy and the cost only
   assert.doesNotMatch(card.electricityTotal({ energy: 5, cost: 1.42, production: 0 }, "kwh", "fr", {}), /production/);
 });
+
+test("with a resale contract, the totals are what was bought and what was sold", () => {
+  const text = { production: "Surplus", purchase: "Achat", resale: "Revente", total_label: "{label} : " };
+  const measures = { energy: 5, cost: 1.42, production: 248.08, resale: 9.92 };
+  const html = card.electricityTotal(measures, "kwh", "fr", text, true);
+  const lines = html.split('<div class="line">').slice(1);
+  assert.equal(lines.length, 2);
+  assert.match(lines[0], /Achat : <\/span>.*5 kWh.*1,42/);
+  assert.match(lines[1], /Revente : <\/span>.*248 kWh.*9,92/);
+  // The amount sold in its own color
+  assert.match(lines[1], /class="resale" style="color: color-mix\(in srgb, #5fdcab/);
+  // A period without surplus still has its line
+  assert.match(card.electricityTotal({ energy: 5, cost: 1.42 }, "kwh", "fr", text, true), /Revente : <\/span>.*0 kWh/);
+});
+
+test("a resale contract is the one whose Contract sensor gives a price of the surplus", () => {
+  const hass = {
+    entities: {
+      "sensor.eco_power": { entity_id: "sensor.eco_power", platform: "little_monkey", device_id: "eco", translation_key: "realtime_consumption" },
+      "sensor.eco_contract": { entity_id: "sensor.eco_contract", platform: "little_monkey", device_id: "eco", translation_key: "contract" },
+    },
+    states: { "sensor.eco_contract": { state: "Offre", attributes: { resale_price: null } } },
+  };
+  assert.equal(card.hasResaleContract(hass, "sensor.eco_power"), false);
+  hass.states["sensor.eco_contract"].attributes.resale_price = 0.04;
+  assert.equal(card.hasResaleContract(hass, "sensor.eco_power"), true);
+  assert.equal(card.hasResaleContract(hass, "sensor.unknown"), false);
+});
