@@ -39,6 +39,18 @@ GATEWAYS_WITHOUT_TEMP_HUM = {
 }
 STAT_APIS = ("powerstat", "tempstat", "humstat")
 # Contracts of an installation, as observed: the active one first
+# Solar settings of an installation selling its surplus, as ecojoko gives
+# them (19/11/2026), without its list of brands and its measures
+PRODUCER = {
+    "install": {"date": "2025-09-16", "power": 6},
+    "self_consumption": 1,
+    "repurchase_price": 0.04,
+    "is_producer": 1,
+    "sell_solar_excess": 9,
+    "sell_solar_excess_desc": "Oui (Édition bloquée)",
+    "storage_battery": 0,
+}
+
 SUPPLIERS = {
     "suppliers": [
         {
@@ -342,6 +354,7 @@ class Session:
                 payload={"stat": {"data": [{"value": 50, "ext_value": 80}]}}
             ),
             "suppliers": Response(payload=SUPPLIERS),
+            "producer": Response(payload={"is_producer": 0}),
             "activity": Response(payload=ACTIVITY),
             "savings/m": Response(payload=SAVINGS_SUMMARY),
             "savingstat": Response(payload=SAVINGSTAT_WEEK),
@@ -404,7 +417,8 @@ def test_nominal(api):
     assert client.gateway_firmware_version == "9"
     # The week before is read with the contract, for the prices of a kWh
     assert session.calls == [
-        "login", "gateways", "realtime_conso", "powerstat", "suppliers", "powerstat"
+        "login", "gateways", "realtime_conso", "powerstat", "suppliers", "powerstat",
+        "producer",
     ]
 
 
@@ -430,6 +444,7 @@ def test_login_is_a_post_with_the_credentials_in_the_body(api):
         "realtime_conso": "GET",
         "powerstat": "GET",
         "suppliers": "GET",
+        "producer": "GET",
     }
     _method, url, kwargs = session.requests[0]
     assert url == "https://service.ecojoko.com/login"
@@ -478,7 +493,7 @@ def test_diagnostics_show_the_response_headers(api):
     responses = client.diagnostics()["last_responses"]
     assert set(responses) == {
         "Cookies", "Gateway", "realtime_conso", "powerstat (w)", "suppliers",
-        "powerstat (w-1)"}
+        "powerstat (w-1)", "producer"}
     realtime_conso = responses["realtime_conso"]
     assert realtime_conso["status"] == 200
     assert realtime_conso["headers"] == {
@@ -1115,6 +1130,46 @@ def test_contract_failure_is_not_an_error(api, monkeypatch, answer):
     assert session.calls.count("suppliers") == 1
     poll_during(client, clock, 30)
     assert session.calls.count("suppliers") == 2
+
+
+@pytest.mark.parametrize(("payload", "expected"), [
+    (PRODUCER, 0.04),
+    # Surplus not sold, or no solar panels
+    ({**PRODUCER, "sell_solar_excess": 0}, None),
+    ({**PRODUCER, "is_producer": 0}, None),
+    ({"is_producer": 0}, None),
+    ({**PRODUCER, "repurchase_price": "0.1109"}, 0.1109),
+    ({**PRODUCER, "repurchase_price": 0}, None),
+    ({**PRODUCER, "repurchase_price": None}, None),
+])
+def test_resale_price_of_the_solar_surplus(api, payload, expected):
+    """The price of the surplus is known only when the surplus is sold."""
+    assert api.parse_resale_price(payload) == expected
+
+
+def test_resale_price_is_read_with_the_contract(api, monkeypatch):
+    """The solar settings are read with the contract, every six hours."""
+    clock = fake_clock(api, monkeypatch)
+    session = Session(producer=Response(payload=PRODUCER))
+    client = make_client(api, session)
+    run(client.async_get_data())
+    assert client.resale_price == 0.04
+    poll_during(client, clock, 600)
+    assert session.calls.count("producer") == 1
+
+
+@pytest.mark.parametrize("answer", [
+    Response(status=404, payload={"error_id": 301}),
+    aiohttp.ClientError("boom"),
+    Response(payload=["unexpected"]),
+])
+def test_solar_settings_failure_is_quiet(api, caplog, answer):
+    """Without solar settings, nothing is logged as a warning."""
+    client = make_client(api, Session(producer=answer))
+    run(client.async_get_data())
+    assert client.resale_price is None
+    assert client.realtime_conso == 512
+    assert not [record for record in caplog.records if record.levelname == "WARNING"]
 
 
 def test_tariff_bands_are_collected_by_id(api):

@@ -200,6 +200,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             "current_tariff_band": self._current_tariff_band(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "contract": self.client.contract,
+            # Price of a kWh of the solar surplus sold, None without a sale
+            "resale_price": self.client.resale_price,
             # Equipments of the gateway by id, for their diagnostic sensors
             "equipments": {
                 equipment["id"]: equipment for equipment in self.client.equipments},

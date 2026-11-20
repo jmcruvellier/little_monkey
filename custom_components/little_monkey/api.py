@@ -340,6 +340,23 @@ def _unpolled_day_of_week(day):
     return day + dt.timedelta(days=1 if day.weekday() < 6 else -1)
 
 
+def parse_resale_price(payload):
+    """Return the price of a kWh of the solar surplus sold, None without a sale.
+
+    From the settings of the solar production, as the page « Production
+    solaire » of ecojoko: the surplus is sold when sell_solar_excess is not
+    0 (9 when the choice is locked, « Oui (Édition bloquée) »).
+    """
+    if not payload.get("is_producer") or not payload.get("sell_solar_excess"):
+        return None
+    # Prices of a kWh have four decimals (0.1109 €): not rounded to the cent
+    try:
+        price = float(payload.get("repurchase_price"))
+    except (TypeError, ValueError):
+        return None
+    return round(price, 4) if math.isfinite(price) and price > 0 else None
+
+
 def _measure_period(period) -> dict:
     """Return the start of a period of measures, and of the ones around it.
 
@@ -780,6 +797,8 @@ class LittleMonkeyApiClient:
         # Active contract of the installation, and tariff bands {id: label}
         # met in the statistics since the start
         self._contract = None
+        # Price of a kWh of the solar surplus sold, None without a sale
+        self._resale_price = None
         self._bands = {}
         # Equipments of the gateway, read with the list of the gateways
         self._equipments = []
@@ -834,6 +853,11 @@ class LittleMonkeyApiClient:
     def contract(self) -> dict | None:
         """Return the active contract, None until it is read."""
         return self._contract
+
+    @property
+    def resale_price(self) -> float | None:
+        """Return the price of a kWh of the solar surplus sold, None without a sale."""
+        return self._resale_price
 
     @property
     def equipments(self) -> list:
@@ -1499,6 +1523,10 @@ class LittleMonkeyApiClient:
                      "url": ECOJOKO_GATEWAY_URL + powermeterurl +
                      f"/powerstat/w/{previous_week}",
                      "call": refresh_contract})
+        # The solar production, with the contract: the price of the surplus
+        apis.append({"name": "producer",
+                     "url": ECOJOKO_GATEWAY_URL + f"/{self._gateway_id}/producer",
+                     "call": refresh_contract})
 
         # The real-time consumption first, then the statistics
         tasks = [asyncio.ensure_future(self.fetch_data(apis[0]))]
@@ -1523,7 +1551,12 @@ class LittleMonkeyApiClient:
             if isinstance(result, BaseException):
                 if index == 0:
                     raise result
-                self._warn_once(apis[index]['name'], result)
+                if apis[index]['name'] == "producer":
+                    # Not every installation has solar settings: the
+                    # price of the surplus is only a detail of the contract
+                    LOGGER.debug("Solar production not read: %r", result)
+                else:
+                    self._warn_once(apis[index]['name'], result)
                 results[index] = None
 
         # Real-time consumption
@@ -1555,6 +1588,7 @@ class LittleMonkeyApiClient:
         if refresh_contract:
             self._parse_contract(results[1], now, apis[1]['name'])
             self._parse_previous_week(results[2], current_date, apis[2]['name'])
+            self._parse_producer(results[3])
 
         # The statistics that answer within the usual timeout are used by
         # this poll, the slower ones by the poll after their answer
@@ -1632,6 +1666,15 @@ class LittleMonkeyApiClient:
         self._clear_warning(name)
         self._contract = contract
         self._contract_due = now + CONF_API_CONTRACT_REFRESH
+
+    def _parse_producer(self, payload) -> None:
+        """Keep the price of the solar surplus sold, from the solar settings."""
+        if payload is None:
+            return
+        try:
+            self._resale_price = parse_resale_price(payload)
+        except PARSE_ERRORS as exception:
+            LOGGER.debug("Solar production not understood: %r", exception)
 
     def _parse_previous_week(self, payload, today, name) -> None:
         """Keep the costs of the bands of the week before, for their prices."""

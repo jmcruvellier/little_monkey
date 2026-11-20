@@ -270,6 +270,8 @@ class EcojokoContractSensor(EcojokoSensor):
             "subscription_price": contract.get("subscription_price"),
             "start_date": contract.get("start_date"),
             "off_peak_timeslots": contract.get("off_peak_timeslots") or [],
+            # Price of a kWh of the solar surplus sold, None without a sale
+            "resale_price": (self.coordinator.data or {}).get("resale_price"),
             # With the price of a kWh: given by ecojoko (exact) or estimated
             "bands": [
                 {

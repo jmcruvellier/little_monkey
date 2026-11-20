@@ -1552,6 +1552,7 @@ async def test_contract_sensor(hass, fake_api):
     assert state.attributes["subscription_price"] == 24.77
     assert state.attributes["start_date"] == "2026-08-04"
     assert state.attributes["off_peak_timeslots"][1] == {"start": "14:00", "stop": "16:30"}
+    assert state.attributes["resale_price"] == 0.1109
     assert [band["key"] for band in state.attributes["bands"]] == [
         band["key"] for band in entry.data["tariff_bands"]]
     entity = er.async_get(hass).async_get("sensor.ecojoko_contract")
