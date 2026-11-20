@@ -56,6 +56,32 @@ REQUEST_URLS_KEPT = 200
 
 TZ = get_paris_timezone()
 
+
+def powerstat_values(payload):
+    """Return the values of a powerstat answer the sensors use, to compare them.
+
+    By day: the energy, the surplus and the energy of each tariff band,
+    rounded as the sensors round them. The rest of the answer (prices,
+    costs, period...) is left out.
+    """
+    def kwh(value):
+        try:
+            return round_value(float(value))
+        except (TypeError, ValueError):
+            return None
+
+    return [
+        (kwh(item.get("kwh")), kwh(item.get("kwh_prod")), sorted(
+            (str(band.get("id")), kwh(band.get("kwh")))
+            for band in item.get("subconsumption") or [] if isinstance(band, dict)))
+        for item in payload["stat"]["data"] if isinstance(item, dict)
+    ]
+
+
+# Values compared in the diagnostics instead of the whole answer, by the
+# start of the name of the API: the values its sensors use
+ANSWER_VALUES = {"powerstat": powerstat_values}
+
 # Response headers left out of the diagnostics: they hold the session
 HIDDEN_HEADERS = {"set-cookie", "set-cookie2"}
 
@@ -1349,56 +1375,87 @@ class LittleMonkeyApiClient:
         now = time.monotonic()
         if self._requests_start is None:
             self._requests_start = now
-        stats = self._request_stats.setdefault(name, {
-            "poll": 0, "service": 0, "changed": 0, "unchanged": 0,
-            "changes": deque(maxlen=REQUEST_CHANGES_KEPT)})
+        if name not in self._request_stats:
+            read = next((read for start, read in ANSWER_VALUES.items()
+                         if name.startswith(start)), None)
+            self._request_stats[name] = {
+                "poll": 0, "service": 0, **self._new_changes(), "read_values": read,
+                "values": None if read is None else self._new_changes()}
+        stats = self._request_stats[name]
         stats[REQUEST_SOURCE.get()] += 1
         return stats
+
+    @staticmethod
+    def _new_changes() -> dict:
+        """Return the counters of the changes of an answer."""
+        return {"changed": 0, "unchanged": 0,
+                "changes": deque(maxlen=REQUEST_CHANGES_KEPT)}
 
     def _count_answer(self, stats, url, payload) -> None:
         """Tell whether the answer of a URL changed since its last request.
 
         The first answer of a URL is not counted: there is nothing to
-        compare it with. Only a digest of the answer is kept.
+        compare it with. Only a digest of the answer is kept. For an API of
+        ANSWER_VALUES, the values its sensors use are compared as well.
         """
+        self._count_change(stats, url, payload)
+        if stats["read_values"] is None:
+            return
+        try:
+            values = stats["read_values"](payload)
+        except PARSE_ERRORS:
+            values = None
+        self._count_change(stats["values"], (url, "values"), values)
+
+    def _count_change(self, counters, key, value) -> None:
+        """Count whether a value changed since the last one with the same key."""
         digest = hashlib.blake2b(
-            json.dumps(payload, sort_keys=True, default=str).encode(),
+            json.dumps(value, sort_keys=True, default=str).encode(),
             digest_size=16).digest()
-        previous = self._answer_digests.pop(url, None)
+        previous = self._answer_digests.pop(key, None)
         if len(self._answer_digests) >= REQUEST_URLS_KEPT:
             # The oldest URL first: a day of a card is not asked again
             del self._answer_digests[next(iter(self._answer_digests))]
-        self._answer_digests[url] = digest
+        self._answer_digests[key] = digest
         if previous is None:
             return
         if previous == digest:
-            stats["unchanged"] += 1
+            counters["unchanged"] += 1
         else:
-            stats["changed"] += 1
-            stats["changes"].append(time.monotonic())
+            counters["changed"] += 1
+            counters["changes"].append(time.monotonic())
 
     def _requests_diagnostics(self, now) -> dict:
         """Return the requests of each API since the start, for the diagnostics.
 
         By API: the requests of the polls and of the services, per hour on
         average, how many answers changed or not since the request before
-        to the same URL, and the seconds between the last changes.
+        to the same URL, and the seconds between the last changes; the same
+        for the values the sensors use, for the APIs of ANSWER_VALUES.
         """
+        def changes(counters):
+            times = list(counters["changes"])
+            return {
+                "changed": counters["changed"],
+                "unchanged": counters["unchanged"],
+                "seconds_between_changes": [
+                    round(after - before) for before, after in zip(times, times[1:])],
+                "seconds_since_change": round(now - times[-1]) if times else None,
+            }
+
         hours = (now - self._requests_start) / 3600 if self._requests_start else 0
         apis = {}
         for name, stats in sorted(self._request_stats.items()):
             total = stats["poll"] + stats["service"]
-            changes = list(stats["changes"])
             apis[name] = {
                 "poll": stats["poll"],
                 "service": stats["service"],
                 "per_hour": round(total / hours, 1) if hours >= 1 / 60 else None,
-                "changed": stats["changed"],
-                "unchanged": stats["unchanged"],
-                "seconds_between_changes": [
-                    round(after - before) for before, after in zip(changes, changes[1:])],
-                "seconds_since_change": round(now - changes[-1]) if changes else None,
+                **changes(stats),
             }
+            if stats["values"] is not None:
+                # The values the sensors use, apart from the rest of the answer
+                apis[name]["values"] = changes(stats["values"])
         return {
             "seconds_counted": None if self._requests_start is None
             else round(now - self._requests_start),

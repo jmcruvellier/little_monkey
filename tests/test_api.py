@@ -548,6 +548,33 @@ def test_diagnostics_count_the_requests_and_their_changes(api):
         assert secret not in text
 
 
+def test_diagnostics_compare_the_values_of_powerstat_its_sensors_use(api):
+    """A powerstat answer changed elsewhere than in its energies is told apart."""
+    client = make_client(api, Session())
+    stats = client._count_request("powerstat (w)")
+    url = "https://ecojoko/powerstat/w"
+
+    def answer(kwh, price, hc=1.234):
+        return {"stat": {"period": {"price": price}, "data": [
+            {"kwh": kwh, "kwh_prod": 0, "time": "2026-11-20",
+             "subconsumption": [{"id": 3, "kwh": hc, "price": price}]}]}}
+
+    for kwh, price, hc in [(4.2, 0.1, 1.234), (4.2, 0.2, 1.234), (4.2, 0.3, 1.231), (4.3, 0.3, 1.231)]:
+        client._count_request("powerstat (w)")
+        client._count_answer(stats, url, answer(kwh, price, hc))
+    powerstat = client.diagnostics()["requests"]["apis"]["powerstat (w)"]
+    # The whole answer changed each time, its energies only once: a change
+    # of the band under the rounding of the sensors (1.234 -> 1.231) is not one
+    assert (powerstat["changed"], powerstat["unchanged"]) == (3, 0)
+    assert (powerstat["values"]["changed"], powerstat["values"]["unchanged"]) == (1, 2)
+    assert powerstat["values"]["seconds_since_change"] >= 0
+    # An answer that cannot be read is compared as such
+    client._count_answer(stats, url, {"unexpected": True})
+    assert client.diagnostics()["requests"]["apis"]["powerstat (w)"]["values"]["changed"] == 2
+    # The other APIs have no values of their own
+    assert "values" not in client.diagnostics()["requests"]["apis"].get("realtime_conso", {})
+
+
 def test_diagnostics_keep_the_last_answers_of_a_bounded_number_of_urls(api):
     """Reading many days does not keep their answers without end."""
     client = make_client(api, Session())
