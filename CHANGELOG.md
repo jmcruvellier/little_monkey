@@ -7,6 +7,9 @@
 
 Cette version corrige les problèmes signalés par les testeurs de la 2.0.0b1 et complète les cartes.
 
+### Changement important
+- Fréquence de rafraîchissement : 30 secondes par défaut, au lieu de 5. ecojoko ne rafraîchit le temps réel de l'intégration que toutes les 30 secondes : un intervalle plus court relit la même valeur et charge ses serveurs. À la mise à jour, un intervalle inférieur à 30 secondes est porté à 30 ; un intervalle plus long que vous aviez choisi est conservé. Le minimum reste de 3 secondes dans les options
+
 ### Corrections
 - Capteurs HC et HP : l'énergie qu'ecojoko reclasse après coup entre heures creuses et heures pleines n'est plus comptée deux fois dans le tableau Énergie (par exemple 2,21 kWh de la nuit passés des HC aux HP en cours de journée). Le défaut existait déjà en 1.2.8. Au redémarrage de Home Assistant, un capteur HC ou HP ne baisse plus et l'avertissement « state is not strictly increasing » ne revient pas
 - Économies en kWh justes dans la carte « Détail des économies » et le service `get_savings` : elles valent désormais la consommation de référence moins la consommation, pour la période comme pour chaque barre, au lieu de la somme sans signe des écarts donnée par ecojoko (26,5 kWh au lieu de 7,8 sur une semaine)
