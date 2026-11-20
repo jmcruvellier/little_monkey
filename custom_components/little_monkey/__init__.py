@@ -54,6 +54,7 @@ from .utils import account_unique_id
 
 # Version of the config entries, see EcojokoFlowHandler.VERSION
 ENTRY_VERSION = 3
+ENTRY_MINOR_VERSION = 2
 
 # Configured from the user interface only
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
@@ -246,6 +247,16 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             data.get(CONF_USE_HCHP_FEATURE) is True, use_tempo)
         hass.config_entries.async_update_entry(entry, data=data, version=3)
         LOGGER.info("Config entry %s migrated to version 3", entry.title)
+    if entry.version == ENTRY_VERSION and entry.minor_version < ENTRY_MINOR_VERSION:
+        # ecojoko refreshes the realtime of the integration every 30 s: the
+        # shorter intervals, 5 s by default until 2.0.0b1, are raised to it.
+        # Longer ones chosen by the user are kept
+        data = dict(entry.data)
+        if data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL) < DEFAULT_POLL_INTERVAL:
+            data[POLL_INTERVAL] = DEFAULT_POLL_INTERVAL
+        hass.config_entries.async_update_entry(
+            entry, data=data, minor_version=ENTRY_MINOR_VERSION)
+        LOGGER.info("Config entry %s migrated to version 3.2", entry.title)
     return True
 
 
