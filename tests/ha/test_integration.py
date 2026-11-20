@@ -159,7 +159,8 @@ CREATE_ENTRY = data_entry_flow.FlowResultType.CREATE_ENTRY
 def add_entry(hass, **kwargs):
     """Add a config entry of the current version to Home Assistant."""
     entry = MockConfigEntry(
-        **{"domain": DOMAIN, "title": "user", "version": 3, "data": DATA, **kwargs}
+        **{"domain": DOMAIN, "title": "user", "version": 3, "minor_version": 2, "data": DATA,
+           **kwargs}
     )
     entry.add_to_hass(hass)
     return entry
@@ -183,6 +184,7 @@ def add_1_2_7_install(hass):
     entry = add_entry(
         hass,
         version=1,
+        minor_version=1,
         data={**DATA_V2, "lang": "fr-FR"},
         options={"lang": "fr-FR"},
     )
@@ -244,6 +246,8 @@ async def test_migration_from_1_2_7(hass, fake_api):
 
     assert entry.state is ConfigEntryState.LOADED
     assert entry.version == 3
+    assert entry.minor_version == 2
+    assert entry.data["poll_interval"] == 30
     assert "lang" not in entry.data
     assert "use_tempo_feature" not in entry.data
     assert entry.data["tariff_bands"] == HCHP_BANDS
@@ -286,6 +290,24 @@ async def test_migration_from_1_2_7(hass, fake_api):
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
     assert len(entities) == count_before + 1
     assert hass.states.get(entity_ids["realtime_consumption"]).state == "512"
+
+
+@pytest.mark.parametrize(
+    ("configured", "migrated"), [(5, 30), (3, 30), (None, None), (30, 30), (45, 45)]
+)
+async def test_migration_raises_the_poll_interval(hass, fake_api, configured, migrated):
+    """Intervals under 30 s of 2.0.0b1 are raised to 30 s, longer ones kept."""
+    data = {key: value for key, value in DATA.items() if key != "poll_interval"}
+    if configured is not None:
+        data["poll_interval"] = configured
+    entry = add_entry(hass, minor_version=1, data=data)
+
+    assert await setup_entry(hass, entry)
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert (entry.version, entry.minor_version) == (3, 2)
+    assert entry.data.get("poll_interval") == migrated
+    assert entry.data["tariff_bands"] == HCHP_BANDS
 
 
 async def test_device_left_by_a_renaming_can_be_removed(hass, fake_api):
@@ -924,7 +946,9 @@ TEMPO_FOUND = {
 
 async def test_migration_of_a_tempo_entry_keeps_its_sensors(hass, fake_api):
     """The Tempo option becomes six bands keeping the entities of the sensors."""
-    entry = add_entry(hass, version=2, data={**DATA_V2, "use_tempo_feature": True})
+    entry = add_entry(
+        hass, version=2, minor_version=1,
+        data={**DATA_V2, "use_tempo_feature": True})
     entity_registry = er.async_get(hass)
     entity_ids = {
         key: entity_registry.async_get_or_create(

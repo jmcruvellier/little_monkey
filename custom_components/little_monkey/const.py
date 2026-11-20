@@ -9,7 +9,9 @@ MODEL = "Ecojoko"
 VERSION = "2.0.0b2"
 ATTRIBUTION = "Data provided by https://service.ecojoko.com/"
 POLL_INTERVAL = "poll_interval"
-DEFAULT_POLL_INTERVAL = 5
+# ecojoko refreshes the realtime of the integration every 30 s: a shorter
+# interval reads the same value again and loads its servers
+DEFAULT_POLL_INTERVAL = 30
 
 PLATFORMS = ['sensor', 'select', 'binary_sensor']
 CONF_USE_HCHP_FEATURE = "use_hchp_feature"

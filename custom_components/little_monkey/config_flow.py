@@ -352,7 +352,10 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
 
     # Version 2: unique ids based on the config entry (see async_migrate_entry)
     # Version 3: tariff bands instead of the Tempo option
+    # Version 3.2: poll interval of at least 30 s. A minor version: an
+    # earlier 2.0.0 version still loads the entry
     VERSION = 3
+    MINOR_VERSION = 2
 
     def __init__(self) -> None:
         """Init EcojokoFlowHandler."""
