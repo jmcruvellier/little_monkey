@@ -37,7 +37,7 @@ const TRANSLATIONS = {
     previous: "Previous period",
     next: "Next period",
     base: "Base load",
-    production: "Production",
+    production: "Surplus",
     power_at: "{time}: {power}",
     bar: "{name}: {values}",
     error: "Measures not read",
@@ -66,7 +66,7 @@ const TRANSLATIONS = {
     previous: "Période précédente",
     next: "Période suivante",
     base: "Talon",
-    production: "Production",
+    production: "Surplus",
     power_at: "{time} : {power}",
     bar: "{name} : {values}",
     error: "Mesures non lues",
@@ -98,6 +98,34 @@ function escapeHtml(text) {
 export const PERIODS = ["day", "week", "month", "year"];
 // Colors of ecojoko: base load, production, and a band without its color
 export const MEASURE_COLORS = { base: "#022469", production: "#ffcc47", band: "#7ed2df" };
+// Colors of the totals of the period: the energy as the bars, the surplus as
+// its legend, the cost apart from both. Mixed with the color of the text, as
+// on the savings cards, to be read on a light or a dark theme
+const TOTAL_COLORS = { kwh: "#0087b1", production: "#ffcc47", eur: "#e8836b" };
+const TOTAL_MIX = { kwh: 65, production: 80, eur: 65 };
+
+/** Return a color of a total, mixed with the color of the text. */
+function totalColor(key) {
+  return `color-mix(in srgb, ${TOTAL_COLORS[key]} ${TOTAL_MIX[key]}%, var(--primary-text-color, #212121))`;
+}
+
+/**
+ * Return the HTML of the totals of a period of electricity: its energy and
+ * its cost, the unit of the bars first, and the surplus injected between
+ * them when there is one.
+ */
+export function electricityTotal(measures, unit, locale, text) {
+  const values = { kwh: formatValue(locale, measures?.energy, "kwh"), eur: formatValue(locale, measures?.cost, "eur") };
+  const other = unit === "eur" ? "kwh" : "eur";
+  const value = (key, content, title = "") =>
+    `<span class="${key}" style="color: ${totalColor(key)}"${title ? ` title="${escapeHtml(title)}"` : ""}>${escapeHtml(content)}</span>`;
+  const parts = [`<span class="main">${value(unit, values[unit])}</span>`];
+  if (Number(measures?.production) > 0) {
+    parts.push(value("production", formatValue(locale, measures.production, "kwh"), text.production));
+  }
+  parts.push(`<span class="other">${value(other, values[other])}</span>`);
+  return parts.join(' <span class="separator">|</span> ');
+}
 // Heures Pleines (2) and Heures Creuses (3) of ecojoko: the off-peak hours
 // dark and the peak hours light, as on the other cards. ecojoko gives them
 // the other way round
@@ -667,6 +695,7 @@ const STYLES = `
   .total { font-size: 0.95em; white-space: nowrap; }
   .total .main { font-weight: 600; color: var(--primary-text-color); }
   .total .other { color: var(--secondary-text-color); }
+  .total .separator { color: var(--secondary-text-color); }
   .details { min-height: 1.4em; font-size: 0.85em; color: var(--secondary-text-color); text-align: center; }
   svg { width: 100%; display: block; touch-action: pan-y; user-select: none; }
   .tick { fill: var(--secondary-text-color, #727272); font-size: var(--lm-axis-font, 9.5px); text-anchor: end; dominant-baseline: central; }
@@ -1113,9 +1142,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
 
   /** Return the HTML of the energy and the cost of a period, the unit of the bars first. */
   _total(measures, unit, locale) {
-    const values = { kwh: formatValue(locale, measures.energy, "kwh"), eur: formatValue(locale, measures.cost, "eur") };
-    const other = unit === "eur" ? "kwh" : "eur";
-    return `<span class="main">${escapeHtml(values[unit])}</span> <span class="other">| ${escapeHtml(values[other])}</span>`;
+    return electricityTotal(measures, unit, locale, this._text());
   }
 
   /** Return the SVG of the graduations of a scale, with their unit: w, kwh or eur. */

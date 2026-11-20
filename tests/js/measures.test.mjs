@@ -222,3 +222,19 @@ test("the axis labels are shown at 0.75 em, whatever the width of the card", () 
   assert.equal(card.axisFontSize(0, 280, 14), 9.5);
   assert.equal(card.axisFontSize(450, 280, Number.NaN), 9.5);
 });
+
+test("the totals give the energy, the surplus injected and the cost", () => {
+  const measures = { energy: 5, cost: 1.42, production: 0.2 };
+  const html = card.electricityTotal(measures, "kwh", "fr", { production: "Surplus" });
+  // Energy, surplus, cost: in this order, the surplus as its legend
+  const order = ["kwh", "production", "eur"].map((key) => html.indexOf(`class="${key}"`));
+  assert.deepEqual([...order].sort((a, b) => a - b), order);
+  assert.ok(order.every((index) => index >= 0));
+  assert.match(html, /class="production" style="color: color-mix\(in srgb, #ffcc47/);
+  assert.match(html, /title="Surplus">0,2 kWh</);
+  // In euros, the cost first
+  const euros = card.electricityTotal(measures, "eur", "fr", { production: "Surplus" });
+  assert.ok(euros.indexOf('class="eur"') < euros.indexOf('class="kwh"'));
+  // Without a surplus, the energy and the cost only
+  assert.doesNotMatch(card.electricityTotal({ energy: 5, cost: 1.42, production: 0 }, "kwh", "fr", {}), /production/);
+});
