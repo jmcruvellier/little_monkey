@@ -38,6 +38,9 @@ const TRANSLATIONS = {
     next: "Next period",
     base: "Base load",
     production: "Surplus",
+    purchase: "Purchase",
+    resale: "Resale",
+    total_label: "{label}: ",
     power_at: "{time}: {power}",
     bar: "{name}: {values}",
     error: "Measures not read",
@@ -67,6 +70,9 @@ const TRANSLATIONS = {
     next: "Période suivante",
     base: "Talon",
     production: "Surplus",
+    purchase: "Achat",
+    resale: "Revente",
+    total_label: "{label} : ",
     power_at: "{time} : {power}",
     bar: "{name} : {values}",
     error: "Mesures non lues",
@@ -99,10 +105,26 @@ export const PERIODS = ["day", "week", "month", "year"];
 // Colors of ecojoko: base load, production, and a band without its color
 export const MEASURE_COLORS = { base: "#022469", production: "#ffcc47", band: "#7ed2df" };
 // Colors of the totals of the period: the energy as the bars, the surplus as
-// its legend, the cost apart from both. Mixed with the color of the text, as
-// on the savings cards, to be read on a light or a dark theme
-const TOTAL_COLORS = { kwh: "#0087b1", production: "#ffcc47", eur: "#e8836b" };
-const TOTAL_MIX = { kwh: 65, production: 80, eur: 65 };
+// its legend, the cost apart from both, and the amount of the surplus sold
+// in the green of the savings. Mixed with the color of the text, as on the
+// savings cards, to be read on a light or a dark theme
+const TOTAL_COLORS = { kwh: "#0087b1", production: "#ffcc47", eur: "#e8836b", resale: "#5fdcab" };
+const TOTAL_MIX = { kwh: 65, production: 80, eur: 65, resale: 65 };
+
+/**
+ * Tell whether the surplus of the installation is sold: the Contract sensor
+ * of its device gives then the price of a kWh sold.
+ */
+export function hasResaleContract(hass, entityId) {
+  const entities = hass?.entities || {};
+  const deviceId = entities[entityId]?.device_id;
+  if (!deviceId) {
+    return false;
+  }
+  const contract = Object.values(entities).find((entity) =>
+    entity.device_id === deviceId && entity.platform === DOMAIN && entity.translation_key === "contract");
+  return Number(hass.states?.[contract?.entity_id]?.attributes?.resale_price) > 0;
+}
 
 /** Return a color of a total, mixed with the color of the text. */
 function totalColor(key) {
@@ -113,18 +135,33 @@ function totalColor(key) {
  * Return the HTML of the totals of a period of electricity: its energy and
  * its cost, the unit of the bars first, and the surplus injected between
  * them when there is one.
+ *
+ * When the surplus is sold, two lines instead: the energy and the cost
+ * bought (« Achat »), then the surplus and the amount it was sold for
+ * (« Revente »).
  */
-export function electricityTotal(measures, unit, locale, text) {
+export function electricityTotal(measures, unit, locale, text, resale = false) {
   const values = { kwh: formatValue(locale, measures?.energy, "kwh"), eur: formatValue(locale, measures?.cost, "eur") };
   const other = unit === "eur" ? "kwh" : "eur";
   const value = (key, content, title = "") =>
     `<span class="${key}" style="color: ${totalColor(key)}"${title ? ` title="${escapeHtml(title)}"` : ""}>${escapeHtml(content)}</span>`;
+  const separator = ' <span class="separator">|</span> ';
+  if (resale) {
+    const sold = {
+      kwh: value("production", formatValue(locale, measures?.production ?? 0, "kwh")),
+      eur: value("resale", formatValue(locale, measures?.resale ?? 0, "eur")),
+    };
+    const line = (label, first, second) => `<div class="line"><span class="label">${
+      escapeHtml(text.total_label.replace("{label}", label))}</span>${first}${separator}${second}</div>`;
+    return line(text.purchase, `<span class="main">${value(unit, values[unit])}</span>`, value(other, values[other]))
+      + line(text.resale, `<span class="main">${sold[unit]}</span>`, sold[other]);
+  }
   const parts = [`<span class="main">${value(unit, values[unit])}</span>`];
   if (Number(measures?.production) > 0) {
     parts.push(value("production", formatValue(locale, measures.production, "kwh"), text.production));
   }
   parts.push(`<span class="other">${value(other, values[other])}</span>`);
-  return parts.join(' <span class="separator">|</span> ');
+  return parts.join(separator);
 }
 // Heures Pleines (2) and Heures Creuses (3) of ecojoko: the off-peak hours
 // dark and the peak hours light, as on the other cards. ecojoko gives them
@@ -696,6 +733,8 @@ const STYLES = `
   .total .main { font-weight: 600; color: var(--primary-text-color); }
   .total .other { color: var(--secondary-text-color); }
   .total .separator { color: var(--secondary-text-color); }
+  .total .line { text-align: right; }
+  .total .label { color: var(--secondary-text-color); }
   .details { min-height: 1.4em; font-size: 0.85em; color: var(--secondary-text-color); text-align: center; }
   svg { width: 100%; display: block; touch-action: pan-y; user-select: none; }
   .tick { fill: var(--secondary-text-color, #727272); font-size: var(--lm-axis-font, 9.5px); text-anchor: end; dominant-baseline: central; }
@@ -1142,7 +1181,8 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
 
   /** Return the HTML of the energy and the cost of a period, the unit of the bars first. */
   _total(measures, unit, locale) {
-    return electricityTotal(measures, unit, locale, this._text());
+    return electricityTotal(
+      measures, unit, locale, this._text(), hasResaleContract(this._hass, this._config?.entity));
   }
 
   /** Return the SVG of the graduations of a scale, with their unit: w, kwh or eur. */
@@ -1271,7 +1311,9 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       const parts = [...(bar.bands || [])].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)).map((band) =>
         `${labels[band.id] || band.id} ${formatValue(locale, unit === "eur" ? band.cost : band.energy, unit)}`);
       if (bar.production) {
-        parts.push(`${text.production} ${formatValue(locale, bar.production, "kwh")}`);
+        // With the amount it was sold for, when it was
+        const sold = Number(bar.resale) > 0 ? ` · ${formatValue(locale, bar.resale, "eur")}` : "";
+        parts.push(`${text.production} ${formatValue(locale, bar.production, "kwh")}${sold}`);
       }
       // The unit of the bars first
       const values = [formatValue(locale, bar.energy, "kwh"), formatValue(locale, bar.cost, "eur")];
