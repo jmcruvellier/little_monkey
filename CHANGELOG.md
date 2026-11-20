@@ -14,6 +14,7 @@ Cette version corrige les problèmes signalés par les testeurs de la 2.0.0b1 et
 - Les tranches d'un ancien contrat peuvent être retirées : l'écran « Tranches tarifaires » de la configuration et des options propose une liste « Tranches à supprimer ». Les capteurs des tranches supprimées sont retirés, les totaux HC et HP ne changent pas, et la réparation « tranches non configurées » ne les signale plus. Décocher une tranche la remet
 - Carte Mesures et service `get_measures` : la semaine en cours se lit de nouveau, au lieu d'afficher « Mesures non lues » certains jours
 - Carte Mesures : le coût d'un jour ou d'un mois comprend désormais le talon, comme sur ecojoko (1,12 € au lieu de 1,08 € par exemple)
+- Carte Mesures : les courbes de température et d'humidité ne restent plus vides quand ecojoko ne donne que la mesure du moment. La carte affiche alors les statistiques de Home Assistant, même si elles ne couvrent qu'une partie de la période, par exemple sur une installation récente
 - Les statistiques d'ecojoko (énergies du jour, température, humidité) ont désormais 15 secondes pour répondre, au lieu de 3, et sont lues en tâche de fond : le temps réel ne les attend plus, et les avertissements « timeout error » répétés sur `powerstat`, `tempstat` ou `humstat` disparaissent, quelle que soit la fréquence de sondage
 - Plus d'avertissement de Home Assistant 2026.11 sur `DeviceEntry.config_entries`, qui devait cesser de fonctionner en 2027.10
 
