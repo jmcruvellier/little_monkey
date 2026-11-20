@@ -337,6 +337,15 @@ export function statisticsCover(climate, range, period) {
   return Boolean(first) && new Date(first.time).getTime() <= range.start.getTime() + STATISTICS_MARGIN[period];
 }
 
+/**
+ * Tell whether partial statistics of Home Assistant show more than the
+ * answer of ecojoko: on 20/11/2026 it gave some clients a single point of
+ * now for any period of the temperature and humidity sensor.
+ */
+export function statisticsShowMore(answer, statistics) {
+  return (answer?.points?.length ?? 0) <= 1 && (statistics?.points?.length ?? 0) > 1;
+}
+
 /** Return the average of the inside values of curves, null without one. */
 export function climateAverage(climate) {
   const values = (climate?.points || []).map((point) => point.inside).filter((value) => Number.isFinite(value));
@@ -915,7 +924,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
   }
 
   /** Read the measures of the period from ecojoko, with the service get_measures. */
-  async _fetchService(key, cached, request) {
+  async _fetchService(key, cached, request, fallback = null) {
     const data = { measure: request.measure, period: request.period, date: request.date };
     const entry = configEntryId(this._hass, this._config.entity);
     if (entry) {
@@ -926,6 +935,13 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
         type: "call_service", domain: DOMAIN, service: "get_measures", service_data: data, return_response: true,
       });
       const period = datesPeriod(request.measure, request.period);
+      if (fallback && statisticsShowMore(result.response, fallback.measures)) {
+        // The statistics recorded so far, rather than a single point
+        this._cache.set(key, fallback);
+        this._signature = null;
+        this._render();
+        return;
+      }
       const first = firstPeriod(period, request.date, result.response);
       if (first) {
         // Nothing before the first period of ecojoko: it is shown instead
@@ -942,7 +958,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
       }
     } catch (error) {
       console.debug("Little Monkey card: measures not read", error);
-      this._cache.set(key, cached?.measures ? cached : { error: true });
+      this._cache.set(key, cached?.measures ? cached : fallback?.measures?.points?.length ? fallback : { error: true });
     }
     this._signature = null;
     this._render();
@@ -953,6 +969,8 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     const period = datesPeriod(request.measure, request.period);
     const range = periodRange(period, request.date);
     const ids = Object.values(entities);
+    // The statistics recorded, when they do not cover the whole period
+    let partial = null;
     try {
       const statistics = await this._hass.callWS({
         type: "recorder/statistics_during_period",
@@ -971,11 +989,13 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
         this._render();
         return;
       }
+      partial = { measures: climate, entities };
     } catch (error) {
       console.debug("Little Monkey card: statistics not read", error);
     }
-    // Home Assistant has not recorded the whole period: ecojoko has it
-    await this._fetchService(key, cached, request);
+    // Home Assistant has not recorded the whole period: ecojoko has it, or
+    // the partial statistics when ecojoko gives a single point
+    await this._fetchService(key, cached, request, partial);
   }
 
   _chooseMeasure(measure) {
