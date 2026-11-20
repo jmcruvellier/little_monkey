@@ -1378,9 +1378,23 @@ def test_every_statistic_is_refreshed(api, monkeypatch, poll):
         assert len(calls) >= 3, name
         gaps = [later - earlier for earlier, later in zip(calls, calls[1:])]
         # Usual delay, plus the granularity of the polls
-        assert max(gaps) <= api.CONF_API_STAT_REFRESH + 2 * poll, name
+        assert max(gaps) <= api.CONF_API_STAT_REFRESH[name] + 2 * poll, name
+        # And never before its delay, less the margin
+        assert min(gaps) >= api.CONF_API_STAT_REFRESH[name] - api.CONF_API_STAT_MARGIN, name
     assert (client.indoor_temp, client.outdoor_temp) == (20, 8)
     assert (client.indoor_hum, client.outdoor_hum) == (50, 80)
+
+
+def test_statistics_are_read_at_their_own_pace(api, monkeypatch):
+    """Energies every minute, temperature and humidity every two minutes.
+
+    With the default poll of 30 s, a statistic due at the next poll is read
+    then, not one poll later.
+    """
+    _, times, _ = simulate(api, monkeypatch, 30, duration=1200)
+    for name, delay in (("powerstat", 60), ("tempstat", 120), ("humstat", 120)):
+        gaps = [later - earlier for earlier, later in zip(times[name], times[name][1:])]
+        assert all(delay <= gap <= delay + 2 for gap in gaps), (name, gaps)
 
 
 @pytest.mark.parametrize("poll", [3, 5, 10])
@@ -2120,6 +2134,20 @@ def test_equipment_and_its_day(api):
         {"start": "2026-11-18T20:27:48+01:00", "end": None,
          "on": False, "forced": False, "source": "timer"},
     ]
+
+
+def test_equipment_day_reads_only_the_parts_asked_for(api):
+    """The power curve and the changes of state can be read apart."""
+    client, session = equipment_client(api)
+    equipment = run(client.async_get_equipment("630220"))
+    before = len(session.requests)
+    day = run(client.async_get_equipment_day(equipment, dt.date(2026, 11, 18), ("switches",)))
+    urls = [request[1] for request in session.requests[before:]]
+    assert len(urls) == 1 and urls[0].endswith("/device/630220/switchstat/d/2026-11-18")
+    assert set(day) == {"date", "switches"}
+    day = run(client.async_get_equipment_day(equipment, dt.date(2026, 11, 18), ("power",)))
+    assert session.requests[-1][1].endswith("/device/630220/plugstat/d4/2026-11-18")
+    assert set(day) == {"date", "energy", "cost", "power"}
 
 
 def test_equipment_day_without_measures(api):

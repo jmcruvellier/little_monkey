@@ -49,7 +49,7 @@ Toujours créés, ou selon les cases de la 1.2.8.
 | Économies Cumulées | € | Depuis le début, négatives en cas de surconsommation |
 | Puissance Max du Mois, de l'Année, Depuis le Début | W | |
 
-Lus toutes les dix minutes, à part des autres capteurs : ecojoko calcule ces valeurs lentement. Une panne de cette lecture ne touche jamais le temps réel, et les dernières valeurs sont gardées une heure.
+Lus toutes les demi-heures, à part des autres capteurs : ecojoko calcule ces valeurs lentement et ne les change que quelques fois par heure et à minuit. Une panne de cette lecture ne touche jamais le temps réel, et les dernières valeurs sont gardées une heure.
 
 ### Économies
 
@@ -89,7 +89,7 @@ Les équipements non pilotés (capteur d'électricité, sonde…) n'ont pas d'ap
 
 <img src="images/ha/appareil-ecojoko-diagnostic.png" alt="Diagnostics de l'appareil Ecojoko" width="420">
 
-L'état et les mesures d'un équipement piloté sont lus toutes les deux minutes, juste après une commande, et dix secondes après la fin prévue d'un forçage ou d'une absence. L'intégration ne connaît pas les types d'équipements à l'avance : elle lit les commandes qu'ecojoko reconnaît à chacun, si bien qu'un équipement d'un type inconnu est pris en charge dès qu'il accepte les commandes de pilotage. Un équipement ajouté dans ecojoko apparaît après un rechargement de l'intégration ; l'appareil d'un équipement retiré est supprimé au démarrage suivant.
+L'état d'un équipement piloté est lu toutes les deux minutes, juste après une commande, et dix secondes après la fin prévue d'un forçage ou d'une absence. Ses mesures du jour sont lues moins souvent : sa courbe de puissance, son énergie et son coût toutes les six minutes, ses changements d'état toutes les dix minutes, et les deux juste après une commande ou la fin d'un forçage. L'intégration ne connaît pas les types d'équipements à l'avance : elle lit les commandes qu'ecojoko reconnaît à chacun, si bien qu'un équipement d'un type inconnu est pris en charge dès qu'il accepte les commandes de pilotage. Un équipement ajouté dans ecojoko apparaît après un rechargement de l'intégration ; l'appareil d'un équipement retiré est supprimé au démarrage suivant.
 
 ### Analyse de la conso et Mesures
 
@@ -167,8 +167,9 @@ Sans son option, un service de lecture répond `enabled: false` sans rien lire c
 > [!IMPORTANT]
 > Little Monkey est une intégration **non officielle**. Elle dépend des API d'ecojoko<sup>©️</sup>, qui ne sont pas documentées et peuvent changer ou être indisponibles.
 
-- **Temps réel** : lu à la fréquence choisie (3 à 60 secondes). ecojoko ne sert des données en direct que pendant dix minutes après la lecture de la liste de ses passerelles ; l'intégration la relit toutes les cinq minutes.
-- **Énergie du jour** : les compteurs ne diminuent jamais au cours d'une journée, même si ecojoko renvoie un instant une valeur plus basse ; ils repartent de zéro à minuit. Quand ecojoko reclasse après coup de l'énergie d'une tranche dans une autre (des heures creuses vers les heures pleines, par exemple), elle n'est comptée qu'une fois : la somme des totaux HC et HP, comme celle des tranches, ne dépasse jamais la consommation réseau du jour.
+- **Temps réel** : lu à la fréquence choisie (5 à 60 secondes). ecojoko ne sert des données en direct que pendant dix minutes après la lecture de la liste de ses passerelles ; l'intégration la relit toutes les cinq minutes.
+- **Énergie du jour, température et humidité** : lues à part du temps réel, quelle que soit la fréquence choisie : l'énergie du jour toutes les minutes, la température et l'humidité toutes les deux minutes, au rythme où ecojoko les met à jour.
+- **Compteurs d'énergie** : les compteurs ne diminuent jamais au cours d'une journée, même si ecojoko renvoie un instant une valeur plus basse ; ils repartent de zéro à minuit. Quand ecojoko reclasse après coup de l'énergie d'une tranche dans une autre (des heures creuses vers les heures pleines, par exemple), elle n'est comptée qu'une fois : la somme des totaux HC et HP, comme celle des tranches, ne dépasse jamais la consommation réseau du jour.
 - **Coupures** : une coupure de moins de deux minutes conserve les dernières valeurs ; au-delà, les capteurs passent à « indisponible ». Les données lues à part (activité, économies, équipements) gardent leurs dernières valeurs une heure.
 - **Liste des équipements** : ecojoko ne la met à jour que toutes les cinq minutes ; l'état d'un équipement piloté est lu directement, plus souvent.
 - **Diagnostics** : téléchargeables depuis la page de l'intégration, sans vos identifiants ni le nom de l'installation. La partie `client › requests` compte, pour chaque API d'ecojoko depuis le dernier démarrage, les requêtes du sondage (`poll`) et des services appelés par les cartes ou les automatisations (`service`), leur nombre moyen par heure, les secondes entre les dernières requêtes (`seconds_between_requests`, juste dès la deuxième requête, contrairement à la moyenne), et combien de réponses ont changé ou non depuis la requête précédente à la même adresse, avec les secondes entre les derniers changements. Pour `powerstat`, la partie `values` fait le même décompte sur les seules valeurs qu'utilisent les capteurs : énergie, surplus et énergie de chaque tranche, arrondis comme dans les capteurs.

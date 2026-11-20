@@ -2,6 +2,16 @@
 
 ## Non publié
 
+### Changements importants
+- Moins de requêtes envoyées à ecojoko, sans perte de fraîcheur : environ 35 % de requêtes de fond en moins sur une installation par défaut avec un chauffe-eau piloté (de 475 à 310 par heure environ). Les nouveaux rythmes suivent ceux auxquels ecojoko met réellement ses données à jour, mesurés pendant une heure sur deux installations :
+  - énergie du jour : toutes les minutes, au lieu de toutes les 30 secondes ;
+  - température et humidité : toutes les deux minutes, au lieu de toutes les 30 secondes ;
+  - activité du compte : toutes les demi-heures, au lieu de toutes les dix minutes ;
+  - équipement piloté : son état reste lu toutes les deux minutes ; sa courbe de puissance, son énergie et son coût le sont toutes les six minutes, ses changements d'état toutes les dix minutes, et les deux juste après une commande ou la fin d'un forçage.
+
+  Ces lectures ne dépendent plus de la fréquence de rafraîchissement choisie, qui ne règle que le temps réel
+- Fréquence de rafraîchissement : 5 secondes au minimum, au lieu de 3. ecojoko ne change la puissance en temps réel que toutes les 5 à 10 secondes au mieux. À la mise à jour, un intervalle inférieur à 5 secondes est porté à 5
+
 ### Nouveautés
 - Diagnostics : nombre de requêtes envoyées à ecojoko par API, en séparant le sondage des services appelés par les cartes, et fréquence à laquelle leurs réponses changent vraiment. Ces chiffres serviront à espacer les requêtes sans perdre de fraîcheur
 - Les cartes apparaissent aussi quand on ajoute une carte à partir d'une entité (Home Assistant 2026.6 ou plus récent) : dans l'onglet **Par entité**, choisir une entité de Little Monkey propose les cartes de son appareil, dans la section **Communauté**. Il n'est plus nécessaire de chercher « Petit Singe » dans l'onglet **Par carte**. Avec deux appareils, chaque carte prend les capteurs de l'appareil de l'entité choisie

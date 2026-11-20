@@ -159,7 +159,7 @@ CREATE_ENTRY = data_entry_flow.FlowResultType.CREATE_ENTRY
 def add_entry(hass, **kwargs):
     """Add a config entry of the current version to Home Assistant."""
     entry = MockConfigEntry(
-        **{"domain": DOMAIN, "title": "user", "version": 3, "minor_version": 2, "data": DATA,
+        **{"domain": DOMAIN, "title": "user", "version": 3, "minor_version": 3, "data": DATA,
            **kwargs}
     )
     entry.add_to_hass(hass)
@@ -246,7 +246,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
 
     assert entry.state is ConfigEntryState.LOADED
     assert entry.version == 3
-    assert entry.minor_version == 2
+    assert entry.minor_version == 3
     assert entry.data["poll_interval"] == 30
     assert "lang" not in entry.data
     assert "use_tempo_feature" not in entry.data
@@ -305,9 +305,28 @@ async def test_migration_raises_the_poll_interval(hass, fake_api, configured, mi
     assert await setup_entry(hass, entry)
 
     assert entry.state is ConfigEntryState.LOADED
-    assert (entry.version, entry.minor_version) == (3, 2)
+    assert (entry.version, entry.minor_version) == (3, 3)
     assert entry.data.get("poll_interval") == migrated
     assert entry.data["tariff_bands"] == HCHP_BANDS
+
+
+@pytest.mark.parametrize(
+    ("configured", "migrated"), [(3, 5), (4, 5), (5, 5), (10, 10), (None, None), (30, 30)]
+)
+async def test_migration_raises_the_poll_interval_to_the_minimum(
+    hass, fake_api, configured, migrated
+):
+    """Intervals under 5 s chosen since 2.0.0b2 are raised to the new minimum."""
+    data = {key: value for key, value in DATA.items() if key != "poll_interval"}
+    if configured is not None:
+        data["poll_interval"] = configured
+    entry = add_entry(hass, minor_version=2, data=data)
+
+    assert await setup_entry(hass, entry)
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert (entry.version, entry.minor_version) == (3, 3)
+    assert entry.data.get("poll_interval") == migrated
 
 
 async def test_device_left_by_a_renaming_can_be_removed(hass, fake_api):
@@ -1899,6 +1918,47 @@ async def test_devices_of_equipments_no_longer_piloted_are_removed(hass, fake_ap
     assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_3"), entry.entry_id) is None
     assert registry_device(devices, (DOMAIN, f"{entry.entry_id}_630220"), entry.entry_id)
     assert registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
+
+
+async def test_measures_of_the_day_of_an_equipment_are_read_less_often(
+    hass, fake_api, monkeypatch
+):
+    """The power curve every third reading, the changes of state every fifth."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(
+        lm_coordinator, "time", types.SimpleNamespace(monotonic=lambda: clock["now"]))
+    fake_api.equipments = [copy.deepcopy(WATER_HEATER), TEMP_HUM_EQUIPMENT]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    coordinator = entry.runtime_data.equipment
+    # The first reading takes the whole day
+    assert fake_api.day_reads == [("power", "switches")]
+
+    async def read_at(seconds):
+        clock["now"] = 1000.0 + seconds
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+
+    reads = fake_api.equipment_reads
+    await read_at(120)
+    await read_at(240)
+    # The state is read every time, the measures of the day kept
+    assert fake_api.equipment_reads == reads + 2
+    assert fake_api.day_reads == [("power", "switches")]
+    assert coordinator.data["630220"]["day"]["energy"] == 0.97
+    assert coordinator.data["630220"]["day"]["switches"]
+    await read_at(360)
+    assert fake_api.day_reads[-1] == ("power",)
+    await read_at(480)
+    await read_at(600)
+    assert fake_api.day_reads[-1] == ("switches",)
+    assert len(fake_api.day_reads) == 3
+
+    # After a command, the whole day at once
+    device_id = heater_device(hass, entry).id
+    await hass.services.async_call(
+        DOMAIN, "set_equipment_mode", {"device_id": device_id, "mode": "auto"}, blocking=True)
+    assert fake_api.day_reads[-1] == ("power", "switches")
 
 
 async def test_equipment_is_read_again_at_the_end_of_a_forced_mode(hass, fake_api):

@@ -71,7 +71,7 @@ Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez don
 | Équipements pilotés | décochée | Le chauffe-eau (ou tout équipement piloté par ecojoko), ses capteurs et son pilotage ; carte Équipements |
 | Analyse de la conso | décochée | La répartition par poste et les activations des appareils ; cartes Analyse de la conso et Activations |
 | Mesures | décochée | La puissance du jour, l'énergie par tranche, la température et l'humidité ; carte Mesures |
-| Fréquence de rafraîchissement | 30 s | Intervalle de lecture du temps réel, de 3 à 60 secondes. ecojoko ne rafraîchit le temps réel de l'intégration que toutes les 30 secondes : un intervalle plus court relit la même valeur. À la mise à jour depuis la 2.0.0b1 ou la 1.2.8, un intervalle inférieur à 30 s est porté à 30 s |
+| Fréquence de rafraîchissement | 30 s | Intervalle de lecture du temps réel, de 5 à 60 secondes. ecojoko ne rafraîchit le temps réel de l'intégration que toutes les 30 secondes : un intervalle plus court relit la même valeur. À la mise à jour depuis la 2.0.0b1 ou la 1.2.8, un intervalle inférieur à 30 s est porté à 30 s ; depuis la 2.0.0b2, un intervalle inférieur à 5 s est porté à 5 s. L'énergie du jour, la température et l'humidité sont lues à leur propre rythme, quel que soit cet intervalle |
 
 Les six dernières cases, apparues avec la version 2.0.0, sont décochées par défaut : leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si elles sont cochées. Voir [les capteurs de chaque option](integration.md#les-capteurs).
 

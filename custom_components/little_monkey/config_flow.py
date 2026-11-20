@@ -23,6 +23,7 @@ from .const import (
     DOMAIN,
     POLL_INTERVAL,
     DEFAULT_POLL_INTERVAL,
+    MIN_POLL_INTERVAL,
     CONF_USE_HCHP_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
@@ -104,7 +105,7 @@ def _settings_schema(defaults: Mapping[str, Any]) -> vol.Schema:
                 selector.NumberSelectorConfig(
                     mode=NumberSelectorMode.BOX,
                     unit_of_measurement=UnitOfTime.SECONDS,
-                    min=3,
+                    min=MIN_POLL_INTERVAL,
                     max=60,
                 ),
             ),
@@ -354,8 +355,9 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
     # Version 3: tariff bands instead of the Tempo option
     # Version 3.2: poll interval of at least 30 s. A minor version: an
     # earlier 2.0.0 version still loads the entry
+    # Version 3.3: poll interval of at least MIN_POLL_INTERVAL
     VERSION = 3
-    MINOR_VERSION = 2
+    MINOR_VERSION = 3
 
     def __init__(self) -> None:
         """Init EcojokoFlowHandler."""

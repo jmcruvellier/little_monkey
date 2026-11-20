@@ -26,7 +26,9 @@ from .api import (
 from .const import (
     CONF_API_ACTIVITY_GRACE,
     CONF_API_ACTIVITY_REFRESH,
+    CONF_API_EQUIPMENT_POWER_REFRESH,
     CONF_API_EQUIPMENT_REFRESH,
+    CONF_API_EQUIPMENT_SWITCHES_REFRESH,
     CONF_API_FAILURE_GRACE,
     CONF_API_SAVINGS_REFRESH,
     DEFAULT_POLL_INTERVAL,
@@ -301,11 +303,20 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
 
     The list of the equipments comes with the list of the gateways, read
     every five minutes; the state of a piloted one is read more often, and
-    right after a command.
+    right after a command. Its measures of the day are read less often than
+    its state, by part, and again after a command and on a new day.
     """
 
     KIND = "equipment"
     REFRESH = CONF_API_EQUIPMENT_REFRESH
+    # Seconds between two readings of each part of the measures of the day
+    DAY_REFRESH = {
+        "power": CONF_API_EQUIPMENT_POWER_REFRESH,
+        "switches": CONF_API_EQUIPMENT_SWITCHES_REFRESH,
+    }
+    # A part is read at the first reading of the state that comes this close
+    # to its delay: the readings do not fall exactly on it
+    DAY_MARGIN = 5
     # Seconds after the end of a forced mode or of an absence before the
     # equipment is read again: ecojoko takes a few seconds to apply it
     END_DELAY = 10
@@ -314,6 +325,21 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
         """Initialize, without a reading planned at the end of a mode."""
         super().__init__(*args, **kwargs)
         self._end_unsub = None
+        # Monotonic time of the last reading of each part of the measures of
+        # the day, by equipment, and whether all of them are read next time
+        self._day_reads = {}
+        self._read_whole_day = False
+
+    def _day_parts(self, equipment_id, day, now, whole) -> list:
+        """Return the parts of the measures of the day to read now."""
+        last = ((self.data or {}).get(equipment_id) or {}).get("day") or {}
+        reads = self._day_reads.get(equipment_id, {})
+        if whole or last.get("date") != day.isoformat():
+            return list(self.DAY_REFRESH)
+        return [
+            part for part, refresh in self.DAY_REFRESH.items()
+            if part not in reads or now - reads[part] >= refresh - self.DAY_MARGIN
+        ]
 
     def piloted(self) -> list:
         """Return the equipments of the gateway that can be piloted."""
@@ -322,15 +348,31 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
     async def _async_fetch(self) -> dict:
         """Read each piloted equipment and its measures of today."""
         today = get_current_date(TZ)
+        now = time.monotonic()
+        whole, self._read_whole_day = self._read_whole_day, False
 
         async def read(equipment):
+            equipment_id = equipment["id"]
+            parts = self._day_parts(equipment_id, today, now, whole)
+            last = ((self.data or {}).get(equipment_id) or {}).get("day") or {}
+
+            async def read_day():
+                if not parts:
+                    return {}
+                return await self.client.async_get_equipment_day(equipment, today, parts)
+
             fresh, day = await asyncio.gather(
-                self.client.async_get_equipment(equipment["id"]),
-                self.client.async_get_equipment_day(equipment, today))
-            return {**fresh, "day": day}
+                self.client.async_get_equipment(equipment_id), read_day())
+            if day.get("date", today.isoformat()) == last.get("date"):
+                # The parts not read now keep their last values of the day
+                day = {**last, **day}
+            return {**fresh, "day": day}, parts
 
         equipments = await asyncio.gather(*(read(equipment) for equipment in self.piloted()))
-        data = {equipment["id"]: equipment for equipment in equipments}
+        data = {equipment["id"]: equipment for equipment, _parts in equipments}
+        # Once every equipment is read: a failure reads all of them again
+        for equipment, parts in equipments:
+            self._day_reads.setdefault(equipment["id"], {}).update(dict.fromkeys(parts, now))
         self._plan_end_reading(data)
         return data
 
@@ -355,8 +397,9 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
                 self.hass, max(min(delays), 0) + self.END_DELAY, self._async_end_reading)
 
     async def _async_end_reading(self, _now) -> None:
-        """Read the equipments at the end of a mode."""
+        """Read the equipments at the end of a mode, with their measures of the day."""
         self._end_unsub = None
+        self._read_whole_day = True
         await self.async_refresh()
 
     def async_cancel_end_reading(self) -> None:
@@ -380,4 +423,5 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
                 translation_placeholders={"error": str(exception)},
             ) from exception
         finally:
+            self._read_whole_day = True
             await self.async_refresh()
