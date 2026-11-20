@@ -512,6 +512,55 @@ def test_diagnostics_show_the_response_headers(api):
         assert secret not in text
 
 
+def test_diagnostics_count_the_requests_and_their_changes(api):
+    """The requests of each API are counted, with the answers that changed."""
+    readings = iter([512, 512, 640])
+    session = Session(realtime_conso=lambda: Response(
+        payload={"real_time": {"value": next(readings)}}))
+    client = make_client(api, session)
+    for _poll in range(3):
+        run(client.async_get_data())
+
+    async def read_by_service():
+        # As the services do: counted apart from the polls
+        token = api.REQUEST_SOURCE.set("service")
+        try:
+            await client.async_get_analysis("week")
+        finally:
+            api.REQUEST_SOURCE.reset(token)
+
+    run(read_by_service())
+    run(client.async_get_analysis("week"))
+    requests = client.diagnostics()["requests"]
+    assert requests["seconds_counted"] >= 0
+    realtime = requests["apis"]["realtime_conso"]
+    # The first answer has nothing to be compared with
+    assert (realtime["poll"], realtime["service"]) == (3, 0)
+    assert (realtime["unchanged"], realtime["changed"]) == (1, 1)
+    assert realtime["seconds_since_change"] >= 0
+    assert realtime["seconds_between_changes"] == []
+    analysis = requests["apis"]["analysis"]
+    assert (analysis["poll"], analysis["service"]) == (1, 1)
+    assert (analysis["unchanged"], analysis["changed"]) == (1, 0)
+    # Neither the URLs, which hold the device ids, nor the answers
+    text = repr(requests)
+    for secret in ("gw-1", "http", "512", "640"):
+        assert secret not in text
+
+
+def test_diagnostics_keep_the_last_answers_of_a_bounded_number_of_urls(api):
+    """Reading many days does not keep their answers without end."""
+    client = make_client(api, Session())
+    stats = client._count_request("powerstat (d4)")
+    for day in range(api.REQUEST_URLS_KEPT + 50):
+        client._count_answer(stats, f"https://ecojoko/day/{day}", {"day": day})
+    assert len(client._answer_digests) == api.REQUEST_URLS_KEPT
+    # The most recent URL is still compared with its last answer
+    last = f"https://ecojoko/day/{api.REQUEST_URLS_KEPT + 49}"
+    client._count_answer(stats, last, {"day": api.REQUEST_URLS_KEPT + 49})
+    assert stats["unchanged"] == 1
+
+
 # --- Login errors
 
 
