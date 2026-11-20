@@ -76,7 +76,7 @@ function language(hass) {
 
 // Colors of the dial: off-peak and peak hours, by kind of day
 export const DIAL_COLORS = {
-  hchp: { off: "#85b7eb", peak: "#185fa5" },
+  hchp: { off: "#185fa5", peak: "#85b7eb" },
   blue: { off: "#00008b", peak: "#2f6fe0" },
   white: { off: "#9e9e9e", peak: "#e0e0e0" },
   red: { off: "#8b0000", peak: "#ff3b3b" },
@@ -341,8 +341,8 @@ const STYLES = `
   .row.band.current .label, .row.band.current .value { font-weight: 600; }
   .note { font-size: 0.75em; color: var(--secondary-text-color); margin-top: 4px; }
   .tag { border-radius: 6px; padding: 1px 6px; font-size: 0.8em; margin-right: 6px; font-weight: 500; }
-  .tag.hc { background: color-mix(in srgb, #85b7eb 35%, transparent); }
-  .tag.hp { background: color-mix(in srgb, #185fa5 35%, transparent); }
+  .tag.hc { background: color-mix(in srgb, #185fa5 35%, transparent); }
+  .tag.hp { background: color-mix(in srgb, #85b7eb 35%, transparent); }
   .row .label { color: var(--primary-text-color); }
   .row .value { color: var(--primary-text-color); white-space: nowrap; }
   .row.subscription .label, .row.subscription .value { color: var(--secondary-text-color); }
