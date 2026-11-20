@@ -70,7 +70,12 @@ class DayParts:
         if self.day is None:
             self._restored[key] = (day, value)
         elif day == self.day:
+            # Restored after another sensor read the parts of the poll: on
+            # 19/11/2026 HP published 1.72 instead of its restored 1.83,
+            # which Home Assistant took for a reset of the meter. The
+            # values of the poll are computed again
             self._published[key] = max(self._published.get(key, value), value)
+            self._data = None
 
     def update(self, day, values, whole):
         """Return the values to publish {key: kWh} after a reading.
