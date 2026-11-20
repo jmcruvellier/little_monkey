@@ -222,3 +222,22 @@ test("the analysis offers the week and the month only, as ecojoko", () => {
   assert.equal(cards.initialPeriod({ period: "year" }), "week");
   assert.equal(cards.initialPeriod({ period: "month" }), "month");
 });
+
+test("an entity of a device suggests the cards on that device", () => {
+  const sensor = (device, key) => ({
+    entity_id: `sensor.${device}_${key}`, platform: "little_monkey", translation_key: key, device_id: device,
+  });
+  const hass = {
+    entities: Object.fromEntries([
+      sensor("home", "realtime_consumption"), sensor("barn", "contract"), sensor("barn", "realtime_consumption"),
+      { entity_id: "light.lamp", platform: "hue", device_id: "barn" },
+    ].map((entity) => [entity.entity_id, entity])),
+  };
+  assert.deepEqual(cards.entitySuggestion(hass, "sensor.barn_contract", cards.analysisStubConfig), {
+    config: { type: "custom:little-monkey-analysis-card", entity: "sensor.barn_realtime_consumption" },
+  });
+  assert.deepEqual(cards.entitySuggestion(hass, "sensor.home_realtime_consumption", cards.activationsStubConfig), {
+    config: { type: "custom:little-monkey-activations-card", entity: "sensor.home_realtime_consumption" },
+  });
+  assert.equal(cards.entitySuggestion(hass, "light.lamp", cards.analysisStubConfig), null);
+});

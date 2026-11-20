@@ -282,3 +282,20 @@ test("partial statistics are shown when ecojoko gives a single point", () => {
   // A single statistic shows no more than ecojoko
   assert.equal(card.statisticsShowMore(now, { points: partial.points.slice(0, 1) }), false);
 });
+
+test("an entity of a device suggests the card on that device", () => {
+  const sensor = (device, key) => ({
+    entity_id: `sensor.${device}_${key}`, platform: "little_monkey", translation_key: key, device_id: device,
+  });
+  const hass = {
+    entities: Object.fromEntries([
+      sensor("home", "realtime_consumption"), sensor("barn", "realtime_consumption"), sensor("barn", "firmware"), sensor("shed", "firmware"),
+    ].map((entity) => [entity.entity_id, entity])),
+  };
+  assert.deepEqual(card.entitySuggestion(hass, "sensor.barn_firmware", card.measuresStubConfig), {
+    config: { type: "custom:little-monkey-measures-card", entity: "sensor.barn_realtime_consumption" },
+  });
+  // A device without the sensor needed, or an entity of another integration
+  assert.equal(card.entitySuggestion(hass, "sensor.shed_firmware", card.measuresStubConfig), null);
+  assert.equal(card.entitySuggestion({ entities: { "light.lamp": { platform: "hue" } } }, "light.lamp", card.measuresStubConfig), null);
+});

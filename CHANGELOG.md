@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.0
+
+### Nouveautés
+- Les cartes apparaissent aussi quand on ajoute une carte à partir d'une entité (Home Assistant 2026.6 ou plus récent) : dans l'onglet **Par entité**, choisir une entité de Little Monkey propose les cartes de son appareil, dans la section **Communauté**. Il n'est plus nécessaire de chercher « Petit Singe » dans l'onglet **Par carte**. Avec deux appareils, chaque carte prend les capteurs de l'appareil de l'entité choisie
+
 ## 2.0.0b2
 
 > [!WARNING]
