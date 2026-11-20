@@ -20,5 +20,7 @@ def test_version_is_consistent():
     # The documentation link points to the tag of the release
     assert f"/blob/v{version}/" in manifest["documentation"]
 
+    # The first version of the changelog, after the changes not released yet
     changelog = (ROOT / "CHANGELOG.md").read_text("utf-8")
-    assert re.search(r"^## (.+)$", changelog, re.MULTILINE).group(1) == version
+    titles = re.findall(r"^## (.+)$", changelog, re.MULTILINE)
+    assert [title for title in titles if title != "Non publié"][0] == version
