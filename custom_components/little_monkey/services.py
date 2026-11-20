@@ -24,6 +24,7 @@ from .api import (
     EQUIPMENT_DURATIONS,
     MEASURE_PERIODS,
     MEASURES,
+    REQUEST_SOURCE,
     SAVINGS_PERIODS,
     LittleMonkeyApiClientError,
     TZ,
@@ -125,6 +126,8 @@ async def _async_read(hass: HomeAssistant, call: ServiceCall, read, option=None)
     entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
     if option is not None and not option_enabled(entry, option):
         return {"enabled": False}
+    # Counted apart from the polls in the diagnostics
+    token = REQUEST_SOURCE.set("service")
     try:
         return await read(entry.runtime_data.client)
     except LittleMonkeyApiClientError as exception:
@@ -133,6 +136,8 @@ async def _async_read(hass: HomeAssistant, call: ServiceCall, read, option=None)
             translation_key="data_not_read",
             translation_placeholders={"error": str(exception)},
         ) from exception
+    finally:
+        REQUEST_SOURCE.reset(token)
 
 
 async def _async_get_savings(hass: HomeAssistant, call: ServiceCall) -> ServiceResponse:
