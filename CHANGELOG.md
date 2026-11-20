@@ -1,5 +1,34 @@
 # Changelog
 
+## 2.0.0b2
+
+> [!WARNING]
+> Version bêta : à installer pour tester, depuis le Marketplace (anciennement HACS) : menu ⋮ de Little Monkey › **Installer une autre version**, puis v2.0.0b2. Faites une sauvegarde avant. Signalez les problèmes dans les [issues](https://github.com/jmcruvellier/little_monkey/issues).
+
+Cette version corrige les problèmes signalés par les testeurs de la 2.0.0b1 et complète les cartes.
+
+### Changement important
+- Fréquence de rafraîchissement : 30 secondes par défaut, au lieu de 5. ecojoko ne rafraîchit le temps réel de l'intégration que toutes les 30 secondes : un intervalle plus court relit la même valeur et charge ses serveurs. À la mise à jour, un intervalle inférieur à 30 secondes est porté à 30 ; un intervalle plus long que vous aviez choisi est conservé. Le minimum reste de 3 secondes dans les options
+
+### Corrections
+- Capteurs HC et HP : l'énergie qu'ecojoko reclasse après coup entre heures creuses et heures pleines n'est plus comptée deux fois dans le tableau Énergie (par exemple 2,21 kWh de la nuit passés des HC aux HP en cours de journée). Le défaut existait déjà en 1.2.8. Au redémarrage de Home Assistant, un capteur HC ou HP ne baisse plus et l'avertissement « state is not strictly increasing » ne revient pas
+- Économies en kWh justes dans la carte « Détail des économies » et le service `get_savings` : elles valent désormais la consommation de référence moins la consommation, pour la période comme pour chaque barre, au lieu de la somme sans signe des écarts donnée par ecojoko (26,5 kWh au lieu de 7,8 sur une semaine)
+- Le capteur « Économies sur 7 Jours » devient « Écart sur 7 Jours » : négatif pour une économie, comme l'aiguille du cadran ecojoko, il se confondait avec les économies en euros, positives pour une économie. Seul le nom affiché change : identifiant d'entité, valeur et historique restent les mêmes
+- Les tranches d'un ancien contrat peuvent être retirées : l'écran « Tranches tarifaires » de la configuration et des options propose une liste « Tranches à supprimer ». Les capteurs des tranches supprimées sont retirés, les totaux HC et HP ne changent pas, et la réparation « tranches non configurées » ne les signale plus. Décocher une tranche la remet
+- Carte Mesures et service `get_measures` : la semaine en cours se lit de nouveau, au lieu d'afficher « Mesures non lues » certains jours
+- Carte Mesures : le coût d'un jour ou d'un mois comprend désormais le talon, comme sur ecojoko (1,12 € au lieu de 1,08 € par exemple)
+- Carte Mesures : les courbes de température et d'humidité ne restent plus vides quand ecojoko ne donne que la mesure du moment. La carte affiche alors les statistiques de Home Assistant, même si elles ne couvrent qu'une partie de la période, par exemple sur une installation récente
+- Les statistiques d'ecojoko (énergies du jour, température, humidité) ont désormais 15 secondes pour répondre, au lieu de 3, et sont lues en tâche de fond : le temps réel ne les attend plus, et les avertissements « timeout error » répétés sur `powerstat`, `tempstat` ou `humstat` disparaissent, quelle que soit la fréquence de sondage
+- Plus d'avertissement de Home Assistant 2026.11 sur `DeviceEntry.config_entries`, qui devait cesser de fonctionner en 2027.10
+
+### Nouveautés
+- Nouveau capteur binaire « Contacteur » sur chaque équipement piloté qui a un mode Automatique, par exemple un chauffe-eau : allumé ou éteint, avec en attribut depuis quand et la cause (commande, programmation, fin de durée), comme l'application ecojoko ([#175](https://github.com/jmcruvellier/little_monkey/issues/175)). En mode Automatique, ecojoko allume et éteint l'équipement sans que son mode change : ce capteur le suit dans une automatisation
+- Carte Contrat : le prix de rachat du surplus solaire, sur une ligne « Rachat du surplus », quand vous revendez votre surplus. Il est lu chez ecojoko toutes les six heures, et le capteur Contrat le donne en attribut (`resale_price`)
+- Carte Mesures : la production injectée s'appelle désormais « Surplus », et le surplus apparaît dans les totaux, entre la consommation et le coût. Avec un contrat de revente, les totaux tiennent sur deux lignes, « Achat » et « Revente », avec le montant de la revente, aussi donné par le service `get_measures` (`resale`) et dans le détail d'une barre
+- Toutes les cartes affichent les heures creuses en couleur foncée et les heures pleines en couleur claire, comme le cadran
+- Les libellés des axes des cartes Mesures, Détail des économies et Analyse de la conso gardent la même taille quelle que soit la largeur de la carte
+- Documentation : installation depuis le Marketplace (anciennement HACS)
+
 ## 2.0.0b1
 
 > [!WARNING]
