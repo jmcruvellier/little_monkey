@@ -14,7 +14,9 @@ import aiohttp
 from .const import (
     CONF_API_ACTIVITY_TIMEOUT,
     CONF_API_TIMEOUT,
+    CONF_API_STAT_MARGIN,
     CONF_API_STAT_REFRESH,
+    CONF_API_STAT_SPREAD,
     CONF_API_STAT_TIMEOUT,
     CONF_API_KEEP_LIVE,
     CONF_API_KEEP_LIVE_RETRY,
@@ -1313,11 +1315,12 @@ class LittleMonkeyApiClient:
             raise LittleMonkeyApiClientError(
                 f"ecojoko refused the command: {payload.get('error_desc') or error}")
 
-    async def async_get_equipment_day(self, equipment, day) -> dict:
+    async def async_get_equipment_day(self, equipment, day, parts=("power", "switches")) -> dict:
         """Return the measures of an equipment over a day.
 
-        Its energy, cost and power curve when it measures its power, and its
-        changes of state when it has some.
+        Its energy, cost and power curve when it measures its power (part
+        "power"), and its changes of state when it has some (part
+        "switches"). Only the parts asked for are read and returned.
         """
         self._check_slow_api("equipment day")
         url = self._equipment_url(equipment["id"])
@@ -1334,19 +1337,20 @@ class LittleMonkeyApiClient:
                 ) from exception
 
         reads = {}
-        if equipment.get("measures"):
+        if equipment.get("measures") and "power" in parts:
             reads["power"] = read("plugstat", "plugstat/d4", parse_equipment_power)
-        if equipment.get("switches"):
+        if equipment.get("switches") and "switches" in parts:
             reads["switches"] = read("switchstat", "switchstat/d", parse_equipment_switches)
         results = dict(zip(reads, await asyncio.gather(*reads.values())))
-        power = results.get("power") or {}
-        return {
-            "date": day.isoformat(),
-            "energy": power.get("energy"),
-            "cost": power.get("cost"),
-            "power": power.get("power", []),
-            "switches": results.get("switches", []),
-        }
+        measures = {"date": day.isoformat()}
+        if "power" in parts:
+            power = results.get("power") or {}
+            measures.update(
+                energy=power.get("energy"), cost=power.get("cost"),
+                power=power.get("power", []))
+        if "switches" in parts:
+            measures["switches"] = results.get("switches", [])
+        return measures
 
     async def async_get_savings(self) -> dict:
         """Return the savings over 12 months, this week, month and year.
@@ -1610,7 +1614,8 @@ class LittleMonkeyApiClient:
     def _stats_to_call(self, now) -> list:
         """Return the statistics APIs to call during this poll.
 
-        Each statistic is refreshed every CONF_API_STAT_REFRESH seconds.
+        Each statistic is refreshed after its delay of CONF_API_STAT_REFRESH,
+        at the first poll that comes close to it (CONF_API_STAT_MARGIN).
         With a short poll interval only one of them is called per poll, to
         spread the load on the ecojoko servers; with a longer one, several
         are called together so that none waits more than the usual delay.
@@ -1618,19 +1623,21 @@ class LittleMonkeyApiClient:
         enabled = ["powerstat"]
         if self._use_temphum is True and self._temp_hum_id is not None:
             enabled += ["tempstat", "humstat"]
+        poll_interval = max(float(self._poll_interval), 1)
+        margin = min(CONF_API_STAT_MARGIN, poll_interval / 2)
         due = [
             name for name in enabled
             if name not in self._stat_tasks
             and (self._last_stat_refresh[name] is None
-                 or now - self._last_stat_refresh[name] >= CONF_API_STAT_REFRESH)
+                 or now - self._last_stat_refresh[name]
+                 >= CONF_API_STAT_REFRESH[name] - margin)
         ]
         # Oldest first, the ones never called before the others
         due.sort(key=lambda name: -math.inf
                  if self._last_stat_refresh[name] is None
                  else self._last_stat_refresh[name])
-        poll_interval = max(float(self._poll_interval), 1)
         per_poll = max(1, math.ceil(
-            len(enabled) * poll_interval / CONF_API_STAT_REFRESH))
+            len(enabled) * poll_interval / CONF_API_STAT_SPREAD))
         return due[:per_poll]
 
     async def _async_refresh(self) -> None:
