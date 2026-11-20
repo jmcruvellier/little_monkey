@@ -1,12 +1,5 @@
 # Changelog
 
-## 2.0.0
-
-Première version stable de la 2.0.0. Elle réunit les nouveautés et les corrections des pré-versions 2.0.0b1 et 2.0.0b2, détaillées ci-dessous. En venant de la 1.x, faites une sauvegarde avant la mise à jour : la configuration est convertie automatiquement, et les nouvelles fonctions sont à cocher dans les options de l'intégration.
-
-### Nouveautés
-- Les cartes apparaissent aussi quand on ajoute une carte à partir d'une entité (Home Assistant 2026.6 ou plus récent) : dans l'onglet **Par entité**, choisir une entité de Little Monkey propose les cartes de son appareil, dans la section **Communauté**. Il n'est plus nécessaire de chercher « Petit Singe » dans l'onglet **Par carte**. Avec deux appareils, chaque carte prend les capteurs de l'appareil de l'entité choisie
-
 ## 2.0.0b2
 
 > [!WARNING]
