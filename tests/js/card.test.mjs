@@ -388,3 +388,18 @@ test("the sensors left by a previous contract do not choose the tariff mode", ()
   // A sensor without a state yet counts, as before
   assert.equal(card.tariffMode(sensors, { states: {} }), "tempo");
 });
+
+test("an entity of a device suggests the card on that device", () => {
+  const hass = hassWith(["home", [POWER, APPARENT]], ["barn", [POWER, APPARENT, "contract"]], ["shed", ["contract"]]);
+  assert.deepEqual(card.entitySuggestion(hass, "sensor.barn_contract", card.stubConfig), {
+    config: {
+      type: "custom:little-monkey-card",
+      entity: "sensor.barn_realtime_consumption",
+      apparent_power_entity: "sensor.barn_realtime_apparent_power",
+    },
+  });
+  // Not an entity of the integration, or a device without the sensor needed
+  assert.equal(card.entitySuggestion(hass, "sensor.other_power", card.stubConfig), null);
+  assert.equal(card.entitySuggestion(hass, "sensor.unknown", card.stubConfig), null);
+  assert.equal(card.entitySuggestion(hass, "sensor.shed_contract", card.stubConfig), null);
+});

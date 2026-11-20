@@ -232,11 +232,30 @@ function deviceEntities(hass, entityId) {
   return result;
 }
 
-/** Return the entity of the integration with a translation key, if any. */
-function findEntity(hass, translationKey) {
+/**
+ * Return the entity of the integration with a translation key, if any: on the
+ * device of the entity `from` when given, else on the first device.
+ */
+function findEntity(hass, translationKey, from) {
+  const deviceId = from ? hass?.entities?.[from]?.device_id : undefined;
   return Object.values(hass?.entities || {}).find(
-    (entity) => entity.platform === DOMAIN && entity.translation_key === translationKey,
+    (entity) => entity.platform === DOMAIN && entity.translation_key === translationKey
+      && (!from || entity.device_id === deviceId),
   )?.entity_id;
+}
+
+/**
+ * Return the suggestion of a card for an entity in the card picker of Home
+ * Assistant (2026.6 and later): the card on the device of the entity, or null
+ * when the entity is not of the integration or the device lacks the sensor
+ * the card needs.
+ */
+export function entitySuggestion(hass, entityId, stub) {
+  if (hass?.entities?.[entityId]?.platform !== DOMAIN) {
+    return null;
+  }
+  const config = stub(hass, entityId);
+  return config.entity ? { config } : null;
 }
 
 // Options of the summary set automatically to a sensor of the device
@@ -272,10 +291,13 @@ export function summaryValues(hass, config) {
   };
 }
 
-/** Return the configuration of a new summary card, on the first device. */
-export function summaryStubConfig(hass) {
+/**
+ * Return the configuration of a new summary card, on the device of the
+ * entity `from`, else on the first device.
+ */
+export function summaryStubConfig(hass, from) {
   const config = { type: `custom:${SUMMARY_TYPE}` };
-  const entity = findEntity(hass, "savings_12_months");
+  const entity = findEntity(hass, "savings_12_months", from);
   if (entity) {
     config.entity = entity;
   }
@@ -566,10 +588,13 @@ export function initialPeriod(config) {
   return PERIODS.includes(config?.period) ? config.period : "week";
 }
 
-/** Return the configuration of a new detail card, on the first device. */
-export function detailStubConfig(hass) {
+/**
+ * Return the configuration of a new detail card, on the device of the
+ * entity `from`, else on the first device.
+ */
+export function detailStubConfig(hass, from) {
   const config = { type: `custom:${DETAIL_TYPE}` };
-  const entity = findEntity(hass, "savings_week");
+  const entity = findEntity(hass, "savings_week", from);
   if (entity) {
     config.entity = entity;
   }
@@ -1185,8 +1210,11 @@ class LittleMonkeySavingsDetailCardEditor extends SavingsEditor {
   }
 }
 
-/** Define a card and its editor, and show the card in the card picker. */
-function defineCard(type, card, editorType, editor, key) {
+/**
+ * Define a card and its editor, and show the card in the card picker, also
+ * when an entity of the integration is chosen first.
+ */
+function defineCard(type, card, editorType, editor, key, stub) {
   if (!customElements.get(editorType)) {
     customElements.define(editorType, editor);
   }
@@ -1200,15 +1228,16 @@ function defineCard(type, card, editorType, editor, key) {
       description: text.description,
       preview: true,
       documentationURL: DOCUMENTATION,
+      getEntitySuggestion: (hass, entityId) => entitySuggestion(hass, entityId, stub),
     });
   }
 }
 
 defineCard(
   SUMMARY_TYPE, LittleMonkeySavingsSummaryCard,
-  SUMMARY_EDITOR_TYPE, LittleMonkeySavingsSummaryCardEditor, "summary",
+  SUMMARY_EDITOR_TYPE, LittleMonkeySavingsSummaryCardEditor, "summary", summaryStubConfig,
 );
 defineCard(
   DETAIL_TYPE, LittleMonkeySavingsDetailCard,
-  DETAIL_EDITOR_TYPE, LittleMonkeySavingsDetailCardEditor, "detail",
+  DETAIL_EDITOR_TYPE, LittleMonkeySavingsDetailCardEditor, "detail", detailStubConfig,
 );

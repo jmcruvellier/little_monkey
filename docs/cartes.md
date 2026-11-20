@@ -18,6 +18,8 @@ Little Monkey fournit huit cartes qui reprennent les écrans de l'application ec
 
 Modifiez un tableau de bord, cliquez sur **Ajouter une carte** et cherchez **Petit Singe** (« Little Monkey » en anglais). Chaque carte a un éditeur visuel qui choisit seul les capteurs de votre appareil Little Monkey ; vous pouvez aussi la configurer en YAML.
 
+Depuis Home Assistant 2026.6, vous pouvez aussi partir d'une entité : dans l'onglet **Par entité**, choisissez n'importe quelle entité de Little Monkey, et les cartes de son appareil apparaissent dans la section **Communauté**, sous les suggestions de Home Assistant. Une carte n'y apparaît que si l'appareil a le capteur dont elle a besoin : activez d'abord l'option correspondante (tableau ci-dessous).
+
 | Carte | Option de l'intégration nécessaire |
 |---|---|
 | Little Monkey (cadran) | aucune ; faces 2 à 4 avec Activité du compte |

@@ -191,3 +191,20 @@ test("a contract without off-peak hours nor a known period shows no period", () 
   period.states["sensor.eco_contract"].attributes.off_peak_timeslots = [];
   assert.equal(card.contractView(period, "sensor.eco_contract").known, true);
 });
+
+test("an entity of a device suggests the card on that device", () => {
+  const sensor = (device, key) => ({
+    entity_id: `sensor.${device}_${key}`, platform: "little_monkey", translation_key: key, device_id: device,
+  });
+  const hass = {
+    entities: Object.fromEntries([
+      sensor("home", "contract"), sensor("barn", "contract"), sensor("barn", "firmware"), sensor("shed", "firmware"),
+    ].map((entity) => [entity.entity_id, entity])),
+  };
+  assert.deepEqual(card.entitySuggestion(hass, "sensor.barn_firmware", card.contractStubConfig), {
+    config: { type: "custom:little-monkey-contract-card", entity: "sensor.barn_contract" },
+  });
+  // A device without the sensor needed, or an entity of another integration
+  assert.equal(card.entitySuggestion(hass, "sensor.shed_firmware", card.contractStubConfig), null);
+  assert.equal(card.entitySuggestion({ entities: { "light.lamp": { platform: "hue" } } }, "light.lamp", card.contractStubConfig), null);
+});

@@ -677,11 +677,30 @@ export function bandTotals(measures) {
   return totals;
 }
 
-/** Return the entity of the integration with a translation key, if any. */
-function findEntity(hass, translationKey) {
+/**
+ * Return the entity of the integration with a translation key, if any: on the
+ * device of the entity `from` when given, else on the first device.
+ */
+function findEntity(hass, translationKey, from) {
+  const deviceId = from ? hass?.entities?.[from]?.device_id : undefined;
   return Object.values(hass?.entities || {}).find(
-    (entity) => entity.platform === DOMAIN && entity.translation_key === translationKey,
+    (entity) => entity.platform === DOMAIN && entity.translation_key === translationKey
+      && (!from || entity.device_id === deviceId),
   )?.entity_id;
+}
+
+/**
+ * Return the suggestion of a card for an entity in the card picker of Home
+ * Assistant (2026.6 and later): the card on the device of the entity, or null
+ * when the entity is not of the integration or the device lacks the sensor
+ * the card needs.
+ */
+export function entitySuggestion(hass, entityId, stub) {
+  if (hass?.entities?.[entityId]?.platform !== DOMAIN) {
+    return null;
+  }
+  const config = stub(hass, entityId);
+  return config.entity ? { config } : null;
 }
 
 /** Return the config entry of the device of an entity, if there is one. */
@@ -691,10 +710,13 @@ export function configEntryId(hass, entityId) {
   return entries.length === 1 ? entries[0] : undefined;
 }
 
-/** Return the configuration of a new measures card, on the first device. */
-export function measuresStubConfig(hass) {
+/**
+ * Return the configuration of a new measures card, on the device of the
+ * entity `from`, else on the first device.
+ */
+export function measuresStubConfig(hass, from) {
   const config = { type: `custom:${MEASURES_TYPE}` };
-  const entity = findEntity(hass, "realtime_consumption");
+  const entity = findEntity(hass, "realtime_consumption", from);
   if (entity) {
     config.entity = entity;
   }
@@ -1428,5 +1450,6 @@ if (!customElements.get(MEASURES_TYPE)) {
     description: text.description,
     preview: true,
     documentationURL: DOCUMENTATION,
+    getEntitySuggestion: (hass, entityId) => entitySuggestion(hass, entityId, measuresStubConfig),
   });
 }

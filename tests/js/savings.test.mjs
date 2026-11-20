@@ -256,3 +256,22 @@ test("a period before the first measures gives the first period of ecojoko", () 
   assert.equal(cards.firstPeriod("week", "2025-01-13", {}), null);
   assert.equal(cards.firstPeriod("week", "2025-01-13", undefined), null);
 });
+
+test("an entity of a device suggests the savings cards on that device", () => {
+  const sensor = (device, key) => ({
+    entity_id: `sensor.${device}_${key}`, platform: "little_monkey", translation_key: key, device_id: device,
+  });
+  const hass = {
+    entities: Object.fromEntries([
+      sensor("home", "savings_12_months"), sensor("home", "savings_week"),
+      sensor("barn", "savings_12_months"), sensor("barn", "savings_week"), sensor("barn", "contract"),
+    ].map((entity) => [entity.entity_id, entity])),
+  };
+  assert.deepEqual(cards.entitySuggestion(hass, "sensor.barn_contract", cards.summaryStubConfig), {
+    config: { type: "custom:little-monkey-savings-summary-card", entity: "sensor.barn_savings_12_months" },
+  });
+  assert.deepEqual(cards.entitySuggestion(hass, "sensor.barn_contract", cards.detailStubConfig), {
+    config: { type: "custom:little-monkey-savings-detail-card", entity: "sensor.barn_savings_week" },
+  });
+  assert.equal(cards.entitySuggestion(hass, "sensor.nothing", cards.detailStubConfig), null);
+});

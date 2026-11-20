@@ -224,3 +224,20 @@ test("a field being typed is not drawn again by a reading, only by a touch", () 
   assert.equal(card.keepsTyping({ tagName: "BUTTON" }, false), false);
   assert.equal(card.keepsTyping(null, false), false);
 });
+
+test("an entity of a device suggests the card on that device", () => {
+  const sensor = (device, key) => ({
+    entity_id: `sensor.${device}_${key}`, platform: "little_monkey", translation_key: key, device_id: device,
+  });
+  const hass = {
+    entities: Object.fromEntries([
+      sensor("home", "realtime_consumption"), sensor("barn", "realtime_consumption"), sensor("barn", "firmware"), sensor("shed", "firmware"),
+    ].map((entity) => [entity.entity_id, entity])),
+  };
+  assert.deepEqual(card.entitySuggestion(hass, "sensor.barn_firmware", card.equipmentStubConfig), {
+    config: { type: "custom:little-monkey-equipment-card", entity: "sensor.barn_realtime_consumption" },
+  });
+  // A device without the sensor needed, or an entity of another integration
+  assert.equal(card.entitySuggestion(hass, "sensor.shed_firmware", card.equipmentStubConfig), null);
+  assert.equal(card.entitySuggestion({ entities: { "light.lamp": { platform: "hue" } } }, "light.lamp", card.equipmentStubConfig), null);
+});
