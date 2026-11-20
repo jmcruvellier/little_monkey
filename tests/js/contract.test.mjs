@@ -109,6 +109,17 @@ test("the card shows the contract, the period and the bands", () => {
   assert.equal(card.contractView(hass, "sensor.eco_contract", new Date("2026-11-17T12:00:00+01:00")).offPeak, true);
 });
 
+test("the price of the solar surplus sold is shown when there is one", () => {
+  const hass = fakeHass("hp");
+  assert.equal(card.contractView(hass, "sensor.eco_contract").resale, null);
+  hass.states["sensor.eco_contract"].attributes.resale_price = 0.1109;
+  const view = card.contractView(hass, "sensor.eco_contract");
+  assert.equal(view.resale, 0.1109);
+  // As ecojoko gives it, to the hundredth of a cent
+  assert.equal(card.bandPrice({ per_kwh: "{price} / kWh" }, "fr", { price: view.resale, price_exact: true }),
+    "0,1109 € / kWh");
+});
+
 test("an unknown contract gives nothing to show", () => {
   const hass = fakeHass("hc");
   hass.states["sensor.eco_contract"].state = "unknown";

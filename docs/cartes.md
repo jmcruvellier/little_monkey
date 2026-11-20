@@ -81,7 +81,7 @@ Votre contrat d'électricité en un coup d'œil.
 
 - Le fournisseur, l'offre, sa date de début et la puissance souscrite.
 - Un cadran des 24 heures avec les heures creuses, une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:30, dans 1 h 45 ») ; aux couleurs du jour avec Tempo. L'heure est celle de la France, comme les heures creuses d'ecojoko, où que soit le navigateur. Pour un contrat sans heures creuses, le cadran n'indique pas de période.
-- Les tranches tarifaires avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras, et l'abonnement mensuel. Un prix estimé est précédé de « ≈ » ([voir pourquoi](integration.md#contrat)) ; toucher une tranche ouvre sa consommation du jour.
+- Les tranches tarifaires avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras, l'abonnement mensuel et, si vous revendez votre surplus solaire, son prix de rachat, celui de vos paramètres de production solaire dans ecojoko. Un prix estimé est précédé de « ≈ » ([voir pourquoi](integration.md#contrat)) ; toucher une tranche ouvre sa consommation du jour.
 
 ```yaml
 type: custom:little-monkey-contract-card

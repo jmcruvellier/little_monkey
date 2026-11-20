@@ -34,6 +34,7 @@ const TRANSLATIONS = {
     minutes: "{m} min",
     tempo: { blue: "Blue day", white: "White day", red: "Red day" },
     subscription: "Subscription",
+    resale: "Surplus buyback",
     per_month: "{price} / month",
     per_kwh: "{price} / kWh",
     estimated: "≈ estimated from the costs computed by ecojoko",
@@ -57,6 +58,7 @@ const TRANSLATIONS = {
     minutes: "{m} min",
     tempo: { blue: "Jour bleu", white: "Jour blanc", red: "Jour rouge" },
     subscription: "Abonnement",
+    resale: "Rachat du surplus",
     per_month: "{price} / mois",
     per_kwh: "{price} / kWh",
     estimated: "≈ estimé d'après les coûts calculés par ecojoko",
@@ -303,6 +305,8 @@ export function contractView(hass, entityId, now = new Date()) {
     supplier: attributes.supplier,
     power: attributes.power,
     subscription: attributes.subscription_price,
+    // Price of a kWh of the solar surplus sold, absent without a sale
+    resale: attributes.resale_price ?? null,
     start: attributes.start_date,
     slots,
     minutes,
@@ -478,9 +482,16 @@ class LittleMonkeyContractCard extends HTMLElement {
         escapeHtml(text.per_month.replace(
           "{price}", new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(view.subscription)))}</span></div>`
       : "";
+    // The price of the solar surplus sold, as ecojoko gives it: exact
+    const resalePrice = bandPrice(text, locale, { price: view.resale, price_exact: true });
+    const resale = resalePrice
+      ? `<div class="row subscription resale"><span class="label">${escapeHtml(text.resale)}</span><span class="value">${
+        escapeHtml(resalePrice)}</span></div>`
+      : "";
     const estimated = view.bands.some((band) => bandPrice(text, locale, band)?.startsWith("≈"))
       ? `<div class="note">${escapeHtml(text.estimated)}</div>` : "";
-    const rows = bands || subscription ? `<div class="rows">${bands}${subscription}${estimated}</div>` : "";
+    const rows = bands || subscription || resale
+      ? `<div class="rows">${bands}${subscription}${resale}${estimated}</div>` : "";
     return `
       <div class="offer">
         <div class="badge">${escapeHtml(supplierBadge(view.supplier))}</div>

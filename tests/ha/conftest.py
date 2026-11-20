@@ -62,6 +62,8 @@ VALUES = {
         "off_peak_timeslots": [{"start": "01:30", "stop": "07:00"}, {"start": "14:00", "stop": "16:30"}],
         "start_date": "2026-08-04",
     },
+    # Price of a kWh of the solar surplus sold
+    "_resale_price": 0.1109,
 }
 
 
