@@ -49,8 +49,8 @@ from .tariff import (
 # What sends the requests to ecojoko, for the diagnostics: the polls by
 # default, "service" for a service read by a card or an automation
 REQUEST_SOURCE: ContextVar[str] = ContextVar("little_monkey_request_source", default="poll")
-# Changes of the answer of an API kept for the diagnostics, and URLs whose
-# last answer is kept to tell whether it changed
+# Requests of an API and changes of its answer kept for the diagnostics, and
+# URLs whose last answer is kept to tell whether it changed
 REQUEST_CHANGES_KEPT = 20
 REQUEST_URLS_KEPT = 200
 
@@ -1379,10 +1379,12 @@ class LittleMonkeyApiClient:
             read = next((read for start, read in ANSWER_VALUES.items()
                          if name.startswith(start)), None)
             self._request_stats[name] = {
-                "poll": 0, "service": 0, **self._new_changes(), "read_values": read,
+                "poll": 0, "service": 0, "times": deque(maxlen=REQUEST_CHANGES_KEPT),
+                **self._new_changes(), "read_values": read,
                 "values": None if read is None else self._new_changes()}
         stats = self._request_stats[name]
         stats[REQUEST_SOURCE.get()] += 1
+        stats["times"].append(now)
         return stats
 
     @staticmethod
@@ -1429,17 +1431,20 @@ class LittleMonkeyApiClient:
         """Return the requests of each API since the start, for the diagnostics.
 
         By API: the requests of the polls and of the services, per hour on
-        average, how many answers changed or not since the request before
+        average, the seconds between the last requests, how many answers changed or not since the request before
         to the same URL, and the seconds between the last changes; the same
         for the values the sensors use, for the APIs of ANSWER_VALUES.
         """
+        def intervals(times):
+            times = list(times)
+            return [round(after - before) for before, after in zip(times, times[1:])]
+
         def changes(counters):
-            times = list(counters["changes"])
+            times = counters["changes"]
             return {
                 "changed": counters["changed"],
                 "unchanged": counters["unchanged"],
-                "seconds_between_changes": [
-                    round(after - before) for before, after in zip(times, times[1:])],
+                "seconds_between_changes": intervals(times),
                 "seconds_since_change": round(now - times[-1]) if times else None,
             }
 
@@ -1451,6 +1456,8 @@ class LittleMonkeyApiClient:
                 "poll": stats["poll"],
                 "service": stats["service"],
                 "per_hour": round(total / hours, 1) if hours >= 1 / 60 else None,
+                # Right from the second request, unlike the average per hour
+                "seconds_between_requests": intervals(stats["times"]),
                 **changes(stats),
             }
             if stats["values"] is not None:

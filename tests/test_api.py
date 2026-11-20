@@ -536,6 +536,10 @@ def test_diagnostics_count_the_requests_and_their_changes(api):
     realtime = requests["apis"]["realtime_conso"]
     # The first answer has nothing to be compared with
     assert (realtime["poll"], realtime["service"]) == (3, 0)
+    # The seconds between the 3 requests, from the second one on
+    assert len(realtime["seconds_between_requests"]) == 2
+    assert all(seconds >= 0 for seconds in realtime["seconds_between_requests"])
+    assert requests["apis"]["Cookies"]["seconds_between_requests"] == []
     assert (realtime["unchanged"], realtime["changed"]) == (1, 1)
     assert realtime["seconds_since_change"] >= 0
     assert realtime["seconds_between_changes"] == []
