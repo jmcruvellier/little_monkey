@@ -42,9 +42,9 @@ Le cadran du boîtier ecojoko.
 
 - **L'arc du haut** montre la puissance en temps réel sur une échelle logarithmique (0, 50, 100, 500, 1K, 5K, 10K, MAX), en zones de plus en plus marquées.
 - **Le disque central** affiche la puissance en W, la puissance apparente en VA quand elle est disponible, et la courbe des dernières minutes. Avec les totaux HC/HP ou un contrat Tempo, il prend la couleur de la période en cours et en affiche le nom (« HEURES CREUSES », « HEURES PLEINES · JOUR ROUGE ») ; il passe au vert et titre « INJECTION RÉSEAU » pendant l'injection d'un surplus.
-- **L'aiguille du bas** indique vos économies sur 7 jours, de -20 % (économie, côté vert) à +20 % (surconsommation).
+- **L'aiguille du bas** indique l'écart de votre consommation des 7 derniers jours avec votre consommation de référence (capteur « Écart sur 7 Jours »), de -20 % (économie, côté vert) à +20 % (surconsommation).
 
-Comme sur le boîtier, le disque a plusieurs faces, que l'on fait défiler en glissant le doigt ou avec les points : la puissance temps réel ; les économies sur 7 jours ; le coût et la consommation sur 7 jours avec l'histogramme des jours ; la puissance maximale du mois, de l'année et depuis le début. Les faces 2 à 4 et l'aiguille demandent l'option Activité du compte. La carte revient d'elle-même sur la puissance au bout de 30 secondes.
+Comme sur le boîtier, le disque a plusieurs faces, que l'on fait défiler en glissant le doigt ou avec les points : la puissance temps réel ; l'économie ou la surconsommation sur 7 jours ; le coût et la consommation sur 7 jours avec l'histogramme des jours ; la puissance maximale du mois, de l'année et depuis le début. Les faces 2 à 4 et l'aiguille demandent l'option Activité du compte. La carte revient d'elle-même sur la puissance au bout de 30 secondes.
 
 | Période | Heures creuses | Heures pleines |
 |---|---|---|
@@ -227,8 +227,8 @@ entity: sensor.ecojoko_consommation_temps_reel
 
 La page « Mesures » d'ecojoko, avec trois onglets.
 
-- **Électricité, Jour** : la courbe de puissance colorée selon la tranche tarifaire de chaque instant (heures pleines, heures creuses, couleurs Tempo…), le talon de consommation en bleu foncé dessous et la production injectée sous l'axe. Toucher la courbe donne la puissance à cette heure.
-- **Électricité, Semaine, Mois, Année** : les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec la production injectée sous l'axe. La légende donne le total de chaque tranche ; toucher une barre affiche son détail.
+- **Électricité, Jour** : la courbe de puissance colorée selon la tranche tarifaire de chaque instant (heures pleines, heures creuses, couleurs Tempo…), le talon de consommation en bleu foncé dessous et le surplus injecté sous l'axe, en jaune. Toucher la courbe donne la puissance à cette heure.
+- **Électricité, Semaine, Mois, Année** : les jours ou les mois en barres empilées par tranche, en kWh ou en euros, avec le surplus injecté sous l'axe. La légende donne le total de chaque tranche ; toucher une barre affiche son détail.
 - **Totaux** : en haut à droite, la consommation et son coût, avec le surplus injecté entre les deux. Si vous revendez votre surplus, deux lignes : « Achat » (consommation et coût) et « Revente » (surplus et montant de la revente) ; le détail d'une barre donne aussi le montant de sa revente.
 - **Température, Humidité** : les courbes intérieure et extérieure, avec la moyenne intérieure. Elles viennent des statistiques des capteurs de Home Assistant quand ceux-ci couvrent toute la période, sinon d'ecojoko, qui a tout l'historique de la sonde. Si ecojoko ne donne que la mesure du moment, la carte affiche ce que Home Assistant a déjà enregistré.
 - **Navigation** : les flèches, ou un glissement du doigt, passent à la période précédente ou suivante. Le mois est le mois calendaire, pour les trois onglets. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
