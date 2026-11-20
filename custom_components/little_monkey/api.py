@@ -776,11 +776,15 @@ class LittleMonkeyApiClient:
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
-        # ecojoko returns degraded powerstat data to the default
-        # Home Assistant User-Agent, so the integration sends its own
+        # ecojoko sorts its answers by User-Agent. To the default one of
+        # Home Assistant it returns degraded powerstat data (fixed in 1.2.8);
+        # to one that does not start like a browser's, the temperature and
+        # humidity of a period as a single point of now (20/11/2026, for
+        # little_monkey/<version> and HomeAssistant/<version> alike). The
+        # integration therefore names itself the way crawlers do
         self._headers = {
             "Content-type": "application/json",
-            "User-Agent": f"little_monkey/{VERSION}",
+            "User-Agent": f"Mozilla/5.0 (compatible; little_monkey/{VERSION})",
         }
         self._cookies = None
         self._gateway_id = None

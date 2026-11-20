@@ -427,7 +427,9 @@ def test_user_agent_is_sent(api):
     session = Session()
     run(make_client(api, session).async_get_data())
     for _method, _url, kwargs in session.requests:
-        assert kwargs["headers"]["User-Agent"].startswith("little_monkey/")
+        # Named as crawlers are: ecojoko returns only the last point of the
+        # temperature and humidity to a User-Agent unlike a browser's
+        assert kwargs["headers"]["User-Agent"].startswith("Mozilla/5.0 (compatible; little_monkey/")
 
 
 def test_login_is_a_post_with_the_credentials_in_the_body(api):
