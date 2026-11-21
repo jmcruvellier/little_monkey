@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 import asyncio
-from collections import deque
+from collections import OrderedDict, deque
 from contextvars import ContextVar
+import copy
 import datetime as dt
 import hashlib
 import json
@@ -55,6 +56,8 @@ REQUEST_SOURCE: ContextVar[str] = ContextVar("little_monkey_request_source", def
 # URLs whose last answer is kept to tell whether it changed
 REQUEST_CHANGES_KEPT = 20
 REQUEST_URLS_KEPT = 200
+# Answers of the services kept for the cards, browsers and automations
+SERVICE_CACHE_SIZE = 200
 
 TZ = get_paris_timezone()
 
@@ -898,6 +901,13 @@ class LittleMonkeyApiClient:
         self._requests_start = None
         self._request_stats = {}
         self._answer_digests = {}
+        # Answers of the services by key: (monotonic time, answer), the
+        # oldest first; readings in progress, shared by the same requests;
+        # answers served from the cache or read, for the diagnostics
+        self._service_cache = OrderedDict()
+        self._service_reads = {}
+        self._service_hits = 0
+        self._service_misses = 0
         # Number of logins since the start, for the diagnostics
         self._login_count = 0
         # Last real-time values and monotonic time of their last change
@@ -1062,6 +1072,12 @@ class LittleMonkeyApiClient:
                 for name, last in self._last_responses.items()
             },
             "requests": self._requests_diagnostics(now),
+            # Answers of the services served from the cache, or read
+            "service_cache": {
+                "entries": len(self._service_cache),
+                "hits": self._service_hits,
+                "misses": self._service_misses,
+            },
         }
 
     async def async_get_cookiesdata(self) -> None:
@@ -1373,6 +1389,46 @@ class LittleMonkeyApiClient:
             for period in SAVINGS_PERIODS))
         data.update(zip(SAVINGS_PERIODS, periods))
         return data
+
+    async def async_cached(self, key, ttl, read):
+        """Return the answer of a service, read at most once every `ttl` seconds.
+
+        The answer is shared by the cards, the browsers and the automations
+        that ask for the same data: the same requests at the same time wait
+        for a single reading. A failure is not kept. Each caller gets its
+        own copy of the answer.
+        """
+        cached = self._service_cache.get(key)
+        if cached is not None and time.monotonic() - cached[0] < ttl:
+            self._service_cache.move_to_end(key)
+            self._service_hits += 1
+            return copy.deepcopy(cached[1])
+        task = self._service_reads.get(key)
+        if task is None:
+            self._service_misses += 1
+            task = asyncio.ensure_future(self._async_fill_cache(key, read))
+            self._service_reads[key] = task
+
+            def done(task):
+                self._service_reads.pop(key, None)
+                # Retrieved even when every caller gave up, not to be logged
+                if not task.cancelled():
+                    task.exception()
+
+            task.add_done_callback(done)
+        else:
+            self._service_hits += 1
+        # A caller that gives up does not stop the reading for the others
+        return copy.deepcopy(await asyncio.shield(task))
+
+    async def _async_fill_cache(self, key, read):
+        """Read the answer of a service and keep it, the least recent out first."""
+        answer = await read()
+        self._service_cache[key] = (time.monotonic(), answer)
+        self._service_cache.move_to_end(key)
+        while len(self._service_cache) > SERVICE_CACHE_SIZE:
+            self._service_cache.popitem(last=False)
+        return answer
 
     def _count_request(self, name) -> dict:
         """Count a request of an API, by what sends it: a poll or a service."""
