@@ -2480,3 +2480,87 @@ def test_climate_measures_need_the_sensor(api):
     run(client.async_get_data())
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(client.async_get_measures("humidity", "day", dt.date(2026, 11, 18)))
+
+
+# --- Cache of the answers of the services
+
+
+def test_service_answer_is_kept_for_its_time(api, monkeypatch):
+    """The same data asked again within its time is not read again."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(api, "time", types.SimpleNamespace(monotonic=lambda: clock["now"]))
+    client = make_client(api, Session())
+    reads = []
+
+    async def read():
+        reads.append(clock["now"])
+        return {"bars": [1, 2]}
+
+    async def scenario():
+        first = await client.async_cached(("savings", "week"), 240, read)
+        # Each caller gets its own copy: a change does not reach the cache
+        first["bars"].append(3)
+        clock["now"] += 239
+        second = await client.async_cached(("savings", "week"), 240, read)
+        # Another key is read apart
+        await client.async_cached(("savings", "month"), 240, read)
+        clock["now"] += 1
+        third = await client.async_cached(("savings", "week"), 240, read)
+        return second, third
+
+    second, third = run(scenario())
+    assert second == third == {"bars": [1, 2]}
+    assert reads == [1000.0, 1239.0, 1240.0]
+    cache = client.diagnostics()["service_cache"]
+    assert cache == {"entries": 2, "hits": 1, "misses": 3}
+
+
+def test_same_requests_at_the_same_time_share_one_reading(api):
+    """Two cards asking for the same data at once make a single request."""
+    client = make_client(api, Session())
+    reads = []
+
+    async def read():
+        reads.append(1)
+        await asyncio.sleep(0.01)
+        return {"activations": []}
+
+    async def scenario():
+        return await asyncio.gather(*(
+            client.async_cached(("activations", 0), 1800, read) for _ in range(3)))
+
+    answers = run(scenario())
+    assert answers == [{"activations": []}] * 3
+    assert len(reads) == 1
+
+
+def test_a_failed_reading_is_not_kept(api):
+    """After a failure, the next request reads ecojoko again."""
+    client = make_client(api, Session())
+    answers = iter([api.LittleMonkeyApiClientCommunicationError("timeout"), {"ok": True}])
+
+    async def read():
+        answer = next(answers)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
+    async def scenario():
+        with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+            await client.async_cached(("analysis", "week", None), 3600, read)
+        return await client.async_cached(("analysis", "week", None), 3600, read)
+
+    assert run(scenario()) == {"ok": True}
+
+
+def test_the_cache_keeps_a_bounded_number_of_answers(api, monkeypatch):
+    """The least recently used answers leave the cache first."""
+    monkeypatch.setattr(api, "SERVICE_CACHE_SIZE", 3)
+    client = make_client(api, Session())
+
+    async def scenario():
+        for day in range(4):
+            await client.async_cached(("measures", day), 240, lambda day=day: asyncio.sleep(0, day))
+
+    run(scenario())
+    assert list(client._service_cache) == [("measures", 1), ("measures", 2), ("measures", 3)]

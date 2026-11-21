@@ -10,6 +10,7 @@
   - équipement piloté : son état reste lu toutes les deux minutes ; sa courbe de puissance, son énergie et son coût le sont toutes les six minutes, ses changements d'état toutes les dix minutes, et les deux juste après une commande ou la fin d'un forçage.
 
   Ces lectures ne dépendent plus de la fréquence de rafraîchissement choisie, qui ne règle que le temps réel
+- Les cartes interrogent beaucoup moins ecojoko : les réponses des services de lecture sont gardées et partagées entre les cartes, les navigateurs, les aperçus du sélecteur de cartes et les automatisations. Une période qui peut encore changer est gardée de 4 minutes (mesures, économies) à une heure (analyse), les activations 30 minutes, une période plus ancienne une journée ; des demandes identiques simultanées ne font qu'une requête. Recharger un tableau de bord ou l'ouvrir dans un deuxième onglet ne relit plus ecojoko
 - Fréquence de rafraîchissement : 5 secondes au minimum, au lieu de 3. ecojoko ne change la puissance en temps réel que toutes les 5 à 10 secondes au mieux. À la mise à jour, un intervalle inférieur à 5 secondes est porté à 5
 
 ### Nouveautés

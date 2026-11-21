@@ -39,6 +39,7 @@ from custom_components.little_monkey import (
     coordinator as lm_coordinator,
     repairs,
     select as lm_select,
+    services as lm_services,
 )
 from custom_components.little_monkey.entity import device_entry_ids, registry_device
 from custom_components.little_monkey.diagnostics import (
@@ -1576,7 +1577,8 @@ async def test_analysis_services(hass, fake_api):
 
     fake_api.savings_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
     with pytest.raises(HomeAssistantError):
-        await call_service(hass, "get_consumption_analysis", period="week")
+        # A period not read yet: the week is kept from above
+        await call_service(hass, "get_consumption_analysis", period="month")
     with pytest.raises(vol.Invalid):
         await call_service(hass, "get_activations", page=-1)
     # ecojoko does not analyse years: it would give the current week
@@ -1996,6 +1998,51 @@ async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
     # Not enough statistics to estimate the other one
     assert bands["hc_grid_consumption"]["price"] is None
     assert "id" not in bands["hc_grid_consumption"]
+
+
+async def test_answers_of_the_services_are_shared(hass, fake_api, monkeypatch):
+    """The same data asked again is read once, for the time it may not change."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(lm_api, "time", types.SimpleNamespace(monotonic=lambda: clock["now"]))
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    calls = len(fake_api.analysis_calls)
+
+    for _ in range(2):
+        await call_service(hass, "get_activations")
+        await call_service(hass, "get_measures", measure="electricity", period="day")
+        await call_service(
+            hass, "get_measures", measure="electricity", period="month", date="2025-03-04")
+    assert len(fake_api.analysis_calls) == calls + 3
+
+    # The day is read again after four minutes, the activations after half an hour
+    clock["now"] += 240
+    await call_service(hass, "get_measures", measure="electricity", period="day")
+    await call_service(hass, "get_activations")
+    assert len(fake_api.analysis_calls) == calls + 4
+    clock["now"] += 1800
+    await call_service(hass, "get_activations")
+    await call_service(
+        hass, "get_measures", measure="electricity", period="month", date="2025-03-04")
+    # An old month is kept a day
+    assert len(fake_api.analysis_calls) == calls + 5
+    diagnostics = await async_get_config_entry_diagnostics(hass, entry)
+    assert diagnostics["client"]["service_cache"]["misses"] == 5
+
+
+def test_how_long_an_answer_is_kept():
+    """A period that may still change is kept a few minutes, an old one a day."""
+    today = dt_util.now().astimezone(dt_util.get_time_zone("Europe/Paris")).date()
+    seconds = lm_services.cache_seconds
+    assert seconds("measures", "day", today) == 240
+    assert seconds("measures", "day", today - dt.timedelta(days=1)) == 240
+    assert seconds("measures", "day", today - dt.timedelta(days=2)) == 24 * 3600
+    assert seconds("measures", "year", today) == 240
+    assert seconds("analysis", "week", None) == 3600
+    assert seconds("savings", "month", dt.date(2025, 3, 4)) == 24 * 3600
+    assert lm_services.period_end("week", dt.date(2026, 11, 18)) == dt.date(2026, 11, 22)
+    assert lm_services.period_end("month", dt.date(2024, 2, 10)) == dt.date(2024, 2, 29)
+    assert lm_services.period_end("year", dt.date(2026, 3, 4)) == dt.date(2026, 12, 31)
 
 
 async def test_measures_service(hass, fake_api):
