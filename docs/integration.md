@@ -73,7 +73,7 @@ Les économies comparent votre consommation à une consommation de référence. 
 Dans les deux cas :
 
 
-- chaque jour est comparé au même jour de la semaine 52 semaines plus tôt, chaque semaine à la même semaine, chaque mois au même mois, les 12 derniers mois aux 12 mois d'avant, et l'écart sur 7 jours (aiguille du cadran) aux mêmes 7 jours de l'année précédente ;
+- chaque jour est comparé au même jour de la semaine 52 semaines plus tôt, chaque semaine à la même semaine, chaque mois au même mois, les 12 derniers mois aux 12 mois d'avant, et l'écart sur 7 jours (aiguille du cadran) aux mêmes 7 jours de l'année précédente. La période en cours s'arrête l'année précédente au même jour et à la même heure : le 22 novembre à 8 h, le mois de novembre est comparé au 1er novembre de l'an dernier jusqu'au 22 à 8 h ;
 - il faut plus d'un an d'historique chez ecojoko : une période sans données l'année précédente garde la référence d'ecojoko. Le service `get_savings` le dit dans `reference_source` (`last_year`, `ecojoko` ou `mixed`) ;
 - l'année précédente garde sa propre météo : un hiver plus froid que le précédent paraît une surconsommation.
 
