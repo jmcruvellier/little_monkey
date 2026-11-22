@@ -34,6 +34,10 @@ from .const import (
     CONF_PRICES_START,
     CONF_SUBSCRIPTION_PRICE,
     CONF_USE_CONTRACT_PRICES,
+    CONF_REFERENCE,
+    REFERENCE_ECOJOKO,
+    REFERENCE_LAST_YEAR,
+    REFERENCE_LAST_YEAR_PAID,
     LOGGER,
     SENSOR_GROUP_OPTIONS,
 )
@@ -63,7 +67,13 @@ CATEGORY_SELECTOR = selector.SelectSelector(
 )
 # Settings of the last screen
 SETTINGS_KEYS = (
-    CONF_USE_PROD_FEATURE, CONF_USE_TEMPHUM_FEATURE, *SENSOR_GROUP_OPTIONS, POLL_INTERVAL)
+    CONF_USE_PROD_FEATURE, CONF_USE_TEMPHUM_FEATURE, *SENSOR_GROUP_OPTIONS, CONF_REFERENCE,
+    POLL_INTERVAL)
+REFERENCE_SELECTOR = selector.SelectSelector(selector.SelectSelectorConfig(
+    options=[REFERENCE_ECOJOKO, REFERENCE_LAST_YEAR, REFERENCE_LAST_YEAR_PAID],
+    translation_key="reference",
+    mode=selector.SelectSelectorMode.DROPDOWN,
+))
 # Suffix of the field of the category of a band
 CATEGORY_SUFFIX = " – HC/HP"
 # Suffix of the field of the price of a band, named after its label too
@@ -109,6 +119,11 @@ def _settings_schema(defaults: Mapping[str, Any]) -> vol.Schema:
                 vol.Optional(option, default=defaults.get(option, False)): cv.boolean
                 for option in SENSOR_GROUP_OPTIONS
             },
+            # Reference consumption of the savings
+            vol.Required(
+                CONF_REFERENCE,
+                default=defaults.get(CONF_REFERENCE, REFERENCE_ECOJOKO),
+            ): REFERENCE_SELECTOR,
             vol.Required(
                 POLL_INTERVAL,
                 default=defaults.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL),

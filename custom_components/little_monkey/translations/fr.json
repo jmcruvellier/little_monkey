@@ -35,7 +35,11 @@
                     "use_contract_feature": "Contrat : offre, tranches et prix du kWh (carte Contrat)",
                     "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)",
                     "use_analysis_feature": "Analyse de la conso : répartition par poste et activations des appareils (cartes Analyse de la conso et Activations)",
-                    "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)"
+                    "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)",
+                    "reference": "Consommation de référence des économies"
+                },
+                "data_description": {
+                    "reference": "Celle choisie dans l'application ecojoko (un mois de référence, ou un mois personnalisé), ou la même période de l'année précédente : chaque jour comparé au même jour de la semaine 52 semaines plus tôt, chaque mois au même mois. Il faut alors plus d'un an d'historique chez ecojoko : une période sans données l'année précédente garde la référence d'ecojoko."
                 }
             },
             "reauth_confirm": {
@@ -106,7 +110,11 @@
                     "use_contract_feature": "Contrat : offre, tranches et prix du kWh (carte Contrat)",
                     "use_equipment_feature": "Équipements pilotés : chauffe-eau…, leurs capteurs et leur pilotage (carte Équipements)",
                     "use_analysis_feature": "Analyse de la conso : répartition par poste et activations des appareils (cartes Analyse de la conso et Activations)",
-                    "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)"
+                    "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)",
+                    "reference": "Consommation de référence des économies"
+                },
+                "data_description": {
+                    "reference": "Celle choisie dans l'application ecojoko (un mois de référence, ou un mois personnalisé), ou la même période de l'année précédente : chaque jour comparé au même jour de la semaine 52 semaines plus tôt, chaque mois au même mois. Il faut alors plus d'un an d'historique chez ecojoko : une période sans données l'année précédente garde la référence d'ecojoko."
                 }
             },
             "prices": {
@@ -536,6 +544,13 @@
                 "week": "Semaine",
                 "month": "Mois",
                 "year": "Année"
+            }
+        },
+        "reference": {
+            "options": {
+                "ecojoko": "Celle de l'application ecojoko",
+                "last_year": "La même période l'année précédente, à prix égal",
+                "last_year_paid": "La même période l'année précédente, aux prix payés"
             }
         }
     },

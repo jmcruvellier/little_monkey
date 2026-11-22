@@ -34,6 +34,8 @@ from .const import (
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
     CONF_CONTRACT_PRICES,
+    CONF_REFERENCE,
+    REFERENCE_ECOJOKO,
     CONF_REMOVED_BANDS,
     CONF_TARIFF_BANDS,
     CONF_USE_ACTIVITY_FEATURE,
@@ -85,6 +87,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             bands=entry.data.get(CONF_TARIFF_BANDS),
             removed_bands=entry.data.get(CONF_REMOVED_BANDS),
             contract_prices=entry.data.get(CONF_CONTRACT_PRICES),
+            reference=entry.data.get(CONF_REFERENCE, REFERENCE_ECOJOKO),
             use_temphum=entry.data.get(CONF_USE_TEMPHUM_FEATURE, False),
             use_prod=entry.data.get(CONF_USE_PROD_FEATURE, False),
             # A session of its own, with its own cookies: the ecojoko session

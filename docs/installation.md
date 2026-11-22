@@ -82,6 +82,7 @@ Les économies suivent : le coût de votre consommation est recalculé de la mê
 | Capteurs d'humidité et de température | décochée | Température et humidité intérieures et extérieures de la sonde |
 | Activité du compte | décochée | Économies, consommation et coût sur 7 jours, économies cumulées, puissances maximales ; faces 2 à 4 de la carte Little Monkey |
 | Économies | décochée | Coûts et économies sur 12 mois, de la semaine, du mois et de l'année ; cartes Économies |
+| Consommation de référence des économies | celle d'ecojoko | Celle choisie dans l'application ecojoko, ou la même période de l'année précédente, à prix égal ou aux prix payés ([voir plus bas](integration.md#la-référence-des-économies)) |
 | Contrat | décochée | L'offre, ses tranches et le prix d'un kWh ; carte Contrat |
 | Équipements pilotés | décochée | Le chauffe-eau (ou tout équipement piloté par ecojoko), ses capteurs et son pilotage ; carte Équipements |
 | Analyse de la conso | décochée | La répartition par poste et les activations des appareils ; cartes Analyse de la conso et Activations |

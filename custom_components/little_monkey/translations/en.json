@@ -35,7 +35,11 @@
                     "use_contract_feature": "Contract: offer, tariff bands and price of a kWh (Contract card)",
                     "use_equipment_feature": "Piloted equipments: water heater…, their sensors and their control (Equipments card)",
                     "use_analysis_feature": "Consumption analysis: breakdown by category and activations of the appliances (Consumption analysis and Activations cards)",
-                    "use_measures_feature": "Measures: power of the day, energy by tariff band, temperature and humidity (Measures card)"
+                    "use_measures_feature": "Measures: power of the day, energy by tariff band, temperature and humidity (Measures card)",
+                    "reference": "Reference consumption of the savings"
+                },
+                "data_description": {
+                    "reference": "The one chosen in the ecojoko application (a reference month, or a custom month), or the same period of the year before: each day compared with the same day of the week 52 weeks earlier, each month with the same month. It then needs more than a year of history at ecojoko: a period without data the year before keeps ecojoko's reference."
                 }
             },
             "reauth_confirm": {
@@ -106,7 +110,11 @@
                     "use_contract_feature": "Contract: offer, tariff bands and price of a kWh (Contract card)",
                     "use_equipment_feature": "Piloted equipments: water heater…, their sensors and their control (Equipments card)",
                     "use_analysis_feature": "Consumption analysis: breakdown by category and activations of the appliances (Consumption analysis and Activations cards)",
-                    "use_measures_feature": "Measures: power of the day, energy by tariff band, temperature and humidity (Measures card)"
+                    "use_measures_feature": "Measures: power of the day, energy by tariff band, temperature and humidity (Measures card)",
+                    "reference": "Reference consumption of the savings"
+                },
+                "data_description": {
+                    "reference": "The one chosen in the ecojoko application (a reference month, or a custom month), or the same period of the year before: each day compared with the same day of the week 52 weeks earlier, each month with the same month. It then needs more than a year of history at ecojoko: a period without data the year before keeps ecojoko's reference."
                 }
             },
             "prices": {
@@ -536,6 +544,13 @@
                 "week": "Week",
                 "month": "Month",
                 "year": "Year"
+            }
+        },
+        "reference": {
+            "options": {
+                "ecojoko": "The one of the ecojoko application",
+                "last_year": "The same period of the year before, at equal prices",
+                "last_year_paid": "The same period of the year before, at the prices paid"
             }
         }
     },
