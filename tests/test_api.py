@@ -2945,3 +2945,31 @@ def test_share_of_a_day_used_before_this_time(api):
     # One kWh an hour all day long: the share of the hours gone by
     assert 0 <= gone_by <= 1
     assert shares[2] == pytest.approx(gone_by, abs=1 / 24 + 0.001)
+
+
+def test_energy_of_the_period_ecojoko_answered_with(api, monkeypatch):
+    """On a Monday morning ecojoko answers with the week before: its energy is read."""
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 11, 23))
+    client = make_client(api, Session())
+    run(client.async_get_data())
+    client._contract_prices = {"prices": {"2": 0.2}, "subscription": None,
+                               "start": None, "end": None}
+    days = []
+
+    async def period_energies(period, day, key="energy"):
+        days.append((period, day))
+        return {}
+
+    client._async_period_energies = period_energies
+    # Asked for the week of the 23rd, ecojoko answers with the week of the 16th
+    values = run(client.async_get_savings_period("week", dt.date(2026, 11, 23)))
+    assert values["start"] == "2026-11-16"
+    assert days == [("week", dt.date(2026, 11, 16))]
+
+    answered_day = api._answered_day
+    assert answered_day("week", {"start": "2026-11-16"}, dt.date(2026, 11, 23)) == dt.date(
+        2026, 11, 16)
+    # A month starting on the Monday before its first day
+    assert answered_day("month", {"start": "2026-08-31"}, dt.date(2026, 9, 1)) == dt.date(
+        2026, 9, 7)
+    assert answered_day("month", {}, dt.date(2026, 9, 1)) == dt.date(2026, 9, 1)
