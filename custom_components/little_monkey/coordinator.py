@@ -76,6 +76,10 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             band["key"]: band.get("name") or band.get("label")
             for band in entry.data.get(CONF_TARIFF_BANDS) or []
         }
+        # Id of the band of each key, for the price of a kWh now
+        self._band_ids = {
+            band["key"]: band["id"] for band in entry.data.get(CONF_TARIFF_BANDS) or []}
+        self._current_band_key = None
         self._tariff_band = TariffPeriod()
         # The HC and HP totals, and the tariff bands having a sensor, split
         # the grid consumption: their sum never exceeds it (see DayParts)
@@ -174,7 +178,16 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         values = self.client.band_values
         key = self._tariff_band.update(self.client.stat_date, {
             key: values.get(key) for key in self._band_names})
+        self._current_band_key = key
         return self._band_names.get(key)
+
+    def _current_price(self, band_prices) -> float | None:
+        """Return the price of a kWh of the current tariff band, None if not known.
+
+        The price entered in the options, else ecojoko's, else estimated.
+        """
+        band_id = self._band_ids.get(self._current_band_key)
+        return (band_prices.get(band_id) or {}).get("price")
 
     async def _async_update_data(self):
         """Update data via library."""
@@ -207,10 +220,12 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             # Equipments of the gateway by id, for their diagnostic sensors
             "equipments": {
                 equipment["id"]: equipment for equipment in self.client.equipments},
-            # Price of a kWh of each band, by band id
-            "band_prices": self.client.band_prices,
+            # Price of a kWh of each band, by band id, and of the current one
+            "band_prices": (band_prices := self.client.band_prices),
             # Prices of the contract entered by the user for today, or None
             "entered_prices": self.client.entered_prices,
+            # After the current band, which it needs
+            "current_price": self._current_price(band_prices),
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
             "realtime_apparent_power": self.client.realtime_va,

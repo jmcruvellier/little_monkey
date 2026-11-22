@@ -371,7 +371,8 @@ async def test_new_install_entities(hass, fake_api):
 
     entity_registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    keys = [*ENABLED, "current_tariff_period", "contract", *ACTIVITY_KEYS, *SAVINGS_KEYS]
+    keys = [*ENABLED, "current_tariff_period", "contract", "current_price",
+            *ACTIVITY_KEYS, *SAVINGS_KEYS]
     expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in keys]]
     assert sorted(e.unique_id for e in entities) == sorted(expected)
 
@@ -2050,6 +2051,21 @@ async def test_options_enter_the_prices_of_the_contract(hass, fake_api):
     assert hass.states.get("sensor.ecojoko_contract").attributes["entered_prices"] is None
 
 
+async def test_price_of_a_kwh_now(hass, fake_api):
+    """The price of the current band, for the costs of the Energy dashboard."""
+    entry = add_entry(hass, data={**DATA, "contract_prices": {
+        "prices": {"2": 0.180336, "3": 0.134736}, "subscription": None, "start": None, "end": None}})
+    assert await setup_entry(hass, entry)
+    state = hass.states.get("sensor.ecojoko_current_price_per_kwh")
+    assert state is not None
+    assert state.attributes["unit_of_measurement"] == "EUR/kWh"
+    coordinator = entry.runtime_data
+    coordinator._current_band_key = "hc_grid_consumption"
+    assert coordinator._current_price(coordinator.data["band_prices"]) == 0.134736
+    coordinator._current_band_key = None
+    assert coordinator._current_price(coordinator.data["band_prices"]) is None
+
+
 async def test_answers_of_the_services_are_shared(hass, fake_api, monkeypatch):
     """The same data asked again is read once, for the time it may not change."""
     clock = {"now": 1000.0}
@@ -2129,7 +2145,7 @@ async def test_groups_of_sensors_are_off_by_default(hass, fake_api):
     unique_ids = {
         entity.unique_id
         for entity in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)}
-    for key in [*ACTIVITY_KEYS, *SAVINGS_KEYS, "contract"]:
+    for key in [*ACTIVITY_KEYS, *SAVINGS_KEYS, "contract", "current_price"]:
         assert f"{entry.entry_id}_{key}" not in unique_ids, key
     assert not [unique_id for unique_id in unique_ids if "_630220_" in unique_id or "_3_" in unique_id]
     assert hass.states.get("select.chauffe_eau_control") is None
