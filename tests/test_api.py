@@ -2752,3 +2752,88 @@ def test_savings_of_12_months_at_the_prices_entered(api):
     assert summary["consumption_cost_12_months"] == 398.0
     assert summary["reference_cost_12_months"] == 497.0
     assert summary["savings_12_months"] == 99.0
+
+
+# --- Reference of the savings: the same period of last year
+
+
+def last_year_client(api):
+    """Return a client comparing with last year, at ecojoko's prices."""
+    client = make_client(api, Session())
+    client._reference = "last_year"
+    client._ecojoko_prices = lambda: ({2: 0.2}, {3: 0.15})
+    return client
+
+
+def test_reference_of_last_year_at_the_prices_of_today(api):
+    """The energy of last year at today's prices, the rest of the cost kept."""
+    client = last_year_client(api)
+    # 10 kWh consumed (2.5 € of energy) cost 3 €: 0.5 € of subscription kept
+    kwh, cost = client._last_year_values(3.0, {2: 5, 3: 5}, {2: 10, 3: 10}, dt.date(2026, 11, 2))
+    assert (kwh, cost) == (20, pytest.approx(3.0 + 3.5 - 1.75))
+    assert client._last_year_values(3.0, {2: 5}, {}, dt.date(2026, 11, 2)) is None
+
+
+def test_savings_against_the_same_week_of_last_year(api):
+    """Each day against the same day of the week 52 weeks before."""
+    client = last_year_client(api)
+    year = dt.timedelta(weeks=52)
+
+    async def day_energies(first, last):
+        # Nothing the year before for the first day
+        return {dt.date(2026, 11, 3) - year: {2: 10}}
+
+    client._async_day_energies = day_energies
+    savings = {"cost": 4.0, "consumption": 16, "reference_cost": 5.0,
+               "reference_consumption": 25, "savings": 1.0, "savings_kwh": 9, "bars": [
+                   {"date": "2026-11-02", "cost": 2.0, "consumption": 8, "reference_cost": 2.5,
+                    "reference_consumption": 12.5, "savings": 0.5, "savings_kwh": 4.5},
+                   {"date": "2026-11-03", "cost": 2.0, "consumption": 8, "reference_cost": 2.5,
+                    "reference_consumption": 12.5, "savings": 0.5, "savings_kwh": 4.5},
+                   {"date": "2026-11-04", "cost": None}]}
+    energies = {dt.date(2026, 11, 2): {2: 8}, dt.date(2026, 11, 3): {2: 8}}
+    result = run(client._async_last_year_savings(savings, "week", dt.date(2026, 11, 2), energies))
+    assert result["bars"][0]["reference_cost"] == 2.5
+    bar = result["bars"][1]
+    # 10 kWh last year at 0.2 €, 8 kWh this year: +0.4 € of reference
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (10, 2.4)
+    assert (bar["savings"], bar["savings_kwh"]) == (0.4, 2)
+    assert (result["reference_consumption"], result["reference_cost"]) == (22.5, 4.9)
+    assert (result["savings"], result["savings_kwh"]) == (0.9, 6.5)
+    assert result["reference_source"] == "mixed"
+
+
+def test_savings_of_12_months_and_of_7_days_against_last_year(api):
+    """The 12 months before, and the same 7 days 52 weeks before."""
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    client = last_year_client(api)
+
+    async def period_energies(_period, day):
+        months = {}
+        month = dt.date(day.year, 1, 1)
+        while month.year == day.year:
+            months[month] = {2: 100 if day.year == today.year else 150}
+            month = (month + dt.timedelta(days=32)).replace(day=1)
+        return months
+
+    async def day_energies(first, last):
+        return {first + dt.timedelta(days=offset): {2: 3} for offset in range(7)}
+
+    client._async_period_energies = period_energies
+    client._async_day_energies = day_energies
+    summary = {"consumption_cost_12_months": 300.0, "reference_cost_12_months": 400.0,
+               "savings_12_months": 100.0, "consumption_12_months": 1200,
+               "reference_consumption_12_months": 2000, "savings_kwh_12_months": 800}
+    run(client._async_last_year_summary(summary, today))
+    assert summary["reference_source"] == "last_year"
+    consumed = sum(100 if today.month >= offset + 1 else 150 for offset in range(12))
+    reference = 150 * (12 - today.month) + 150 * today.month if today.year else 0
+    assert summary["reference_consumption_12_months"] == reference
+    assert summary["reference_cost_12_months"] == pytest.approx(
+        300.0 + 0.2 * reference - 0.2 * consumed, abs=0.01)
+
+    activity = {"consumption_7_days": 42, "reference_consumption_7_days": 30, "savings_7_days": 40}
+    run(client._async_last_year_activity(activity, today))
+    # 21 kWh the same days of last year: 100 % more
+    assert activity == {"consumption_7_days": 42, "reference_consumption_7_days": 21,
+                        "savings_7_days": 100}

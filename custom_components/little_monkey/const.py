@@ -61,6 +61,11 @@ CONF_CONTRACT_PRICES = "contract_prices"
 CONF_SUBSCRIPTION_PRICE = "subscription_price"
 CONF_PRICES_START = "prices_start"
 CONF_PRICES_END = "prices_end"
+# Reference consumption of the savings: the one chosen in the ecojoko
+# application, or the same period of the year before
+CONF_REFERENCE = "reference"
+REFERENCE_ECOJOKO = "ecojoko"
+REFERENCE_LAST_YEAR = "last_year"
 
 # Values of the current tariff period sensor, by tariff option
 HCHP_PERIODS = ["hc", "hp"]

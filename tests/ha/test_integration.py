@@ -82,6 +82,7 @@ DATA = {
     "use_temphum_feature": True,
     "use_prod_feature": False,
     **GROUPS,
+    "reference": "ecojoko",
     "poll_interval": 5,
     "tariff_bands": HCHP_BANDS,
 }
