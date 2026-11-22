@@ -127,7 +127,7 @@ unit: eur
 Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou d'une année (mois par mois), en barres vertes pour une économie et gris-bleu pour une surconsommation.
 
 - Les boutons Semaine, Mois et Année changent de période ; le total de la période s'affiche à côté, l'unité choisie en premier.
-- Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
+- Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît. Le lundi matin (ou le 1er du mois, le 1er janvier), tant qu'ecojoko n'a pas les données du jour, il répond avec la période précédente, comme son application : la carte l'affiche alors comme période en cours, sous son propre nom.
 - Toucher une barre affiche son détail (« Lundi 16 novembre : -0,35 € · -2,57 kWh »).
 
 ```yaml

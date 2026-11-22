@@ -426,6 +426,29 @@ export function firstPeriod(period, asked, savings) {
   return actual > periodStart(period, asked) ? actual : null;
 }
 
+/**
+ * Return the first day of the current period: today's, or the one before
+ * when ecojoko still answers with it.
+ *
+ * On a Monday morning (or the first of a month or of a year), until it has
+ * the data of the day, ecojoko answers with the period before, as its app
+ * does: the card then shows that one, with its own name. A month may start
+ * a few days before its first day (its first Monday): it counts from a week
+ * after its start.
+ */
+export function currentPeriod(period, todayIso, savings) {
+  const current = periodStart(period, todayIso);
+  if (!savings?.start) {
+    return current;
+  }
+  const date = utcDate(savings.start);
+  if (period === "month") {
+    date.setUTCDate(date.getUTCDate() + 7);
+  }
+  const answered = periodStart(period, isoDate(date));
+  return answered < current ? answered : current;
+}
+
 /** Return the name of a period: its days, its month or its year. */
 export function periodLabel(locale, period, iso) {
   const start = utcDate(periodStart(period, iso));
@@ -935,9 +958,10 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     return this._hass.locale?.language || this._hass.language;
   }
 
-  /** Return the first day of the current period. */
+  /** Return the first day of the current period, the one ecojoko answers. */
   _current() {
-    return periodStart(this._period, today());
+    const sensor = periodEntities(this._hass, this._config.entity)[this._period];
+    return currentPeriod(this._period, today(), sensorSavings(this._hass, sensor));
   }
 
   /** Show another period: week, month or year, from the current one. */
