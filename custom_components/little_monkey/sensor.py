@@ -175,7 +175,7 @@ EQUIPMENT_DIAGNOSTIC_SENSORS = (
 GROUP_SENSOR_KEYS = {
     CONF_USE_ACTIVITY_FEATURE: [key for key, _kind in ACTIVITY_SENSORS],
     CONF_USE_SAVINGS_FEATURE: [key for key, _kind in SAVINGS_SENSORS],
-    CONF_USE_CONTRACT_FEATURE: ["contract"],
+    CONF_USE_CONTRACT_FEATURE: ["contract", "current_price"],
 }
 
 # Option that enables a sensor: None (always), one option, or several (any)
@@ -231,6 +231,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     if option_enabled(config_entry, CONF_USE_CONTRACT_FEATURE):
         main_device.add_child_entity(EcojokoContractSensor(
             main_device, "contract", config_entry.data.get(CONF_TARIFF_BANDS) or []))
+        # Price of a kWh now, for the costs of the Energy dashboard
+        main_device.add_child_entity(EcojokoSensor(
+            main_device, "current_price", None, None, "EUR/kWh", "mdi:currency-eur"))
 
     if option_enabled(config_entry, CONF_USE_ACTIVITY_FEATURE):
         for key, kind in ACTIVITY_SENSORS:

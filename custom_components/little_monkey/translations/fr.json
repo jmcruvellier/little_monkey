@@ -459,6 +459,9 @@
             },
             "equipment_max_power": {
                 "name": "Puissance max mesurée"
+            },
+            "current_price": {
+                "name": "Prix du kWh en cours"
             }
         },
         "select": {
