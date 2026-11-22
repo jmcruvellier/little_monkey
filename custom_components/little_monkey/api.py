@@ -929,6 +929,9 @@ class LittleMonkeyApiClient:
         # ecojoko gives them (with a water heater it pilots)
         self._day_costs = {}
         self._exact_prices = None
+        # ecojoko's price of a kWh of each band, month by month, estimated
+        # from the days of each month: {first day of the month: {band id: €}}
+        self._month_prices = {}
         # Weeks of statistics the last setup of the tariff bands could not
         # read: its bands may then be incomplete
         self.tariff_weeks_missed = 0
@@ -1034,25 +1037,100 @@ class LittleMonkeyApiClient:
         return result
 
     def _ecojoko_prices(self) -> tuple[dict, dict]:
-        """Return ecojoko's prices of a kWh by band: the exact and the estimated."""
+        """Return ecojoko's prices of a kWh by band: the exact and the estimated.
+
+        Estimated from the complete days of the last two weeks: today, not
+        over yet, would change them all day long.
+        """
+        today = get_current_date(TZ).isoformat()
+        return self._exact_ecojoko_prices(), estimate_prices({
+            day: bands for day, bands in self._day_costs.items() if day != today})
+
+    def _exact_ecojoko_prices(self) -> dict:
+        """Return the prices of a kWh by band given by ecojoko, empty without them."""
         labels = dict(self._bands)
         for band in self._configured_bands:
             labels.setdefault(band.get("id"), band.get("label"))
-        exact = exact_prices(self._exact_prices, labels) if self._exact_prices else {}
-        return exact, estimate_prices(self._day_costs)
+        return exact_prices(self._exact_prices, labels) if self._exact_prices else {}
+
+    def _month_base(self, day) -> dict | None:
+        """Return ecojoko's prices of a kWh by band in the month of a day, or None.
+
+        Estimated from the days of that month (see _async_month_prices), the
+        exact ones given by ecojoko winning; None when they were not read.
+        """
+        prices = self._month_prices.get(day.replace(day=1))
+        if prices is None:
+            return None
+        return {**prices, **self._exact_ecojoko_prices()}
+
+    async def _async_month_prices(self, month) -> dict:
+        """Return ecojoko's prices of a kWh by band of a month, estimated from its days.
+
+        The slope of the costs of its complete days against their energy
+        (see estimate_prices): its share of the subscription each day is
+        left out, and a change of ecojoko's prices applies from its month
+        on. A band without enough days takes its price over this month and
+        the one before. The days of a month are kept a day, an hour for
+        this one.
+        """
+        today = get_current_date(TZ)
+
+        async def days_of(first):
+            ttl = 3600 if first == today.replace(day=1) else 86400
+            measures = await self.async_cached(
+                ("month_days", first.isoformat()), ttl,
+                lambda: self._async_get_slow(
+                    "powerstat (m6)", f"powerstat/m6/{first.isoformat()}", parse_energy_bars))
+            return {
+                bar["date"]: {
+                    band["id"]: (band["energy"], band["cost"]) for band in bar.get("bands") or []
+                    if band.get("energy") and band.get("cost") is not None}
+                for bar in measures.get("bars") or []
+                if bar.get("date") and bar["date"] < today.isoformat()}
+
+        days = await days_of(month)
+        prices = estimate_prices(days)
+        bands = {band_id for day_bands in days.values() for band_id in day_bands}
+        if not days or bands - set(prices):
+            before = (month - dt.timedelta(days=1)).replace(day=1)
+            prices = {**estimate_prices({**await days_of(before), **days}), **prices}
+        self._month_prices[month] = prices
+        return prices
+
+    async def _async_load_month_prices(self, dates) -> None:
+        """Read ecojoko's prices of the months of some dates, for the prices entered.
+
+        Only the months the prices entered cover; a month not read keeps
+        ecojoko's costs.
+        """
+        if not self._contract_prices:
+            return
+        today = get_current_date(TZ)
+        start, end = self._contract_prices.get("start"), self._contract_prices.get("end")
+        months = sorted({date.replace(day=1) for date in dates if date and date <= today})
+        for month in months:
+            month_end = month.replace(day=calendar.monthrange(month.year, month.month)[1])
+            if (start and start > month_end.isoformat()) or (end and end < month.isoformat()):
+                continue
+            try:
+                await self._async_month_prices(month)
+            except LittleMonkeyApiClientError as exception:
+                LOGGER.debug("Prices of %s not estimated: %r", month, exception)
 
     def cost_gap(self, first, last, energies) -> float | None:
         """Return the euros to add to ecojoko's cost of the days first to last.
 
         Only when prices entered by the user apply on both days: the energy of
-        each band at the price entered instead of ecojoko's, and the gap of
-        the subscription entered over these days. None otherwise.
+        each band at the price entered instead of ecojoko's of the month of
+        the first day, and the gap of the subscription entered over these
+        days. None otherwise.
         """
         entered = entered_prices(self._contract_prices, first)
         if entered is None or entered_prices(self._contract_prices, last) is None:
             return None
-        exact, estimated = self._ecojoko_prices()
-        gap = price_gap(energies, {**estimated, **exact}, entered["prices"])
+        base = self._month_base(first)
+        gap = None if base is None else price_gap(energies, base, entered["prices"])
         base_subscription = (self._contract or {}).get("subscription_price")
         days = (last - first).days + 1
         extra = subscription_gap(entered["subscription"], finite_number(base_subscription), days)
@@ -1087,8 +1165,7 @@ class LittleMonkeyApiClient:
             if gap is None:
                 continue
             entered = entered_prices(self._contract_prices, first)
-            exact, estimated = self._ecojoko_prices()
-            base = {**estimated, **exact}
+            base = self._month_base(first) or {}
             for band in bar.get("bands") or []:
                 if band["id"] in entered["prices"] and band["id"] in base \
                         and band.get("energy") is not None and band.get("cost") is not None:
@@ -1436,6 +1513,11 @@ class LittleMonkeyApiClient:
         if today.month < 12:
             energies.update(await self._async_period_energies(
                 "year", dt.date(today.year - 1, 12, 1)))
+        months, month = [], today.replace(day=1)
+        for _index in range(12):
+            months.append(month)
+            month = (month - dt.timedelta(days=1)).replace(day=1)
+        await self._async_load_month_prices(months)
         gap = subscription = 0.0
         corrected = False
         month = today.replace(day=1)
@@ -1484,6 +1566,7 @@ class LittleMonkeyApiClient:
         except LittleMonkeyApiClientError as exception:
             LOGGER.debug("Energy of the analysis not read: %r", exception)
             return analysis
+        await self._async_load_month_prices([start, last])
         gap = self.cost_gap(start, last, _range_energies(energies, start, last))
         if gap is None:
             return analysis
@@ -1749,6 +1832,7 @@ class LittleMonkeyApiClient:
         # The cost of the last 7 days, today included, at the prices entered
         today = get_current_date(TZ)
         if self._contract_prices and activity.get("cost_7_days") is not None:
+            await self._async_load_month_prices([today - dt.timedelta(days=6), today])
             gaps = [
                 self.cost_gap(day, day, {
                     band_id: kwh for band_id, (kwh, _cost)
@@ -1796,6 +1880,8 @@ class LittleMonkeyApiClient:
         day = _answered_day(period, savings, day)
         try:
             energies = await self._async_period_energies(period, day)
+            await self._async_load_month_prices(
+                [_date_of(bar.get("date")) for bar in savings.get("bars") or []])
             savings = self.correct_savings(savings, period, energies)
             if self._last_year:
                 savings = await self._async_last_year_savings(savings, period, day, energies)
@@ -1859,6 +1945,9 @@ class LittleMonkeyApiClient:
                 f"{MEASURES[measure]} ({scale})", path, parse_climate, device=self._temp_hum_id)
         parse = parse_power_day if period == "day" else parse_energy_bars
         measures = await self._async_get_slow(f"powerstat ({scale})", path, parse)
+        await self._async_load_month_prices(
+            [day] if period == "day"
+            else [_date_of(bar.get("date")) for bar in measures.get("bars") or []])
         return self.correct_measures(measures, period, day)
 
     async def async_get_activations(self, page=0) -> dict:
@@ -1939,6 +2028,8 @@ class LittleMonkeyApiClient:
         if equipment.get("switches") and "switches" in parts:
             reads["switches"] = read("switchstat", "switchstat/d", parse_equipment_switches)
         results = dict(zip(reads, await asyncio.gather(*reads.values())))
+        if "power" in parts:
+            await self._async_load_month_prices([day])
         measures = {"date": day.isoformat()}
         if "power" in parts:
             power = results.get("power") or {}
