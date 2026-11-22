@@ -38,6 +38,8 @@ const TRANSLATIONS = {
     per_month: "{price} / month",
     per_kwh: "{price} / kWh",
     estimated: "≈ estimated from the costs computed by ecojoko",
+    entered: "Prices entered in the options of the integration",
+    entered_until: "Prices entered in the options of the integration, until {date}",
     off_peak_legend: "Off-peak hours",
     unknown: "Contract not read yet",
     missing: "Contract sensor not found",
@@ -62,6 +64,8 @@ const TRANSLATIONS = {
     per_month: "{price} / mois",
     per_kwh: "{price} / kWh",
     estimated: "≈ estimé d'après les coûts calculés par ecojoko",
+    entered: "Prix saisis dans les options de l'intégration",
+    entered_until: "Prix saisis dans les options de l'intégration, jusqu'au {date}",
     off_peak_legend: "Heures creuses",
     unknown: "Contrat pas encore lu",
     missing: "Capteur Contrat introuvable",
@@ -291,6 +295,22 @@ export function bandPrice(text, locale, band) {
   return `${exact ? "" : "≈ "}${text.per_kwh.replace("{price}", format.format(price))}`;
 }
 
+/**
+ * Return the note of the prices entered in the options, or null without
+ * them: until their end when they have one.
+ */
+export function enteredNote(text, locale, entered) {
+  if (!entered) {
+    return null;
+  }
+  const end = /^\d{4}-\d{2}-\d{2}$/.test(entered.end || "") ? new Date(`${entered.end}T12:00:00`) : null;
+  if (!end) {
+    return text.entered;
+  }
+  const date = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(end);
+  return text.entered_until.replace("{date}", date);
+}
+
 /** Return what the card shows, from the states of the device. */
 export function contractView(hass, entityId, now = new Date()) {
   const state = hass?.states?.[entityId];
@@ -329,6 +349,8 @@ export function contractView(hass, entityId, now = new Date()) {
     subscription: attributes.subscription_price,
     // Price of a kWh of the solar surplus sold, absent without a sale
     resale: attributes.resale_price ?? null,
+    // Dates of the prices entered in the options, absent without them
+    entered: attributes.entered_prices ?? null,
     start: attributes.start_date,
     slots,
     minutes,
@@ -512,8 +534,10 @@ class LittleMonkeyContractCard extends HTMLElement {
       : "";
     const estimated = view.bands.some((band) => bandPrice(text, locale, band)?.startsWith("≈"))
       ? `<div class="note">${escapeHtml(text.estimated)}</div>` : "";
+    const note = enteredNote(text, locale, view.entered);
+    const entered = note ? `<div class="note entered">${escapeHtml(note)}</div>` : "";
     const rows = bands || subscription || resale
-      ? `<div class="rows">${bands}${subscription}${resale}${estimated}</div>` : "";
+      ? `<div class="rows">${bands}${subscription}${resale}${entered}${estimated}</div>` : "";
     return `
       <div class="offer">
         <div class="badge">${escapeHtml(supplierBadge(view.supplier))}</div>

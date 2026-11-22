@@ -15,10 +15,12 @@
                 "description": "Contract found: {contract}.\n\nFor each band of your contract, choose the name of its sensor and the total it counts in (off-peak, peak or none).",
                 "data": {
                     "use_hchp_feature": "HC and HP total sensors",
-                    "removed_bands": "Bands to remove"
+                    "removed_bands": "Bands to remove",
+                    "use_contract_prices": "Enter the prices of my contract"
                 },
                 "data_description": {
-                    "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back."
+                    "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back.",
+                    "use_contract_prices": "Check it if the prices per kWh shown by ecojoko are not those of your contract, for instance during a discount for new customers. You enter them on the next screen; uncheck it to go back to ecojoko's prices."
                 }
             },
             "settings": {
@@ -41,13 +43,28 @@
                 "data": {
                     "password": "Password"
                 }
+            },
+            "prices": {
+                "title": "Prices of my contract",
+                "description": "Contract found: {contract}.\n\nEnter the prices of your contract, taxes included, as your supplier gives them: the price per kWh of each band, and the monthly subscription if you know it. They replace ecojoko's during their validity; before and after, ecojoko's prices apply. A band left empty keeps ecojoko's price.",
+                "data": {
+                    "subscription_price": "Monthly subscription, taxes included",
+                    "prices_start": "Valid from",
+                    "prices_end": "Valid until"
+                },
+                "data_description": {
+                    "prices_start": "Leave it empty if the prices apply since the start of your contract.",
+                    "prices_end": "The end of the discount, for instance. Leave it empty if these prices have no known end."
+                }
             }
         },
         "error": {
             "auth": "Username/Password is wrong.",
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred.",
-            "name_required": "The name is required: it names the device."
+            "name_required": "The name is required: it names the device.",
+            "prices_required": "Enter at least a price per kWh or the subscription.",
+            "prices_dates": "The end must be after the start."
         },
         "abort": {
             "already_configured": "This ecojoko account is already configured.",
@@ -69,10 +86,12 @@
                 "description": "Contract found: {contract}.\n\nFor each band of your contract, choose the name of its sensor and the total it counts in (off-peak, peak or none).",
                 "data": {
                     "use_hchp_feature": "HC and HP total sensors",
-                    "removed_bands": "Bands to remove"
+                    "removed_bands": "Bands to remove",
+                    "use_contract_prices": "Enter the prices of my contract"
                 },
                 "data_description": {
-                    "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back."
+                    "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back.",
+                    "use_contract_prices": "Check it if the prices per kWh shown by ecojoko are not those of your contract, for instance during a discount for new customers. You enter them on the next screen; uncheck it to go back to ecojoko's prices."
                 }
             },
             "settings": {
@@ -89,6 +108,19 @@
                     "use_analysis_feature": "Consumption analysis: breakdown by category and activations of the appliances (Consumption analysis and Activations cards)",
                     "use_measures_feature": "Measures: power of the day, energy by tariff band, temperature and humidity (Measures card)"
                 }
+            },
+            "prices": {
+                "title": "Prices of my contract",
+                "description": "Contract found: {contract}.\n\nEnter the prices of your contract, taxes included, as your supplier gives them: the price per kWh of each band, and the monthly subscription if you know it. They replace ecojoko's during their validity; before and after, ecojoko's prices apply. A band left empty keeps ecojoko's price.",
+                "data": {
+                    "subscription_price": "Monthly subscription, taxes included",
+                    "prices_start": "Valid from",
+                    "prices_end": "Valid until"
+                },
+                "data_description": {
+                    "prices_start": "Leave it empty if the prices apply since the start of your contract.",
+                    "prices_end": "The end of the discount, for instance. Leave it empty if these prices have no known end."
+                }
             }
         },
         "error": {
@@ -96,7 +128,9 @@
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred.",
             "name_required": "The name is required: it names the device.",
-            "already_configured": "This ecojoko account is already configured."
+            "already_configured": "This ecojoko account is already configured.",
+            "prices_required": "Enter at least a price per kWh or the subscription.",
+            "prices_dates": "The end must be after the start."
         }
     },
     "entity": {

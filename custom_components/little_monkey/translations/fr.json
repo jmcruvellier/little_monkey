@@ -15,10 +15,12 @@
                 "description": "Contrat détecté : {contract}.\n\nPour chaque tranche de votre contrat, choisissez le nom de son capteur et le total dans lequel elle compte (HC, HP ou aucun).",
                 "data": {
                     "use_hchp_feature": "Capteurs totaux HC et HP",
-                    "removed_bands": "Tranches à supprimer"
+                    "removed_bands": "Tranches à supprimer",
+                    "use_contract_prices": "Saisir les prix de mon contrat"
                 },
                 "data_description": {
-                    "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre."
+                    "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre.",
+                    "use_contract_prices": "À cocher si les prix du kWh qu'affiche ecojoko ne sont pas ceux de votre contrat, par exemple pendant une remise pour les nouveaux clients. Vous les saisissez sur l'écran suivant ; décochez pour revenir aux prix d'ecojoko."
                 }
             },
             "settings": {
@@ -41,13 +43,28 @@
                 "data": {
                     "password": "Mot de passe"
                 }
+            },
+            "prices": {
+                "title": "Prix de mon contrat",
+                "description": "Contrat détecté : {contract}.\n\nSaisissez les prix TTC de votre contrat, tels que les donne votre fournisseur : le prix du kWh de chaque tranche, et l'abonnement mensuel si vous le connaissez. Ils remplacent ceux d'ecojoko pendant leur période de validité ; avant et après, les prix d'ecojoko s'appliquent. Une tranche laissée vide garde le prix d'ecojoko.",
+                "data": {
+                    "subscription_price": "Abonnement mensuel TTC",
+                    "prices_start": "Valables à partir du",
+                    "prices_end": "Valables jusqu'au"
+                },
+                "data_description": {
+                    "prices_start": "Laissez vide si les prix s'appliquent depuis le début de votre contrat.",
+                    "prices_end": "La fin de la remise, par exemple. Laissez vide si ces prix n'ont pas de fin connue."
+                }
             }
         },
         "error": {
             "auth": "Nom d'utilisateur/Mot de passe incorrect.",
             "connection": "Impossible de se connecter au serveur.",
             "unknown": "Une erreur inconnue est survenue.",
-            "name_required": "Le nom est obligatoire : il sert à nommer l'appareil."
+            "name_required": "Le nom est obligatoire : il sert à nommer l'appareil.",
+            "prices_required": "Saisissez au moins un prix de kWh ou l'abonnement.",
+            "prices_dates": "La fin doit être après le début."
         },
         "abort": {
             "already_configured": "Ce compte ecojoko est déjà configuré.",
@@ -69,10 +86,12 @@
                 "description": "Contrat détecté : {contract}.\n\nPour chaque tranche de votre contrat, choisissez le nom de son capteur et le total dans lequel elle compte (HC, HP ou aucun).",
                 "data": {
                     "use_hchp_feature": "Capteurs totaux HC et HP",
-                    "removed_bands": "Tranches à supprimer"
+                    "removed_bands": "Tranches à supprimer",
+                    "use_contract_prices": "Saisir les prix de mon contrat"
                 },
                 "data_description": {
-                    "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre."
+                    "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre.",
+                    "use_contract_prices": "À cocher si les prix du kWh qu'affiche ecojoko ne sont pas ceux de votre contrat, par exemple pendant une remise pour les nouveaux clients. Vous les saisissez sur l'écran suivant ; décochez pour revenir aux prix d'ecojoko."
                 }
             },
             "settings": {
@@ -89,6 +108,19 @@
                     "use_analysis_feature": "Analyse de la conso : répartition par poste et activations des appareils (cartes Analyse de la conso et Activations)",
                     "use_measures_feature": "Mesures : puissance du jour, énergie par tranche, température et humidité (carte Mesures)"
                 }
+            },
+            "prices": {
+                "title": "Prix de mon contrat",
+                "description": "Contrat détecté : {contract}.\n\nSaisissez les prix TTC de votre contrat, tels que les donne votre fournisseur : le prix du kWh de chaque tranche, et l'abonnement mensuel si vous le connaissez. Ils remplacent ceux d'ecojoko pendant leur période de validité ; avant et après, les prix d'ecojoko s'appliquent. Une tranche laissée vide garde le prix d'ecojoko.",
+                "data": {
+                    "subscription_price": "Abonnement mensuel TTC",
+                    "prices_start": "Valables à partir du",
+                    "prices_end": "Valables jusqu'au"
+                },
+                "data_description": {
+                    "prices_start": "Laissez vide si les prix s'appliquent depuis le début de votre contrat.",
+                    "prices_end": "La fin de la remise, par exemple. Laissez vide si ces prix n'ont pas de fin connue."
+                }
             }
         },
         "error": {
@@ -96,7 +128,9 @@
             "connection": "Impossible de se connecter au serveur.",
             "unknown": "Une erreur inconnue est survenue.",
             "name_required": "Le nom est obligatoire : il sert à nommer l'appareil.",
-            "already_configured": "Ce compte ecojoko est déjà configuré."
+            "already_configured": "Ce compte ecojoko est déjà configuré.",
+            "prices_required": "Saisissez au moins un prix de kWh ou l'abonnement.",
+            "prices_dates": "La fin doit être après le début."
         }
     },
     "entity": {

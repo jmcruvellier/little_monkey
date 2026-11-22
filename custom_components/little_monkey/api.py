@@ -44,6 +44,7 @@ from .tariff import (
     TOTAL_BANDS,
     bands_of_offer,
     day_costs,
+    entered_prices,
     day_values,
     estimate_prices,
     exact_prices,
@@ -805,6 +806,7 @@ class LittleMonkeyApiClient:
         session: aiohttp.ClientSession,
         bands: list | None = None,
         removed_bands: list | None = None,
+        contract_prices: dict | None = None,
     ) -> None:
         """Initialize."""
         self._username = username
@@ -815,6 +817,8 @@ class LittleMonkeyApiClient:
         self._configured_bands = list(bands or [])
         # Bands removed by the user: never reported as missing
         self._removed_bands = set(removed_bands or [])
+        # Prices of the contract entered by the user, None without them
+        self._contract_prices = contract_prices
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
@@ -916,8 +920,20 @@ class LittleMonkeyApiClient:
 
     @property
     def contract(self) -> dict | None:
-        """Return the active contract, None until it is read."""
-        return self._contract
+        """Return the active contract, None until it is read.
+
+        With a subscription entered by the user for today, its price
+        replaces ecojoko's.
+        """
+        entered = self.entered_prices
+        if self._contract is None or entered is None or entered["subscription"] is None:
+            return self._contract
+        return {**self._contract, "subscription_price": entered["subscription"]}
+
+    @property
+    def entered_prices(self) -> dict | None:
+        """Return the prices entered by the user that apply today, or None."""
+        return entered_prices(self._contract_prices, get_current_date(TZ))
 
     @property
     def resale_price(self) -> float | None:
@@ -931,10 +947,11 @@ class LittleMonkeyApiClient:
 
     @property
     def band_prices(self) -> dict:
-        """Return the price of a kWh of each band {band id: {price, exact}}.
+        """Return the price of a kWh of each band {band id: {price, exact, source}}.
 
-        The prices given by ecojoko when it has them, estimated from the
-        statistics of the last two weeks otherwise.
+        The prices entered by the user for today ("entered"), else given by
+        ecojoko when it has them ("ecojoko"), else estimated from the
+        statistics of the last two weeks ("estimated").
         """
         labels = dict(self._bands)
         for band in self._configured_bands:
@@ -942,9 +959,16 @@ class LittleMonkeyApiClient:
         exact = exact_prices(self._exact_prices, labels) if self._exact_prices else {}
         estimated = estimate_prices(self._day_costs)
         result = {
-            band_id: {"price": price, "exact": False} for band_id, price in estimated.items()}
-        result.update(
-            {band_id: {"price": price, "exact": True} for band_id, price in exact.items()})
+            band_id: {"price": price, "exact": False, "source": "estimated"}
+            for band_id, price in estimated.items()}
+        result.update({
+            band_id: {"price": price, "exact": True, "source": "ecojoko"}
+            for band_id, price in exact.items()})
+        entered = self.entered_prices
+        if entered is not None:
+            result.update({
+                band_id: {"price": price, "exact": True, "source": "entered"}
+                for band_id, price in entered["prices"].items()})
         return result
 
     @property
