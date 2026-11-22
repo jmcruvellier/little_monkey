@@ -549,7 +549,8 @@
         "reference": {
             "options": {
                 "ecojoko": "The one of the ecojoko application",
-                "last_year": "The same period of the year before"
+                "last_year": "The same period of the year before, at equal prices",
+                "last_year_paid": "The same period of the year before, at the prices paid"
             }
         }
     },

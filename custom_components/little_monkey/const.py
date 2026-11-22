@@ -66,6 +66,7 @@ CONF_PRICES_END = "prices_end"
 CONF_REFERENCE = "reference"
 REFERENCE_ECOJOKO = "ecojoko"
 REFERENCE_LAST_YEAR = "last_year"
+REFERENCE_LAST_YEAR_PAID = "last_year_paid"
 
 # Values of the current tariff period sensor, by tariff option
 HCHP_PERIODS = ["hc", "hp"]

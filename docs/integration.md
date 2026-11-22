@@ -65,10 +65,15 @@ Lus toutes les demi-heures, comme l'activité.
 
 #### La référence des économies
 
-Les économies comparent votre consommation à une consommation de référence. Par défaut, c'est celle de l'application ecojoko : un mois de référence choisi dans son profil (ou un mois personnalisé), complété l'hiver d'une part qui dépend de la température. Dans le dernier écran des options, « Consommation de référence des économies » propose aussi **la même période de l'année précédente** :
+Les économies comparent votre consommation à une consommation de référence. Par défaut, c'est celle de l'application ecojoko : un mois de référence choisi dans son profil (ou un mois personnalisé), complété l'hiver d'une part qui dépend de la température. Dans le dernier écran des options, « Consommation de référence des économies » propose aussi **la même période de l'année précédente**, de deux façons :
+
+- **à prix égal** : l'énergie de l'année précédente est comptée aux prix d'aujourd'hui (saisis ou d'ecojoko), par tranche. L'économie mesure un changement d'habitudes, pas une hausse ou une baisse des tarifs ;
+- **aux prix payés** : l'énergie de l'année précédente garde le coût calculé alors par ecojoko, par tranche. L'économie compare ce que l'énergie a coûté : à consommation égale, une offre moins chère est une économie et une hausse des tarifs une surconsommation. La part du coût qui n'est pas de l'énergie (l'abonnement) reste celle d'aujourd'hui.
+
+Dans les deux cas :
+
 
 - chaque jour est comparé au même jour de la semaine 52 semaines plus tôt, chaque semaine à la même semaine, chaque mois au même mois, les 12 derniers mois aux 12 mois d'avant, et l'écart sur 7 jours (aiguille du cadran) aux mêmes 7 jours de l'année précédente ;
-- l'énergie de l'année précédente est comptée aux prix d'aujourd'hui (saisis ou d'ecojoko), par tranche : l'économie mesure un changement d'habitudes, pas une hausse des tarifs ;
 - il faut plus d'un an d'historique chez ecojoko : une période sans données l'année précédente garde la référence d'ecojoko. Le service `get_savings` le dit dans `reference_source` (`last_year`, `ecojoko` ou `mixed`) ;
 - l'année précédente garde sa propre météo : un hiver plus froid que le précédent paraît une surconsommation.
 
