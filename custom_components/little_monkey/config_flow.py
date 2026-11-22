@@ -69,7 +69,7 @@ CATEGORY_SUFFIX = " – HC/HP"
 # Suffix of the field of the price of a band, named after its label too
 PRICE_SUFFIX = " – €/kWh"
 PRICE_SELECTOR = selector.NumberSelector(selector.NumberSelectorConfig(
-    min=0, max=5, step=0.000001, mode=NumberSelectorMode.BOX, unit_of_measurement="€/kWh"))
+    min=0, max=5, step="any", mode=NumberSelectorMode.BOX, unit_of_measurement="€/kWh"))
 SUBSCRIPTION_SELECTOR = selector.NumberSelector(selector.NumberSelectorConfig(
     min=0, max=1000, step=0.01, mode=NumberSelectorMode.BOX, unit_of_measurement="€"))
 
