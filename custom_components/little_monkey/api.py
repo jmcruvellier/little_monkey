@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import calendar
 from collections import OrderedDict, deque
 from contextvars import ContextVar
 import copy
@@ -44,7 +45,10 @@ from .tariff import (
     TOTAL_BANDS,
     bands_of_offer,
     day_costs,
+    energies_of_points,
     entered_prices,
+    price_gap,
+    subscription_gap,
     day_values,
     estimate_prices,
     exact_prices,
@@ -238,6 +242,14 @@ SAVINGS_PERIODS = {"week": "w", "month": "m", "year": "y"}
 
 # Trend of a category of the analysis, from its evol_status
 ANALYSIS_TRENDS = {1: "up", 2: "down"}
+
+
+def _date_of(text):
+    """Return the date of an ISO day, None when it is not one."""
+    try:
+        return dt.date.fromisoformat(text)
+    except (TypeError, ValueError):
+        return None
 
 
 def _iso_day(milliseconds) -> str | None:
@@ -953,11 +965,7 @@ class LittleMonkeyApiClient:
         ecojoko when it has them ("ecojoko"), else estimated from the
         statistics of the last two weeks ("estimated").
         """
-        labels = dict(self._bands)
-        for band in self._configured_bands:
-            labels.setdefault(band.get("id"), band.get("label"))
-        exact = exact_prices(self._exact_prices, labels) if self._exact_prices else {}
-        estimated = estimate_prices(self._day_costs)
+        exact, estimated = self._ecojoko_prices()
         result = {
             band_id: {"price": price, "exact": False, "source": "estimated"}
             for band_id, price in estimated.items()}
@@ -970,6 +978,90 @@ class LittleMonkeyApiClient:
                 band_id: {"price": price, "exact": True, "source": "entered"}
                 for band_id, price in entered["prices"].items()})
         return result
+
+    def _ecojoko_prices(self) -> tuple[dict, dict]:
+        """Return ecojoko's prices of a kWh by band: the exact and the estimated."""
+        labels = dict(self._bands)
+        for band in self._configured_bands:
+            labels.setdefault(band.get("id"), band.get("label"))
+        exact = exact_prices(self._exact_prices, labels) if self._exact_prices else {}
+        return exact, estimate_prices(self._day_costs)
+
+    def cost_gap(self, first, last, energies) -> float | None:
+        """Return the euros to add to ecojoko's cost of the days first to last.
+
+        Only when prices entered by the user apply on both days: the energy of
+        each band at the price entered instead of ecojoko's, and the gap of
+        the subscription entered over these days. None otherwise.
+        """
+        entered = entered_prices(self._contract_prices, first)
+        if entered is None or entered_prices(self._contract_prices, last) is None:
+            return None
+        exact, estimated = self._ecojoko_prices()
+        gap = price_gap(energies, {**estimated, **exact}, entered["prices"])
+        base_subscription = (self._contract or {}).get("subscription_price")
+        days = (last - first).days + 1
+        extra = subscription_gap(entered["subscription"], finite_number(base_subscription), days)
+        if gap is None and not extra:
+            return None
+        return (gap or 0.0) + extra
+
+    def correct_measures(self, measures, period, day) -> dict:
+        """Return the measures of electricity at the prices entered by the user.
+
+        The cost of each day or month, and of each of its bands, of the days
+        the prices apply. A month counts only when they apply to all of it.
+        The measures tell whether a cost was corrected ("entered_prices").
+        """
+        if not self._contract_prices:
+            return measures
+        total = 0.0
+        corrected = False
+        if period == "day":
+            gap = self.cost_gap(day, day, energies_of_points(measures.get("points") or []))
+            if gap is not None and measures.get("cost") is not None:
+                measures["cost"] = round_value(measures["cost"] + gap)
+                corrected = True
+        for bar in measures.get("bars") or []:
+            first = _date_of(bar.get("date"))
+            if first is None or bar.get("cost") is None:
+                continue
+            last = first if period != "year" else first.replace(
+                day=calendar.monthrange(first.year, first.month)[1])
+            energies = {band["id"]: band["energy"] for band in bar.get("bands") or []}
+            gap = self.cost_gap(first, last, energies)
+            if gap is None:
+                continue
+            entered = entered_prices(self._contract_prices, first)
+            exact, estimated = self._ecojoko_prices()
+            base = {**estimated, **exact}
+            for band in bar.get("bands") or []:
+                if band["id"] in entered["prices"] and band["id"] in base \
+                        and band.get("energy") is not None and band.get("cost") is not None:
+                    band["cost"] = round_value(band["cost"] + band["energy"] * (
+                        entered["prices"][band["id"]] - base[band["id"]]))
+            bar["cost"] = round_value(bar["cost"] + gap)
+            total += gap
+            corrected = True
+        if measures.get("bars") is not None and corrected and measures.get("cost") is not None:
+            measures["cost"] = round_value(measures["cost"] + total)
+        measures["entered_prices"] = corrected
+        return measures
+
+    def correct_day_cost(self, day, cost, energy) -> float | None:
+        """Return a cost of a day at the prices entered, from its share of the house.
+
+        For a cost ecojoko gives without its bands (an equipment): the cost of
+        the energy of the house this day changes in the same proportion.
+        """
+        bands = self._day_costs.get(day.isoformat())
+        if cost is None or not energy or not bands:
+            return cost
+        gap = self.cost_gap(day, day, {band_id: kwh for band_id, (kwh, _cost) in bands.items()})
+        house = sum(eco_cost for _kwh, eco_cost in bands.values())
+        if gap is None or house <= 0:
+            return cost
+        return round_value(cost * (house + gap) / house)
 
     @property
     def bands(self) -> dict:
@@ -1216,11 +1308,23 @@ class LittleMonkeyApiClient:
             "activity", ECOJOKO_ACTIVITY_URL, cookies=self._cookies,
             timeout=CONF_API_ACTIVITY_TIMEOUT)
         try:
-            return parse_activity(payload)
+            activity = parse_activity(payload)
         except PARSE_ERRORS as exception:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API activity: {exception!r}"
             ) from exception
+        # The cost of the last 7 days, today included, at the prices entered
+        today = get_current_date(TZ)
+        if self._contract_prices and activity.get("cost_7_days") is not None:
+            gaps = [
+                self.cost_gap(day, day, {
+                    band_id: kwh for band_id, (kwh, _cost)
+                    in self._day_costs.get(day.isoformat(), {}).items()})
+                for day in (today - dt.timedelta(days=offset) for offset in range(7))]
+            if any(gap is not None for gap in gaps):
+                activity["cost_7_days"] = round_value(
+                    activity["cost_7_days"] + sum(gap or 0.0 for gap in gaps))
+        return activity
 
     def _check_slow_api(self, name) -> None:
         """Fail when an API read apart from the polls cannot be called yet.
@@ -1302,7 +1406,8 @@ class LittleMonkeyApiClient:
             return await self._async_get_slow(
                 f"{MEASURES[measure]} ({scale})", path, parse_climate, device=self._temp_hum_id)
         parse = parse_power_day if period == "day" else parse_energy_bars
-        return await self._async_get_slow(f"powerstat ({scale})", path, parse)
+        measures = await self._async_get_slow(f"powerstat ({scale})", path, parse)
+        return self.correct_measures(measures, period, day)
 
     async def async_get_activations(self, page=0) -> dict:
         """Return the activations of the appliances over 48 hours.
@@ -1386,7 +1491,9 @@ class LittleMonkeyApiClient:
         if "power" in parts:
             power = results.get("power") or {}
             measures.update(
-                energy=power.get("energy"), cost=power.get("cost"),
+                energy=power.get("energy"),
+                # At the prices entered by the user, when they apply
+                cost=self.correct_day_cost(day, power.get("cost"), power.get("energy")),
                 power=power.get("power", []))
         if "switches" in parts:
             measures["switches"] = results.get("switches", [])

@@ -2595,3 +2595,102 @@ def test_the_cache_keeps_a_bounded_number_of_answers(api, monkeypatch):
 
     run(scenario())
     assert list(client._service_cache) == [("measures", 1), ("measures", 2), ("measures", 3)]
+
+
+# --- Costs at the prices entered by the user
+
+
+def test_gap_of_a_cost_at_the_prices_entered(api):
+    """Only the price of the kWh changes; the subscription by its own gap."""
+    tariff = tariff_module(api)
+    assert tariff.price_gap({2: 10, 3: 4, 9: 1}, {2: 0.2, 3: 0.15}, {2: 0.18, 3: 0.135}) == \
+        pytest.approx(10 * -0.02 + 4 * -0.015)
+    assert tariff.price_gap({2: 10}, {}, {2: 0.18}) is None
+    assert tariff.subscription_gap(31.14, 30.49, 365) == pytest.approx(0.65 * 12)
+    assert tariff.subscription_gap(None, 30.49, 30) == 0
+    # A point holds its power until the next one, the last one the usual interval
+    points = [
+        {"time": "2026-11-18T00:00:00+01:00", "power": 1000, "band": 3},
+        {"time": "2026-11-18T00:30:00+01:00", "power": 2000, "band": 3},
+        {"time": "2026-11-18T01:00:00+01:00", "power": 4000, "band": 2},
+        {"time": "2026-11-18T01:30:00+01:00", "power": None, "band": 2},
+    ]
+    assert tariff.energies_of_points(points) == {3: 1.5, 2: 2.0}
+
+
+def entered_client(api, start="2026-11-01", end="2026-11-30", subscription=None):
+    """Return a client with prices entered, and ecojoko's prices known."""
+    client = make_client(api, Session())
+    client._contract_prices = {"prices": {"2": 0.18, "3": 0.135}, "subscription": subscription,
+                               "start": start, "end": end}
+    client._ecojoko_prices = lambda: ({2: 0.2}, {3: 0.15})
+    client._contract = {"subscription_price": 30.49}
+    return client
+
+
+def test_measures_at_the_prices_entered(api):
+    """The days and months the prices apply cost the prices entered."""
+    client = entered_client(api)
+    week = {"cost": 10.0, "bars": [
+        {"date": "2026-10-31", "cost": 5.0, "bands": [{"id": 2, "energy": 10, "cost": 5.0}]},
+        {"date": "2026-11-01", "cost": 5.0, "bands": [
+            {"id": 2, "energy": 10, "cost": 3.0}, {"id": 3, "energy": 10, "cost": 2.0}]},
+    ]}
+    measures = client.correct_measures(week, "week", dt.date(2026, 11, 1))
+    # Before the prices: ecojoko's; after: 10 kWh at -0.02 and 10 at -0.015
+    assert measures["bars"][0]["cost"] == 5.0
+    assert measures["bars"][1]["cost"] == 4.65
+    assert [band["cost"] for band in measures["bars"][1]["bands"]] == [2.8, 1.85]
+    assert measures["cost"] == 9.65
+    assert measures["entered_prices"] is True
+
+    # A month counts only when the prices apply to all of it
+    year = {"cost": 20.0, "bars": [
+        {"date": "2026-10-01", "cost": 10.0, "bands": [{"id": 2, "energy": 50, "cost": 10.0}]},
+        {"date": "2026-11-01", "cost": 10.0, "bands": [{"id": 2, "energy": 50, "cost": 10.0}]},
+    ]}
+    measures = client.correct_measures(year, "year", dt.date(2026, 11, 1))
+    assert [bar["cost"] for bar in measures["bars"]] == [10.0, 9.0]
+
+    # A day of power: the energy of each band from its points
+    day = {"cost": 1.0, "points": [
+        {"time": "2026-11-18T00:00:00+01:00", "power": 2000, "band": 2},
+        {"time": "2026-11-18T01:00:00+01:00", "power": 2000, "band": 2},
+    ]}
+    assert client.correct_measures(day, "day", dt.date(2026, 11, 18))["cost"] == 0.92
+    # Without prices entered, nothing changes
+    plain = make_client(api, Session())
+    assert plain.correct_measures({"cost": 1.0, "bars": []}, "week", dt.date(2026, 11, 1)) == {
+        "cost": 1.0, "bars": []}
+
+
+def test_subscription_entered_in_the_costs(api):
+    """The subscription entered changes the cost of each day by its gap."""
+    client = entered_client(api, subscription=31.14)
+    gap = client.cost_gap(dt.date(2026, 11, 2), dt.date(2026, 11, 2), {})
+    assert gap == pytest.approx(0.65 * 12 / 365)
+
+
+def test_cost_of_7_days_and_of_an_equipment_at_the_prices_entered(api):
+    """The last 7 days and the equipments cost the prices entered."""
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    client = entered_client(api, start=None, end=None)
+    client._day_costs = {
+        (today - dt.timedelta(days=offset)).isoformat(): {2: (10, 2.0), 3: (10, 1.5)}
+        for offset in range(8)}
+    assert client.cost_gap(today, today, {2: 10, 3: 10}) == pytest.approx(-0.35)
+    # An equipment: its share of the cost of the house this day
+    assert client.correct_day_cost(today, 0.35, 2.0) == round(0.35 * 3.15 / 3.5, 2)
+    assert client.correct_day_cost(today, None, 2.0) is None
+
+    session = Session(activity=Response(payload=ACTIVITY))
+    client._session = session
+    client._cookies = {"session": "abc"}
+    plain = parse_activity_cost(api)
+    activity = run(client.async_get_activity())
+    assert activity["cost_7_days"] == round(plain - 7 * 0.35, 2)
+
+
+def parse_activity_cost(api):
+    """Return ecojoko's cost of the last 7 days of the activity of the tests."""
+    return api.parse_activity(ACTIVITY)["cost_7_days"]
