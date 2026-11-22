@@ -208,3 +208,11 @@ test("an entity of a device suggests the card on that device", () => {
   assert.equal(card.entitySuggestion(hass, "sensor.shed_firmware", card.contractStubConfig), null);
   assert.equal(card.entitySuggestion({ entities: { "light.lamp": { platform: "hue" } } }, "light.lamp", card.contractStubConfig), null);
 });
+
+test("the prices entered in the options are told, with their end", () => {
+  const text = { entered: "Prix saisis", entered_until: "Prix saisis, jusqu'au {date}" };
+  assert.equal(card.enteredNote(text, "fr", null), null);
+  assert.equal(card.enteredNote(text, "fr", { start: null, end: null }), "Prix saisis");
+  assert.equal(card.enteredNote(text, "fr", { start: "2026-08-25", end: "2027-06-30" }),
+    "Prix saisis, jusqu'au 30 juin 2027");
+});

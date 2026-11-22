@@ -2311,7 +2311,8 @@ def test_band_prices_of_the_client(api):
     client = make_client(api, session, hchp=True)
     run(client.async_get_data())
     assert client.band_prices == {
-        2: {"price": 0.18, "exact": False}, 3: {"price": 0.139, "exact": False}}
+        2: {"price": 0.18, "exact": False, "source": "estimated"},
+        3: {"price": 0.139, "exact": False, "source": "estimated"}}
 
     # With a water heater piloted by ecojoko, its prices
     gateways["gateways"][0]["devices"].append({
@@ -2319,7 +2320,37 @@ def test_band_prices_of_the_client(api):
             "prices": [{"label": "Heures Pleines", "price": 0.2016}]}}})
     run(client._gatewayapi_wrapper())
     assert client.band_prices == {
-        2: {"price": 0.2016, "exact": True}, 3: {"price": 0.139, "exact": False}}
+        2: {"price": 0.2016, "exact": True, "source": "ecojoko"},
+        3: {"price": 0.139, "exact": False, "source": "estimated"}}
+
+    # The prices entered by the user win, during their validity only
+    client._contract_prices = {
+        "prices": {"3": 0.134736}, "subscription": 31.14,
+        "start": (today - dt.timedelta(days=1)).isoformat(), "end": today.isoformat()}
+    assert client.band_prices[3] == {"price": 0.134736, "exact": True, "source": "entered"}
+    assert client.band_prices[2]["source"] == "ecojoko"
+    assert client.contract["subscription_price"] == 31.14
+    client._contract_prices["end"] = (today - dt.timedelta(days=1)).isoformat()
+    assert client.band_prices[3]["source"] == "estimated"
+    assert client.entered_prices is None
+
+
+def test_entered_prices_apply_during_their_validity(api):
+    """Prices entered by the user apply from their start to their end, included."""
+    entered_prices = tariff_module(api).entered_prices
+    entered = {"prices": {"2": 0.180336, "3": "0,134736", "x": 1, "4": 0},
+               "subscription": None, "start": "2026-08-25", "end": "2027-06-30"}
+    assert entered_prices(entered, dt.date(2026, 8, 24)) is None
+    assert entered_prices(entered, dt.date(2026, 8, 25)) == {
+        "prices": {2: 0.180336, 3: 0.134736}, "subscription": None,
+        "start": "2026-08-25", "end": "2027-06-30"}
+    assert entered_prices(entered, dt.date(2027, 6, 30))["prices"][2] == 0.180336
+    assert entered_prices(entered, dt.date(2027, 7, 1)) is None
+    # Without dates, always; without any price, never
+    assert entered_prices({"prices": {"2": 0.2}}, dt.date(2030, 1, 1))["prices"] == {2: 0.2}
+    assert entered_prices({"prices": {}, "subscription": None}, dt.date(2026, 9, 1)) is None
+    assert entered_prices({"subscription": 31.14}, dt.date(2026, 9, 1))["subscription"] == 31.14
+    assert entered_prices(None, dt.date(2026, 9, 1)) is None
 
 
 # --- Measures (page « Mesures »)

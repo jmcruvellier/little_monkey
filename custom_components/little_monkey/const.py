@@ -52,6 +52,15 @@ CONF_TARIFF_BANDS = "tariff_bands"
 # Ids of the bands removed by the user while ecojoko still gives them: they
 # are neither proposed again nor reported as missing (previous contract...)
 CONF_REMOVED_BANDS = "removed_bands"
+# Prices of the contract entered by the user, when ecojoko does not know them
+# (a discount for new customers, for instance): whether they are entered,
+# and {"prices": {band id as text: euros per kWh}, "subscription": euros per
+# month or None, "start": ISO date or None, "end": ISO date or None}
+CONF_USE_CONTRACT_PRICES = "use_contract_prices"
+CONF_CONTRACT_PRICES = "contract_prices"
+CONF_SUBSCRIPTION_PRICE = "subscription_price"
+CONF_PRICES_START = "prices_start"
+CONF_PRICES_END = "prices_end"
 
 # Values of the current tariff period sensor, by tariff option
 HCHP_PERIODS = ["hc", "hp"]

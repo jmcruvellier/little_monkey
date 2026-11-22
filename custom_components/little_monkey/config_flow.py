@@ -29,6 +29,11 @@ from .const import (
     CONF_USE_PROD_FEATURE,
     CONF_REMOVED_BANDS,
     CONF_TARIFF_BANDS,
+    CONF_CONTRACT_PRICES,
+    CONF_PRICES_END,
+    CONF_PRICES_START,
+    CONF_SUBSCRIPTION_PRICE,
+    CONF_USE_CONTRACT_PRICES,
     LOGGER,
     SENSOR_GROUP_OPTIONS,
 )
@@ -61,6 +66,12 @@ SETTINGS_KEYS = (
     CONF_USE_PROD_FEATURE, CONF_USE_TEMPHUM_FEATURE, *SENSOR_GROUP_OPTIONS, POLL_INTERVAL)
 # Suffix of the field of the category of a band
 CATEGORY_SUFFIX = " – HC/HP"
+# Suffix of the field of the price of a band, named after its label too
+PRICE_SUFFIX = " – €/kWh"
+PRICE_SELECTOR = selector.NumberSelector(selector.NumberSelectorConfig(
+    min=0, max=5, step=0.000001, mode=NumberSelectorMode.BOX, unit_of_measurement="€/kWh"))
+SUBSCRIPTION_SELECTOR = selector.NumberSelector(selector.NumberSelectorConfig(
+    min=0, max=1000, step=0.01, mode=NumberSelectorMode.BOX, unit_of_measurement="€"))
 
 
 def _account_schema(defaults: Mapping[str, Any]) -> vol.Schema:
@@ -239,6 +250,7 @@ class _BandsSteps:
     _removed: dict = {}
     _kept_removed: list = []
     _default_names: dict = {}
+    _use_prices: bool = False
 
     def _init_bands(
         self, configured: list, contract, found: dict, complete: bool, removed=()
@@ -273,6 +285,11 @@ class _BandsSteps:
         self._default_names = await _async_default_names(self.hass, self._bands)
         schema = {
             vol.Optional(CONF_USE_HCHP_FEATURE, default=use_hchp): cv.boolean,
+            # The prices of the contract are entered on the next screen
+            vol.Optional(
+                CONF_USE_CONTRACT_PRICES,
+                default=bool(self._data.get(CONF_CONTRACT_PRICES)),
+            ): cv.boolean,
         }
         for band, name_field, category_field in _band_fields(self._bands):
             if name_field is not None:
@@ -339,6 +356,10 @@ class _BandsSteps:
         """Keep the HC/HP option, the bands and the removed ones chosen."""
         self._data[CONF_USE_HCHP_FEATURE] = (
             user_input.get(CONF_USE_HCHP_FEATURE) is True)
+        # Without the prices of the contract, ecojoko's apply again
+        self._use_prices = user_input.get(CONF_USE_CONTRACT_PRICES) is True
+        if not self._use_prices:
+            self._data.pop(CONF_CONTRACT_PRICES, None)
         self._data[CONF_TARIFF_BANDS], removed = self._read_bands(user_input)
         removed = sorted({*removed, *self._kept_removed})
         # Saved only when there are some: most entries never remove a band
@@ -346,6 +367,72 @@ class _BandsSteps:
             self._data[CONF_REMOVED_BANDS] = removed
         else:
             self._data.pop(CONF_REMOVED_BANDS, None)
+
+
+    def _price_fields(self) -> list:
+        """Return the bands kept and the field of the price of each."""
+        return [
+            (band, category_field[:-len(CATEGORY_SUFFIX)] + PRICE_SUFFIX)
+            for band, _name, category_field in _band_fields(
+                self._data.get(CONF_TARIFF_BANDS) or [])
+        ]
+
+    def _prices_form(self, step_id: str, user_input=None, errors=None):
+        """Show the prices of the contract: by band, the subscription, the dates."""
+        saved = self._data.get(CONF_CONTRACT_PRICES) or {}
+        prices = saved.get("prices") or {}
+        schema, suggested = {}, {}
+        for band, field in self._price_fields():
+            schema[vol.Optional(field)] = PRICE_SELECTOR
+            if prices.get(str(band["id"])) is not None:
+                suggested[field] = prices[str(band["id"])]
+        schema[vol.Optional(CONF_SUBSCRIPTION_PRICE)] = SUBSCRIPTION_SELECTOR
+        schema[vol.Optional(CONF_PRICES_START)] = selector.DateSelector()
+        schema[vol.Optional(CONF_PRICES_END)] = selector.DateSelector()
+        for key, saved_key in (
+            (CONF_SUBSCRIPTION_PRICE, "subscription"),
+            (CONF_PRICES_START, "start"),
+            (CONF_PRICES_END, "end"),
+        ):
+            if saved.get(saved_key) is not None:
+                suggested[key] = saved[saved_key]
+        return self.async_show_form(
+            step_id=step_id,
+            data_schema=self.add_suggested_values_to_schema(
+                vol.Schema(schema), user_input if user_input is not None else suggested),
+            errors=errors or {},
+            description_placeholders={"contract": self._contract_text()},
+        )
+
+    def _read_prices(self, user_input: Mapping[str, Any]) -> dict:
+        """Keep the prices entered, and return the errors of the form."""
+        prices = {}
+        for band, field in self._price_fields():
+            value = user_input.get(field)
+            if value not in (None, "") and float(value) > 0:
+                prices[str(band["id"])] = float(value)
+        subscription = user_input.get(CONF_SUBSCRIPTION_PRICE)
+        subscription = None if subscription in (None, "") else float(subscription)
+        start = user_input.get(CONF_PRICES_START) or None
+        end = user_input.get(CONF_PRICES_END) or None
+        if not prices and subscription is None:
+            return {"base": "prices_required"}
+        if start and end and end < start:
+            return {CONF_PRICES_END: "prices_dates"}
+        self._data[CONF_CONTRACT_PRICES] = {
+            "prices": prices, "subscription": subscription, "start": start, "end": end}
+        return {}
+
+    async def async_step_prices(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Ask for the prices of the contract, when ecojoko does not know them."""
+        if user_input is not None:
+            errors = self._read_prices(user_input)
+            if not errors:
+                return await self.async_step_settings()
+            return self._prices_form("prices", user_input, errors)
+        return self._prices_form("prices")
 
 
 class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
@@ -402,6 +489,8 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
         """Show the tariff bands of the contract."""
         if user_input is not None:
             self._save_bands(user_input)
+            if self._use_prices:
+                return await self.async_step_prices()
             return await self.async_step_settings()
         return await self._async_bands_form("bands", use_hchp=True)
 
@@ -521,6 +610,8 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
         """Show the tariff bands of the contract."""
         if user_input is not None:
             self._save_bands(user_input)
+            if self._use_prices:
+                return await self.async_step_prices()
             return await self.async_step_settings()
         return await self._async_bands_form(
             "bands",

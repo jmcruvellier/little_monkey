@@ -209,6 +209,8 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
                 equipment["id"]: equipment for equipment in self.client.equipments},
             # Price of a kWh of each band, by band id
             "band_prices": self.client.band_prices,
+            # Prices of the contract entered by the user for today, or None
+            "entered_prices": self.client.entered_prices,
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
             "realtime_apparent_power": self.client.realtime_va,

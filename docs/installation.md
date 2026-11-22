@@ -52,10 +52,23 @@ L'écran affiche le contrat détecté et ses tranches (Heures Pleines et Creuses
 | Champ | Description |
 |---|---|
 | Capteurs totaux HC et HP | Crée « Consommation HC Réseau » et « Consommation HP Réseau », qui additionnent les tranches de chaque catégorie |
+| Saisir les prix de mon contrat | Ouvre un écran pour saisir vos propres prix (voir ci-dessous) |
 | Pour chaque tranche | Le nom de son capteur (prérempli) et le total dans lequel elle compte : Heures Creuses, Heures Pleines ou aucun |
 | Tranches à supprimer | Les tranches à retirer avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore |
 
 Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez donné. Après un changement de contrat, ouvrez les options : elles reprennent cet écran avec les tranches du nouveau contrat, et une réparation le signale dans Home Assistant quand une tranche n'a pas de capteur. Les tranches de l'ancien contrat disparaissent d'elles-mêmes quand ecojoko ne les donne plus dans ses statistiques des dernières semaines ; pour les retirer tout de suite, cochez-les dans « Tranches à supprimer ». Elles ne sont alors plus proposées ni signalées tant qu'ecojoko les donne encore, et restent cochées dans cette liste : décochez-en une pour la remettre.
+
+#### Les prix de votre contrat
+
+ecojoko ne connaît pas toujours les prix de votre contrat : une remise pour les nouveaux clients, par exemple, ou une offre absente de son catalogue. Vérifiez d'abord, dans l'application ecojoko (Paramètres › Tarifs d'électricité), que l'offre déclarée est bien la vôtre : la corriger là corrige les prix partout. Sinon, cochez « Saisir les prix de mon contrat » : un écran de plus vous demande les prix TTC donnés par votre fournisseur.
+
+| Champ | Description |
+|---|---|
+| Pour chaque tranche | Le prix TTC d'un kWh ; une tranche laissée vide garde le prix d'ecojoko |
+| Abonnement mensuel TTC | Facultatif |
+| Valables à partir du, jusqu'au | La période de ces prix, par exemple celle d'une remise ; avant et après, les prix d'ecojoko s'appliquent. Laissez vide pour une période sans début ou sans fin |
+
+La carte Contrat affiche alors ces prix, avec la mention « Prix saisis dans les options de l'intégration ». Décochez la case pour revenir aux prix d'ecojoko.
 
 ### 3. Les autres capteurs et fonctions
 

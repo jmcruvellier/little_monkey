@@ -66,9 +66,9 @@ Lus toutes les demi-heures, comme l'activité.
 
 | Capteur | Description |
 |---|---|
-| Contrat (diagnostic) | Nom de l'offre ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches configurées, chacune avec le prix d'un kWh (`price`) et son origine (`price_exact`), et le prix de rachat d'un kWh du surplus solaire (`resale_price`) quand le surplus est revendu |
+| Contrat (diagnostic) | Nom de l'offre ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches configurées, chacune avec le prix d'un kWh (`price`), s'il est exact (`price_exact`) et son origine (`price_source` : `entered` saisi dans les options, `ecojoko` ou `estimated`), la période des prix saisis (`entered_prices`) quand ils s'appliquent, et le prix de rachat d'un kWh du surplus solaire (`resale_price`) quand le surplus est revendu |
 
-Le prix d'un kWh est celui d'ecojoko quand il le connaît : avec un chauffe-eau piloté, et pas pour toutes les offres. Sinon il est estimé d'après les coûts quotidiens que calcule ecojoko sur deux semaines, part de l'abonnement écartée, au dixième de centime près.
+Le prix d'un kWh est celui que vous avez saisi dans les options pendant sa période de validité ([voir comment](installation.md#les-prix-de-votre-contrat)), sinon celui d'ecojoko quand il le connaît : avec un chauffe-eau piloté, et pas pour toutes les offres. Sinon il est estimé d'après les coûts quotidiens que calcule ecojoko sur deux semaines, part de l'abonnement écartée, au dixième de centime près.
 
 ### Équipements pilotés
 

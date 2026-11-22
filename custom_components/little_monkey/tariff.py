@@ -346,6 +346,34 @@ def estimate_prices(days):
     return prices
 
 
+def entered_prices(entered, day):
+    """Return the prices entered by the user that apply on a day, or None.
+
+    entered: the prices of the options (CONF_CONTRACT_PRICES). They apply
+    from their start to their end, both included, each optional. Returns
+    {"prices": {band id: euros}, "subscription": euros or None, "start",
+    "end"}: outside their dates, or without any price, ecojoko's apply.
+    """
+    if not isinstance(entered, dict):
+        return None
+    start, end = entered.get("start"), entered.get("end")
+    if (start and day.isoformat() < start) or (end and day.isoformat() > end):
+        return None
+    prices = {}
+    for band_id, price in (entered.get("prices") or {}).items():
+        price = _number(price)
+        try:
+            band_id = int(band_id)
+        except (TypeError, ValueError):
+            continue
+        if price is not None and price > 0:
+            prices[band_id] = price
+    subscription = _number(entered.get("subscription"))
+    if not prices and subscription is None:
+        return None
+    return {"prices": prices, "subscription": subscription, "start": start, "end": end}
+
+
 def exact_prices(prices, labels):
     """Return the prices given by ecojoko {band id: euros}.
 

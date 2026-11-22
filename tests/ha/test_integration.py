@@ -1028,6 +1028,7 @@ async def test_setup_of_a_weekend_contract(hass, fake_api):
     assert result["step_id"] == "bands"
     assert schema_defaults(result) == {
         "use_hchp_feature": True,
+        "use_contract_prices": False,
         "HP Semaine": "HP Semaine",
         "HP Semaine – HC/HP": "hp",
         "HC Semaine": "HC Semaine",
@@ -1998,6 +1999,55 @@ async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
     # Not enough statistics to estimate the other one
     assert bands["hc_grid_consumption"]["price"] is None
     assert "id" not in bands["hc_grid_consumption"]
+
+
+async def test_options_enter_the_prices_of_the_contract(hass, fake_api):
+    """The prices entered replace ecojoko's in the contract, during their validity."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    defaults = schema_defaults(result)
+    assert defaults["use_contract_prices"] is False
+
+    async def configure(data):
+        return await hass.config_entries.options.async_configure(result["flow_id"], data)
+
+    result = await configure({**defaults, "use_contract_prices": True})
+    assert result["step_id"] == "prices"
+    assert set(schema_defaults(result)) == {
+        "Heures Pleines – €/kWh", "Heures Creuses – €/kWh",
+        "subscription_price", "prices_start", "prices_end"}
+    result = await configure({})
+    assert result["errors"] == {"base": "prices_required"}
+    prices = {"Heures Pleines – €/kWh": 0.180336, "Heures Creuses – €/kWh": 0.134736,
+              "subscription_price": 31.14, "prices_start": "2026-08-25"}
+    result = await configure({**prices, "prices_end": "2026-08-01"})
+    assert result["errors"] == {"prices_end": "prices_dates"}
+    result = await configure({**prices, "prices_end": "2099-06-30"})
+    assert result["step_id"] == "settings"
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert entry.data["contract_prices"] == {
+        "prices": {"2": 0.180336, "3": 0.134736}, "subscription": 31.14,
+        "start": "2026-08-25", "end": "2099-06-30"}
+
+    attributes = hass.states.get("sensor.ecojoko_contract").attributes
+    bands = {band["key"]: band for band in attributes["bands"]}
+    assert bands["hp_grid_consumption"]["price"] == 0.180336
+    assert bands["hp_grid_consumption"]["price_source"] == "entered"
+    assert attributes["entered_prices"] == {"start": "2026-08-25", "end": "2099-06-30"}
+
+    # Unchecked, ecojoko's prices apply again
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    assert schema_defaults(result)["use_contract_prices"] is True
+    result = await configure({**schema_defaults(result), "use_contract_prices": False})
+    assert result["step_id"] == "settings"
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert "contract_prices" not in entry.data
+    assert hass.states.get("sensor.ecojoko_contract").attributes["entered_prices"] is None
 
 
 async def test_answers_of_the_services_are_shared(hass, fake_api, monkeypatch):

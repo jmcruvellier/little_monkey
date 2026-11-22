@@ -14,6 +14,7 @@
 - Fréquence de rafraîchissement : 5 secondes au minimum, au lieu de 3. ecojoko ne change la puissance en temps réel que toutes les 5 à 10 secondes au mieux. À la mise à jour, un intervalle inférieur à 5 secondes est porté à 5
 
 ### Nouveautés
+- Saisie des prix de votre contrat, quand ecojoko ne les connaît pas (une remise pour les nouveaux clients, par exemple) : dans les options, cochez « Saisir les prix de mon contrat » et saisissez le prix TTC du kWh de chaque tranche, l'abonnement et la période de validité. Ils remplacent ceux d'ecojoko dans la carte Contrat et le capteur Contrat pendant cette période, avec la mention « Prix saisis dans les options de l'intégration »
 - Diagnostics : nombre de requêtes envoyées à ecojoko par API, en séparant le sondage des services appelés par les cartes, et fréquence à laquelle leurs réponses changent vraiment. Ces chiffres serviront à espacer les requêtes sans perdre de fraîcheur
 - Les cartes apparaissent aussi quand on ajoute une carte à partir d'une entité (Home Assistant 2026.6 ou plus récent) : dans l'onglet **Par entité**, choisir une entité de Little Monkey propose les cartes de son appareil, dans la section **Communauté**. Il n'est plus nécessaire de chercher « Petit Singe » dans l'onglet **Par carte**. Avec deux appareils, chaque carte prend les capteurs de l'appareil de l'entité choisie
 
