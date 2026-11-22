@@ -272,6 +272,14 @@ def _apply_reference(values, kwh, cost) -> None:
         values["savings_kwh"] = round_value(kwh - consumption)
 
 
+def _year_before(day):
+    """Return the same day of last year, the 28th for a 29 February."""
+    try:
+        return day.replace(year=day.year - 1)
+    except ValueError:
+        return day.replace(year=day.year - 1, day=28)
+
+
 def _date_of(text):
     """Return the date of an ISO day, None when it is not one."""
     try:
@@ -1226,12 +1234,53 @@ class LittleMonkeyApiClient:
 
         return kwh, cost + value(reference) - value(consumed)
 
+    async def _async_share_until_now(self, day) -> tuple[dict, float]:
+        """Return the share of the energy of each band of a day used before this time.
+
+        From the power of that day, kept a day; for a band it does not tell,
+        the share of the day gone by.
+        """
+        measures = await self.async_cached(
+            ("day_until_now", day.isoformat()), 86400,
+            lambda: self.async_get_measures("electricity", "day", day))
+        now = dt.datetime.now(TZ)
+        points = measures.get("points") or []
+        earlier = []
+        for point in points:
+            try:
+                if dt.datetime.fromisoformat(point["time"]).time() < now.time():
+                    earlier.append(point)
+            except (KeyError, TypeError, ValueError):
+                continue
+        whole, part = energies_of_points(points), energies_of_points(earlier)
+        shares = {band: part.get(band, 0.0) / kwh for band, kwh in whole.items() if kwh > 0}
+        gone_by = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+        return shares, gone_by / 86400
+
+    async def _async_last_year_days(self, first, last, keys, until) -> list[dict]:
+        """Return the kWh, or the costs, of each band of the days first to last, by day.
+
+        One dictionary for each key. The day `until`, matching today, counts
+        only until the time of now: the period in progress is compared with
+        the same part of last year.
+        """
+        values = [await self._async_day_energies(first, last, key) for key in keys]
+        if first <= until <= last and any(until in days for days in values):
+            shares, gone_by = await self._async_share_until_now(until)
+            for days in values:
+                if until in days:
+                    days[until] = {
+                        band: value * shares.get(band, gone_by)
+                        for band, value in days[until].items()}
+        return values
+
     async def _async_last_year_savings(self, savings, period, day, energies=None) -> dict:
         """Return the savings of a period against the same period of last year.
 
         A day is compared with the same day of the week 52 weeks before, a
-        week with the same week, a month with the same month of last year.
-        A bar without energy last year keeps ecojoko's reference.
+        week with the same week, a month with the same month of last year;
+        the bar in progress with the same part of last year, until the same
+        day and time. A bar without energy last year keeps ecojoko's reference.
         """
         bars = [bar for bar in savings.get("bars") or [] if bar.get("cost") is not None]
         if not bars:
@@ -1239,6 +1288,7 @@ class LittleMonkeyApiClient:
         if energies is None:
             energies = await self._async_period_energies(period, day)
         costs = await self._async_period_energies(period, day, "cost") if self._paid else None
+        today = get_current_date(TZ)
         spans = []
         for bar in bars:
             first = _date_of(bar.get("date"))
@@ -1247,7 +1297,8 @@ class LittleMonkeyApiClient:
             month_end = first.replace(day=calendar.monthrange(first.year, first.month)[1])
             last = {"week": first, "month": min(first + dt.timedelta(days=6), month_end)}.get(
                 period, month_end)
-            spans.append((bar, first, last))
+            # The bar in progress, until today
+            spans.append((bar, first, min(last, max(today, first))))
         if not spans:
             return savings
         keys = ("energy", "cost") if self._paid else ("energy",)
@@ -1256,22 +1307,27 @@ class LittleMonkeyApiClient:
                 "year", dt.date(day.year - 1, 6, 1), key) for key in keys]
         else:
             year = dt.timedelta(weeks=52)
-            before = [await self._async_day_energies(
+            before = await self._async_last_year_days(
                 min(first for _bar, first, _last in spans) - year,
-                max(last for _bar, _first, last in spans) - year, key) for key in keys]
+                max(last for _bar, _first, last in spans) - year, keys, today - year)
         replaced = 0
         reference_gap = reference_kwh_gap = 0.0
         for bar, first, last in spans:
-            if period == "year":
-                shifted = (first.replace(year=first.year - 1), last.replace(
-                    year=last.year - 1, day=calendar.monthrange(last.year - 1, last.month)[1]))
-            else:
+            sources = before
+            if period != "year":
                 shifted = (first - dt.timedelta(weeks=52), last - dt.timedelta(weeks=52))
-            paid = (_range_energies(costs, first, last), _range_energies(before[1], *shifted)) \
+            elif first <= today <= last:
+                # The month in progress: the same days of last year
+                shifted = (_year_before(first), _year_before(today))
+                sources = await self._async_last_year_days(*shifted, keys, shifted[1])
+            else:
+                shifted = (_year_before(first), _year_before(first).replace(
+                    day=calendar.monthrange(first.year - 1, first.month)[1]))
+            paid = (_range_energies(costs, first, last), _range_energies(sources[1], *shifted)) \
                 if self._paid else None
             values = self._last_year_values(
                 bar["cost"], _range_energies(energies, first, last),
-                _range_energies(before[0], *shifted), first, paid)
+                _range_energies(sources[0], *shifted), first, paid)
             if values is None:
                 continue
             kwh, cost = values
@@ -1291,7 +1347,9 @@ class LittleMonkeyApiClient:
     async def _async_last_year_summary(self, summary, today) -> None:
         """Change the savings over 12 months to a reference of the 12 months before.
 
-        Only with the energy of each of these 12 months a year earlier.
+        Only with the energy of each of these 12 months a year earlier; the
+        month in progress against the same days of last year, until the
+        same time.
         """
         months = []
         month = today.replace(day=1)
@@ -1299,23 +1357,29 @@ class LittleMonkeyApiClient:
             months.append(month)
             month = (month - dt.timedelta(days=1)).replace(day=1)
         before = [month.replace(year=month.year - 1) for month in months]
-
-        async def totals(key):
-            values = {}
+        keys = ("energy", "cost") if self._paid else ("energy",)
+        values = []
+        for key in keys:
+            by_month = {}
             for year in {today.year, today.year - 1, today.year - 2}:
-                values.update(await self._async_period_energies("year", dt.date(year, 6, 1), key))
-            if not all(values.get(month) for month in before):
-                return None
-            return tuple(_range_energies(
-                {month: values.get(month) or {} for month in dates}, dates[-1], dates[0])
-                for dates in (months, before))
-
-        energies = await totals("energy")
-        costs = await totals("cost") if self._paid else None
-        if energies is None or (self._paid and costs is None):
-            summary["reference_source"] = "ecojoko"
-            return
-        consumed, reference = energies
+                by_month.update(
+                    await self._async_period_energies("year", dt.date(year, 6, 1), key))
+            if not all(by_month.get(month) for month in before):
+                summary["reference_source"] = "ecojoko"
+                return
+            values.append(by_month)
+        until = _year_before(today)
+        days = await self._async_last_year_days(before[0], until, keys, until)
+        totals = []
+        for by_month, by_day in zip(values, days, strict=True):
+            past = {month: by_month[month] for month in before[1:]}
+            past[before[0]] = _range_energies(by_day, before[0], until)
+            totals.append((
+                _range_energies(
+                    {month: by_month.get(month) or {} for month in months}, months[-1], months[0]),
+                _range_energies(past, before[-1], before[0])))
+        consumed, reference = totals[0]
+        costs = totals[1] if self._paid else None
         values = self._last_year_values(
             finite_number(summary.get("consumption_cost_12_months")), consumed, reference, today,
             costs)
@@ -1332,10 +1396,13 @@ class LittleMonkeyApiClient:
         summary["reference_source"] = "last_year"
 
     async def _async_last_year_activity(self, activity, today) -> None:
-        """Change the gap over 7 days to a reference of the same days 52 weeks before."""
+        """Change the gap over 7 days to a reference of the same days 52 weeks before.
+
+        Today against the same day of last year until the same time.
+        """
         year = dt.timedelta(weeks=52)
         first, last = today - dt.timedelta(days=6) - year, today - year
-        before = await self._async_day_energies(first, last)
+        (before,) = await self._async_last_year_days(first, last, ("energy",), last)
         consumption = finite_number(activity.get("consumption_7_days"))
         if len(before) < 7 or consumption is None:
             return

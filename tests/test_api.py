@@ -2803,9 +2803,14 @@ def test_savings_against_the_same_week_of_last_year(api):
     assert result["reference_source"] == "mixed"
 
 
-def test_savings_of_12_months_and_of_7_days_against_last_year(api):
-    """The 12 months before, and the same 7 days 52 weeks before."""
-    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+def test_savings_of_12_months_and_of_7_days_against_last_year(api, monkeypatch):
+    """The 12 months before, and the same 7 days 52 weeks before.
+
+    The month in progress and today against the same days of last year,
+    until the same time.
+    """
+    today = dt.date(2026, 11, 22)
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: today)
     client = last_year_client(api)
 
     async def period_energies(_period, day, key="energy"):
@@ -2817,26 +2822,73 @@ def test_savings_of_12_months_and_of_7_days_against_last_year(api):
         return months
 
     async def day_energies(first, last, key="energy"):
-        return {first + dt.timedelta(days=offset): {2: 3} for offset in range(7)}
+        return {first + dt.timedelta(days=offset): {2: 3}
+                for offset in range((last - first).days + 1)}
+
+    async def share_until_now(_day):
+        # Half of the day gone by
+        return {}, 0.5
 
     client._async_period_energies = period_energies
     client._async_day_energies = day_energies
+    client._async_share_until_now = share_until_now
     summary = {"consumption_cost_12_months": 300.0, "reference_cost_12_months": 400.0,
                "savings_12_months": 100.0, "consumption_12_months": 1200,
                "reference_consumption_12_months": 2000, "savings_kwh_12_months": 800}
     run(client._async_last_year_summary(summary, today))
     assert summary["reference_source"] == "last_year"
-    consumed = sum(100 if today.month >= offset + 1 else 150 for offset in range(12))
-    reference = 150 * (12 - today.month) + 150 * today.month if today.year else 0
-    assert summary["reference_consumption_12_months"] == reference
+    # December 2025 and 11 months of 2026 consumed; 11 months of last year, and
+    # 1 to 22 November 2025 until the same time (21.5 days at 3 kWh)
+    consumed = 150 + 11 * 100
+    assert summary["reference_consumption_12_months"] == 11 * 150 + 64.5
     assert summary["reference_cost_12_months"] == pytest.approx(
-        300.0 + 0.2 * reference - 0.2 * consumed, abs=0.01)
+        300.0 + 0.2 * (11 * 150 + 64.5 - consumed), abs=0.01)
 
     activity = {"consumption_7_days": 42, "reference_consumption_7_days": 30, "savings_7_days": 40}
     run(client._async_last_year_activity(activity, today))
-    # 21 kWh the same days of last year: 100 % more
-    assert activity == {"consumption_7_days": 42, "reference_consumption_7_days": 21,
-                        "savings_7_days": 100}
+    # 19.5 kWh the same days of last year, the last one until the same time
+    assert activity == {"consumption_7_days": 42, "reference_consumption_7_days": 19.5,
+                        "savings_7_days": 115}
+
+
+def test_period_in_progress_against_the_same_part_of_last_year(api, monkeypatch):
+    """The week or the month in progress stops last year at the same day and time."""
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: dt.date(2026, 11, 4))
+    client = last_year_client(api)
+
+    async def day_energies(first, last, key="energy"):
+        return {first + dt.timedelta(days=offset): {2: 10}
+                for offset in range((last - first).days + 1)}
+
+    async def period_energies(_period, day, key="energy"):
+        # A whole month of last year, which the month in progress does not take
+        return {dt.date(day.year, 11, 1): {2: 300}}
+
+    async def share_until_now(_day):
+        return {2: 0.5}, 0.9
+
+    client._async_day_energies = day_energies
+    client._async_period_energies = period_energies
+    client._async_share_until_now = share_until_now
+
+    def savings(date):
+        return {"cost": 4.0, "consumption": 20, "reference_cost": 6.0,
+                "reference_consumption": 30, "savings": 2.0, "bars": [
+                    {"date": date, "cost": 4.0, "consumption": 20, "reference_cost": 6.0,
+                     "reference_consumption": 30, "savings": 2.0}]}
+
+    # The week of Monday 2 November: 3 to 5 November 2025, the 5th until now
+    energies = {dt.date(2026, 11, 2): {2: 8}, dt.date(2026, 11, 3): {2: 8},
+                dt.date(2026, 11, 4): {2: 4}}
+    bar = run(client._async_last_year_savings(
+        savings("2026-11-02"), "month", dt.date(2026, 11, 4), energies))["bars"][0]
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (25, 5.0)
+
+    # November: 1 to 4 November 2025, the 4th until now
+    bar = run(client._async_last_year_savings(
+        savings("2026-11-01"), "year", dt.date(2026, 11, 4),
+        {dt.date(2026, 11, 1): {2: 20}}))["bars"][0]
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (35, 7.0)
 
 
 def test_reference_of_last_year_at_the_prices_paid(api):
@@ -2875,3 +2927,21 @@ def test_reference_of_last_year_at_the_prices_paid(api):
     assert (bar["savings"], bar["savings_kwh"]) == (0.4, 0)
     assert result["reference_source"] == "last_year"
     assert reads == ["energy", "cost"]
+
+
+def test_share_of_a_day_used_before_this_time(api):
+    """The share of a day of last year used before the time of now, by band."""
+    client = last_year_client(api)
+    paris = ZoneInfo("Europe/Paris")
+    day = dt.date(2025, 11, 5)
+    points = [{"time": dt.datetime(2025, 11, 5, hour, tzinfo=paris).isoformat(),
+               "power": 1000, "band": 2} for hour in range(24)]
+
+    async def measures(_kind, _period, _day):
+        return {"points": points}
+
+    client.async_get_measures = measures
+    shares, gone_by = run(client._async_share_until_now(day))
+    # One kWh an hour all day long: the share of the hours gone by
+    assert 0 <= gone_by <= 1
+    assert shares[2] == pytest.approx(gone_by, abs=1 / 24 + 0.001)
