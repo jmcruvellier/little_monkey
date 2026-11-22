@@ -25,6 +25,7 @@
 ### Corrections
 - Carte Économies en détail : le lundi matin (ou le 1er du mois, le 1er janvier), ecojoko répond encore avec la période précédente tant qu'il n'a pas les données du jour ; la carte l'affichait sous le nom de la période en cours (les jours du 16 au 22 novembre sous « 23–29 nov. »). Elle l'affiche maintenant sous son propre nom
 - Économies de la période répondue par ecojoko le lundi matin (ou le 1er du mois) : leurs coûts aux prix saisis et leur référence de l'année précédente étaient calculés avec l'énergie de la nouvelle période ; c'est maintenant celle de la période répondue
+- Coûts aux prix saisis : le prix d'ecojoko retiré était estimé sur les derniers jours gardés en mémoire, journée en cours comprise ; il variait au fil de la journée et après un redémarrage (jusqu'à 9 € d'écart sur les économies de 12 mois). Il est maintenant estimé mois par mois, d'après les jours complets de chaque mois, et la journée en cours est écartée du prix affiché dans la carte Contrat
 
 ## 2.0.0b2
 

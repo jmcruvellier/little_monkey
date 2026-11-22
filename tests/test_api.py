@@ -2299,9 +2299,12 @@ def test_exact_prices_by_id_or_label(api):
 
 
 def test_band_prices_of_the_client(api):
-    """The client estimates the prices over two weeks, the exact ones win."""
+    """The client estimates the prices over two weeks, the exact ones win.
+
+    From the complete days: today, not over yet, is left out.
+    """
     today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
-    start = today - dt.timedelta(days=9)
+    start = today - dt.timedelta(days=10)
     gateways = {"gateways": [{
         "gateway_id": 1, "gateway_firmware_version": "9",
         "devices": [{"device_type": "POWER_METER", "device_id": 2}],
@@ -2624,6 +2627,8 @@ def entered_client(api, start="2026-11-01", end="2026-11-30", subscription=None)
     client._contract_prices = {"prices": {"2": 0.18, "3": 0.135}, "subscription": subscription,
                                "start": start, "end": end}
     client._ecojoko_prices = lambda: ({2: 0.2}, {3: 0.15})
+    # ecojoko's prices of the month, estimated from its days
+    client._month_base = lambda day: {2: 0.2, 3: 0.15}
     client._contract = {"subscription_price": 30.49}
     return client
 
@@ -2973,3 +2978,67 @@ def test_energy_of_the_period_ecojoko_answered_with(api, monkeypatch):
     assert answered_day("month", {"start": "2026-08-31"}, dt.date(2026, 9, 1)) == dt.date(
         2026, 9, 7)
     assert answered_day("month", {}, dt.date(2026, 9, 1)) == dt.date(2026, 9, 1)
+
+
+def month_of_costs(first, last, price, share=0.7):
+    """Return the measures of the days of a month: each band at its price, HP with a share."""
+    bars = []
+    day = first
+    while day <= last:
+        kwh = 3 + day.day % 5
+        bars.append({"date": day.isoformat(), "bands": [
+            {"id": 2, "energy": kwh, "cost": round(share + price[2] * kwh, 2)},
+            {"id": 3, "energy": kwh + 1, "cost": round(price[3] * (kwh + 1), 2)}]})
+        day += dt.timedelta(days=1)
+    return {"bars": bars}
+
+
+def test_prices_of_ecojoko_month_by_month(api, monkeypatch):
+    """The prices of ecojoko are estimated from the complete days of each month.
+
+    Its share of the subscription each day is left out; a change of its
+    prices applies from its month; today, not over, is left out.
+    """
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 11, 23))
+    client = make_client(api, Session())
+    client._contract_prices = {"prices": {"2": 0.18, "3": 0.135}, "subscription": None,
+                               "start": "2026-10-01", "end": None}
+    paths = []
+
+    async def get_slow(_name, path, _parse):
+        paths.append(path)
+        if path.endswith("2026-11-01"):
+            month = month_of_costs(dt.date(2026, 11, 1), dt.date(2026, 11, 22), {2: 0.2, 3: 0.15})
+            # Today, not over: its cost would spoil the estimate
+            month["bars"].append({"date": "2026-11-23", "bands": [
+                {"id": 2, "energy": 0.5, "cost": 0.9}, {"id": 3, "energy": 1, "cost": 0.8}]})
+            return month
+        return month_of_costs(dt.date(2026, 10, 1), dt.date(2026, 10, 31), {2: 0.25, 3: 0.15})
+
+    client._async_get_slow = get_slow
+    # September is before the prices entered: not read
+    run(client._async_load_month_prices(
+        [dt.date(2026, 9, 30), dt.date(2026, 10, 31), dt.date(2026, 11, 2), dt.date(2026, 11, 3)]))
+    assert paths == ["powerstat/m6/2026-10-01", "powerstat/m6/2026-11-01"]
+    assert client._month_base(dt.date(2026, 11, 5)) == {2: 0.2, 3: 0.15}
+    assert client._month_base(dt.date(2026, 10, 5)) == {2: 0.25, 3: 0.15}
+    assert client._month_base(dt.date(2026, 9, 5)) is None
+    # Each month at ecojoko's prices of that month
+    assert client.cost_gap(dt.date(2026, 10, 5), dt.date(2026, 10, 5), {2: 10}) == pytest.approx(-0.7)
+    assert client.cost_gap(dt.date(2026, 11, 5), dt.date(2026, 11, 5), {2: 10}) == pytest.approx(-0.2)
+    # A month not read keeps ecojoko's costs
+    assert client.cost_gap(dt.date(2026, 9, 5), dt.date(2026, 9, 5), {2: 10}) is None
+
+
+def test_prices_of_the_first_days_of_a_month(api, monkeypatch):
+    """Without enough complete days, a month takes its prices with the month before."""
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 12, 3))
+    client = make_client(api, Session())
+
+    async def get_slow(_name, path, _parse):
+        if path.endswith("2026-12-01"):
+            return month_of_costs(dt.date(2026, 12, 1), dt.date(2026, 12, 3), {2: 0.2, 3: 0.15})
+        return month_of_costs(dt.date(2026, 11, 1), dt.date(2026, 11, 30), {2: 0.2, 3: 0.15})
+
+    client._async_get_slow = get_slow
+    assert run(client._async_month_prices(dt.date(2026, 12, 1))) == {2: 0.2, 3: 0.15}
