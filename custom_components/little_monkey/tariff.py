@@ -374,6 +374,58 @@ def entered_prices(entered, day):
     return {"prices": prices, "subscription": subscription, "start": start, "end": end}
 
 
+def price_gap(energies, base_prices, prices):
+    """Return the euros to add to a cost computed by ecojoko, or None.
+
+    energies: kWh by band id; base_prices: ecojoko's price of a kWh by band
+    (exact or estimated); prices: the prices entered by band. The energy of
+    each band costs the price entered instead of ecojoko's; the rest of
+    ecojoko's cost, as its share of the subscription, is kept. None when no
+    band has both prices.
+    """
+    gap, corrected = 0.0, False
+    for band_id, kwh in energies.items():
+        if kwh is None or band_id not in prices or band_id not in base_prices:
+            continue
+        gap += kwh * (prices[band_id] - base_prices[band_id])
+        corrected = True
+    return gap if corrected else None
+
+
+def subscription_gap(subscription, base_subscription, days):
+    """Return the euros to add for a subscription entered over some days, else 0."""
+    if subscription is None or base_subscription is None:
+        return 0.0
+    return (subscription - base_subscription) * 12 / 365 * days
+
+
+def energies_of_points(points):
+    """Return the kWh of each band of a day of power, from its points.
+
+    Each point holds its power until the next one; the last one holds it for
+    the median interval of the day.
+    """
+    times = []
+    for point in points:
+        try:
+            times.append(dt.datetime.fromisoformat(point["time"]))
+        except (KeyError, TypeError, ValueError):
+            times.append(None)
+    gaps = sorted(
+        (later - earlier).total_seconds() for earlier, later in zip(times, times[1:])
+        if earlier is not None and later is not None and later > earlier)
+    usual = gaps[len(gaps) // 2] if gaps else 0
+    energies = {}
+    for index, point in enumerate(points):
+        power, band = point.get("power"), point.get("band")
+        if power is None or band is None or times[index] is None:
+            continue
+        following = times[index + 1] if index + 1 < len(times) else None
+        seconds = (following - times[index]).total_seconds() if following else usual
+        energies[band] = energies.get(band, 0.0) + max(power, 0) * seconds / 3_600_000
+    return energies
+
+
 def exact_prices(prices, labels):
     """Return the prices given by ecojoko {band id: euros}.
 
