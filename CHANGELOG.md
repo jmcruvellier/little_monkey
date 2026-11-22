@@ -22,6 +22,9 @@
 - Diagnostics : nombre de requêtes envoyées à ecojoko par API, en séparant le sondage des services appelés par les cartes, et fréquence à laquelle leurs réponses changent vraiment. Ces chiffres serviront à espacer les requêtes sans perdre de fraîcheur
 - Les cartes apparaissent aussi quand on ajoute une carte à partir d'une entité (Home Assistant 2026.6 ou plus récent) : dans l'onglet **Par entité**, choisir une entité de Little Monkey propose les cartes de son appareil, dans la section **Communauté**. Il n'est plus nécessaire de chercher « Petit Singe » dans l'onglet **Par carte**. Avec deux appareils, chaque carte prend les capteurs de l'appareil de l'entité choisie
 
+### Corrections
+- Carte Économies en détail : le lundi matin (ou le 1er du mois, le 1er janvier), ecojoko répond encore avec la période précédente tant qu'il n'a pas les données du jour ; la carte l'affichait sous le nom de la période en cours (les jours du 16 au 22 novembre sous « 23–29 nov. »). Elle l'affiche maintenant sous son propre nom
+
 ## 2.0.0b2
 
 > [!WARNING]

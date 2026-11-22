@@ -275,3 +275,15 @@ test("an entity of a device suggests the savings cards on that device", () => {
   });
   assert.equal(cards.entitySuggestion(hass, "sensor.nothing", cards.detailStubConfig), null);
 });
+
+test("the current period is the one ecojoko still answers with", () => {
+  // Monday 23 November: until it has the day, ecojoko answers with last week
+  assert.equal(cards.currentPeriod("week", "2026-11-23", { start: "2026-11-16" }), "2026-11-16");
+  assert.equal(cards.currentPeriod("week", "2026-11-23", { start: "2026-11-23" }), "2026-11-23");
+  assert.equal(cards.currentPeriod("week", "2026-11-23", null), "2026-11-23");
+  assert.equal(cards.currentPeriod("year", "2027-01-01", { start: "2026-01-01" }), "2026-01-01");
+  // A month starting on its first Monday, or a few days before, is the current one
+  assert.equal(cards.currentPeriod("month", "2026-11-23", { start: "2026-11-02" }), "2026-11-01");
+  assert.equal(cards.currentPeriod("month", "2026-09-01", { start: "2026-08-31" }), "2026-09-01");
+  assert.equal(cards.currentPeriod("month", "2026-12-01", { start: "2026-11-02" }), "2026-11-01");
+});
