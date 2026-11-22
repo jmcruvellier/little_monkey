@@ -2694,3 +2694,61 @@ def test_cost_of_7_days_and_of_an_equipment_at_the_prices_entered(api):
 def parse_activity_cost(api):
     """Return ecojoko's cost of the last 7 days of the activity of the tests."""
     return api.parse_activity(ACTIVITY)["cost_7_days"]
+
+
+def test_savings_at_the_prices_entered(api):
+    """The cost of each bar at the prices entered, its reference at the average price."""
+    client = entered_client(api)
+    savings = {"cost": 7.0, "reference_cost": 8.0, "savings": 1.0, "bars": [
+        {"date": "2026-10-31", "cost": 3.0, "consumption": 15, "reference_cost": 4.0,
+         "reference_consumption": 20, "savings": 1.0},
+        {"date": "2026-11-01", "cost": 4.0, "consumption": 20, "reference_cost": 4.0,
+         "reference_consumption": 30, "savings": 0.0},
+    ]}
+    energies = {dt.date(2026, 10, 31): {2: 15}, dt.date(2026, 11, 1): {2: 10, 3: 10}}
+    corrected = client.correct_savings(savings, "week", energies)
+    # Before the prices: ecojoko's; after: -0.35 € for 20 kWh, -0.525 € for the 30 of reference
+    assert corrected["bars"][0] == savings["bars"][0]
+    bar = corrected["bars"][1]
+    assert (bar["cost"], bar["reference_cost"], bar["savings"]) == (3.65, 3.47, -0.18)
+    assert (corrected["cost"], corrected["reference_cost"], corrected["savings"]) == (6.65, 7.47, 0.82)
+    assert corrected["entered_prices"] is True
+
+
+def test_analysis_at_the_prices_entered(api):
+    """Each category of the analysis changes as the cost of the whole period."""
+    client = entered_client(api)
+
+    async def energies(_period, _day):
+        return {dt.date(2026, 11, 2 + offset): {2: 10} for offset in range(7)}
+
+    client._async_period_energies = energies
+    analysis = {"available": True, "start": "2026-11-02", "cost": 14.0, "categories": [
+        {"cost": 7.0, "children": [{"cost": 3.5}]}, {"cost": 7.0, "children": []}]}
+    corrected = run(client._async_correct_analysis(analysis, "week"))
+    # 70 kWh at -0.02 €: -1.4 € over 14 €, -10 %
+    assert corrected["cost"] == 12.6
+    assert [category["cost"] for category in corrected["categories"]] == [6.3, 6.3]
+    assert corrected["categories"][0]["children"][0]["cost"] == 3.15
+    unavailable = {"available": False, "start": "2026-11-02"}
+    assert run(client._async_correct_analysis(unavailable, "week")) == unavailable
+
+
+def test_savings_of_12_months_at_the_prices_entered(api):
+    """Month by month, the months the prices cover."""
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    client = entered_client(api, start=None, end=None)
+
+    async def energies(_period, _day):
+        month = today.replace(day=1)
+        return {month: {2: 100}}
+
+    client._async_period_energies = energies
+    summary = {"consumption_cost_12_months": 400.0, "reference_cost_12_months": 500.0,
+               "savings_12_months": 100.0, "consumption_12_months": 2000,
+               "reference_consumption_12_months": 3000}
+    run(client._async_correct_summary(summary, today))
+    # 100 kWh at -0.02 €; the reference at the same average price
+    assert summary["consumption_cost_12_months"] == 398.0
+    assert summary["reference_cost_12_months"] == 497.0
+    assert summary["savings_12_months"] == 99.0

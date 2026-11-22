@@ -68,7 +68,9 @@ ecojoko ne connaît pas toujours les prix de votre contrat : une remise pour les
 | Abonnement mensuel TTC | Facultatif |
 | Valables à partir du, jusqu'au | La période de ces prix, par exemple celle d'une remise ; avant et après, les prix d'ecojoko s'appliquent. Laissez vide pour une période sans début ou sans fin |
 
-La carte Contrat affiche alors ces prix, avec la mention « Prix saisis dans les options de l'intégration ». Les coûts sont recalculés à ces prix pendant leur période : ceux de la carte Mesures et du service `get_measures` (jours, mois, années, et chaque tranche), le coût sur 7 jours de l'activité, et le coût du jour d'un équipement piloté. Seul le prix du kWh change, la part d'abonnement comptée par ecojoko reste ; un abonnement saisi ajoute son écart jour par jour. Un mois n'est recalculé que si les prix s'appliquent à tout le mois. Décochez la case pour revenir aux prix d'ecojoko.
+La carte Contrat affiche alors ces prix, avec la mention « Prix saisis dans les options de l'intégration ». Les coûts sont recalculés à ces prix pendant leur période : ceux de la carte Mesures et du service `get_measures` (jours, mois, années, et chaque tranche), le coût sur 7 jours de l'activité, et le coût du jour d'un équipement piloté. Seul le prix du kWh change, la part d'abonnement comptée par ecojoko reste ; un abonnement saisi ajoute son écart jour par jour. Un mois n'est recalculé que si les prix s'appliquent à tout le mois.
+
+Les économies suivent : le coût de votre consommation est recalculé de la même façon, et le coût de la consommation de référence au prix moyen du kWh que vous avez payé sur la même période (ecojoko valorise lui aussi sa référence à un prix unique, sans tranches) ; l'économie en euros est leur différence. Cela vaut pour les capteurs d'économies (12 mois, semaine, mois, année), la carte « Détail des économies » et le service `get_savings`. L'analyse de la conso, qu'ecojoko ne détaille pas par tranche, change dans la même proportion que le coût de la période. Décochez la case pour revenir aux prix d'ecojoko.
 
 ### 3. Les autres capteurs et fonctions
 
