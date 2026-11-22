@@ -24,6 +24,7 @@
 
 ### Corrections
 - Carte Économies en détail : le lundi matin (ou le 1er du mois, le 1er janvier), ecojoko répond encore avec la période précédente tant qu'il n'a pas les données du jour ; la carte l'affichait sous le nom de la période en cours (les jours du 16 au 22 novembre sous « 23–29 nov. »). Elle l'affiche maintenant sous son propre nom
+- Économies de la période répondue par ecojoko le lundi matin (ou le 1er du mois) : leurs coûts aux prix saisis et leur référence de l'année précédente étaient calculés avec l'énergie de la nouvelle période ; c'est maintenant celle de la période répondue
 
 ## 2.0.0b2
 

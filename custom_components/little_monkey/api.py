@@ -272,6 +272,20 @@ def _apply_reference(values, kwh, cost) -> None:
         values["savings_kwh"] = round_value(kwh - consumption)
 
 
+def _answered_day(period, savings, day):
+    """Return a day of the period ecojoko answered with, else the day asked.
+
+    Until it has the data of the day, ecojoko answers with the period
+    before; asked for a period before its first measures, with its first
+    one. A month (or a year) may start a few days before its first day
+    (its first Monday): a week after its start is inside it.
+    """
+    start = _date_of(savings.get("start"))
+    if start is None:
+        return day
+    return start + dt.timedelta(days=7) if period in ("month", "year") else start
+
+
 def _year_before(day):
     """Return the same day of last year, the 28th for a 29 February."""
     try:
@@ -1777,6 +1791,9 @@ class LittleMonkeyApiClient:
             ) from exception
         if not self._contract_prices and not self._last_year:
             return savings
+        # The energy of the period ecojoko answered with: on a Monday
+        # morning, until it has the day, the week before
+        day = _answered_day(period, savings, day)
         try:
             energies = await self._async_period_energies(period, day)
             savings = self.correct_savings(savings, period, energies)
