@@ -34,7 +34,7 @@ Toujours créés, ou selon les cases de la 1.2.8.
 | Consommation Réseau | kWh | toujours | Énergie consommée depuis minuit ; ne diminue jamais au cours d'une journée |
 | Consommation d'une tranche tarifaire | kWh | une par tranche du contrat | Énergie de la tranche depuis minuit (Heures Creuses, HC Bleu, HP Semaine…), nommée à la configuration |
 | Consommation HC Réseau, HP Réseau | kWh | case des totaux HC et HP | Somme des tranches de chaque catégorie |
-| Période Tarifaire en Cours | — | totaux HC/HP ou contrat Tempo | Heures creuses ou pleines, et couleur du jour en Tempo ; la tranche en cours en attribut (`tariff_band`). Déduite du compteur qui augmente : connue avec quelques minutes de retard au changement de période |
+| Période Tarifaire en Cours | — | totaux HC/HP ou contrat Tempo | Heures creuses ou pleines, et couleur du jour en Tempo ; la tranche en cours en attribut (`tariff_band`). Déduite du compteur qui augmente : connue avec quelques minutes de retard au changement de période. Elle suit la catégorie de la tranche en cours : une tranche comptée ni en HC ni en HP (Heures Weekend d'une offre week-end) ne donne pas de période, l'état est inconnu et le cadran affiche le nom de la tranche. Pour compter le week-end en heures creuses, choisissez la catégorie HC pour cette tranche dans les options |
 | Surplus de Production | kWh | case Production | Énergie injectée depuis minuit |
 | Température Intérieure, Extérieure | °C | case Température et humidité | Mesures de la sonde ecojoko ; l'extérieure vient de la météo de votre commune |
 | Humidité Intérieure, Extérieure | % | case Température et humidité | Idem |

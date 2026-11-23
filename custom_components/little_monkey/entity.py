@@ -209,11 +209,16 @@ class EcojokoPeriodSensor(EcojokoSensor):
 
     @property
     def native_value(self):
-        """Return the current period, the restored one while it is not known."""
-        value = (self.coordinator.data or {}).get(self._sensor_name)
-        if value in self._attr_options:
+        """Return the current period, the restored one while it is not known.
+
+        A known current band in neither HC nor HP (Heures Weekend) has no
+        period: the restored one no longer applies.
+        """
+        data = self.coordinator.data or {}
+        value = data.get(self._sensor_name)
+        if value in self._attr_options or data.get("current_tariff_band") is not None:
             self._restored = None
-            return value
+            return value if value in self._attr_options else None
         return self._restored
 
     @property

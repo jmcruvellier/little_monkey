@@ -166,6 +166,18 @@ export function durationLabel(text, minutes) {
   return text.hours.replace("{h}", Math.floor(minutes / 60)).replace("{m}", String(minutes % 60).padStart(2, "0"));
 }
 
+/**
+ * Return the name of the current band when it is in neither HC nor HP
+ * (Heures Weekend of a week-end offer), null otherwise.
+ */
+export function otherBand(bands, current) {
+  if (!current) {
+    return null;
+  }
+  const band = (bands || []).find((item) => item.name === current);
+  return band && !["hc", "hp"].includes(band.category) ? current : null;
+}
+
 /** Return the color of the Tempo day of a period ("hp_white"), or null. */
 export function tempoDay(period) {
   const match = String(period ?? "").match(/_(blue|white|red)$/);
@@ -342,6 +354,9 @@ export function contractView(hass, entityId, now = new Date()) {
     entity: sensors[band.key],
     current: currentBand ? band.name === currentBand : single && band.category === category,
   }));
+  // A current band in neither HC nor HP (Heures Weekend) is the period of
+  // the whole day: the off-peak hours of the week do not apply
+  const other = otherBand(list, currentBand);
   return {
     offer: state.state,
     supplier: attributes.supplier,
@@ -356,10 +371,12 @@ export function contractView(hass, entityId, now = new Date()) {
     minutes,
     // A contract without off-peak hours, read before any period is known,
     // has no period to show: neither peak nor off-peak
-    known: slots.length > 0 || /^h[cp]/.test(period ?? ""),
-    offPeak,
+    known: Boolean(other) || slots.length > 0 || /^h[cp]/.test(period ?? ""),
+    offPeak: other ? false : offPeak,
+    // Name of the current band in neither HC nor HP, null otherwise
+    other,
     tempo: tempoDay(period),
-    next: nextChange(slots, minutes),
+    next: other ? null : nextChange(slots, minutes),
     bands,
   };
 }
@@ -490,16 +507,16 @@ class LittleMonkeyContractCard extends HTMLElement {
     }
     const colors = DIAL_COLORS[view.tempo || "hchp"];
     const center = DIAL.size / 2;
-    const offArcs = view.slots.map(([start, end]) =>
+    const offArcs = view.other ? "" : view.slots.map(([start, end]) =>
       `<path d="${dialArc(start, end)}" fill="none" stroke="${colors.off}" stroke-width="${DIAL.width}" />`).join("");
     const [needleX, needleY] = dialPoint(view.minutes, DIAL.radius - DIAL.width / 2 - 6);
     const labels = [[0, "0h"], [360, "6h"], [720, "12h"], [1080, "18h"]].map(([minutes, label]) => {
       const [x, y] = dialPoint(minutes, DIAL.radius + DIAL.width / 2 + 10);
       return `<text class="dial-label" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${label}</text>`;
     }).join("");
-    const periodName = view.known ? (view.offPeak ? text.off_peak : text.peak) : "";
+    const periodName = view.other || (view.known ? (view.offPeak ? text.off_peak : text.peak) : "");
     const caption = view.tempo ? `${text.today} · ${text.tempo[view.tempo]}` : view.known ? text.now : "";
-    const periodColor = view.offPeak ? colors.off : colors.peak;
+    const periodColor = view.other ? "var(--primary-text-color)" : view.offPeak ? colors.off : colors.peak;
     let change = "";
     if (view.next) {
       change = `<div class="change">${escapeHtml(text.next
