@@ -1,6 +1,22 @@
 # Changelog
 
-## Non publié
+## 2.0.0
+
+La version 2.0 de Little Monkey. Si vous venez de la 1.2.8, elle regroupe les nouveautés des bêtas [2.0.0b1](#200b1) et [2.0.0b2](#200b2), détaillées plus bas, et celles de cette version.
+
+**L'essentiel**
+- **Huit cartes** pour vos tableaux de bord, fournies par l'intégration elle-même, sans ressource Lovelace à ajouter : le cadran ecojoko, les mesures, le résumé et le détail des économies, l'analyse de la conso, les activations des appareils, le contrat et les équipements
+- **Tous les contrats d'électricité** renseignés dans ecojoko, et plus seulement Tarif Bleu et Tempo : chaque tranche tarifaire a son capteur et compte, à votre choix, en heures creuses, en heures pleines ou dans aucun des deux
+- **Nouvelles fonctions à la demande** : activité du compte, économies, contrat et prix du kWh, équipements pilotés (chauffe-eau) avec leur pilotage, analyse de la conso et mesures détaillées, avec leurs services pour les scripts et les automatisations
+- **Vos prix** quand ecojoko ne les connaît pas (une remise, par exemple), et une **référence des économies** au choix : celle d'ecojoko, ou la même période de l'année précédente, à prix égal ou aux prix payés
+- **Moins de requêtes** envoyées à ecojoko, au rythme auquel il met réellement ses données à jour
+
+**À savoir avant de mettre à jour**
+- Faites une sauvegarde de Home Assistant. Home Assistant 2024.7.0 au minimum est nécessaire
+- La configuration est convertie automatiquement, sans perte d'historique : les capteurs HC/HP et Tempo gardent leurs identifiants et leurs statistiques. Si ecojoko indique des tranches sans capteur, une réparation vous propose de les créer
+- Les nouvelles fonctions sont **décochées par défaut** : cochez celles que vous voulez dans les options de l'intégration (Paramètres › Appareils et services › Little Monkey › Configurer), dernier écran
+- Fréquence de rafraîchissement : 30 secondes par défaut. Un intervalle inférieur à 30 secondes est porté à 30 à la mise à jour depuis la 1.2.8 ; vous pouvez ensuite le régler entre 5 et 60 secondes
+- Testeurs des bêtas : le capteur « Économies sur 7 Jours » de la 2.0.0b1 s'appelle « Écart sur 7 Jours » depuis la 2.0.0b2
 
 ### Changements importants
 - Moins de requêtes envoyées à ecojoko, sans perte de fraîcheur : environ 35 % de requêtes de fond en moins sur une installation par défaut avec un chauffe-eau piloté (de 475 à 310 par heure environ). Les nouveaux rythmes suivent ceux auxquels ecojoko met réellement ses données à jour, mesurés pendant une heure sur deux installations :

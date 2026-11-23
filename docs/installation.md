@@ -23,7 +23,7 @@
    [![Ouvrir le Marketplace sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
 
 2. Sur la page de Little Monkey dans le Marketplace, cliquez sur **Télécharger**.
-   Pour tester une version bêta, cherchez Little Monkey dans le Marketplace, ouvrez le menu ⋮ de sa ligne › **Installer une autre version**, choisissez dans la liste **Version** celle qui est marquée « Pré-version » (v2.0.0b2 par exemple), puis cliquez sur **Mettre à jour**. Faites une sauvegarde avant.
+   Pour tester une version bêta, cherchez Little Monkey dans le Marketplace, ouvrez le menu ⋮ de sa ligne › **Installer une autre version**, choisissez dans la liste **Version** celle qui est marquée « Pré-version », quand il y en a une, puis cliquez sur **Mettre à jour**. Faites une sauvegarde avant.
 3. Redémarrez Home Assistant (Paramètres › Système › menu ⏻ › **Redémarrer Home Assistant**).
 
 Les cartes du tableau de bord sont fournies par l'intégration elle-même : il n'y a ni ressource Lovelace ni dépôt supplémentaire à ajouter au Marketplace.
