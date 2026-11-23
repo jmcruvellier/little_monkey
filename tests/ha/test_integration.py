@@ -1304,7 +1304,11 @@ def period_entity(hass, entry):
 
 
 async def test_tariff_period_follows_the_counter_that_increases(hass, fake_api):
-    """With the HC/HP option, the period is the one whose counter increased."""
+    """With the HC/HP option, the period is the one whose counter increased.
+
+    Without the off-peak hours of the contract: they would tell it at once.
+    """
+    fake_api.values["_contract"] = {**fake_api.values["_contract"], "off_peak_timeslots": []}
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     entity_id = period_entity(hass, entry)
@@ -1324,6 +1328,31 @@ async def test_tariff_period_follows_the_counter_that_increases(hass, fake_api):
     fake_api.values["_kwh_hc_ns"] = 1.6
     await refresh(hass, entry)
     assert hass.states.get(entity_id).state == "hc"
+
+
+async def test_tariff_period_from_the_off_peak_hours(hass, fake_api, monkeypatch):
+    """A simple HC/HP contract tells its period by its off-peak hours, at once.
+
+    With a battery, the counters may not gain a hundredth of kWh for hours:
+    the period restored at the start stayed (HC at 18:44).
+    """
+    paris = dt_util.get_time_zone("Europe/Paris")
+    now = {"time": dt.datetime(2026, 11, 23, 18, 44, tzinfo=paris)}
+    monkeypatch.setattr(lm_coordinator, "paris_now", lambda: now["time"])
+    entity_id = "sensor.ecojoko_current_tariff_period"
+    mock_restore_cache_with_extra_data(
+        hass, ((State(entity_id, "hc"), {"native_value": "hc"}),))
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    # Off-peak hours 01:30-07:00 and 14:00-16:30: 18:44 is in the peak hours
+    state = hass.states.get(entity_id)
+    assert state.state == "hp"
+    assert state.attributes["tariff_band"] == "Heures Pleines"
+    now["time"] = dt.datetime(2026, 11, 23, 14, 30, tzinfo=paris)
+    await refresh(hass, entry)
+    state = hass.states.get(entity_id)
+    assert state.state == "hc"
+    assert state.attributes["tariff_band"] == "Heures Creuses"
 
 
 async def test_tariff_period_with_tempo(hass, fake_api):
@@ -1391,6 +1420,7 @@ async def test_no_tariff_period_without_option(hass, fake_api):
 
 async def test_tariff_period_is_restored_after_a_restart(hass, fake_api):
     """The last period is shown until the counters tell the current one."""
+    fake_api.values["_contract"] = {**fake_api.values["_contract"], "off_peak_timeslots": []}
     entity_id = "sensor.ecojoko_current_tariff_period"
     mock_restore_cache_with_extra_data(
         hass, ((State(entity_id, "hc"), {"native_value": "hc"}),))
@@ -1694,6 +1724,7 @@ async def test_tariff_band_of_a_special_day(hass, fake_api):
 
 async def test_tariff_band_unknown_at_first(hass, fake_api):
     """The band is unknown until a counter increases."""
+    fake_api.values["_contract"] = {**fake_api.values["_contract"], "off_peak_timeslots": []}
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     state = hass.states.get(period_entity(hass, entry))

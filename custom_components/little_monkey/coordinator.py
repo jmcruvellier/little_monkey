@@ -37,10 +37,11 @@ from .const import (
     LOGGER,
     CONF_TARIFF_BANDS,
     TEMPO_BAND_PERIODS,
+    HCHP_PERIODS,
     TEMPO_PERIODS,
     tariff_periods,
 )
-from .tariff import band_key, has_sensor
+from .tariff import band_key, has_sensor, off_peak_at
 from .utils import DayParts, TariffPeriod, get_current_date
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
@@ -82,6 +83,11 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         # HC/HP category of each band: the period of the current band
         self._band_categories = {
             band["key"]: band.get("category") for band in entry.data.get(CONF_TARIFF_BANDS) or []}
+        # A simple HC/HP contract, one HC band and one HP band: its period
+        # and band are told by the off-peak hours of the contract
+        self._hours_bands = (
+            {category: key for key, category in self._band_categories.items()}
+            if sorted(map(str, self._band_categories.values())) == ["hc", "hp"] else None)
         self._current_band_key = None
         self._tariff_band = TariffPeriod()
         # The HC and HP totals, and the tariff bands having a sensor, split
@@ -159,6 +165,20 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             },
         )
 
+    def _hours_period(self):
+        """Return HC or HP from the off-peak hours of the contract, None if not told.
+
+        Only for a simple HC/HP contract: the period is known at once, while
+        the counters tell it once they gain a hundredth of kWh, hours later
+        with a battery or solar panels. Tempo and the offers whose band
+        depends on the day (week-end, special days) keep the counters.
+        """
+        if self._periods != HCHP_PERIODS or self._hours_bands is None:
+            return None
+        slots = (self.client.contract or {}).get("off_peak_timeslots")
+        off_peak = off_peak_at(slots, paris_now())
+        return None if off_peak is None else ("hc" if off_peak else "hp")
+
     def _current_tariff_period(self):
         """Return the current tariff period, None without HC/HP nor Tempo option."""
         if self._periods is None:
@@ -173,6 +193,9 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         else:
             counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
         period = self._tariff_period.update(client.stat_date, counters)
+        hours = self._hours_period()
+        if hours is not None:
+            return hours
         if self._periods != TEMPO_PERIODS and self._current_band_key is not None:
             # The current band tells the period: HC, HP, or none for a band
             # in neither total (Heures Weekend...), whose counter alone
@@ -188,6 +211,10 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         values = self.client.band_values
         key = self._tariff_band.update(self.client.stat_date, {
             key: values.get(key) for key in self._band_names})
+        hours = self._hours_period()
+        if hours is not None:
+            # A simple HC/HP contract: the band of the period of the hour
+            key = self._hours_bands[hours]
         self._current_band_key = key
         return self._band_names.get(key)
 
@@ -303,6 +330,11 @@ class LittleMonkeySlowCoordinator(DataUpdateCoordinator):
             raise UpdateFailed(exception) from exception
         self._last_success = time.monotonic()
         return data
+
+
+def paris_now():
+    """Return the time in Paris: the off-peak hours of ecojoko are French times."""
+    return dt_util.now(dt_util.get_time_zone("Europe/Paris"))
 
 
 class LittleMonkeyActivityCoordinator(LittleMonkeySlowCoordinator):
