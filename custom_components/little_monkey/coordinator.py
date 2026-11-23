@@ -79,6 +79,9 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         # Id of the band of each key, for the price of a kWh now
         self._band_ids = {
             band["key"]: band["id"] for band in entry.data.get(CONF_TARIFF_BANDS) or []}
+        # HC/HP category of each band: the period of the current band
+        self._band_categories = {
+            band["key"]: band.get("category") for band in entry.data.get(CONF_TARIFF_BANDS) or []}
         self._current_band_key = None
         self._tariff_band = TariffPeriod()
         # The HC and HP totals, and the tariff bands having a sensor, split
@@ -169,7 +172,14 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             }
         else:
             counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
-        return self._tariff_period.update(client.stat_date, counters)
+        period = self._tariff_period.update(client.stat_date, counters)
+        if self._periods != TEMPO_PERIODS and self._current_band_key is not None:
+            # The current band tells the period: HC, HP, or none for a band
+            # in neither total (Heures Weekend...), whose counter alone
+            # increases while the HC/HP period would stay the one before
+            category = self._band_categories.get(self._current_band_key)
+            return category if category in ("hc", "hp") else None
+        return period
 
     def _current_tariff_band(self):
         """Return the name of the current tariff band, None if not known."""
@@ -211,8 +221,9 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         return {
             # Energy of the tariff bands, by key of their sensor
             **self.client.band_values,
-            "current_tariff_period": self._current_tariff_period(),
+            # The current band first: it tells the period
             "current_tariff_band": self._current_tariff_band(),
+            "current_tariff_period": self._current_tariff_period(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "contract": self.client.contract,
             # Price of a kWh of the solar surplus sold, None without a sale

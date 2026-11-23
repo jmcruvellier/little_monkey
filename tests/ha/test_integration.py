@@ -1352,6 +1352,36 @@ async def test_tariff_period_with_tempo(hass, fake_api):
     assert hass.states.get(entity_id).state == "hp_red"
 
 
+async def test_tariff_period_of_a_band_in_neither_total(hass, fake_api):
+    """A week-end band in neither total gives no HC/HP period, but its name (#244).
+
+    Its counter alone increases: the period followed the HC/HP totals and
+    stayed the one of the Friday.
+    """
+    bands = [
+        {"id": 8, "label": "HP Semaine", "key": "band_8", "name": None, "category": "hp"},
+        {"id": 9, "label": "HC Semaine", "key": "band_9", "name": None, "category": "hc"},
+        {"id": 13, "label": "Heures Weekend", "key": "band_13", "name": None,
+         "category": None},
+    ]
+    fake_api.values["_band_values"] = {"band_8": 0, "band_9": 0, "band_13": 0}
+    entry = add_entry(hass, data={**DATA, "tariff_bands": bands})
+    assert await setup_entry(hass, entry)
+    entity_id = period_entity(hass, entry)
+
+    fake_api.values["_band_values"] = {"band_8": 1.0, "band_9": 0, "band_13": 0}
+    fake_api.values["_kwh_hp_ns"] = 1.0
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hp"
+
+    # The week-end: only its band increases
+    fake_api.values["_band_values"] = {"band_8": 1.0, "band_9": 0, "band_13": 0.5}
+    await refresh(hass, entry)
+    state = hass.states.get(entity_id)
+    assert state.state == "unknown"
+    assert state.attributes["tariff_band"] == "Heures Weekend"
+
+
 async def test_no_tariff_period_without_option(hass, fake_api):
     """Without the HC/HP nor the Tempo option, the sensor is not created."""
     entry = add_entry(hass, data={**DATA, "use_hchp_feature": False})
