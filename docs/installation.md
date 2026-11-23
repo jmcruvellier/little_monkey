@@ -62,6 +62,8 @@ Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez don
 
 ecojoko ne connaît pas toujours les prix de votre contrat : une remise pour les nouveaux clients, par exemple, ou une offre absente de son catalogue. Vérifiez d'abord, dans l'application ecojoko (Paramètres › Tarifs d'électricité), que l'offre déclarée est bien la vôtre : la corriger là corrige les prix partout. Sinon, cochez « Saisir les prix de mon contrat » : un écran de plus vous demande les prix TTC donnés par votre fournisseur.
 
+<img src="images/ha/config-2b-prix.png" alt="Écran des prix de votre contrat" width="380">
+
 | Champ | Description |
 |---|---|
 | Pour chaque tranche | Le prix TTC d'un kWh ; une tranche laissée vide garde le prix d'ecojoko |
@@ -110,7 +112,9 @@ L'installation est convertie automatiquement au premier démarrage :
 
 - les capteurs HC/HP et Tempo gardent leurs identifiants, leur historique et leurs statistiques ; l'option Tempo disparaît, un contrat Tempo n'étant plus qu'un contrat parmi d'autres ;
 - pour un autre contrat (Week-end, Jour Spécial…), une réparation propose de créer les capteurs de ses tranches ;
-- les nouvelles fonctions de la 2.0.0 sont décochées : ouvrez **Configurer** pour les activer.
+- les nouvelles fonctions de la 2.0.0 sont décochées : ouvrez **Configurer** pour les activer ;
+- une fréquence de rafraîchissement inférieure à 30 secondes est portée à 30, le minimum recommandé ;
+- pour voir les nouvelles cartes, rechargez la page du navigateur sans son cache (**Ctrl+F5**, ou **Cmd+Maj+R** sur Mac) après le redémarrage ; dans l'application mobile, fermez-la complètement puis rouvrez-la.
 
 > [!WARNING]
 > Revenir ensuite à une version antérieure à la 1.2.8 demande de restaurer une sauvegarde ou de reconfigurer l'intégration.
