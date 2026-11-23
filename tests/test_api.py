@@ -3098,3 +3098,17 @@ def test_subscription_entered_until_today(api, monkeypatch):
         {"date": "2026-12-01", "cost": 0, "bands": []}]}
     measures = client.correct_measures(year, "year", dt.date(2026, 11, 23))
     assert measures["bars"][1]["cost"] == 0
+
+
+def test_measures_of_a_period_without_any(api):
+    """A period without measures (assistant away for repair) is empty, not an error.
+
+    ecojoko answers an empty body for it.
+    """
+    for payload in (None, "", {"stat": None}):
+        bars = api.parse_energy_bars(payload)
+        assert bars["bars"] == [] and bars["energy"] is None and bars["cost"] is None
+        # No period: nothing tells the card there is none before or after
+        assert "previous" not in bars
+        day = api.parse_power_day(payload)
+        assert day["points"] == [] and day["energy"] is None

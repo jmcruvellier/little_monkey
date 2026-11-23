@@ -478,6 +478,18 @@ def _measure_period(period) -> dict:
     }
 
 
+def _stat_of(payload) -> dict:
+    """Return the statistics of a response of measures, empty without any.
+
+    For a period without measures (the assistant away for repair in
+    February 2026), ecojoko answers an empty body: a period without bars,
+    not an error.
+    """
+    if payload is None or payload == "":
+        return {}
+    return payload["stat"] or {}
+
+
 def _stat_period(stat) -> dict:
     """Return the period of a statistics response, empty when it has none.
 
@@ -507,7 +519,7 @@ def parse_power_day(payload) -> dict:
     Each point has its power and the base load (consobase) in watts, and the
     id of the band of its time.
     """
-    stat = payload["stat"]
+    stat = _stat_of(payload)
     period = _stat_period(stat)
     return {
         **_measure_period(period),
@@ -541,7 +553,7 @@ def parse_energy_bars(payload) -> dict:
     Each bar has its energy and cost, those of each band, its base load and
     the production injected into the grid.
     """
-    stat = payload["stat"]
+    stat = _stat_of(payload)
     period = _stat_period(stat)
     bars = []
     for item in stat.get("data") or []:
