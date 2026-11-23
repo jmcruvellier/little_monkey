@@ -1125,11 +1125,16 @@ class LittleMonkeyApiClient:
         Only when prices entered by the user apply on both days: the energy of
         each band at the price entered instead of ecojoko's of the month of
         the first day, and the gap of the subscription entered over these
-        days. None otherwise.
+        days, until today: ecojoko counts no cost for the days to come. None
+        otherwise, and for days all to come.
         """
         entered = entered_prices(self._contract_prices, first)
         if entered is None or entered_prices(self._contract_prices, last) is None:
             return None
+        today = get_current_date(TZ)
+        if first > today:
+            return None
+        last = min(last, today)
         base = self._month_base(first)
         gap = None if base is None else price_gap(energies, base, entered["prices"])
         base_subscription = (self._contract or {}).get("subscription_price")

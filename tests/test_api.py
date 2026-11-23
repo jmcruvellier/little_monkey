@@ -3080,3 +3080,21 @@ def test_reference_of_last_year_with_another_contract(api):
     assert tariff.band_category(7) == "hc"
     assert tariff.band_category(99, "HC Nuit") == "hc"
     assert tariff.band_category(99) is None
+
+
+def test_subscription_entered_until_today(api, monkeypatch):
+    """The gap of the subscription entered stops at today; days to come have none.
+
+    ecojoko gives no cost for them: December showed -0.21 € for 0 kWh.
+    """
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 11, 23))
+    client = entered_client(api, start=None, end=None, subscription=31.14)
+    # The month in progress: 23 days of gap, not 30
+    gap = client.cost_gap(dt.date(2026, 11, 1), dt.date(2026, 11, 30), {})
+    assert gap == pytest.approx(0.65 * 12 / 365 * 23)
+    assert client.cost_gap(dt.date(2026, 12, 1), dt.date(2026, 12, 31), {}) is None
+    year = {"cost": 10.0, "bars": [
+        {"date": "2026-11-01", "cost": 10.0, "bands": []},
+        {"date": "2026-12-01", "cost": 0, "bands": []}]}
+    measures = client.correct_measures(year, "year", dt.date(2026, 11, 23))
+    assert measures["bars"][1]["cost"] == 0
