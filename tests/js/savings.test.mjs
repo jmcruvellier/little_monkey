@@ -287,3 +287,12 @@ test("the current period is the one ecojoko still answers with", () => {
   assert.equal(cards.currentPeriod("month", "2026-09-01", { start: "2026-08-31" }), "2026-09-01");
   assert.equal(cards.currentPeriod("month", "2026-12-01", { start: "2026-11-02" }), "2026-11-01");
 });
+
+test("the days left out of the comparison with last year are told", () => {
+  const text = { unmeasured: "{days} jours", unmeasured_one: "1 jour" };
+  assert.equal(cards.unmeasuredNote(text, { unmeasured_days: 32 }), "32 jours");
+  assert.equal(cards.unmeasuredNote(text, { unmeasured_days: 1 }), "1 jour");
+  assert.equal(cards.unmeasuredNote(text, { unmeasured_days: 0 }), "");
+  assert.equal(cards.unmeasuredNote(text, {}), "");
+  assert.equal(cards.unmeasuredNote(text, null), "");
+});

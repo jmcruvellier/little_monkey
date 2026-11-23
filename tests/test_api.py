@@ -2809,32 +2809,34 @@ def test_savings_against_the_same_week_of_last_year(api):
 
 
 def test_savings_of_12_months_and_of_7_days_against_last_year(api, monkeypatch):
-    """The 12 months before, and the same 7 days 52 weeks before.
+    """The 12 months before, and the same 7 days 52 weeks before, day by day.
 
-    The month in progress and today against the same days of last year,
-    until the same time.
+    Today against the same day of last year until the same time; the days
+    not measured this year (the assistant away in February) are left out
+    on both sides.
     """
     today = dt.date(2026, 11, 22)
     monkeypatch.setattr(api, "get_current_date", lambda timezone: today)
     client = last_year_client(api)
 
-    async def period_energies(_period, day, key="energy"):
-        months = {}
-        month = dt.date(day.year, 1, 1)
-        while month.year == day.year:
-            months[month] = {2: 100 if day.year == today.year else 150}
-            month = (month + dt.timedelta(days=32)).replace(day=1)
-        return months
+    def kwh(date):
+        if dt.date(2026, 2, 1) <= date <= dt.date(2026, 2, 28):
+            return None
+        return 3 if date >= dt.date(2025, 12, 1) else 5
 
     async def day_energies(first, last, key="energy"):
-        return {first + dt.timedelta(days=offset): {2: 3}
-                for offset in range((last - first).days + 1)}
+        days = {}
+        date = first
+        while date <= last:
+            if kwh(date) is not None:
+                days[date] = {2: kwh(date)}
+            date += dt.timedelta(days=1)
+        return days
 
     async def share_until_now(_day):
         # Half of the day gone by
         return {}, 0.5
 
-    client._async_period_energies = period_energies
     client._async_day_energies = day_energies
     client._async_share_until_now = share_until_now
     summary = {"consumption_cost_12_months": 300.0, "reference_cost_12_months": 400.0,
@@ -2842,18 +2844,56 @@ def test_savings_of_12_months_and_of_7_days_against_last_year(api, monkeypatch):
                "reference_consumption_12_months": 2000, "savings_kwh_12_months": 800}
     run(client._async_last_year_summary(summary, today))
     assert summary["reference_source"] == "last_year"
-    # December 2025 and 11 months of 2026 consumed; 11 months of last year, and
-    # 1 to 22 November 2025 until the same time (21.5 days at 3 kWh)
-    consumed = 150 + 11 * 100
-    assert summary["reference_consumption_12_months"] == 11 * 150 + 64.5
+    # 1 December 2025 to 22 November 2026, February left out: 329 days at
+    # 3 kWh, against 5 kWh the same days of last year, today until now
+    measured = (today - dt.date(2025, 12, 1)).days + 1 - 28
+    assert summary["unmeasured_days_12_months"] == 28
+    assert summary["reference_consumption_12_months"] == 5 * (measured - 1) + 2.5
     assert summary["reference_cost_12_months"] == pytest.approx(
-        300.0 + 0.2 * (11 * 150 + 64.5 - consumed), abs=0.01)
+        300.0 + 0.2 * (5 * (measured - 1) + 2.5 - 3 * measured), abs=0.01)
 
     activity = {"consumption_7_days": 42, "reference_consumption_7_days": 30, "savings_7_days": 40}
     run(client._async_last_year_activity(activity, today))
-    # 19.5 kWh the same days of last year, the last one until the same time
-    assert activity == {"consumption_7_days": 42, "reference_consumption_7_days": 19.5,
-                        "savings_7_days": 115}
+    # 32.5 kWh the same days of last year, the last one until the same time
+    assert activity == {"consumption_7_days": 42, "reference_consumption_7_days": 32.5,
+                        "savings_7_days": 29}
+
+
+def test_savings_of_a_month_without_measures(api, monkeypatch):
+    """A month without any measure this year has no savings; its days are told.
+
+    February 2026, the assistant away for repair: last year's February is
+    not a saving.
+    """
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: dt.date(2026, 11, 22))
+    client = last_year_client(api)
+
+    async def day_energies(first, last, key="energy"):
+        days = {}
+        date = first
+        while date <= last:
+            if not (date.year == 2026 and date.month == 2) and not (
+                    date.year == 2026 and date.month == 3 and date.day <= 4):
+                days[date] = {2: 5}
+            date += dt.timedelta(days=1)
+        return days
+
+    client._async_day_energies = day_energies
+    savings = {"cost": 30.0, "consumption": 135, "reference_cost": 60.0,
+               "reference_consumption": 330, "savings": 30.0, "savings_kwh": 195, "bars": [
+                   {"date": "2026-02-01", "cost": 0, "consumption": 0, "reference_cost": 0,
+                    "reference_consumption": 0, "savings": 0, "savings_kwh": 0},
+                   {"date": "2026-03-01", "cost": 30.0, "consumption": 135,
+                    "reference_cost": 60.0, "reference_consumption": 330, "savings": 30.0,
+                    "savings_kwh": 195}]}
+    result = run(client._async_last_year_savings(savings, "year", dt.date(2026, 3, 1)))
+    february, march = result["bars"]
+    assert (february["reference_consumption"], february["savings"]) == (0, 0)
+    # March: 27 days measured both years at 5 kWh, 1 to 4 March left out
+    assert (march["reference_consumption"], march["savings"], march["savings_kwh"]) == (
+        135, 0, 0)
+    assert result["unmeasured_days"] == 28 + 4
+    assert result["reference_source"] == "last_year"
 
 
 def test_period_in_progress_against_the_same_part_of_last_year(api, monkeypatch):
@@ -2889,11 +2929,11 @@ def test_period_in_progress_against_the_same_part_of_last_year(api, monkeypatch)
         savings("2026-11-02"), "month", dt.date(2026, 11, 4), energies))["bars"][0]
     assert (bar["reference_consumption"], bar["reference_cost"]) == (25, 5.0)
 
-    # November: 1 to 4 November 2025, the 4th until now
+    # November, day by day: 1 to 4 November 2025, the 4th until now (35 kWh),
+    # against the 40 kWh of 1 to 4 November 2026
     bar = run(client._async_last_year_savings(
-        savings("2026-11-01"), "year", dt.date(2026, 11, 4),
-        {dt.date(2026, 11, 1): {2: 20}}))["bars"][0]
-    assert (bar["reference_consumption"], bar["reference_cost"]) == (35, 7.0)
+        savings("2026-11-01"), "year", dt.date(2026, 11, 4)))["bars"][0]
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (35, 3.0)
 
 
 def test_reference_of_last_year_at_the_prices_paid(api):
