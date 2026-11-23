@@ -3042,3 +3042,19 @@ def test_prices_of_the_first_days_of_a_month(api, monkeypatch):
 
     client._async_get_slow = get_slow
     assert run(client._async_month_prices(dt.date(2026, 12, 1))) == {2: 0.2, 3: 0.15}
+
+
+def test_off_peak_hours_of_the_contract(api):
+    """A time is in the off-peak hours of the contract or not, across midnight too."""
+    off_peak_at = tariff_module(api).off_peak_at
+    slots = [{"start": "22:00", "stop": "06:00"}, {"start": "13:00", "stop": "14:30"}]
+    at = dt.datetime
+    assert off_peak_at(slots, at(2026, 11, 23, 23, 0)) is True
+    assert off_peak_at(slots, at(2026, 11, 23, 5, 59)) is True
+    assert off_peak_at(slots, at(2026, 11, 23, 6, 0)) is False
+    assert off_peak_at(slots, at(2026, 11, 23, 13, 30)) is True
+    assert off_peak_at(slots, at(2026, 11, 23, 18, 44)) is False
+    # Without off-peak hours, or unreadable ones, nothing is told
+    assert off_peak_at([], at(2026, 11, 23, 23, 0)) is None
+    assert off_peak_at(None, at(2026, 11, 23, 23, 0)) is None
+    assert off_peak_at([{"start": "x", "stop": "06:00"}, "y"], at(2026, 11, 23, 3, 0)) is None

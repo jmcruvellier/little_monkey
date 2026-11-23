@@ -446,3 +446,34 @@ def exact_prices(prices, labels):
         if price is not None and price > 0 and band_id is not None:
             result[band_id] = price
     return result
+
+
+def _slot_minutes(text):
+    """Return a time "HH:MM" of an off-peak slot in minutes, None if not one."""
+    try:
+        hours, minutes = str(text).split(":")[:2]
+        value = int(hours) * 60 + int(minutes)
+    except (TypeError, ValueError):
+        return None
+    return value if 0 <= value <= 1440 else None
+
+
+def off_peak_at(slots, moment):
+    """Tell whether a time is in the off-peak hours of a contract, None without them.
+
+    slots: the off_peak_timeslots of the contract, French times
+    [{"start": "22:00", "stop": "06:00"}]; moment: a time in Paris.
+    """
+    ranges = []
+    for slot in slots or []:
+        if not isinstance(slot, dict):
+            continue
+        start, stop = _slot_minutes(slot.get("start")), _slot_minutes(slot.get("stop"))
+        if start is not None and stop is not None and start != stop:
+            ranges.append((start, stop))
+    if not ranges:
+        return None
+    minutes = moment.hour * 60 + moment.minute
+    return any(
+        start <= minutes < stop if start < stop else minutes >= start or minutes < stop
+        for start, stop in ranges)
