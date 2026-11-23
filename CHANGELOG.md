@@ -15,7 +15,8 @@ La version 2.0 de Little Monkey. Si vous venez de la 1.2.8, elle regroupe les no
 - Faites une sauvegarde de Home Assistant. Home Assistant 2024.7.0 au minimum est nécessaire
 - La configuration est convertie automatiquement, sans perte d'historique : les capteurs HC/HP et Tempo gardent leurs identifiants et leurs statistiques. Si ecojoko indique des tranches sans capteur, une réparation vous propose de les créer
 - Les nouvelles fonctions sont **décochées par défaut** : cochez celles que vous voulez dans les options de l'intégration (Paramètres › Appareils et services › Little Monkey › Configurer), dernier écran
-- Fréquence de rafraîchissement : 30 secondes par défaut. Un intervalle inférieur à 30 secondes est porté à 30 à la mise à jour depuis la 1.2.8 ; vous pouvez ensuite le régler entre 5 et 60 secondes
+- Pour voir les nouvelles cartes, rechargez la page du navigateur sans son cache (**Ctrl+F5**, ou **Cmd+Maj+R** sur Mac) après le redémarrage de Home Assistant qui suit la mise à jour. Dans l'application mobile Home Assistant, fermez complètement l'application puis rouvrez-la
+- Fréquence de rafraîchissement : 30 secondes par défaut. Un intervalle inférieur à 30 secondes est porté à 30 à la mise à jour depuis la 1.2.8. Les options permettent ensuite de 5 à 60 secondes, mais **il est recommandé de rester à 30 secondes au minimum** : les API actuelles d'ecojoko supportent mal un intervalle plus court
 - Testeurs des bêtas : le capteur « Économies sur 7 Jours » de la 2.0.0b1 s'appelle « Écart sur 7 Jours » depuis la 2.0.0b2
 
 ### Depuis la 2.0.0b2
