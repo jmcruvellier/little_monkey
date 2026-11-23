@@ -354,7 +354,9 @@ SAVINGS_ATTRIBUTES = {
     "reference_cost_12_months": {
         "reference_consumption": "reference_consumption_12_months"},
     "savings_12_months": {
-        "savings_kwh": "savings_kwh_12_months", "level": "savings_level"},
+        "savings_kwh": "savings_kwh_12_months", "level": "savings_level",
+        # Days left out of the comparison with last year, not measured
+        "unmeasured_days": "unmeasured_days_12_months"},
 }
 # Savings sensors of the current week, month and year: key of their data
 SAVINGS_PERIOD_SENSORS = {

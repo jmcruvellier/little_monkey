@@ -52,6 +52,8 @@ const TRANSLATIONS = {
       next: "Next period",
       bar: "{name}: {savings} · {energy}",
       error: "The savings of this period could not be read",
+      unmeasured: "{days} days without measures one of the two years, left out of the comparison",
+      unmeasured_one: "1 day without measures one of the two years, left out of the comparison",
       missing: "Savings sensor not found",
       option: "Turn on the “Savings” option in the options of the Little Monkey integration (Settings › Devices & services › Little Monkey › Configure).",
     },
@@ -93,6 +95,8 @@ const TRANSLATIONS = {
       next: "Période suivante",
       bar: "{name} : {savings} · {energy}",
       error: "Les économies de cette période n'ont pas pu être lues",
+      unmeasured: "{days} jours sans relevé l'une des deux années, laissés hors de la comparaison",
+      unmeasured_one: "1 jour sans relevé l'une des deux années, laissé hors de la comparaison",
       missing: "Capteur des économies introuvable",
       option: "Activez l'option « Économies » dans les options de l'intégration Little Monkey (Paramètres › Appareils et services › Little Monkey › Configurer).",
     },
@@ -447,6 +451,18 @@ export function currentPeriod(period, todayIso, savings) {
   }
   const answered = periodStart(period, isoDate(date));
   return answered < current ? answered : current;
+}
+
+/**
+ * Return the note of the days left out of a comparison with last year,
+ * not measured one of the two years (the assistant away), or "".
+ */
+export function unmeasuredNote(text, savings) {
+  const days = savings?.unmeasured_days;
+  if (!days) {
+    return "";
+  }
+  return (days === 1 ? text.unmeasured_one : text.unmeasured).replace("{days}", days);
 }
 
 /** Return the name of a period: its days, its month or its year. */
@@ -1072,6 +1088,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
         .total .money { font-weight: 600; }
         .total .energy { color: var(--secondary-text-color); }
         .details { min-height: 1.4em; font-size: 0.9em; color: var(--secondary-text-color); text-align: center; }
+        .unmeasured { font-size: 0.8em; color: var(--secondary-text-color); text-align: center; }
         svg { width: 100%; display: block; touch-action: pan-y; user-select: none; }
         .tick { fill: var(--secondary-text-color, #727272); font-size: var(--lm-axis-font, 9.5px); text-anchor: end; dominant-baseline: central; }
         .grid { stroke: var(--divider-color, #e0e0e0); stroke-width: 0.5; }
@@ -1092,6 +1109,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
         <div class="warning"></div>
         <div class="top"><div class="periods">${buttons}</div><div class="total"></div></div>
         <div class="details"></div>
+        <div class="unmeasured"></div>
         <svg viewBox="0 0 ${CHART.width} ${CHART.height}" role="img"></svg>
         <div class="nav">
           <button class="previous" aria-label="${escapeHtml(text.previous)}">‹</button>
@@ -1198,6 +1216,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     } else {
       details.textContent = "";
     }
+    root.querySelector(".unmeasured").textContent = unmeasuredNote(text, savings);
     root.querySelector("svg").innerHTML = this._chart(shown, bars, unit, locale, text);
   }
 
