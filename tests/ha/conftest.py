@@ -122,6 +122,11 @@ EQUIPMENT_DAY = {
                   "forced": True, "source": "command"}],
 }
 
+# Keys of the measures of the day of an equipment, by part
+DAY_PART_KEYS = {
+    "base": {"date"}, "power": {"energy", "cost", "power"}, "switches": {"switches"},
+}
+
 
 @pytest.fixture(autouse=True)
 def _enable_custom_integrations(enable_custom_integrations):
@@ -170,6 +175,8 @@ class FakeApi:
         self.command_error = None
         # Readings of the equipments
         self.equipment_reads = 0
+        # Parts of the measures of the day read at each reading of an equipment
+        self.day_reads = []
 
     def apply(self, equipment_id, mode):
         """Apply a mode to an equipment, as ecojoko does after a command."""
@@ -247,8 +254,13 @@ def fake_api():
         return copy.deepcopy(next(
             equipment for equipment in state.equipments if equipment["id"] == equipment_id))
 
-    async def get_equipment_day(self, equipment, day):
-        return copy.deepcopy(EQUIPMENT_DAY)
+    async def get_equipment_day(self, equipment, day, parts=("power", "switches")):
+        state.day_reads.append(tuple(parts))
+        # Only the parts asked for, as the client returns them
+        keys = DAY_PART_KEYS["base"].union(*(DAY_PART_KEYS[part] for part in parts))
+        measures = {key: copy.deepcopy(value) for key, value in EQUIPMENT_DAY.items() if key in keys}
+        # Of the day asked for, as the client returns them
+        return {**measures, "date": day.isoformat()}
 
     async def send_equipment_command(self, equipment_id, mode, seconds=None):
         state.commands.append((equipment_id, mode, seconds))

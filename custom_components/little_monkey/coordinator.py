@@ -26,7 +26,9 @@ from .api import (
 from .const import (
     CONF_API_ACTIVITY_GRACE,
     CONF_API_ACTIVITY_REFRESH,
+    CONF_API_EQUIPMENT_POWER_REFRESH,
     CONF_API_EQUIPMENT_REFRESH,
+    CONF_API_EQUIPMENT_SWITCHES_REFRESH,
     CONF_API_FAILURE_GRACE,
     CONF_API_SAVINGS_REFRESH,
     DEFAULT_POLL_INTERVAL,
@@ -35,10 +37,11 @@ from .const import (
     LOGGER,
     CONF_TARIFF_BANDS,
     TEMPO_BAND_PERIODS,
+    HCHP_PERIODS,
     TEMPO_PERIODS,
     tariff_periods,
 )
-from .tariff import band_key, has_sensor
+from .tariff import band_key, has_sensor, off_peak_at
 from .utils import DayParts, TariffPeriod, get_current_date
 
 # https://developers.home-assistant.io/docs/integration_fetching_data#coordinated-single-api-poll-for-data-for-all-entities
@@ -74,6 +77,18 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             band["key"]: band.get("name") or band.get("label")
             for band in entry.data.get(CONF_TARIFF_BANDS) or []
         }
+        # Id of the band of each key, for the price of a kWh now
+        self._band_ids = {
+            band["key"]: band["id"] for band in entry.data.get(CONF_TARIFF_BANDS) or []}
+        # HC/HP category of each band: the period of the current band
+        self._band_categories = {
+            band["key"]: band.get("category") for band in entry.data.get(CONF_TARIFF_BANDS) or []}
+        # A simple HC/HP contract, one HC band and one HP band: its period
+        # and band are told by the off-peak hours of the contract
+        self._hours_bands = (
+            {category: key for key, category in self._band_categories.items()}
+            if sorted(map(str, self._band_categories.values())) == ["hc", "hp"] else None)
+        self._current_band_key = None
         self._tariff_band = TariffPeriod()
         # The HC and HP totals, and the tariff bands having a sensor, split
         # the grid consumption: their sum never exceeds it (see DayParts)
@@ -150,6 +165,20 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             },
         )
 
+    def _hours_period(self):
+        """Return HC or HP from the off-peak hours of the contract, None if not told.
+
+        Only for a simple HC/HP contract: the period is known at once, while
+        the counters tell it once they gain a hundredth of kWh, hours later
+        with a battery or solar panels. Tempo and the offers whose band
+        depends on the day (week-end, special days) keep the counters.
+        """
+        if self._periods != HCHP_PERIODS or self._hours_bands is None:
+            return None
+        slots = (self.client.contract or {}).get("off_peak_timeslots")
+        off_peak = off_peak_at(slots, paris_now())
+        return None if off_peak is None else ("hc" if off_peak else "hp")
+
     def _current_tariff_period(self):
         """Return the current tariff period, None without HC/HP nor Tempo option."""
         if self._periods is None:
@@ -163,7 +192,17 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             }
         else:
             counters = {"hc": client.kwh_hc_ns, "hp": client.kwh_hp_ns}
-        return self._tariff_period.update(client.stat_date, counters)
+        period = self._tariff_period.update(client.stat_date, counters)
+        hours = self._hours_period()
+        if hours is not None:
+            return hours
+        if self._periods != TEMPO_PERIODS and self._current_band_key is not None:
+            # The current band tells the period: HC, HP, or none for a band
+            # in neither total (Heures Weekend...), whose counter alone
+            # increases while the HC/HP period would stay the one before
+            category = self._band_categories.get(self._current_band_key)
+            return category if category in ("hc", "hp") else None
+        return period
 
     def _current_tariff_band(self):
         """Return the name of the current tariff band, None if not known."""
@@ -172,7 +211,20 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         values = self.client.band_values
         key = self._tariff_band.update(self.client.stat_date, {
             key: values.get(key) for key in self._band_names})
+        hours = self._hours_period()
+        if hours is not None:
+            # A simple HC/HP contract: the band of the period of the hour
+            key = self._hours_bands[hours]
+        self._current_band_key = key
         return self._band_names.get(key)
+
+    def _current_price(self, band_prices) -> float | None:
+        """Return the price of a kWh of the current tariff band, None if not known.
+
+        The price entered in the options, else ecojoko's, else estimated.
+        """
+        band_id = self._band_ids.get(self._current_band_key)
+        return (band_prices.get(band_id) or {}).get("price")
 
     async def _async_update_data(self):
         """Update data via library."""
@@ -196,8 +248,9 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         return {
             # Energy of the tariff bands, by key of their sensor
             **self.client.band_values,
-            "current_tariff_period": self._current_tariff_period(),
+            # The current band first: it tells the period
             "current_tariff_band": self._current_tariff_band(),
+            "current_tariff_period": self._current_tariff_period(),
             "gateway_firmware_version": self.client.gateway_firmware_version,
             "contract": self.client.contract,
             # Price of a kWh of the solar surplus sold, None without a sale
@@ -205,8 +258,12 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
             # Equipments of the gateway by id, for their diagnostic sensors
             "equipments": {
                 equipment["id"]: equipment for equipment in self.client.equipments},
-            # Price of a kWh of each band, by band id
-            "band_prices": self.client.band_prices,
+            # Price of a kWh of each band, by band id, and of the current one
+            "band_prices": (band_prices := self.client.band_prices),
+            # Prices of the contract entered by the user for today, or None
+            "entered_prices": self.client.entered_prices,
+            # After the current band, which it needs
+            "current_price": self._current_price(band_prices),
             "stat_date": self.client.stat_date,
             "realtime_consumption": self.client.realtime_conso,
             "realtime_apparent_power": self.client.realtime_va,
@@ -275,6 +332,11 @@ class LittleMonkeySlowCoordinator(DataUpdateCoordinator):
         return data
 
 
+def paris_now():
+    """Return the time in Paris: the off-peak hours of ecojoko are French times."""
+    return dt_util.now(dt_util.get_time_zone("Europe/Paris"))
+
+
 class LittleMonkeyActivityCoordinator(LittleMonkeySlowCoordinator):
     """Fetch the activity of the account (savings over 7 days...)."""
 
@@ -301,11 +363,20 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
 
     The list of the equipments comes with the list of the gateways, read
     every five minutes; the state of a piloted one is read more often, and
-    right after a command.
+    right after a command. Its measures of the day are read less often than
+    its state, by part, and again after a command and on a new day.
     """
 
     KIND = "equipment"
     REFRESH = CONF_API_EQUIPMENT_REFRESH
+    # Seconds between two readings of each part of the measures of the day
+    DAY_REFRESH = {
+        "power": CONF_API_EQUIPMENT_POWER_REFRESH,
+        "switches": CONF_API_EQUIPMENT_SWITCHES_REFRESH,
+    }
+    # A part is read at the first reading of the state that comes this close
+    # to its delay: the readings do not fall exactly on it
+    DAY_MARGIN = 5
     # Seconds after the end of a forced mode or of an absence before the
     # equipment is read again: ecojoko takes a few seconds to apply it
     END_DELAY = 10
@@ -314,6 +385,21 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
         """Initialize, without a reading planned at the end of a mode."""
         super().__init__(*args, **kwargs)
         self._end_unsub = None
+        # Monotonic time of the last reading of each part of the measures of
+        # the day, by equipment, and whether all of them are read next time
+        self._day_reads = {}
+        self._read_whole_day = False
+
+    def _day_parts(self, equipment_id, day, now, whole) -> list:
+        """Return the parts of the measures of the day to read now."""
+        last = ((self.data or {}).get(equipment_id) or {}).get("day") or {}
+        reads = self._day_reads.get(equipment_id, {})
+        if whole or last.get("date") != day.isoformat():
+            return list(self.DAY_REFRESH)
+        return [
+            part for part, refresh in self.DAY_REFRESH.items()
+            if part not in reads or now - reads[part] >= refresh - self.DAY_MARGIN
+        ]
 
     def piloted(self) -> list:
         """Return the equipments of the gateway that can be piloted."""
@@ -322,15 +408,31 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
     async def _async_fetch(self) -> dict:
         """Read each piloted equipment and its measures of today."""
         today = get_current_date(TZ)
+        now = time.monotonic()
+        whole, self._read_whole_day = self._read_whole_day, False
 
         async def read(equipment):
+            equipment_id = equipment["id"]
+            parts = self._day_parts(equipment_id, today, now, whole)
+            last = ((self.data or {}).get(equipment_id) or {}).get("day") or {}
+
+            async def read_day():
+                if not parts:
+                    return {}
+                return await self.client.async_get_equipment_day(equipment, today, parts)
+
             fresh, day = await asyncio.gather(
-                self.client.async_get_equipment(equipment["id"]),
-                self.client.async_get_equipment_day(equipment, today))
-            return {**fresh, "day": day}
+                self.client.async_get_equipment(equipment_id), read_day())
+            if day.get("date", today.isoformat()) == last.get("date"):
+                # The parts not read now keep their last values of the day
+                day = {**last, **day}
+            return {**fresh, "day": day}, parts
 
         equipments = await asyncio.gather(*(read(equipment) for equipment in self.piloted()))
-        data = {equipment["id"]: equipment for equipment in equipments}
+        data = {equipment["id"]: equipment for equipment, _parts in equipments}
+        # Once every equipment is read: a failure reads all of them again
+        for equipment, parts in equipments:
+            self._day_reads.setdefault(equipment["id"], {}).update(dict.fromkeys(parts, now))
         self._plan_end_reading(data)
         return data
 
@@ -355,8 +457,9 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
                 self.hass, max(min(delays), 0) + self.END_DELAY, self._async_end_reading)
 
     async def _async_end_reading(self, _now) -> None:
-        """Read the equipments at the end of a mode."""
+        """Read the equipments at the end of a mode, with their measures of the day."""
         self._end_unsub = None
+        self._read_whole_day = True
         await self.async_refresh()
 
     def async_cancel_end_reading(self) -> None:
@@ -380,4 +483,5 @@ class LittleMonkeyEquipmentCoordinator(LittleMonkeySlowCoordinator):
                 translation_placeholders={"error": str(exception)},
             ) from exception
         finally:
+            self._read_whole_day = True
             await self.async_refresh()

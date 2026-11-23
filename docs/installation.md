@@ -23,7 +23,7 @@
    [![Ouvrir le Marketplace sur le dépôt Little Monkey](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jmcruvellier&repository=little_monkey&category=integration)
 
 2. Sur la page de Little Monkey dans le Marketplace, cliquez sur **Télécharger**.
-   Pour tester une version bêta, cherchez Little Monkey dans le Marketplace, ouvrez le menu ⋮ de sa ligne › **Installer une autre version**, choisissez dans la liste **Version** celle qui est marquée « Pré-version » (v2.0.0b2 par exemple), puis cliquez sur **Mettre à jour**. Faites une sauvegarde avant.
+   Pour tester une version bêta, cherchez Little Monkey dans le Marketplace, ouvrez le menu ⋮ de sa ligne › **Installer une autre version**, choisissez dans la liste **Version** celle qui est marquée « Pré-version », quand il y en a une, puis cliquez sur **Mettre à jour**. Faites une sauvegarde avant.
 3. Redémarrez Home Assistant (Paramètres › Système › menu ⏻ › **Redémarrer Home Assistant**).
 
 Les cartes du tableau de bord sont fournies par l'intégration elle-même : il n'y a ni ressource Lovelace ni dépôt supplémentaire à ajouter au Marketplace.
@@ -52,10 +52,25 @@ L'écran affiche le contrat détecté et ses tranches (Heures Pleines et Creuses
 | Champ | Description |
 |---|---|
 | Capteurs totaux HC et HP | Crée « Consommation HC Réseau » et « Consommation HP Réseau », qui additionnent les tranches de chaque catégorie |
+| Saisir les prix de mon contrat | Ouvre un écran pour saisir vos propres prix (voir ci-dessous) |
 | Pour chaque tranche | Le nom de son capteur (prérempli) et le total dans lequel elle compte : Heures Creuses, Heures Pleines ou aucun |
 | Tranches à supprimer | Les tranches à retirer avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore |
 
 Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez donné. Après un changement de contrat, ouvrez les options : elles reprennent cet écran avec les tranches du nouveau contrat, et une réparation le signale dans Home Assistant quand une tranche n'a pas de capteur. Les tranches de l'ancien contrat disparaissent d'elles-mêmes quand ecojoko ne les donne plus dans ses statistiques des dernières semaines ; pour les retirer tout de suite, cochez-les dans « Tranches à supprimer ». Elles ne sont alors plus proposées ni signalées tant qu'ecojoko les donne encore, et restent cochées dans cette liste : décochez-en une pour la remettre.
+
+#### Les prix de votre contrat
+
+ecojoko ne connaît pas toujours les prix de votre contrat : une remise pour les nouveaux clients, par exemple, ou une offre absente de son catalogue. Vérifiez d'abord, dans l'application ecojoko (Paramètres › Tarifs d'électricité), que l'offre déclarée est bien la vôtre : la corriger là corrige les prix partout. Sinon, cochez « Saisir les prix de mon contrat » : un écran de plus vous demande les prix TTC donnés par votre fournisseur.
+
+| Champ | Description |
+|---|---|
+| Pour chaque tranche | Le prix TTC d'un kWh ; une tranche laissée vide garde le prix d'ecojoko |
+| Abonnement mensuel TTC | Facultatif |
+| Valables à partir du, jusqu'au | La période de ces prix, par exemple celle d'une remise ; avant et après, les prix d'ecojoko s'appliquent. Laissez vide pour une période sans début ou sans fin |
+
+La carte Contrat affiche alors ces prix, avec la mention « Prix saisis dans les options de l'intégration ». Les coûts sont recalculés à ces prix pendant leur période : ceux de la carte Mesures et du service `get_measures` (jours, mois, années, et chaque tranche), le coût sur 7 jours de l'activité, et le coût du jour d'un équipement piloté. Seul le prix du kWh change, la part d'abonnement comptée par ecojoko reste : le prix d'ecojoko retiré est celui de chaque mois, estimé d'après les jours complets de ce mois (avec le mois d'avant pendant ses premiers jours), si bien qu'un changement de ses prix s'applique au bon mois ; un abonnement saisi ajoute son écart jour par jour. Un mois n'est recalculé que si les prix s'appliquent à tout le mois.
+
+Les économies suivent : le coût de votre consommation est recalculé de la même façon, et le coût de la consommation de référence au prix moyen du kWh que vous avez payé sur la même période (ecojoko valorise lui aussi sa référence à un prix unique, sans tranches) ; l'économie en euros est leur différence. Cela vaut pour les capteurs d'économies (12 mois, semaine, mois, année), la carte « Détail des économies » et le service `get_savings`. L'analyse de la conso, qu'ecojoko ne détaille pas par tranche, change dans la même proportion que le coût de la période. Décochez la case pour revenir aux prix d'ecojoko.
 
 ### 3. Les autres capteurs et fonctions
 
@@ -67,11 +82,12 @@ Une tranche qu'ecojoko renomme garde son capteur et le nom que vous lui avez don
 | Capteurs d'humidité et de température | décochée | Température et humidité intérieures et extérieures de la sonde |
 | Activité du compte | décochée | Économies, consommation et coût sur 7 jours, économies cumulées, puissances maximales ; faces 2 à 4 de la carte Little Monkey |
 | Économies | décochée | Coûts et économies sur 12 mois, de la semaine, du mois et de l'année ; cartes Économies |
+| Consommation de référence des économies | celle d'ecojoko | Celle choisie dans l'application ecojoko, ou la même période de l'année précédente, à prix égal ou aux prix payés ([voir plus bas](integration.md#la-référence-des-économies)) |
 | Contrat | décochée | L'offre, ses tranches et le prix d'un kWh ; carte Contrat |
 | Équipements pilotés | décochée | Le chauffe-eau (ou tout équipement piloté par ecojoko), ses capteurs et son pilotage ; carte Équipements |
 | Analyse de la conso | décochée | La répartition par poste et les activations des appareils ; cartes Analyse de la conso et Activations |
 | Mesures | décochée | La puissance du jour, l'énergie par tranche, la température et l'humidité ; carte Mesures |
-| Fréquence de rafraîchissement | 30 s | Intervalle de lecture du temps réel, de 3 à 60 secondes. ecojoko ne rafraîchit le temps réel de l'intégration que toutes les 30 secondes : un intervalle plus court relit la même valeur. À la mise à jour depuis la 2.0.0b1 ou la 1.2.8, un intervalle inférieur à 30 s est porté à 30 s |
+| Fréquence de rafraîchissement | 30 s | Intervalle de lecture du temps réel, de 5 à 60 secondes. ecojoko ne rafraîchit le temps réel de l'intégration que toutes les 30 secondes : un intervalle plus court relit la même valeur. À la mise à jour depuis la 2.0.0b1 ou la 1.2.8, un intervalle inférieur à 30 s est porté à 30 s ; depuis la 2.0.0b2, un intervalle inférieur à 5 s est porté à 5 s. L'énergie du jour, la température et l'humidité sont lues à leur propre rythme, quel que soit cet intervalle |
 
 Les six dernières cases, apparues avec la version 2.0.0, sont décochées par défaut : leurs capteurs ne sont créés, et leurs données lues chez ecojoko, que si elles sont cochées. Voir [les capteurs de chaque option](integration.md#les-capteurs).
 

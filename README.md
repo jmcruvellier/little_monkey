@@ -9,7 +9,7 @@
 Votre assistant d'énergie ecojoko<sup>©️</sup> dans Home Assistant : la consommation en temps réel, l'énergie de chaque tranche tarifaire pour le tableau de bord Énergie, vos économies, votre contrat, le pilotage du chauffe-eau, et des cartes qui reprennent les écrans de l'application ecojoko.
 
 > [!NOTE]
-> La version 2.0.0 est en bêta. Pour l'essayer, ouvrez le menu ⋮ de Little Monkey dans le Marketplace (anciennement HACS), choisissez **Installer une autre version**, puis **v2.0.0b2** ([voir comment](https://github.com/jmcruvellier/little_monkey/blob/main/docs/installation.md#installer-avec-le-marketplace)). Ses nouvelles fonctions sont à cocher dans les options de l'intégration.
+> Vous venez de la version 1.2.8 ? La 2.0.0 convertit votre configuration sans perte d'historique, et ses nouvelles fonctions sont à cocher dans les options de l'intégration. Faites une sauvegarde avant de mettre à jour ([nouveautés](https://github.com/jmcruvellier/little_monkey/blob/main/CHANGELOG.md#200)).
 
 ## L'intégration
 

@@ -2,7 +2,12 @@
 from __future__ import annotations
 
 import asyncio
+import calendar
+from collections import OrderedDict, deque
+from contextvars import ContextVar
+import copy
 import datetime as dt
+import hashlib
 import json
 import math
 import socket
@@ -11,7 +16,9 @@ import aiohttp
 from .const import (
     CONF_API_ACTIVITY_TIMEOUT,
     CONF_API_TIMEOUT,
+    CONF_API_STAT_MARGIN,
     CONF_API_STAT_REFRESH,
+    CONF_API_STAT_SPREAD,
     CONF_API_STAT_TIMEOUT,
     CONF_API_KEEP_LIVE,
     CONF_API_KEEP_LIVE_RETRY,
@@ -38,12 +45,53 @@ from .tariff import (
     TOTAL_BANDS,
     bands_of_offer,
     day_costs,
+    band_category,
+    energies_of_points,
+    entered_prices,
+    price_gap,
+    subscription_gap,
     day_values,
     estimate_prices,
     exact_prices,
     local_date)
 
+# What sends the requests to ecojoko, for the diagnostics: the polls by
+# default, "service" for a service read by a card or an automation
+REQUEST_SOURCE: ContextVar[str] = ContextVar("little_monkey_request_source", default="poll")
+# Requests of an API and changes of its answer kept for the diagnostics, and
+# URLs whose last answer is kept to tell whether it changed
+REQUEST_CHANGES_KEPT = 20
+REQUEST_URLS_KEPT = 200
+# Answers of the services kept for the cards, browsers and automations
+SERVICE_CACHE_SIZE = 200
+
 TZ = get_paris_timezone()
+
+
+def powerstat_values(payload):
+    """Return the values of a powerstat answer the sensors use, to compare them.
+
+    By day: the energy, the surplus and the energy of each tariff band,
+    rounded as the sensors round them. The rest of the answer (prices,
+    costs, period...) is left out.
+    """
+    def kwh(value):
+        try:
+            return round_value(float(value))
+        except (TypeError, ValueError):
+            return None
+
+    return [
+        (kwh(item.get("kwh")), kwh(item.get("kwh_prod")), sorted(
+            (str(band.get("id")), kwh(band.get("kwh")))
+            for band in item.get("subconsumption") or [] if isinstance(band, dict)))
+        for item in payload["stat"]["data"] if isinstance(item, dict)
+    ]
+
+
+# Values compared in the diagnostics instead of the whole answer, by the
+# start of the name of the API: the values its sensors use
+ANSWER_VALUES = {"powerstat": powerstat_values}
 
 # Response headers left out of the diagnostics: they hold the session
 HIDDEN_HEADERS = {"set-cookie", "set-cookie2"}
@@ -195,6 +243,117 @@ SAVINGS_PERIODS = {"week": "w", "month": "m", "year": "y"}
 
 # Trend of a category of the analysis, from its evol_status
 ANALYSIS_TRENDS = {1: "up", 2: "down"}
+
+
+def _range_energies(energies, first, last) -> dict:
+    """Return the kWh of each band of the dates from first to last."""
+    total = {}
+    for date, bands in energies.items():
+        if first <= date <= last:
+            for band_id, kwh in bands.items():
+                total[band_id] = total.get(band_id, 0.0) + kwh
+    return total
+
+
+def _apply_savings_gaps(values, gap, reference_gap) -> None:
+    """Add the gaps to a cost and its reference cost; the savings follow."""
+    values["cost"] = round_value(values["cost"] + gap)
+    if values.get("reference_cost") is not None:
+        values["reference_cost"] = round_value(values["reference_cost"] + reference_gap)
+        values["savings"] = round_value(values["reference_cost"] - values["cost"])
+
+
+def _apply_reference(values, kwh, cost) -> None:
+    """Set the reference of savings: its kWh and cost; the savings follow."""
+    values["reference_consumption"] = round_value(kwh)
+    values["reference_cost"] = round_value(cost)
+    values["savings"] = round_value(cost - values["cost"])
+    consumption = finite_number(values.get("consumption"))
+    if consumption is not None:
+        values["savings_kwh"] = round_value(kwh - consumption)
+
+
+def _answered_day(period, savings, day):
+    """Return a day of the period ecojoko answered with, else the day asked.
+
+    Until it has the data of the day, ecojoko answers with the period
+    before; asked for a period before its first measures, with its first
+    one. A month (or a year) may start a few days before its first day
+    (its first Monday): a week after its start is inside it.
+    """
+    start = _date_of(savings.get("start"))
+    if start is None:
+        return day
+    return start + dt.timedelta(days=7) if period in ("month", "year") else start
+
+
+def _days(first, last):
+    """Return the days from first to last, both included."""
+    return [first + dt.timedelta(days=offset) for offset in range((last - first).days + 1)]
+
+
+def _measured(bands) -> bool:
+    """Tell whether a day has measures: some energy, the base load at least.
+
+    A day without any (the assistant away for repair) has none at all.
+    """
+    return bool(bands) and sum(value or 0 for value in bands.values()) > 0
+
+
+def _same_day_last_year(day):
+    """Return the same date of last year, None for a 29 February."""
+    try:
+        return day.replace(year=day.year - 1)
+    except ValueError:
+        return None
+
+
+def _paired_reference(pairs, now, before, now_costs=None, before_costs=None):
+    """Return last year's energy (and cost) to compare with days of this year.
+
+    pairs: (day of this year, the same day last year or None); now and
+    before: the energy of each band of the days, by day, and their costs
+    for the prices paid. Only the days measured both years are compared:
+    a day without any measure this year counts on neither side, a day not
+    measured last year is its own reference, without savings. Returns
+    (energies, costs or None, the number of days left out).
+    """
+    energies, costs, left_out = {}, ({} if now_costs is not None else None), 0
+
+    def add(total, values):
+        for band_id, value in (values or {}).items():
+            total[band_id] = total.get(band_id, 0.0) + (value or 0.0)
+
+    for date, previous in pairs:
+        if not _measured(now.get(date)):
+            left_out += 1
+            continue
+        if previous is not None and _measured(before.get(previous)):
+            add(energies, before[previous])
+            if costs is not None:
+                add(costs, before_costs.get(previous))
+        else:
+            left_out += 1
+            add(energies, now[date])
+            if costs is not None:
+                add(costs, now_costs.get(date))
+    return energies, costs, left_out
+
+
+def _year_before(day):
+    """Return the same day of last year, the 28th for a 29 February."""
+    try:
+        return day.replace(year=day.year - 1)
+    except ValueError:
+        return day.replace(year=day.year - 1, day=28)
+
+
+def _date_of(text):
+    """Return the date of an ISO day, None when it is not one."""
+    try:
+        return dt.date.fromisoformat(text)
+    except (TypeError, ValueError):
+        return None
 
 
 def _iso_day(milliseconds) -> str | None:
@@ -372,6 +531,18 @@ def _measure_period(period) -> dict:
     }
 
 
+def _stat_of(payload) -> dict:
+    """Return the statistics of a response of measures, empty without any.
+
+    For a period without measures (the assistant away for repair in
+    February 2026), ecojoko answers an empty body: a period without bars,
+    not an error.
+    """
+    if payload is None or payload == "":
+        return {}
+    return payload["stat"] or {}
+
+
 def _stat_period(stat) -> dict:
     """Return the period of a statistics response, empty when it has none.
 
@@ -401,7 +572,7 @@ def parse_power_day(payload) -> dict:
     Each point has its power and the base load (consobase) in watts, and the
     id of the band of its time.
     """
-    stat = payload["stat"]
+    stat = _stat_of(payload)
     period = _stat_period(stat)
     return {
         **_measure_period(period),
@@ -435,7 +606,7 @@ def parse_energy_bars(payload) -> dict:
     Each bar has its energy and cost, those of each band, its base load and
     the production injected into the grid.
     """
-    stat = payload["stat"]
+    stat = _stat_of(payload)
     period = _stat_period(stat)
     bars = []
     for item in stat.get("data") or []:
@@ -763,6 +934,8 @@ class LittleMonkeyApiClient:
         session: aiohttp.ClientSession,
         bands: list | None = None,
         removed_bands: list | None = None,
+        contract_prices: dict | None = None,
+        reference: str = "ecojoko",
     ) -> None:
         """Initialize."""
         self._username = username
@@ -773,6 +946,11 @@ class LittleMonkeyApiClient:
         self._configured_bands = list(bands or [])
         # Bands removed by the user: never reported as missing
         self._removed_bands = set(removed_bands or [])
+        # Prices of the contract entered by the user, None without them
+        self._contract_prices = contract_prices
+        # Reference consumption of the savings: "ecojoko", "last_year" (at
+        # the prices of today) or "last_year_paid" (at the prices paid)
+        self._reference = reference
         self._use_temphum = use_temphum
         self._use_prod = use_prod
         self._session = session
@@ -817,6 +995,9 @@ class LittleMonkeyApiClient:
         # ecojoko gives them (with a water heater it pilots)
         self._day_costs = {}
         self._exact_prices = None
+        # ecojoko's price of a kWh of each band, month by month, estimated
+        # from the days of each month: {first day of the month: {band id: €}}
+        self._month_prices = {}
         # Weeks of statistics the last setup of the tariff bands could not
         # read: its bands may then be incomplete
         self.tariff_weeks_missed = 0
@@ -853,6 +1034,19 @@ class LittleMonkeyApiClient:
         # Status and headers of the last response of each API, for the
         # diagnostics: they tell whether a proxy answered from its cache
         self._last_responses = {}
+        # Requests of each API since the start, and whether their answer
+        # changed, for the diagnostics: how often ecojoko is called, and how
+        # often its data really change
+        self._requests_start = None
+        self._request_stats = {}
+        self._answer_digests = {}
+        # Answers of the services by key: (monotonic time, answer), the
+        # oldest first; readings in progress, shared by the same requests;
+        # answers served from the cache or read, for the diagnostics
+        self._service_cache = OrderedDict()
+        self._service_reads = {}
+        self._service_hits = 0
+        self._service_misses = 0
         # Number of logins since the start, for the diagnostics
         self._login_count = 0
         # Last real-time values and monotonic time of their last change
@@ -861,8 +1055,20 @@ class LittleMonkeyApiClient:
 
     @property
     def contract(self) -> dict | None:
-        """Return the active contract, None until it is read."""
-        return self._contract
+        """Return the active contract, None until it is read.
+
+        With a subscription entered by the user for today, its price
+        replaces ecojoko's.
+        """
+        entered = self.entered_prices
+        if self._contract is None or entered is None or entered["subscription"] is None:
+            return self._contract
+        return {**self._contract, "subscription_price": entered["subscription"]}
+
+    @property
+    def entered_prices(self) -> dict | None:
+        """Return the prices entered by the user that apply today, or None."""
+        return entered_prices(self._contract_prices, get_current_date(TZ))
 
     @property
     def resale_price(self) -> float | None:
@@ -876,21 +1082,621 @@ class LittleMonkeyApiClient:
 
     @property
     def band_prices(self) -> dict:
-        """Return the price of a kWh of each band {band id: {price, exact}}.
+        """Return the price of a kWh of each band {band id: {price, exact, source}}.
 
-        The prices given by ecojoko when it has them, estimated from the
-        statistics of the last two weeks otherwise.
+        The prices entered by the user for today ("entered"), else given by
+        ecojoko when it has them ("ecojoko"), else estimated from the
+        statistics of the last two weeks ("estimated").
         """
+        exact, estimated = self._ecojoko_prices()
+        result = {
+            band_id: {"price": price, "exact": False, "source": "estimated"}
+            for band_id, price in estimated.items()}
+        result.update({
+            band_id: {"price": price, "exact": True, "source": "ecojoko"}
+            for band_id, price in exact.items()})
+        entered = self.entered_prices
+        if entered is not None:
+            result.update({
+                band_id: {"price": price, "exact": True, "source": "entered"}
+                for band_id, price in entered["prices"].items()})
+        return result
+
+    def _ecojoko_prices(self) -> tuple[dict, dict]:
+        """Return ecojoko's prices of a kWh by band: the exact and the estimated.
+
+        Estimated from the complete days of the last two weeks: today, not
+        over yet, would change them all day long.
+        """
+        today = get_current_date(TZ).isoformat()
+        return self._exact_ecojoko_prices(), estimate_prices({
+            day: bands for day, bands in self._day_costs.items() if day != today})
+
+    def _exact_ecojoko_prices(self) -> dict:
+        """Return the prices of a kWh by band given by ecojoko, empty without them."""
         labels = dict(self._bands)
         for band in self._configured_bands:
             labels.setdefault(band.get("id"), band.get("label"))
-        exact = exact_prices(self._exact_prices, labels) if self._exact_prices else {}
-        estimated = estimate_prices(self._day_costs)
-        result = {
-            band_id: {"price": price, "exact": False} for band_id, price in estimated.items()}
-        result.update(
-            {band_id: {"price": price, "exact": True} for band_id, price in exact.items()})
-        return result
+        return exact_prices(self._exact_prices, labels) if self._exact_prices else {}
+
+    def _month_base(self, day) -> dict | None:
+        """Return ecojoko's prices of a kWh by band in the month of a day, or None.
+
+        Estimated from the days of that month (see _async_month_prices), the
+        exact ones given by ecojoko winning; None when they were not read.
+        """
+        prices = self._month_prices.get(day.replace(day=1))
+        if prices is None:
+            return None
+        return {**prices, **self._exact_ecojoko_prices()}
+
+    async def _async_month_prices(self, month) -> dict:
+        """Return ecojoko's prices of a kWh by band of a month, estimated from its days.
+
+        The slope of the costs of its complete days against their energy
+        (see estimate_prices): its share of the subscription each day is
+        left out, and a change of ecojoko's prices applies from its month
+        on. A band without enough days takes its price over this month and
+        the one before. The days of a month are kept a day, an hour for
+        this one.
+        """
+        today = get_current_date(TZ)
+
+        async def days_of(first):
+            ttl = 3600 if first == today.replace(day=1) else 86400
+            measures = await self.async_cached(
+                ("month_days", first.isoformat()), ttl,
+                lambda: self._async_get_slow(
+                    "powerstat (m6)", f"powerstat/m6/{first.isoformat()}", parse_energy_bars))
+            return {
+                bar["date"]: {
+                    band["id"]: (band["energy"], band["cost"]) for band in bar.get("bands") or []
+                    if band.get("energy") and band.get("cost") is not None}
+                for bar in measures.get("bars") or []
+                if bar.get("date") and bar["date"] < today.isoformat()}
+
+        days = await days_of(month)
+        prices = estimate_prices(days)
+        bands = {band_id for day_bands in days.values() for band_id in day_bands}
+        if not days or bands - set(prices):
+            before = (month - dt.timedelta(days=1)).replace(day=1)
+            prices = {**estimate_prices({**await days_of(before), **days}), **prices}
+        self._month_prices[month] = prices
+        return prices
+
+    async def _async_load_month_prices(self, dates) -> None:
+        """Read ecojoko's prices of the months of some dates, for the prices entered.
+
+        Only the months the prices entered cover; a month not read keeps
+        ecojoko's costs.
+        """
+        if not self._contract_prices:
+            return
+        today = get_current_date(TZ)
+        start, end = self._contract_prices.get("start"), self._contract_prices.get("end")
+        months = sorted({date.replace(day=1) for date in dates if date and date <= today})
+        for month in months:
+            month_end = month.replace(day=calendar.monthrange(month.year, month.month)[1])
+            if (start and start > month_end.isoformat()) or (end and end < month.isoformat()):
+                continue
+            try:
+                await self._async_month_prices(month)
+            except LittleMonkeyApiClientError as exception:
+                LOGGER.debug("Prices of %s not estimated: %r", month, exception)
+
+    def cost_gap(self, first, last, energies) -> float | None:
+        """Return the euros to add to ecojoko's cost of the days first to last.
+
+        Only when prices entered by the user apply on both days: the energy of
+        each band at the price entered instead of ecojoko's of the month of
+        the first day, and the gap of the subscription entered over these
+        days, until today: ecojoko counts no cost for the days to come. None
+        otherwise, and for days all to come.
+        """
+        entered = entered_prices(self._contract_prices, first)
+        if entered is None or entered_prices(self._contract_prices, last) is None:
+            return None
+        today = get_current_date(TZ)
+        if first > today:
+            return None
+        last = min(last, today)
+        base = self._month_base(first)
+        gap = None if base is None else price_gap(energies, base, entered["prices"])
+        base_subscription = (self._contract or {}).get("subscription_price")
+        days = (last - first).days + 1
+        extra = subscription_gap(entered["subscription"], finite_number(base_subscription), days)
+        if gap is None and not extra:
+            return None
+        return (gap or 0.0) + extra
+
+    def correct_measures(self, measures, period, day) -> dict:
+        """Return the measures of electricity at the prices entered by the user.
+
+        The cost of each day or month, and of each of its bands, of the days
+        the prices apply. A month counts only when they apply to all of it.
+        The measures tell whether a cost was corrected ("entered_prices").
+        """
+        if not self._contract_prices:
+            return measures
+        total = 0.0
+        corrected = False
+        if period == "day":
+            gap = self.cost_gap(day, day, energies_of_points(measures.get("points") or []))
+            if gap is not None and measures.get("cost") is not None:
+                measures["cost"] = round_value(measures["cost"] + gap)
+                corrected = True
+        for bar in measures.get("bars") or []:
+            first = _date_of(bar.get("date"))
+            if first is None or bar.get("cost") is None:
+                continue
+            last = first if period != "year" else first.replace(
+                day=calendar.monthrange(first.year, first.month)[1])
+            energies = {band["id"]: band["energy"] for band in bar.get("bands") or []}
+            gap = self.cost_gap(first, last, energies)
+            if gap is None:
+                continue
+            entered = entered_prices(self._contract_prices, first)
+            base = self._month_base(first) or {}
+            for band in bar.get("bands") or []:
+                if band["id"] in entered["prices"] and band["id"] in base \
+                        and band.get("energy") is not None and band.get("cost") is not None:
+                    band["cost"] = round_value(band["cost"] + band["energy"] * (
+                        entered["prices"][band["id"]] - base[band["id"]]))
+            bar["cost"] = round_value(bar["cost"] + gap)
+            total += gap
+            corrected = True
+        if measures.get("bars") is not None and corrected and measures.get("cost") is not None:
+            measures["cost"] = round_value(measures["cost"] + total)
+        measures["entered_prices"] = corrected
+        return measures
+
+    def correct_day_cost(self, day, cost, energy) -> float | None:
+        """Return a cost of a day at the prices entered, from its share of the house.
+
+        For a cost ecojoko gives without its bands (an equipment): the cost of
+        the energy of the house this day changes in the same proportion.
+        """
+        bands = self._day_costs.get(day.isoformat())
+        if cost is None or not energy or not bands:
+            return cost
+        gap = self.cost_gap(day, day, {band_id: kwh for band_id, (kwh, _cost) in bands.items()})
+        house = sum(eco_cost for _kwh, eco_cost in bands.values())
+        if gap is None or house <= 0:
+            return cost
+        return round_value(cost * (house + gap) / house)
+
+    async def _async_period_energies(self, period, day, key="energy") -> dict:
+        """Return the kWh of each band by date over the week, month or year of a day.
+
+        The dates are days, or the first day of each month for a year; kept
+        an hour, as the answers of the services. With key "cost", the costs
+        of each band instead, from the same measures.
+        """
+        # A past period no longer changes: it is kept a day
+        today = get_current_date(TZ)
+        ends = {"week": day + dt.timedelta(days=6 - day.weekday()),
+                "month": day.replace(day=calendar.monthrange(day.year, day.month)[1]),
+                "year": day.replace(month=12, day=31)}
+        ttl = 86400 if ends.get(period, today) < today - dt.timedelta(days=1) else 3600
+        measures = await self.async_cached(
+            ("energies", period, day.isoformat()), ttl,
+            lambda: self.async_get_measures("electricity", period, day))
+        energies = {}
+        for bar in measures.get("bars") or []:
+            date = _date_of(bar.get("date"))
+            if date is not None:
+                energies[date] = {
+                    band["id"]: band[key] for band in bar.get("bands") or []
+                    if band.get(key) is not None}
+        return energies
+
+    def _savings_gaps(self, values, first, last, energies) -> tuple | None:
+        """Return the gaps of the cost and of the reference cost of some days, or None.
+
+        The cost at the prices entered (see cost_gap). ecojoko values its
+        reference consumption at a single price of a kWh: it takes the gap
+        of the average price of the energy consumed, and the gap of the
+        subscription entered as the cost does.
+        """
+        gap = self.cost_gap(first, last, energies)
+        if gap is None:
+            return None
+        subscription = self.cost_gap(first, last, {}) or 0.0
+        consumption = finite_number(values.get("consumption"))
+        reference = finite_number(values.get("reference_consumption"))
+        reference_gap = subscription
+        if consumption and reference is not None:
+            reference_gap += (gap - subscription) * reference / consumption
+        return gap, reference_gap
+
+    def correct_savings(self, savings, period, energies) -> dict:
+        """Return the savings of a period at the prices entered by the user.
+
+        Each bar (a day of a week, a week of a month, a month of a year)
+        takes the gaps of its cost and of its reference cost, and its savings
+        follow; the totals of the period, the sums of these gaps.
+        """
+        if not self._contract_prices:
+            return savings
+        total, total_reference, corrected = 0.0, 0.0, False
+        for bar in savings.get("bars") or []:
+            first = _date_of(bar.get("date"))
+            if first is None or bar.get("cost") is None:
+                continue
+            month_end = first.replace(day=calendar.monthrange(first.year, first.month)[1])
+            last = {"week": first, "month": min(first + dt.timedelta(days=6), month_end)}.get(
+                period, month_end)
+            gaps = self._savings_gaps(bar, first, last, _range_energies(energies, first, last))
+            if gaps is None:
+                continue
+            _apply_savings_gaps(bar, *gaps)
+            total += gaps[0]
+            total_reference += gaps[1]
+            corrected = True
+        if corrected and savings.get("cost") is not None:
+            _apply_savings_gaps(savings, total, total_reference)
+        savings["entered_prices"] = corrected
+        return savings
+
+    async def _async_day_energies(self, first, last, key="energy") -> dict:
+        """Return the kWh (or the costs) of each band of the days first to last, by day."""
+        energies = {}
+        month = first.replace(day=1)
+        while month <= last:
+            energies.update(await self._async_period_energies("month", month, key))
+            month = (month + dt.timedelta(days=32)).replace(day=1)
+        return {day: bands for day, bands in energies.items() if first <= day <= last}
+
+    def _reference_prices(self, day) -> dict:
+        """Return the prices a reference is valued at: those of a day, by band.
+
+        The prices entered by the user for that day, else ecojoko's.
+        """
+        exact, estimated = self._ecojoko_prices()
+        prices = {**estimated, **exact}
+        entered = entered_prices(self._contract_prices, day)
+        if entered is not None:
+            prices.update(entered["prices"])
+        return prices
+
+    @property
+    def _last_year(self) -> bool:
+        """Return whether the savings are against the same period of last year."""
+        return self._reference in ("last_year", "last_year_paid")
+
+    @property
+    def _paid(self) -> bool:
+        """Return whether last year is valued at the prices paid then."""
+        return self._reference == "last_year_paid"
+
+    def _last_year_values(self, cost, consumed, reference, day, paid=None) -> tuple | None:
+        """Return the kWh and the cost of a reference of last year, or None.
+
+        The energy of each band of last year at the prices of today: the
+        savings tell a change of habits, not of prices. The cost keeps the
+        part of the cost of the period that is not energy (its share of the
+        subscription). None without energy last year.
+
+        paid: the costs of each band of the period and of last year, to
+        value last year at the prices paid then: a better offer is then a
+        saving too. None without the costs of last year.
+        """
+        kwh = sum(reference.values())
+        if cost is None or kwh <= 0:
+            return None
+        if paid is not None:
+            consumed_costs, reference_costs = paid
+            if not reference_costs:
+                return None
+            return kwh, cost + sum(reference_costs.values()) - sum(consumed_costs.values())
+        price_of = self._equal_price(self._reference_prices(day))
+
+        def value(energies):
+            return sum(energy * price_of(band_id) for band_id, energy in energies.items())
+
+        return kwh, cost + value(reference) - value(consumed)
+
+    async def _async_share_until_now(self, day) -> tuple[dict, float]:
+        """Return the share of the energy of each band of a day used before this time.
+
+        From the power of that day, kept a day; for a band it does not tell,
+        the share of the day gone by.
+        """
+        measures = await self.async_cached(
+            ("day_until_now", day.isoformat()), 86400,
+            lambda: self.async_get_measures("electricity", "day", day))
+        now = dt.datetime.now(TZ)
+        points = measures.get("points") or []
+        earlier = []
+        for point in points:
+            try:
+                if dt.datetime.fromisoformat(point["time"]).time() < now.time():
+                    earlier.append(point)
+            except (KeyError, TypeError, ValueError):
+                continue
+        whole, part = energies_of_points(points), energies_of_points(earlier)
+        shares = {band: part.get(band, 0.0) / kwh for band, kwh in whole.items() if kwh > 0}
+        gone_by = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+        return shares, gone_by / 86400
+
+    async def _async_last_year_days(self, first, last, keys, until) -> list[dict]:
+        """Return the kWh, or the costs, of each band of the days first to last, by day.
+
+        One dictionary for each key. The day `until`, matching today, counts
+        only until the time of now: the period in progress is compared with
+        the same part of last year.
+        """
+        values = [await self._async_day_energies(first, last, key) for key in keys]
+        if first <= until <= last and any(until in days for days in values):
+            shares, gone_by = await self._async_share_until_now(until)
+            for days in values:
+                if until in days:
+                    days[until] = {
+                        band: value * shares.get(band, gone_by)
+                        for band, value in days[until].items()}
+        return values
+
+    def _equal_price(self, prices):
+        """Return the price of a kWh of a band at today's prices, even an old band.
+
+        A band of another contract than today's (Tempo last year, HC/HP
+        now) takes today's price of its category (HP Bleu the HP price);
+        without a known category, the average price of today's bands.
+        """
+        by_category = {}
+        for band in self._configured_bands:
+            price = prices.get(band.get("id"))
+            if band.get("category") in ("hc", "hp") and price is not None:
+                by_category.setdefault(band["category"], []).append(price)
+        by_category = {category: sum(values) / len(values)
+                       for category, values in by_category.items()}
+        today = [prices[band.get("id")] for band in self._configured_bands
+                 if band.get("id") in prices] or list(prices.values())
+        average = sum(today) / len(today) if today else 0.0
+
+        def price_of(band_id):
+            if band_id in prices:
+                return prices[band_id]
+            category = band_category(band_id, self._bands.get(band_id))
+            return by_category.get(category, average)
+
+        return price_of
+
+    async def _async_last_year_savings(self, savings, period, day, energies=None) -> dict:
+        """Return the savings of a period against the same period of last year.
+
+        A day is compared with the same day of the week 52 weeks before, a
+        week with the same week, a month with the same month of last year;
+        the bar in progress with the same part of last year, until the same
+        day and time. Day by day, only the days measured both years are
+        compared (see _paired_reference). A bar without energy last year
+        keeps ecojoko's reference; a bar without any measure this year has
+        no savings.
+        """
+        bars = [bar for bar in savings.get("bars") or [] if bar.get("cost") is not None]
+        if not bars:
+            return savings
+        today = get_current_date(TZ)
+        keys = ("energy", "cost") if self._paid else ("energy",)
+        if period == "year":
+            # The days of the months of the year, not the months
+            first_day = dt.date(day.year, 1, 1)
+            last_day = min(dt.date(day.year, 12, 31), today)
+            now = [await self._async_day_energies(first_day, last_day, key) for key in keys]
+        else:
+            if energies is None:
+                energies = await self._async_period_energies(period, day)
+            now = [energies]
+            if self._paid:
+                now.append(await self._async_period_energies(period, day, "cost"))
+        spans = []
+        for bar in bars:
+            first = _date_of(bar.get("date"))
+            if first is None:
+                continue
+            month_end = first.replace(day=calendar.monthrange(first.year, first.month)[1])
+            last = {"week": first, "month": min(first + dt.timedelta(days=6), month_end)}.get(
+                period, month_end)
+            # The bar in progress, until today
+            spans.append((bar, first, min(last, max(today, first))))
+        if not spans:
+            return savings
+        if period == "year":
+            shift = _same_day_last_year
+            before = await self._async_last_year_days(
+                _year_before(spans[0][1]), _year_before(spans[-1][2]), keys, _year_before(today))
+        else:
+            year = dt.timedelta(weeks=52)
+
+            def shift(date):
+                return date - year
+
+            before = await self._async_last_year_days(
+                min(first for _bar, first, _last in spans) - year,
+                max(last for _bar, _first, last in spans) - year, keys, today - year)
+        replaced = left_out = 0
+        reference_gap = reference_kwh_gap = 0.0
+        for bar, first, last in spans:
+            pairs = [(date, shift(date)) for date in _days(first, last)]
+            if not any(_measured(now[0].get(date)) for date, _before in pairs):
+                # No measure this year (the assistant away): no savings
+                left_out += len(pairs)
+                consumption = finite_number(bar.get("consumption")) or 0.0
+                reference_kwh_gap += consumption - (
+                    finite_number(bar.get("reference_consumption")) or 0.0)
+                reference_gap += bar["cost"] - (finite_number(bar.get("reference_cost")) or 0.0)
+                _apply_reference(bar, consumption, bar["cost"])
+                replaced += 1
+                continue
+            reference, reference_costs, missing = _paired_reference(
+                pairs, now[0], before[0], *((now[1], before[1]) if self._paid else ()))
+            paid = (_range_energies(now[1], first, last), reference_costs) \
+                if self._paid else None
+            if not any(_measured(before[0].get(previous)) for _date, previous in pairs):
+                # Nothing measured last year: ecojoko's reference stays
+                continue
+            values = self._last_year_values(
+                bar["cost"], _range_energies(now[0], first, last), reference, first, paid)
+            if values is None:
+                continue
+            left_out += missing
+            kwh, cost = values
+            reference_kwh_gap += kwh - (finite_number(bar.get("reference_consumption")) or 0.0)
+            reference_gap += cost - (finite_number(bar.get("reference_cost")) or 0.0)
+            _apply_reference(bar, kwh, cost)
+            replaced += 1
+        if replaced and savings.get("cost") is not None:
+            _apply_reference(
+                savings,
+                (finite_number(savings.get("reference_consumption")) or 0.0) + reference_kwh_gap,
+                (finite_number(savings.get("reference_cost")) or 0.0) + reference_gap)
+        savings["reference_source"] = (
+            "last_year" if replaced == len(spans) else "ecojoko" if not replaced else "mixed")
+        # Days left out of the comparison: not measured one of the two years
+        savings["unmeasured_days"] = left_out
+        return savings
+
+    async def _async_last_year_summary(self, summary, today) -> None:
+        """Change the savings over 12 months to a reference of the 12 months before.
+
+        Only with the energy of each of these 12 months a year earlier; the
+        month in progress against the same days of last year, until the
+        same time.
+        """
+        months = []
+        month = today.replace(day=1)
+        for _index in range(12):
+            months.append(month)
+            month = (month - dt.timedelta(days=1)).replace(day=1)
+        keys = ("energy", "cost") if self._paid else ("energy",)
+        first = months[-1]
+        now = [await self._async_day_energies(first, today, key) for key in keys]
+        before = await self._async_last_year_days(
+            _year_before(first), _year_before(today), keys, _year_before(today))
+        # More than a year of history: the first month of last year measured
+        if not any(_measured(before[0].get(date))
+                   for date in _days(_year_before(first), _year_before(months[-2]) - dt.timedelta(
+                       days=1))):
+            summary["reference_source"] = "ecojoko"
+            return
+        pairs = [(date, _same_day_last_year(date)) for date in _days(first, today)]
+        reference, reference_costs, missing = _paired_reference(
+            pairs, now[0], before[0], *((now[1], before[1]) if self._paid else ()))
+        consumed = _range_energies(now[0], first, today)
+        costs = (_range_energies(now[1], first, today), reference_costs) if self._paid else None
+        summary["unmeasured_days_12_months"] = missing
+        values = self._last_year_values(
+            finite_number(summary.get("consumption_cost_12_months")), consumed, reference, today,
+            costs)
+        if values is None:
+            summary["reference_source"] = "ecojoko"
+            return
+        kwh, cost = values
+        summary["reference_consumption_12_months"] = round_value(kwh)
+        summary["reference_cost_12_months"] = round_value(cost)
+        summary["savings_12_months"] = round_value(cost - summary["consumption_cost_12_months"])
+        consumption = finite_number(summary.get("consumption_12_months"))
+        if consumption is not None:
+            summary["savings_kwh_12_months"] = round_value(kwh - consumption)
+        summary["reference_source"] = "last_year"
+
+    async def _async_last_year_activity(self, activity, today) -> None:
+        """Change the gap over 7 days to a reference of the same days 52 weeks before.
+
+        Today against the same day of last year until the same time.
+        """
+        year = dt.timedelta(weeks=52)
+        first, last = today - dt.timedelta(days=6) - year, today - year
+        (before,) = await self._async_last_year_days(first, last, ("energy",), last)
+        consumption = finite_number(activity.get("consumption_7_days"))
+        if len(before) < 7 or consumption is None:
+            return
+        # Only the days measured both years
+        now = await self._async_day_energies(today - dt.timedelta(days=6), today)
+        bands, _costs, _missing = _paired_reference(
+            [(date, date - year) for date in _days(today - dt.timedelta(days=6), today)],
+            now, before)
+        reference = sum(bands.values())
+        if reference <= 0:
+            return
+        activity["reference_consumption_7_days"] = round_value(reference)
+        activity["savings_7_days"] = round((consumption - reference) / reference * 100)
+
+    async def _async_correct_summary(self, summary, today) -> None:
+        """Change the savings over 12 months to the prices entered by the user.
+
+        Month by month, from the energy of the months of this year and of the
+        last one; the months the prices do not cover keep ecojoko's costs.
+        """
+        energies = await self._async_period_energies("year", today)
+        if today.month < 12:
+            energies.update(await self._async_period_energies(
+                "year", dt.date(today.year - 1, 12, 1)))
+        months, month = [], today.replace(day=1)
+        for _index in range(12):
+            months.append(month)
+            month = (month - dt.timedelta(days=1)).replace(day=1)
+        await self._async_load_month_prices(months)
+        gap = subscription = 0.0
+        corrected = False
+        month = today.replace(day=1)
+        for _index in range(12):
+            last = min(today, month.replace(
+                day=calendar.monthrange(month.year, month.month)[1]))
+            month_gap = self.cost_gap(month, last, energies.get(month, {}))
+            if month_gap is not None:
+                gap += month_gap
+                subscription += self.cost_gap(month, last, {}) or 0.0
+                corrected = True
+            month = (month - dt.timedelta(days=1)).replace(day=1)
+        if not corrected:
+            return
+        values = {
+            "consumption": summary.get("consumption_12_months"),
+            "reference_consumption": summary.get("reference_consumption_12_months")}
+        consumption = finite_number(values["consumption"])
+        reference = finite_number(values["reference_consumption"])
+        reference_gap = subscription
+        if consumption and reference is not None:
+            reference_gap += (gap - subscription) * reference / consumption
+        cost = finite_number(summary.get("consumption_cost_12_months"))
+        reference_cost = finite_number(summary.get("reference_cost_12_months"))
+        if cost is None or reference_cost is None:
+            return
+        summary["consumption_cost_12_months"] = round_value(cost + gap)
+        summary["reference_cost_12_months"] = round_value(reference_cost + reference_gap)
+        summary["savings_12_months"] = round_value(
+            summary["reference_cost_12_months"] - summary["consumption_cost_12_months"])
+
+    async def _async_correct_analysis(self, analysis, period) -> dict:
+        """Return an analysis at the prices entered, its categories in proportion.
+
+        ecojoko gives the categories without their tariff bands: each one
+        changes as the cost of the energy of the whole period.
+        """
+        start = _date_of(analysis.get("start"))
+        cost = finite_number(analysis.get("cost"))
+        if not self._contract_prices or not analysis.get("available") or start is None or not cost:
+            return analysis
+        last = start + dt.timedelta(days=6) if period == "week" else start.replace(
+            day=calendar.monthrange(start.year, start.month)[1])
+        try:
+            energies = await self._async_period_energies(period, start)
+        except LittleMonkeyApiClientError as exception:
+            LOGGER.debug("Energy of the analysis not read: %r", exception)
+            return analysis
+        await self._async_load_month_prices([start, last])
+        gap = self.cost_gap(start, last, _range_energies(energies, start, last))
+        if gap is None:
+            return analysis
+        ratio = (cost + gap) / cost
+        analysis["cost"] = round_value(cost + gap)
+        for category in analysis.get("categories") or []:
+            for item in [category, *(category.get("children") or [])]:
+                if item.get("cost") is not None:
+                    item["cost"] = round_value(item["cost"] * ratio)
+        analysis["entered_prices"] = True
+        return analysis
 
     @property
     def bands(self) -> dict:
@@ -1016,6 +1822,13 @@ class LittleMonkeyApiClient:
                 }
                 for name, last in self._last_responses.items()
             },
+            "requests": self._requests_diagnostics(now),
+            # Answers of the services served from the cache, or read
+            "service_cache": {
+                "entries": len(self._service_cache),
+                "hits": self._service_hits,
+                "misses": self._service_misses,
+            },
         }
 
     async def async_get_cookiesdata(self) -> None:
@@ -1130,11 +1943,29 @@ class LittleMonkeyApiClient:
             "activity", ECOJOKO_ACTIVITY_URL, cookies=self._cookies,
             timeout=CONF_API_ACTIVITY_TIMEOUT)
         try:
-            return parse_activity(payload)
+            activity = parse_activity(payload)
         except PARSE_ERRORS as exception:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API activity: {exception!r}"
             ) from exception
+        # The cost of the last 7 days, today included, at the prices entered
+        today = get_current_date(TZ)
+        if self._contract_prices and activity.get("cost_7_days") is not None:
+            await self._async_load_month_prices([today - dt.timedelta(days=6), today])
+            gaps = [
+                self.cost_gap(day, day, {
+                    band_id: kwh for band_id, (kwh, _cost)
+                    in self._day_costs.get(day.isoformat(), {}).items()})
+                for day in (today - dt.timedelta(days=offset) for offset in range(7))]
+            if any(gap is not None for gap in gaps):
+                activity["cost_7_days"] = round_value(
+                    activity["cost_7_days"] + sum(gap or 0.0 for gap in gaps))
+        if self._last_year:
+            try:
+                await self._async_last_year_activity(activity, today)
+            except LittleMonkeyApiClientError as exception:
+                LOGGER.debug("Energy of the same days of last year not read: %r", exception)
+        return activity
 
     def _check_slow_api(self, name) -> None:
         """Fail when an API read apart from the polls cannot be called yet.
@@ -1156,11 +1987,26 @@ class LittleMonkeyApiClient:
             f"savingstat ({SAVINGS_PERIODS[period]})", url, cookies=self._cookies,
             timeout=CONF_API_ACTIVITY_TIMEOUT)
         try:
-            return parse_savingstat(payload, get_current_date(TZ))
+            savings = parse_savingstat(payload, get_current_date(TZ))
         except PARSE_ERRORS as exception:
             raise LittleMonkeyApiClientError(
                 f"Unexpected data from API savingstat: {exception!r}"
             ) from exception
+        if not self._contract_prices and not self._last_year:
+            return savings
+        # The energy of the period ecojoko answered with: on a Monday
+        # morning, until it has the day, the week before
+        day = _answered_day(period, savings, day)
+        try:
+            energies = await self._async_period_energies(period, day)
+            await self._async_load_month_prices(
+                [_date_of(bar.get("date")) for bar in savings.get("bars") or []])
+            savings = self.correct_savings(savings, period, energies)
+            if self._last_year:
+                savings = await self._async_last_year_savings(savings, period, day, energies)
+        except LittleMonkeyApiClientError as exception:
+            LOGGER.debug("Energy of the savings not read: %r", exception)
+        return savings
 
     async def _async_get_slow(self, name, path, parse, error_payload=False, device=None):
         """Read an API of a device apart from the polls, and parse it.
@@ -1188,8 +2034,9 @@ class LittleMonkeyApiClient:
         path = f"ia/conso/{SAVINGS_PERIODS[period]}"
         if day is not None:
             path += f"/{day.isoformat()}"
-        return await self._async_get_slow(
+        analysis = await self._async_get_slow(
             "analysis", path, parse_analysis, error_payload=True)
+        return await self._async_correct_analysis(analysis, period)
 
     async def async_get_category_history(self, category, day) -> dict:
         """Return the consumption of a category, week by week over a year."""
@@ -1216,7 +2063,11 @@ class LittleMonkeyApiClient:
             return await self._async_get_slow(
                 f"{MEASURES[measure]} ({scale})", path, parse_climate, device=self._temp_hum_id)
         parse = parse_power_day if period == "day" else parse_energy_bars
-        return await self._async_get_slow(f"powerstat ({scale})", path, parse)
+        measures = await self._async_get_slow(f"powerstat ({scale})", path, parse)
+        await self._async_load_month_prices(
+            [day] if period == "day"
+            else [_date_of(bar.get("date")) for bar in measures.get("bars") or []])
+        return self.correct_measures(measures, period, day)
 
     async def async_get_activations(self, page=0) -> dict:
         """Return the activations of the appliances over 48 hours.
@@ -1269,11 +2120,12 @@ class LittleMonkeyApiClient:
             raise LittleMonkeyApiClientError(
                 f"ecojoko refused the command: {payload.get('error_desc') or error}")
 
-    async def async_get_equipment_day(self, equipment, day) -> dict:
+    async def async_get_equipment_day(self, equipment, day, parts=("power", "switches")) -> dict:
         """Return the measures of an equipment over a day.
 
-        Its energy, cost and power curve when it measures its power, and its
-        changes of state when it has some.
+        Its energy, cost and power curve when it measures its power (part
+        "power"), and its changes of state when it has some (part
+        "switches"). Only the parts asked for are read and returned.
         """
         self._check_slow_api("equipment day")
         url = self._equipment_url(equipment["id"])
@@ -1290,19 +2142,24 @@ class LittleMonkeyApiClient:
                 ) from exception
 
         reads = {}
-        if equipment.get("measures"):
+        if equipment.get("measures") and "power" in parts:
             reads["power"] = read("plugstat", "plugstat/d4", parse_equipment_power)
-        if equipment.get("switches"):
+        if equipment.get("switches") and "switches" in parts:
             reads["switches"] = read("switchstat", "switchstat/d", parse_equipment_switches)
         results = dict(zip(reads, await asyncio.gather(*reads.values())))
-        power = results.get("power") or {}
-        return {
-            "date": day.isoformat(),
-            "energy": power.get("energy"),
-            "cost": power.get("cost"),
-            "power": power.get("power", []),
-            "switches": results.get("switches", []),
-        }
+        if "power" in parts:
+            await self._async_load_month_prices([day])
+        measures = {"date": day.isoformat()}
+        if "power" in parts:
+            power = results.get("power") or {}
+            measures.update(
+                energy=power.get("energy"),
+                # At the prices entered by the user, when they apply
+                cost=self.correct_day_cost(day, power.get("cost"), power.get("energy")),
+                power=power.get("power", []))
+        if "switches" in parts:
+            measures["switches"] = results.get("switches", [])
+        return measures
 
     async def async_get_savings(self) -> dict:
         """Return the savings over 12 months, this week, month and year.
@@ -1324,7 +2181,153 @@ class LittleMonkeyApiClient:
             self.async_get_savings_period(period, today)
             for period in SAVINGS_PERIODS))
         data.update(zip(SAVINGS_PERIODS, periods))
+        try:
+            if self._contract_prices:
+                await self._async_correct_summary(data, today)
+            if self._last_year:
+                await self._async_last_year_summary(data, today)
+        except LittleMonkeyApiClientError as exception:
+            LOGGER.debug("Energy of the last 12 months not read: %r", exception)
         return data
+
+    async def async_cached(self, key, ttl, read):
+        """Return the answer of a service, read at most once every `ttl` seconds.
+
+        The answer is shared by the cards, the browsers and the automations
+        that ask for the same data: the same requests at the same time wait
+        for a single reading. A failure is not kept. Each caller gets its
+        own copy of the answer.
+        """
+        cached = self._service_cache.get(key)
+        if cached is not None and time.monotonic() - cached[0] < ttl:
+            self._service_cache.move_to_end(key)
+            self._service_hits += 1
+            return copy.deepcopy(cached[1])
+        task = self._service_reads.get(key)
+        if task is None:
+            self._service_misses += 1
+            task = asyncio.ensure_future(self._async_fill_cache(key, read))
+            self._service_reads[key] = task
+
+            def done(task):
+                self._service_reads.pop(key, None)
+                # Retrieved even when every caller gave up, not to be logged
+                if not task.cancelled():
+                    task.exception()
+
+            task.add_done_callback(done)
+        else:
+            self._service_hits += 1
+        # A caller that gives up does not stop the reading for the others
+        return copy.deepcopy(await asyncio.shield(task))
+
+    async def _async_fill_cache(self, key, read):
+        """Read the answer of a service and keep it, the least recent out first."""
+        answer = await read()
+        self._service_cache[key] = (time.monotonic(), answer)
+        self._service_cache.move_to_end(key)
+        while len(self._service_cache) > SERVICE_CACHE_SIZE:
+            self._service_cache.popitem(last=False)
+        return answer
+
+    def _count_request(self, name) -> dict:
+        """Count a request of an API, by what sends it: a poll or a service."""
+        now = time.monotonic()
+        if self._requests_start is None:
+            self._requests_start = now
+        if name not in self._request_stats:
+            read = next((read for start, read in ANSWER_VALUES.items()
+                         if name.startswith(start)), None)
+            self._request_stats[name] = {
+                "poll": 0, "service": 0, "times": deque(maxlen=REQUEST_CHANGES_KEPT),
+                **self._new_changes(), "read_values": read,
+                "values": None if read is None else self._new_changes()}
+        stats = self._request_stats[name]
+        stats[REQUEST_SOURCE.get()] += 1
+        stats["times"].append(now)
+        return stats
+
+    @staticmethod
+    def _new_changes() -> dict:
+        """Return the counters of the changes of an answer."""
+        return {"changed": 0, "unchanged": 0,
+                "changes": deque(maxlen=REQUEST_CHANGES_KEPT)}
+
+    def _count_answer(self, stats, url, payload) -> None:
+        """Tell whether the answer of a URL changed since its last request.
+
+        The first answer of a URL is not counted: there is nothing to
+        compare it with. Only a digest of the answer is kept. For an API of
+        ANSWER_VALUES, the values its sensors use are compared as well.
+        """
+        self._count_change(stats, url, payload)
+        if stats["read_values"] is None:
+            return
+        try:
+            values = stats["read_values"](payload)
+        except PARSE_ERRORS:
+            values = None
+        self._count_change(stats["values"], (url, "values"), values)
+
+    def _count_change(self, counters, key, value) -> None:
+        """Count whether a value changed since the last one with the same key."""
+        digest = hashlib.blake2b(
+            json.dumps(value, sort_keys=True, default=str).encode(),
+            digest_size=16).digest()
+        previous = self._answer_digests.pop(key, None)
+        if len(self._answer_digests) >= REQUEST_URLS_KEPT:
+            # The oldest URL first: a day of a card is not asked again
+            del self._answer_digests[next(iter(self._answer_digests))]
+        self._answer_digests[key] = digest
+        if previous is None:
+            return
+        if previous == digest:
+            counters["unchanged"] += 1
+        else:
+            counters["changed"] += 1
+            counters["changes"].append(time.monotonic())
+
+    def _requests_diagnostics(self, now) -> dict:
+        """Return the requests of each API since the start, for the diagnostics.
+
+        By API: the requests of the polls and of the services, per hour on
+        average, the seconds between the last requests, how many answers changed or not since the request before
+        to the same URL, and the seconds between the last changes; the same
+        for the values the sensors use, for the APIs of ANSWER_VALUES.
+        """
+        def intervals(times):
+            times = list(times)
+            return [round(after - before) for before, after in zip(times, times[1:])]
+
+        def changes(counters):
+            times = counters["changes"]
+            return {
+                "changed": counters["changed"],
+                "unchanged": counters["unchanged"],
+                "seconds_between_changes": intervals(times),
+                "seconds_since_change": round(now - times[-1]) if times else None,
+            }
+
+        hours = (now - self._requests_start) / 3600 if self._requests_start else 0
+        apis = {}
+        for name, stats in sorted(self._request_stats.items()):
+            total = stats["poll"] + stats["service"]
+            apis[name] = {
+                "poll": stats["poll"],
+                "service": stats["service"],
+                "per_hour": round(total / hours, 1) if hours >= 1 / 60 else None,
+                # Right from the second request, unlike the average per hour
+                "seconds_between_requests": intervals(stats["times"]),
+                **changes(stats),
+            }
+            if stats["values"] is not None:
+                # The values the sensors use, apart from the rest of the answer
+                apis[name]["values"] = changes(stats["values"])
+        return {
+            "seconds_counted": None if self._requests_start is None
+            else round(now - self._requests_start),
+            "apis": apis,
+        }
 
     async def _async_request(self, name, url, method="GET", timeout=None,
                              error_payload=False, **kwargs):
@@ -1336,6 +2339,7 @@ class LittleMonkeyApiClient:
         always released. With error_payload, an answer HTTP 400 in JSON is
         returned: ecojoko explains in it why it has no data.
         """
+        stats = self._count_request(name)
         try:
             async with asyncio.timeout(timeout or CONF_API_TIMEOUT):
                 async with self._session.request(
@@ -1374,6 +2378,7 @@ class LittleMonkeyApiClient:
                     payload = None
                     if "application/json" in content_type:
                         payload = await response.json()
+                        self._count_answer(stats, url, payload)
                     return payload, response.cookies
         except asyncio.TimeoutError as exception:
             raise LittleMonkeyApiClientCommunicationError(
@@ -1465,7 +2470,8 @@ class LittleMonkeyApiClient:
     def _stats_to_call(self, now) -> list:
         """Return the statistics APIs to call during this poll.
 
-        Each statistic is refreshed every CONF_API_STAT_REFRESH seconds.
+        Each statistic is refreshed after its delay of CONF_API_STAT_REFRESH,
+        at the first poll that comes close to it (CONF_API_STAT_MARGIN).
         With a short poll interval only one of them is called per poll, to
         spread the load on the ecojoko servers; with a longer one, several
         are called together so that none waits more than the usual delay.
@@ -1473,19 +2479,21 @@ class LittleMonkeyApiClient:
         enabled = ["powerstat"]
         if self._use_temphum is True and self._temp_hum_id is not None:
             enabled += ["tempstat", "humstat"]
+        poll_interval = max(float(self._poll_interval), 1)
+        margin = min(CONF_API_STAT_MARGIN, poll_interval / 2)
         due = [
             name for name in enabled
             if name not in self._stat_tasks
             and (self._last_stat_refresh[name] is None
-                 or now - self._last_stat_refresh[name] >= CONF_API_STAT_REFRESH)
+                 or now - self._last_stat_refresh[name]
+                 >= CONF_API_STAT_REFRESH[name] - margin)
         ]
         # Oldest first, the ones never called before the others
         due.sort(key=lambda name: -math.inf
                  if self._last_stat_refresh[name] is None
                  else self._last_stat_refresh[name])
-        poll_interval = max(float(self._poll_interval), 1)
         per_poll = max(1, math.ceil(
-            len(enabled) * poll_interval / CONF_API_STAT_REFRESH))
+            len(enabled) * poll_interval / CONF_API_STAT_SPREAD))
         return due[:per_poll]
 
     async def _async_refresh(self) -> None:

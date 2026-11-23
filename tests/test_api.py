@@ -512,6 +512,86 @@ def test_diagnostics_show_the_response_headers(api):
         assert secret not in text
 
 
+def test_diagnostics_count_the_requests_and_their_changes(api):
+    """The requests of each API are counted, with the answers that changed."""
+    readings = iter([512, 512, 640])
+    session = Session(realtime_conso=lambda: Response(
+        payload={"real_time": {"value": next(readings)}}))
+    client = make_client(api, session)
+    for _poll in range(3):
+        run(client.async_get_data())
+
+    async def read_by_service():
+        # As the services do: counted apart from the polls
+        token = api.REQUEST_SOURCE.set("service")
+        try:
+            await client.async_get_analysis("week")
+        finally:
+            api.REQUEST_SOURCE.reset(token)
+
+    run(read_by_service())
+    run(client.async_get_analysis("week"))
+    requests = client.diagnostics()["requests"]
+    assert requests["seconds_counted"] >= 0
+    realtime = requests["apis"]["realtime_conso"]
+    # The first answer has nothing to be compared with
+    assert (realtime["poll"], realtime["service"]) == (3, 0)
+    # The seconds between the 3 requests, from the second one on
+    assert len(realtime["seconds_between_requests"]) == 2
+    assert all(seconds >= 0 for seconds in realtime["seconds_between_requests"])
+    assert requests["apis"]["Cookies"]["seconds_between_requests"] == []
+    assert (realtime["unchanged"], realtime["changed"]) == (1, 1)
+    assert realtime["seconds_since_change"] >= 0
+    assert realtime["seconds_between_changes"] == []
+    analysis = requests["apis"]["analysis"]
+    assert (analysis["poll"], analysis["service"]) == (1, 1)
+    assert (analysis["unchanged"], analysis["changed"]) == (1, 0)
+    # Neither the URLs, which hold the device ids, nor the answers
+    text = repr(requests)
+    for secret in ("gw-1", "http", "512", "640"):
+        assert secret not in text
+
+
+def test_diagnostics_compare_the_values_of_powerstat_its_sensors_use(api):
+    """A powerstat answer changed elsewhere than in its energies is told apart."""
+    client = make_client(api, Session())
+    stats = client._count_request("powerstat (w)")
+    url = "https://ecojoko/powerstat/w"
+
+    def answer(kwh, price, hc=1.234):
+        return {"stat": {"period": {"price": price}, "data": [
+            {"kwh": kwh, "kwh_prod": 0, "time": "2026-11-20",
+             "subconsumption": [{"id": 3, "kwh": hc, "price": price}]}]}}
+
+    for kwh, price, hc in [(4.2, 0.1, 1.234), (4.2, 0.2, 1.234), (4.2, 0.3, 1.231), (4.3, 0.3, 1.231)]:
+        client._count_request("powerstat (w)")
+        client._count_answer(stats, url, answer(kwh, price, hc))
+    powerstat = client.diagnostics()["requests"]["apis"]["powerstat (w)"]
+    # The whole answer changed each time, its energies only once: a change
+    # of the band under the rounding of the sensors (1.234 -> 1.231) is not one
+    assert (powerstat["changed"], powerstat["unchanged"]) == (3, 0)
+    assert (powerstat["values"]["changed"], powerstat["values"]["unchanged"]) == (1, 2)
+    assert powerstat["values"]["seconds_since_change"] >= 0
+    # An answer that cannot be read is compared as such
+    client._count_answer(stats, url, {"unexpected": True})
+    assert client.diagnostics()["requests"]["apis"]["powerstat (w)"]["values"]["changed"] == 2
+    # The other APIs have no values of their own
+    assert "values" not in client.diagnostics()["requests"]["apis"].get("realtime_conso", {})
+
+
+def test_diagnostics_keep_the_last_answers_of_a_bounded_number_of_urls(api):
+    """Reading many days does not keep their answers without end."""
+    client = make_client(api, Session())
+    stats = client._count_request("powerstat (d4)")
+    for day in range(api.REQUEST_URLS_KEPT + 50):
+        client._count_answer(stats, f"https://ecojoko/day/{day}", {"day": day})
+    assert len(client._answer_digests) == api.REQUEST_URLS_KEPT
+    # The most recent URL is still compared with its last answer
+    last = f"https://ecojoko/day/{api.REQUEST_URLS_KEPT + 49}"
+    client._count_answer(stats, last, {"day": api.REQUEST_URLS_KEPT + 49})
+    assert stats["unchanged"] == 1
+
+
 # --- Login errors
 
 
@@ -1298,9 +1378,23 @@ def test_every_statistic_is_refreshed(api, monkeypatch, poll):
         assert len(calls) >= 3, name
         gaps = [later - earlier for earlier, later in zip(calls, calls[1:])]
         # Usual delay, plus the granularity of the polls
-        assert max(gaps) <= api.CONF_API_STAT_REFRESH + 2 * poll, name
+        assert max(gaps) <= api.CONF_API_STAT_REFRESH[name] + 2 * poll, name
+        # And never before its delay, less the margin
+        assert min(gaps) >= api.CONF_API_STAT_REFRESH[name] - api.CONF_API_STAT_MARGIN, name
     assert (client.indoor_temp, client.outdoor_temp) == (20, 8)
     assert (client.indoor_hum, client.outdoor_hum) == (50, 80)
+
+
+def test_statistics_are_read_at_their_own_pace(api, monkeypatch):
+    """Energies every minute, temperature and humidity every two minutes.
+
+    With the default poll of 30 s, a statistic due at the next poll is read
+    then, not one poll later.
+    """
+    _, times, _ = simulate(api, monkeypatch, 30, duration=1200)
+    for name, delay in (("powerstat", 60), ("tempstat", 120), ("humstat", 120)):
+        gaps = [later - earlier for earlier, later in zip(times[name], times[name][1:])]
+        assert all(delay <= gap <= delay + 2 for gap in gaps), (name, gaps)
 
 
 @pytest.mark.parametrize("poll", [3, 5, 10])
@@ -2042,6 +2136,20 @@ def test_equipment_and_its_day(api):
     ]
 
 
+def test_equipment_day_reads_only_the_parts_asked_for(api):
+    """The power curve and the changes of state can be read apart."""
+    client, session = equipment_client(api)
+    equipment = run(client.async_get_equipment("630220"))
+    before = len(session.requests)
+    day = run(client.async_get_equipment_day(equipment, dt.date(2026, 11, 18), ("switches",)))
+    urls = [request[1] for request in session.requests[before:]]
+    assert len(urls) == 1 and urls[0].endswith("/device/630220/switchstat/d/2026-11-18")
+    assert set(day) == {"date", "switches"}
+    day = run(client.async_get_equipment_day(equipment, dt.date(2026, 11, 18), ("power",)))
+    assert session.requests[-1][1].endswith("/device/630220/plugstat/d4/2026-11-18")
+    assert set(day) == {"date", "energy", "cost", "power"}
+
+
 def test_equipment_day_without_measures(api):
     """An equipment without measures has an empty day, read from nowhere."""
     client, session = equipment_client(api)
@@ -2191,9 +2299,12 @@ def test_exact_prices_by_id_or_label(api):
 
 
 def test_band_prices_of_the_client(api):
-    """The client estimates the prices over two weeks, the exact ones win."""
+    """The client estimates the prices over two weeks, the exact ones win.
+
+    From the complete days: today, not over yet, is left out.
+    """
     today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
-    start = today - dt.timedelta(days=9)
+    start = today - dt.timedelta(days=10)
     gateways = {"gateways": [{
         "gateway_id": 1, "gateway_firmware_version": "9",
         "devices": [{"device_type": "POWER_METER", "device_id": 2}],
@@ -2203,7 +2314,8 @@ def test_band_prices_of_the_client(api):
     client = make_client(api, session, hchp=True)
     run(client.async_get_data())
     assert client.band_prices == {
-        2: {"price": 0.18, "exact": False}, 3: {"price": 0.139, "exact": False}}
+        2: {"price": 0.18, "exact": False, "source": "estimated"},
+        3: {"price": 0.139, "exact": False, "source": "estimated"}}
 
     # With a water heater piloted by ecojoko, its prices
     gateways["gateways"][0]["devices"].append({
@@ -2211,7 +2323,37 @@ def test_band_prices_of_the_client(api):
             "prices": [{"label": "Heures Pleines", "price": 0.2016}]}}})
     run(client._gatewayapi_wrapper())
     assert client.band_prices == {
-        2: {"price": 0.2016, "exact": True}, 3: {"price": 0.139, "exact": False}}
+        2: {"price": 0.2016, "exact": True, "source": "ecojoko"},
+        3: {"price": 0.139, "exact": False, "source": "estimated"}}
+
+    # The prices entered by the user win, during their validity only
+    client._contract_prices = {
+        "prices": {"3": 0.134736}, "subscription": 31.14,
+        "start": (today - dt.timedelta(days=1)).isoformat(), "end": today.isoformat()}
+    assert client.band_prices[3] == {"price": 0.134736, "exact": True, "source": "entered"}
+    assert client.band_prices[2]["source"] == "ecojoko"
+    assert client.contract["subscription_price"] == 31.14
+    client._contract_prices["end"] = (today - dt.timedelta(days=1)).isoformat()
+    assert client.band_prices[3]["source"] == "estimated"
+    assert client.entered_prices is None
+
+
+def test_entered_prices_apply_during_their_validity(api):
+    """Prices entered by the user apply from their start to their end, included."""
+    entered_prices = tariff_module(api).entered_prices
+    entered = {"prices": {"2": 0.180336, "3": "0,134736", "x": 1, "4": 0},
+               "subscription": None, "start": "2026-08-25", "end": "2027-06-30"}
+    assert entered_prices(entered, dt.date(2026, 8, 24)) is None
+    assert entered_prices(entered, dt.date(2026, 8, 25)) == {
+        "prices": {2: 0.180336, 3: 0.134736}, "subscription": None,
+        "start": "2026-08-25", "end": "2027-06-30"}
+    assert entered_prices(entered, dt.date(2027, 6, 30))["prices"][2] == 0.180336
+    assert entered_prices(entered, dt.date(2027, 7, 1)) is None
+    # Without dates, always; without any price, never
+    assert entered_prices({"prices": {"2": 0.2}}, dt.date(2030, 1, 1))["prices"] == {2: 0.2}
+    assert entered_prices({"prices": {}, "subscription": None}, dt.date(2026, 9, 1)) is None
+    assert entered_prices({"subscription": 31.14}, dt.date(2026, 9, 1))["subscription"] == 31.14
+    assert entered_prices(None, dt.date(2026, 9, 1)) is None
 
 
 # --- Measures (page « Mesures »)
@@ -2372,3 +2514,641 @@ def test_climate_measures_need_the_sensor(api):
     run(client.async_get_data())
     with pytest.raises(api.LittleMonkeyApiClientError):
         run(client.async_get_measures("humidity", "day", dt.date(2026, 11, 18)))
+
+
+# --- Cache of the answers of the services
+
+
+def test_service_answer_is_kept_for_its_time(api, monkeypatch):
+    """The same data asked again within its time is not read again."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(api, "time", types.SimpleNamespace(monotonic=lambda: clock["now"]))
+    client = make_client(api, Session())
+    reads = []
+
+    async def read():
+        reads.append(clock["now"])
+        return {"bars": [1, 2]}
+
+    async def scenario():
+        first = await client.async_cached(("savings", "week"), 240, read)
+        # Each caller gets its own copy: a change does not reach the cache
+        first["bars"].append(3)
+        clock["now"] += 239
+        second = await client.async_cached(("savings", "week"), 240, read)
+        # Another key is read apart
+        await client.async_cached(("savings", "month"), 240, read)
+        clock["now"] += 1
+        third = await client.async_cached(("savings", "week"), 240, read)
+        return second, third
+
+    second, third = run(scenario())
+    assert second == third == {"bars": [1, 2]}
+    assert reads == [1000.0, 1239.0, 1240.0]
+    cache = client.diagnostics()["service_cache"]
+    assert cache == {"entries": 2, "hits": 1, "misses": 3}
+
+
+def test_same_requests_at_the_same_time_share_one_reading(api):
+    """Two cards asking for the same data at once make a single request."""
+    client = make_client(api, Session())
+    reads = []
+
+    async def read():
+        reads.append(1)
+        await asyncio.sleep(0.01)
+        return {"activations": []}
+
+    async def scenario():
+        return await asyncio.gather(*(
+            client.async_cached(("activations", 0), 1800, read) for _ in range(3)))
+
+    answers = run(scenario())
+    assert answers == [{"activations": []}] * 3
+    assert len(reads) == 1
+
+
+def test_a_failed_reading_is_not_kept(api):
+    """After a failure, the next request reads ecojoko again."""
+    client = make_client(api, Session())
+    answers = iter([api.LittleMonkeyApiClientCommunicationError("timeout"), {"ok": True}])
+
+    async def read():
+        answer = next(answers)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
+    async def scenario():
+        with pytest.raises(api.LittleMonkeyApiClientCommunicationError):
+            await client.async_cached(("analysis", "week", None), 3600, read)
+        return await client.async_cached(("analysis", "week", None), 3600, read)
+
+    assert run(scenario()) == {"ok": True}
+
+
+def test_the_cache_keeps_a_bounded_number_of_answers(api, monkeypatch):
+    """The least recently used answers leave the cache first."""
+    monkeypatch.setattr(api, "SERVICE_CACHE_SIZE", 3)
+    client = make_client(api, Session())
+
+    async def scenario():
+        for day in range(4):
+            await client.async_cached(("measures", day), 240, lambda day=day: asyncio.sleep(0, day))
+
+    run(scenario())
+    assert list(client._service_cache) == [("measures", 1), ("measures", 2), ("measures", 3)]
+
+
+# --- Costs at the prices entered by the user
+
+
+def test_gap_of_a_cost_at_the_prices_entered(api):
+    """Only the price of the kWh changes; the subscription by its own gap."""
+    tariff = tariff_module(api)
+    assert tariff.price_gap({2: 10, 3: 4, 9: 1}, {2: 0.2, 3: 0.15}, {2: 0.18, 3: 0.135}) == \
+        pytest.approx(10 * -0.02 + 4 * -0.015)
+    assert tariff.price_gap({2: 10}, {}, {2: 0.18}) is None
+    assert tariff.subscription_gap(31.14, 30.49, 365) == pytest.approx(0.65 * 12)
+    assert tariff.subscription_gap(None, 30.49, 30) == 0
+    # A point holds its power until the next one, the last one the usual interval
+    points = [
+        {"time": "2026-11-18T00:00:00+01:00", "power": 1000, "band": 3},
+        {"time": "2026-11-18T00:30:00+01:00", "power": 2000, "band": 3},
+        {"time": "2026-11-18T01:00:00+01:00", "power": 4000, "band": 2},
+        {"time": "2026-11-18T01:30:00+01:00", "power": None, "band": 2},
+    ]
+    assert tariff.energies_of_points(points) == {3: 1.5, 2: 2.0}
+
+
+def entered_client(api, start="2026-11-01", end="2026-11-30", subscription=None):
+    """Return a client with prices entered, and ecojoko's prices known."""
+    client = make_client(api, Session())
+    client._contract_prices = {"prices": {"2": 0.18, "3": 0.135}, "subscription": subscription,
+                               "start": start, "end": end}
+    client._ecojoko_prices = lambda: ({2: 0.2}, {3: 0.15})
+    # ecojoko's prices of the month, estimated from its days
+    client._month_base = lambda day: {2: 0.2, 3: 0.15}
+    client._contract = {"subscription_price": 30.49}
+    return client
+
+
+def test_measures_at_the_prices_entered(api):
+    """The days and months the prices apply cost the prices entered."""
+    client = entered_client(api)
+    week = {"cost": 10.0, "bars": [
+        {"date": "2026-10-31", "cost": 5.0, "bands": [{"id": 2, "energy": 10, "cost": 5.0}]},
+        {"date": "2026-11-01", "cost": 5.0, "bands": [
+            {"id": 2, "energy": 10, "cost": 3.0}, {"id": 3, "energy": 10, "cost": 2.0}]},
+    ]}
+    measures = client.correct_measures(week, "week", dt.date(2026, 11, 1))
+    # Before the prices: ecojoko's; after: 10 kWh at -0.02 and 10 at -0.015
+    assert measures["bars"][0]["cost"] == 5.0
+    assert measures["bars"][1]["cost"] == 4.65
+    assert [band["cost"] for band in measures["bars"][1]["bands"]] == [2.8, 1.85]
+    assert measures["cost"] == 9.65
+    assert measures["entered_prices"] is True
+
+    # A month counts only when the prices apply to all of it
+    year = {"cost": 20.0, "bars": [
+        {"date": "2026-10-01", "cost": 10.0, "bands": [{"id": 2, "energy": 50, "cost": 10.0}]},
+        {"date": "2026-11-01", "cost": 10.0, "bands": [{"id": 2, "energy": 50, "cost": 10.0}]},
+    ]}
+    measures = client.correct_measures(year, "year", dt.date(2026, 11, 1))
+    assert [bar["cost"] for bar in measures["bars"]] == [10.0, 9.0]
+
+    # A day of power: the energy of each band from its points
+    day = {"cost": 1.0, "points": [
+        {"time": "2026-11-18T00:00:00+01:00", "power": 2000, "band": 2},
+        {"time": "2026-11-18T01:00:00+01:00", "power": 2000, "band": 2},
+    ]}
+    assert client.correct_measures(day, "day", dt.date(2026, 11, 18))["cost"] == 0.92
+    # Without prices entered, nothing changes
+    plain = make_client(api, Session())
+    assert plain.correct_measures({"cost": 1.0, "bars": []}, "week", dt.date(2026, 11, 1)) == {
+        "cost": 1.0, "bars": []}
+
+
+def test_subscription_entered_in_the_costs(api):
+    """The subscription entered changes the cost of each day by its gap."""
+    client = entered_client(api, subscription=31.14)
+    gap = client.cost_gap(dt.date(2026, 11, 2), dt.date(2026, 11, 2), {})
+    assert gap == pytest.approx(0.65 * 12 / 365)
+
+
+def test_cost_of_7_days_and_of_an_equipment_at_the_prices_entered(api):
+    """The last 7 days and the equipments cost the prices entered."""
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    client = entered_client(api, start=None, end=None)
+    client._day_costs = {
+        (today - dt.timedelta(days=offset)).isoformat(): {2: (10, 2.0), 3: (10, 1.5)}
+        for offset in range(8)}
+    assert client.cost_gap(today, today, {2: 10, 3: 10}) == pytest.approx(-0.35)
+    # An equipment: its share of the cost of the house this day
+    assert client.correct_day_cost(today, 0.35, 2.0) == round(0.35 * 3.15 / 3.5, 2)
+    assert client.correct_day_cost(today, None, 2.0) is None
+
+    session = Session(activity=Response(payload=ACTIVITY))
+    client._session = session
+    client._cookies = {"session": "abc"}
+    plain = parse_activity_cost(api)
+    activity = run(client.async_get_activity())
+    assert activity["cost_7_days"] == round(plain - 7 * 0.35, 2)
+
+
+def parse_activity_cost(api):
+    """Return ecojoko's cost of the last 7 days of the activity of the tests."""
+    return api.parse_activity(ACTIVITY)["cost_7_days"]
+
+
+def test_savings_at_the_prices_entered(api):
+    """The cost of each bar at the prices entered, its reference at the average price."""
+    client = entered_client(api)
+    savings = {"cost": 7.0, "reference_cost": 8.0, "savings": 1.0, "bars": [
+        {"date": "2026-10-31", "cost": 3.0, "consumption": 15, "reference_cost": 4.0,
+         "reference_consumption": 20, "savings": 1.0},
+        {"date": "2026-11-01", "cost": 4.0, "consumption": 20, "reference_cost": 4.0,
+         "reference_consumption": 30, "savings": 0.0},
+    ]}
+    energies = {dt.date(2026, 10, 31): {2: 15}, dt.date(2026, 11, 1): {2: 10, 3: 10}}
+    corrected = client.correct_savings(savings, "week", energies)
+    # Before the prices: ecojoko's; after: -0.35 € for 20 kWh, -0.525 € for the 30 of reference
+    assert corrected["bars"][0] == savings["bars"][0]
+    bar = corrected["bars"][1]
+    assert (bar["cost"], bar["reference_cost"], bar["savings"]) == (3.65, 3.47, -0.18)
+    assert (corrected["cost"], corrected["reference_cost"], corrected["savings"]) == (6.65, 7.47, 0.82)
+    assert corrected["entered_prices"] is True
+
+
+def test_analysis_at_the_prices_entered(api):
+    """Each category of the analysis changes as the cost of the whole period."""
+    client = entered_client(api)
+
+    async def energies(_period, _day):
+        return {dt.date(2026, 11, 2 + offset): {2: 10} for offset in range(7)}
+
+    client._async_period_energies = energies
+    analysis = {"available": True, "start": "2026-11-02", "cost": 14.0, "categories": [
+        {"cost": 7.0, "children": [{"cost": 3.5}]}, {"cost": 7.0, "children": []}]}
+    corrected = run(client._async_correct_analysis(analysis, "week"))
+    # 70 kWh at -0.02 €: -1.4 € over 14 €, -10 %
+    assert corrected["cost"] == 12.6
+    assert [category["cost"] for category in corrected["categories"]] == [6.3, 6.3]
+    assert corrected["categories"][0]["children"][0]["cost"] == 3.15
+    unavailable = {"available": False, "start": "2026-11-02"}
+    assert run(client._async_correct_analysis(unavailable, "week")) == unavailable
+
+
+def test_savings_of_12_months_at_the_prices_entered(api):
+    """Month by month, the months the prices cover."""
+    today = dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    client = entered_client(api, start=None, end=None)
+
+    async def energies(_period, _day):
+        month = today.replace(day=1)
+        return {month: {2: 100}}
+
+    client._async_period_energies = energies
+    summary = {"consumption_cost_12_months": 400.0, "reference_cost_12_months": 500.0,
+               "savings_12_months": 100.0, "consumption_12_months": 2000,
+               "reference_consumption_12_months": 3000}
+    run(client._async_correct_summary(summary, today))
+    # 100 kWh at -0.02 €; the reference at the same average price
+    assert summary["consumption_cost_12_months"] == 398.0
+    assert summary["reference_cost_12_months"] == 497.0
+    assert summary["savings_12_months"] == 99.0
+
+
+# --- Reference of the savings: the same period of last year
+
+
+def last_year_client(api):
+    """Return a client comparing with last year, at ecojoko's prices."""
+    client = make_client(api, Session())
+    client._reference = "last_year"
+    client._ecojoko_prices = lambda: ({2: 0.2}, {3: 0.15})
+    return client
+
+
+def test_reference_of_last_year_at_the_prices_of_today(api):
+    """The energy of last year at today's prices, the rest of the cost kept."""
+    client = last_year_client(api)
+    # 10 kWh consumed (2.5 € of energy) cost 3 €: 0.5 € of subscription kept
+    kwh, cost = client._last_year_values(3.0, {2: 5, 3: 5}, {2: 10, 3: 10}, dt.date(2026, 11, 2))
+    assert (kwh, cost) == (20, pytest.approx(3.0 + 3.5 - 1.75))
+    assert client._last_year_values(3.0, {2: 5}, {}, dt.date(2026, 11, 2)) is None
+
+
+def test_savings_against_the_same_week_of_last_year(api):
+    """Each day against the same day of the week 52 weeks before."""
+    client = last_year_client(api)
+    year = dt.timedelta(weeks=52)
+
+    async def day_energies(first, last, key="energy"):
+        # Nothing the year before for the first day
+        return {dt.date(2026, 11, 3) - year: {2: 10}}
+
+    client._async_day_energies = day_energies
+    savings = {"cost": 4.0, "consumption": 16, "reference_cost": 5.0,
+               "reference_consumption": 25, "savings": 1.0, "savings_kwh": 9, "bars": [
+                   {"date": "2026-11-02", "cost": 2.0, "consumption": 8, "reference_cost": 2.5,
+                    "reference_consumption": 12.5, "savings": 0.5, "savings_kwh": 4.5},
+                   {"date": "2026-11-03", "cost": 2.0, "consumption": 8, "reference_cost": 2.5,
+                    "reference_consumption": 12.5, "savings": 0.5, "savings_kwh": 4.5},
+                   {"date": "2026-11-04", "cost": None}]}
+    energies = {dt.date(2026, 11, 2): {2: 8}, dt.date(2026, 11, 3): {2: 8}}
+    result = run(client._async_last_year_savings(savings, "week", dt.date(2026, 11, 2), energies))
+    assert result["bars"][0]["reference_cost"] == 2.5
+    bar = result["bars"][1]
+    # 10 kWh last year at 0.2 €, 8 kWh this year: +0.4 € of reference
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (10, 2.4)
+    assert (bar["savings"], bar["savings_kwh"]) == (0.4, 2)
+    assert (result["reference_consumption"], result["reference_cost"]) == (22.5, 4.9)
+    assert (result["savings"], result["savings_kwh"]) == (0.9, 6.5)
+    assert result["reference_source"] == "mixed"
+
+
+def test_savings_of_12_months_and_of_7_days_against_last_year(api, monkeypatch):
+    """The 12 months before, and the same 7 days 52 weeks before, day by day.
+
+    Today against the same day of last year until the same time; the days
+    not measured this year (the assistant away in February) are left out
+    on both sides.
+    """
+    today = dt.date(2026, 11, 22)
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: today)
+    client = last_year_client(api)
+
+    def kwh(date):
+        if dt.date(2026, 2, 1) <= date <= dt.date(2026, 2, 28):
+            return None
+        return 3 if date >= dt.date(2025, 12, 1) else 5
+
+    async def day_energies(first, last, key="energy"):
+        days = {}
+        date = first
+        while date <= last:
+            if kwh(date) is not None:
+                days[date] = {2: kwh(date)}
+            date += dt.timedelta(days=1)
+        return days
+
+    async def share_until_now(_day):
+        # Half of the day gone by
+        return {}, 0.5
+
+    client._async_day_energies = day_energies
+    client._async_share_until_now = share_until_now
+    summary = {"consumption_cost_12_months": 300.0, "reference_cost_12_months": 400.0,
+               "savings_12_months": 100.0, "consumption_12_months": 1200,
+               "reference_consumption_12_months": 2000, "savings_kwh_12_months": 800}
+    run(client._async_last_year_summary(summary, today))
+    assert summary["reference_source"] == "last_year"
+    # 1 December 2025 to 22 November 2026, February left out: 329 days at
+    # 3 kWh, against 5 kWh the same days of last year, today until now
+    measured = (today - dt.date(2025, 12, 1)).days + 1 - 28
+    assert summary["unmeasured_days_12_months"] == 28
+    assert summary["reference_consumption_12_months"] == 5 * (measured - 1) + 2.5
+    assert summary["reference_cost_12_months"] == pytest.approx(
+        300.0 + 0.2 * (5 * (measured - 1) + 2.5 - 3 * measured), abs=0.01)
+
+    activity = {"consumption_7_days": 42, "reference_consumption_7_days": 30, "savings_7_days": 40}
+    run(client._async_last_year_activity(activity, today))
+    # 32.5 kWh the same days of last year, the last one until the same time
+    assert activity == {"consumption_7_days": 42, "reference_consumption_7_days": 32.5,
+                        "savings_7_days": 29}
+
+
+def test_savings_of_a_month_without_measures(api, monkeypatch):
+    """A month without any measure this year has no savings; its days are told.
+
+    February 2026, the assistant away for repair: last year's February is
+    not a saving.
+    """
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: dt.date(2026, 11, 22))
+    client = last_year_client(api)
+
+    async def day_energies(first, last, key="energy"):
+        days = {}
+        date = first
+        while date <= last:
+            if not (date.year == 2026 and date.month == 2) and not (
+                    date.year == 2026 and date.month == 3 and date.day <= 4):
+                days[date] = {2: 5}
+            date += dt.timedelta(days=1)
+        return days
+
+    client._async_day_energies = day_energies
+    savings = {"cost": 30.0, "consumption": 135, "reference_cost": 60.0,
+               "reference_consumption": 330, "savings": 30.0, "savings_kwh": 195, "bars": [
+                   {"date": "2026-02-01", "cost": 0, "consumption": 0, "reference_cost": 0,
+                    "reference_consumption": 0, "savings": 0, "savings_kwh": 0},
+                   {"date": "2026-03-01", "cost": 30.0, "consumption": 135,
+                    "reference_cost": 60.0, "reference_consumption": 330, "savings": 30.0,
+                    "savings_kwh": 195}]}
+    result = run(client._async_last_year_savings(savings, "year", dt.date(2026, 3, 1)))
+    february, march = result["bars"]
+    assert (february["reference_consumption"], february["savings"]) == (0, 0)
+    # March: 27 days measured both years at 5 kWh, 1 to 4 March left out
+    assert (march["reference_consumption"], march["savings"], march["savings_kwh"]) == (
+        135, 0, 0)
+    assert result["unmeasured_days"] == 28 + 4
+    assert result["reference_source"] == "last_year"
+
+
+def test_period_in_progress_against_the_same_part_of_last_year(api, monkeypatch):
+    """The week or the month in progress stops last year at the same day and time."""
+    monkeypatch.setattr(api, "get_current_date", lambda timezone: dt.date(2026, 11, 4))
+    client = last_year_client(api)
+
+    async def day_energies(first, last, key="energy"):
+        return {first + dt.timedelta(days=offset): {2: 10}
+                for offset in range((last - first).days + 1)}
+
+    async def period_energies(_period, day, key="energy"):
+        # A whole month of last year, which the month in progress does not take
+        return {dt.date(day.year, 11, 1): {2: 300}}
+
+    async def share_until_now(_day):
+        return {2: 0.5}, 0.9
+
+    client._async_day_energies = day_energies
+    client._async_period_energies = period_energies
+    client._async_share_until_now = share_until_now
+
+    def savings(date):
+        return {"cost": 4.0, "consumption": 20, "reference_cost": 6.0,
+                "reference_consumption": 30, "savings": 2.0, "bars": [
+                    {"date": date, "cost": 4.0, "consumption": 20, "reference_cost": 6.0,
+                     "reference_consumption": 30, "savings": 2.0}]}
+
+    # The week of Monday 2 November: 3 to 5 November 2025, the 5th until now
+    energies = {dt.date(2026, 11, 2): {2: 8}, dt.date(2026, 11, 3): {2: 8},
+                dt.date(2026, 11, 4): {2: 4}}
+    bar = run(client._async_last_year_savings(
+        savings("2026-11-02"), "month", dt.date(2026, 11, 4), energies))["bars"][0]
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (25, 5.0)
+
+    # November, day by day: 1 to 4 November 2025, the 4th until now (35 kWh),
+    # against the 40 kWh of 1 to 4 November 2026
+    bar = run(client._async_last_year_savings(
+        savings("2026-11-01"), "year", dt.date(2026, 11, 4)))["bars"][0]
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (35, 3.0)
+
+
+def test_reference_of_last_year_at_the_prices_paid(api):
+    """Last year's energy keeps what it cost then: a cheaper offer is a saving."""
+    client = last_year_client(api)
+    client._reference = "last_year_paid"
+    # Same 10 kWh: 2.5 € of energy now, 3.2 € last year; the rest of the cost kept
+    kwh, cost = client._last_year_values(
+        3.0, {2: 5, 3: 5}, {2: 5, 3: 5}, dt.date(2026, 11, 2),
+        ({2: 1.0, 3: 1.5}, {2: 1.7, 3: 1.5}))
+    assert (kwh, cost) == (10, pytest.approx(3.7))
+    # Without the costs of last year, ecojoko's reference stays
+    assert client._last_year_values(
+        3.0, {2: 5}, {2: 5}, dt.date(2026, 11, 2), ({2: 1.0}, {})) is None
+
+    year = dt.timedelta(weeks=52)
+    reads = []
+
+    async def period_energies(_period, _day, key="energy"):
+        reads.append(key)
+        return {dt.date(2026, 11, 3): {2: 8 if key == "energy" else 1.6}}
+
+    async def day_energies(_first, _last, key="energy"):
+        return {dt.date(2026, 11, 3) - year: {2: 8 if key == "energy" else 2.0}}
+
+    client._async_period_energies = period_energies
+    client._async_day_energies = day_energies
+    savings = {"cost": 2.0, "consumption": 8, "reference_cost": 2.5,
+               "reference_consumption": 12.5, "savings": 0.5, "savings_kwh": 4.5, "bars": [
+                   {"date": "2026-11-03", "cost": 2.0, "consumption": 8, "reference_cost": 2.5,
+                    "reference_consumption": 12.5, "savings": 0.5, "savings_kwh": 4.5}]}
+    result = run(client._async_last_year_savings(savings, "week", dt.date(2026, 11, 2)))
+    # The same 8 kWh cost 2 € last year, 1.6 € now: 0.4 € saved
+    bar = result["bars"][0]
+    assert (bar["reference_consumption"], bar["reference_cost"]) == (8, 2.4)
+    assert (bar["savings"], bar["savings_kwh"]) == (0.4, 0)
+    assert result["reference_source"] == "last_year"
+    assert reads == ["energy", "cost"]
+
+
+def test_share_of_a_day_used_before_this_time(api):
+    """The share of a day of last year used before the time of now, by band."""
+    client = last_year_client(api)
+    paris = ZoneInfo("Europe/Paris")
+    day = dt.date(2025, 11, 5)
+    points = [{"time": dt.datetime(2025, 11, 5, hour, tzinfo=paris).isoformat(),
+               "power": 1000, "band": 2} for hour in range(24)]
+
+    async def measures(_kind, _period, _day):
+        return {"points": points}
+
+    client.async_get_measures = measures
+    shares, gone_by = run(client._async_share_until_now(day))
+    # One kWh an hour all day long: the share of the hours gone by
+    assert 0 <= gone_by <= 1
+    assert shares[2] == pytest.approx(gone_by, abs=1 / 24 + 0.001)
+
+
+def test_energy_of_the_period_ecojoko_answered_with(api, monkeypatch):
+    """On a Monday morning ecojoko answers with the week before: its energy is read."""
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 11, 23))
+    client = make_client(api, Session())
+    run(client.async_get_data())
+    client._contract_prices = {"prices": {"2": 0.2}, "subscription": None,
+                               "start": None, "end": None}
+    days = []
+
+    async def period_energies(period, day, key="energy"):
+        days.append((period, day))
+        return {}
+
+    client._async_period_energies = period_energies
+    # Asked for the week of the 23rd, ecojoko answers with the week of the 16th
+    values = run(client.async_get_savings_period("week", dt.date(2026, 11, 23)))
+    assert values["start"] == "2026-11-16"
+    assert days == [("week", dt.date(2026, 11, 16))]
+
+    answered_day = api._answered_day
+    assert answered_day("week", {"start": "2026-11-16"}, dt.date(2026, 11, 23)) == dt.date(
+        2026, 11, 16)
+    # A month starting on the Monday before its first day
+    assert answered_day("month", {"start": "2026-08-31"}, dt.date(2026, 9, 1)) == dt.date(
+        2026, 9, 7)
+    assert answered_day("month", {}, dt.date(2026, 9, 1)) == dt.date(2026, 9, 1)
+
+
+def month_of_costs(first, last, price, share=0.7):
+    """Return the measures of the days of a month: each band at its price, HP with a share."""
+    bars = []
+    day = first
+    while day <= last:
+        kwh = 3 + day.day % 5
+        bars.append({"date": day.isoformat(), "bands": [
+            {"id": 2, "energy": kwh, "cost": round(share + price[2] * kwh, 2)},
+            {"id": 3, "energy": kwh + 1, "cost": round(price[3] * (kwh + 1), 2)}]})
+        day += dt.timedelta(days=1)
+    return {"bars": bars}
+
+
+def test_prices_of_ecojoko_month_by_month(api, monkeypatch):
+    """The prices of ecojoko are estimated from the complete days of each month.
+
+    Its share of the subscription each day is left out; a change of its
+    prices applies from its month; today, not over, is left out.
+    """
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 11, 23))
+    client = make_client(api, Session())
+    client._contract_prices = {"prices": {"2": 0.18, "3": 0.135}, "subscription": None,
+                               "start": "2026-10-01", "end": None}
+    paths = []
+
+    async def get_slow(_name, path, _parse):
+        paths.append(path)
+        if path.endswith("2026-11-01"):
+            month = month_of_costs(dt.date(2026, 11, 1), dt.date(2026, 11, 22), {2: 0.2, 3: 0.15})
+            # Today, not over: its cost would spoil the estimate
+            month["bars"].append({"date": "2026-11-23", "bands": [
+                {"id": 2, "energy": 0.5, "cost": 0.9}, {"id": 3, "energy": 1, "cost": 0.8}]})
+            return month
+        return month_of_costs(dt.date(2026, 10, 1), dt.date(2026, 10, 31), {2: 0.25, 3: 0.15})
+
+    client._async_get_slow = get_slow
+    # September is before the prices entered: not read
+    run(client._async_load_month_prices(
+        [dt.date(2026, 9, 30), dt.date(2026, 10, 31), dt.date(2026, 11, 2), dt.date(2026, 11, 3)]))
+    assert paths == ["powerstat/m6/2026-10-01", "powerstat/m6/2026-11-01"]
+    assert client._month_base(dt.date(2026, 11, 5)) == {2: 0.2, 3: 0.15}
+    assert client._month_base(dt.date(2026, 10, 5)) == {2: 0.25, 3: 0.15}
+    assert client._month_base(dt.date(2026, 9, 5)) is None
+    # Each month at ecojoko's prices of that month
+    assert client.cost_gap(dt.date(2026, 10, 5), dt.date(2026, 10, 5), {2: 10}) == pytest.approx(-0.7)
+    assert client.cost_gap(dt.date(2026, 11, 5), dt.date(2026, 11, 5), {2: 10}) == pytest.approx(-0.2)
+    # A month not read keeps ecojoko's costs
+    assert client.cost_gap(dt.date(2026, 9, 5), dt.date(2026, 9, 5), {2: 10}) is None
+
+
+def test_prices_of_the_first_days_of_a_month(api, monkeypatch):
+    """Without enough complete days, a month takes its prices with the month before."""
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 12, 3))
+    client = make_client(api, Session())
+
+    async def get_slow(_name, path, _parse):
+        if path.endswith("2026-12-01"):
+            return month_of_costs(dt.date(2026, 12, 1), dt.date(2026, 12, 3), {2: 0.2, 3: 0.15})
+        return month_of_costs(dt.date(2026, 11, 1), dt.date(2026, 11, 30), {2: 0.2, 3: 0.15})
+
+    client._async_get_slow = get_slow
+    assert run(client._async_month_prices(dt.date(2026, 12, 1))) == {2: 0.2, 3: 0.15}
+
+
+def test_off_peak_hours_of_the_contract(api):
+    """A time is in the off-peak hours of the contract or not, across midnight too."""
+    off_peak_at = tariff_module(api).off_peak_at
+    slots = [{"start": "22:00", "stop": "06:00"}, {"start": "13:00", "stop": "14:30"}]
+    at = dt.datetime
+    assert off_peak_at(slots, at(2026, 11, 23, 23, 0)) is True
+    assert off_peak_at(slots, at(2026, 11, 23, 5, 59)) is True
+    assert off_peak_at(slots, at(2026, 11, 23, 6, 0)) is False
+    assert off_peak_at(slots, at(2026, 11, 23, 13, 30)) is True
+    assert off_peak_at(slots, at(2026, 11, 23, 18, 44)) is False
+    # Without off-peak hours, or unreadable ones, nothing is told
+    assert off_peak_at([], at(2026, 11, 23, 23, 0)) is None
+    assert off_peak_at(None, at(2026, 11, 23, 23, 0)) is None
+    assert off_peak_at([{"start": "x", "stop": "06:00"}, "y"], at(2026, 11, 23, 3, 0)) is None
+
+
+def test_reference_of_last_year_with_another_contract(api):
+    """The bands of last year's contract take today's price of their category.
+
+    Tempo last year, HC/HP now: HP Bleu at the HP price, HC Rouge at the HC
+    price, instead of nothing.
+    """
+    client = last_year_client(api)
+    client._configured_bands = [{"id": 2, "category": "hp"}, {"id": 3, "category": "hc"}]
+    kwh, cost = client._last_year_values(
+        3.0, {2: 5, 3: 5}, {18: 6, 22: 4, 19: 6, 23: 4}, dt.date(2026, 11, 2))
+    # 10 kWh HP at 0.2 and 10 kWh HC at 0.15 last year; 5 and 5 now
+    assert (kwh, cost) == (20, pytest.approx(3.0 + 3.5 - 1.75))
+    # A band of no known category: the average price of today's bands
+    _kwh, cost = client._last_year_values(3.0, {2: 5, 3: 5}, {99: 10}, dt.date(2026, 11, 2))
+    assert cost == pytest.approx(3.0 + 1.75 - 1.75)
+    tariff = tariff_module(api)
+    assert tariff.band_category(20) == "hp"
+    assert tariff.band_category(7) == "hc"
+    assert tariff.band_category(99, "HC Nuit") == "hc"
+    assert tariff.band_category(99) is None
+
+
+def test_subscription_entered_until_today(api, monkeypatch):
+    """The gap of the subscription entered stops at today; days to come have none.
+
+    ecojoko gives no cost for them: December showed -0.21 € for 0 kWh.
+    """
+    monkeypatch.setattr(api, "get_current_date", lambda _tz: dt.date(2026, 11, 23))
+    client = entered_client(api, start=None, end=None, subscription=31.14)
+    # The month in progress: 23 days of gap, not 30
+    gap = client.cost_gap(dt.date(2026, 11, 1), dt.date(2026, 11, 30), {})
+    assert gap == pytest.approx(0.65 * 12 / 365 * 23)
+    assert client.cost_gap(dt.date(2026, 12, 1), dt.date(2026, 12, 31), {}) is None
+    year = {"cost": 10.0, "bars": [
+        {"date": "2026-11-01", "cost": 10.0, "bands": []},
+        {"date": "2026-12-01", "cost": 0, "bands": []}]}
+    measures = client.correct_measures(year, "year", dt.date(2026, 11, 23))
+    assert measures["bars"][1]["cost"] == 0
+
+
+def test_measures_of_a_period_without_any(api):
+    """A period without measures (assistant away for repair) is empty, not an error.
+
+    ecojoko answers an empty body for it.
+    """
+    for payload in (None, "", {"stat": None}):
+        bars = api.parse_energy_bars(payload)
+        assert bars["bars"] == [] and bars["energy"] is None and bars["cost"] is None
+        # No period: nothing tells the card there is none before or after
+        assert "previous" not in bars
+        day = api.parse_power_day(payload)
+        assert day["points"] == [] and day["energy"] is None

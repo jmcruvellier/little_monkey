@@ -208,3 +208,33 @@ test("an entity of a device suggests the card on that device", () => {
   assert.equal(card.entitySuggestion(hass, "sensor.shed_firmware", card.contractStubConfig), null);
   assert.equal(card.entitySuggestion({ entities: { "light.lamp": { platform: "hue" } } }, "light.lamp", card.contractStubConfig), null);
 });
+
+test("the prices entered in the options are told, with their end", () => {
+  const text = { entered: "Prix saisis", entered_until: "Prix saisis, jusqu'au {date}" };
+  assert.equal(card.enteredNote(text, "fr", null), null);
+  assert.equal(card.enteredNote(text, "fr", { start: null, end: null }), "Prix saisis");
+  assert.equal(card.enteredNote(text, "fr", { start: "2026-08-25", end: "2027-06-30" }),
+    "Prix saisis, jusqu'au 30 juin 2027");
+});
+
+test("a current band in neither HC nor HP is the period of the whole day (#244)", () => {
+  const hass = fakeHass("unknown");
+  hass.states["sensor.eco_contract"].attributes.bands = [
+    { key: "band_8", name: "HP Semaine", category: "hp" },
+    { key: "band_9", name: "HC Semaine", category: "hc" },
+    { key: "band_13", name: "Heures Weekend", category: null },
+  ];
+  hass.states["sensor.eco_period"].attributes = { tariff_band: "Heures Weekend" };
+  // Sunday 22:44: the off-peak hours of the week do not apply
+  const view = card.contractView(hass, "sensor.eco_contract", new Date("2026-11-22T22:44:00+01:00"));
+  assert.equal(view.other, "Heures Weekend");
+  assert.equal(view.known, true);
+  assert.equal(view.offPeak, false);
+  assert.equal(view.next, null);
+  assert.deepEqual(view.bands.map((band) => band.current), [false, false, true]);
+  // A band of the week: the off-peak hours again
+  hass.states["sensor.eco_period"].attributes = { tariff_band: "HP Semaine" };
+  assert.equal(card.contractView(hass, "sensor.eco_contract", new Date("2026-11-23T22:44:00+01:00")).other, null);
+  assert.equal(card.otherBand([{ name: "X", category: "none" }], "X"), "X");
+  assert.equal(card.otherBand([], null), null);
+});

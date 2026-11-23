@@ -173,6 +173,22 @@ OFFER_BANDS = {
 }
 
 
+def band_category(band_id, label=None):
+    """Return the HC/HP category of a band, from its id or its label, or None.
+
+    For a band of another contract than the configured one (Tempo before
+    an HC/HP offer): the known bands and the bands of the known offers
+    tell it, else its label.
+    """
+    known = KNOWN_BANDS.get(band_id)
+    if known:
+        return known[1]
+    for bands in OFFER_BANDS.values():
+        if band_id in bands:
+            return category_of(bands[band_id])
+    return category_of(label) if label else None
+
+
 def band_key(band_id):
     """Return the key of the sensor of a band."""
     known = KNOWN_BANDS.get(band_id)
@@ -346,6 +362,86 @@ def estimate_prices(days):
     return prices
 
 
+def entered_prices(entered, day):
+    """Return the prices entered by the user that apply on a day, or None.
+
+    entered: the prices of the options (CONF_CONTRACT_PRICES). They apply
+    from their start to their end, both included, each optional. Returns
+    {"prices": {band id: euros}, "subscription": euros or None, "start",
+    "end"}: outside their dates, or without any price, ecojoko's apply.
+    """
+    if not isinstance(entered, dict):
+        return None
+    start, end = entered.get("start"), entered.get("end")
+    if (start and day.isoformat() < start) or (end and day.isoformat() > end):
+        return None
+    prices = {}
+    for band_id, price in (entered.get("prices") or {}).items():
+        price = _number(price)
+        try:
+            band_id = int(band_id)
+        except (TypeError, ValueError):
+            continue
+        if price is not None and price > 0:
+            prices[band_id] = price
+    subscription = _number(entered.get("subscription"))
+    if not prices and subscription is None:
+        return None
+    return {"prices": prices, "subscription": subscription, "start": start, "end": end}
+
+
+def price_gap(energies, base_prices, prices):
+    """Return the euros to add to a cost computed by ecojoko, or None.
+
+    energies: kWh by band id; base_prices: ecojoko's price of a kWh by band
+    (exact or estimated); prices: the prices entered by band. The energy of
+    each band costs the price entered instead of ecojoko's; the rest of
+    ecojoko's cost, as its share of the subscription, is kept. None when no
+    band has both prices.
+    """
+    gap, corrected = 0.0, False
+    for band_id, kwh in energies.items():
+        if kwh is None or band_id not in prices or band_id not in base_prices:
+            continue
+        gap += kwh * (prices[band_id] - base_prices[band_id])
+        corrected = True
+    return gap if corrected else None
+
+
+def subscription_gap(subscription, base_subscription, days):
+    """Return the euros to add for a subscription entered over some days, else 0."""
+    if subscription is None or base_subscription is None:
+        return 0.0
+    return (subscription - base_subscription) * 12 / 365 * days
+
+
+def energies_of_points(points):
+    """Return the kWh of each band of a day of power, from its points.
+
+    Each point holds its power until the next one; the last one holds it for
+    the median interval of the day.
+    """
+    times = []
+    for point in points:
+        try:
+            times.append(dt.datetime.fromisoformat(point["time"]))
+        except (KeyError, TypeError, ValueError):
+            times.append(None)
+    gaps = sorted(
+        (later - earlier).total_seconds() for earlier, later in zip(times, times[1:])
+        if earlier is not None and later is not None and later > earlier)
+    usual = gaps[len(gaps) // 2] if gaps else 0
+    energies = {}
+    for index, point in enumerate(points):
+        power, band = point.get("power"), point.get("band")
+        if power is None or band is None or times[index] is None:
+            continue
+        following = times[index + 1] if index + 1 < len(times) else None
+        seconds = (following - times[index]).total_seconds() if following else usual
+        energies[band] = energies.get(band, 0.0) + max(power, 0) * seconds / 3_600_000
+    return energies
+
+
 def exact_prices(prices, labels):
     """Return the prices given by ecojoko {band id: euros}.
 
@@ -366,3 +462,34 @@ def exact_prices(prices, labels):
         if price is not None and price > 0 and band_id is not None:
             result[band_id] = price
     return result
+
+
+def _slot_minutes(text):
+    """Return a time "HH:MM" of an off-peak slot in minutes, None if not one."""
+    try:
+        hours, minutes = str(text).split(":")[:2]
+        value = int(hours) * 60 + int(minutes)
+    except (TypeError, ValueError):
+        return None
+    return value if 0 <= value <= 1440 else None
+
+
+def off_peak_at(slots, moment):
+    """Tell whether a time is in the off-peak hours of a contract, None without them.
+
+    slots: the off_peak_timeslots of the contract, French times
+    [{"start": "22:00", "stop": "06:00"}]; moment: a time in Paris.
+    """
+    ranges = []
+    for slot in slots or []:
+        if not isinstance(slot, dict):
+            continue
+        start, stop = _slot_minutes(slot.get("start")), _slot_minutes(slot.get("stop"))
+        if start is not None and stop is not None and start != stop:
+            ranges.append((start, stop))
+    if not ranges:
+        return None
+    minutes = moment.hour * 60 + moment.minute
+    return any(
+        start <= minutes < stop if start < stop else minutes >= start or minutes < stop
+        for start, stop in ranges)

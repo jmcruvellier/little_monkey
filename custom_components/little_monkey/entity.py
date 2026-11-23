@@ -209,11 +209,16 @@ class EcojokoPeriodSensor(EcojokoSensor):
 
     @property
     def native_value(self):
-        """Return the current period, the restored one while it is not known."""
-        value = (self.coordinator.data or {}).get(self._sensor_name)
-        if value in self._attr_options:
+        """Return the current period, the restored one while it is not known.
+
+        A known current band in neither HC nor HP (Heures Weekend) has no
+        period: the restored one no longer applies.
+        """
+        data = self.coordinator.data or {}
+        value = data.get(self._sensor_name)
+        if value in self._attr_options or data.get("current_tariff_band") is not None:
             self._restored = None
-            return value
+            return value if value in self._attr_options else None
         return self._restored
 
     @property
@@ -272,6 +277,8 @@ class EcojokoContractSensor(EcojokoSensor):
             "off_peak_timeslots": contract.get("off_peak_timeslots") or [],
             # Price of a kWh of the solar surplus sold, None without a sale
             "resale_price": (self.coordinator.data or {}).get("resale_price"),
+            # Dates of the prices entered in the options, when they apply today
+            "entered_prices": self._entered_dates(),
             # With the price of a kWh: given by ecojoko (exact) or estimated
             "bands": [
                 {
@@ -285,7 +292,19 @@ class EcojokoContractSensor(EcojokoSensor):
     def _band_price(self, band_id) -> dict:
         """Return the price of a kWh of a band and whether it is exact."""
         price = ((self.coordinator.data or {}).get("band_prices") or {}).get(band_id) or {}
-        return {"price": price.get("price"), "price_exact": price.get("exact")}
+        return {
+            "price": price.get("price"),
+            "price_exact": price.get("exact"),
+            # "entered" in the options, given by "ecojoko", or "estimated"
+            "price_source": price.get("source"),
+        }
+
+    def _entered_dates(self) -> dict | None:
+        """Return the dates of the prices entered in the options, None without them."""
+        entered = (self.coordinator.data or {}).get("entered_prices")
+        if not entered:
+            return None
+        return {"start": entered.get("start"), "end": entered.get("end")}
 
 
 class EcojokoActivitySensor(CoordinatorEntity, SensorEntity):
@@ -335,7 +354,9 @@ SAVINGS_ATTRIBUTES = {
     "reference_cost_12_months": {
         "reference_consumption": "reference_consumption_12_months"},
     "savings_12_months": {
-        "savings_kwh": "savings_kwh_12_months", "level": "savings_level"},
+        "savings_kwh": "savings_kwh_12_months", "level": "savings_level",
+        # Days left out of the comparison with last year, not measured
+        "unmeasured_days": "unmeasured_days_12_months"},
 }
 # Savings sensors of the current week, month and year: key of their data
 SAVINGS_PERIOD_SENSORS = {

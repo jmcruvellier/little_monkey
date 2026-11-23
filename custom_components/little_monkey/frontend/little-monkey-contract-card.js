@@ -38,6 +38,8 @@ const TRANSLATIONS = {
     per_month: "{price} / month",
     per_kwh: "{price} / kWh",
     estimated: "≈ estimated from the costs computed by ecojoko",
+    entered: "Prices entered in the options of the integration",
+    entered_until: "Prices entered in the options of the integration, until {date}",
     off_peak_legend: "Off-peak hours",
     unknown: "Contract not read yet",
     missing: "Contract sensor not found",
@@ -62,6 +64,8 @@ const TRANSLATIONS = {
     per_month: "{price} / mois",
     per_kwh: "{price} / kWh",
     estimated: "≈ estimé d'après les coûts calculés par ecojoko",
+    entered: "Prix saisis dans les options de l'intégration",
+    entered_until: "Prix saisis dans les options de l'intégration, jusqu'au {date}",
     off_peak_legend: "Heures creuses",
     unknown: "Contrat pas encore lu",
     missing: "Capteur Contrat introuvable",
@@ -160,6 +164,18 @@ export function durationLabel(text, minutes) {
     return text.minutes.replace("{m}", minutes);
   }
   return text.hours.replace("{h}", Math.floor(minutes / 60)).replace("{m}", String(minutes % 60).padStart(2, "0"));
+}
+
+/**
+ * Return the name of the current band when it is in neither HC nor HP
+ * (Heures Weekend of a week-end offer), null otherwise.
+ */
+export function otherBand(bands, current) {
+  if (!current) {
+    return null;
+  }
+  const band = (bands || []).find((item) => item.name === current);
+  return band && !["hc", "hp"].includes(band.category) ? current : null;
 }
 
 /** Return the color of the Tempo day of a period ("hp_white"), or null. */
@@ -291,6 +307,22 @@ export function bandPrice(text, locale, band) {
   return `${exact ? "" : "≈ "}${text.per_kwh.replace("{price}", format.format(price))}`;
 }
 
+/**
+ * Return the note of the prices entered in the options, or null without
+ * them: until their end when they have one.
+ */
+export function enteredNote(text, locale, entered) {
+  if (!entered) {
+    return null;
+  }
+  const end = /^\d{4}-\d{2}-\d{2}$/.test(entered.end || "") ? new Date(`${entered.end}T12:00:00`) : null;
+  if (!end) {
+    return text.entered;
+  }
+  const date = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" }).format(end);
+  return text.entered_until.replace("{date}", date);
+}
+
 /** Return what the card shows, from the states of the device. */
 export function contractView(hass, entityId, now = new Date()) {
   const state = hass?.states?.[entityId];
@@ -322,6 +354,9 @@ export function contractView(hass, entityId, now = new Date()) {
     entity: sensors[band.key],
     current: currentBand ? band.name === currentBand : single && band.category === category,
   }));
+  // A current band in neither HC nor HP (Heures Weekend) is the period of
+  // the whole day: the off-peak hours of the week do not apply
+  const other = otherBand(list, currentBand);
   return {
     offer: state.state,
     supplier: attributes.supplier,
@@ -329,15 +364,19 @@ export function contractView(hass, entityId, now = new Date()) {
     subscription: attributes.subscription_price,
     // Price of a kWh of the solar surplus sold, absent without a sale
     resale: attributes.resale_price ?? null,
+    // Dates of the prices entered in the options, absent without them
+    entered: attributes.entered_prices ?? null,
     start: attributes.start_date,
     slots,
     minutes,
     // A contract without off-peak hours, read before any period is known,
     // has no period to show: neither peak nor off-peak
-    known: slots.length > 0 || /^h[cp]/.test(period ?? ""),
-    offPeak,
+    known: Boolean(other) || slots.length > 0 || /^h[cp]/.test(period ?? ""),
+    offPeak: other ? false : offPeak,
+    // Name of the current band in neither HC nor HP, null otherwise
+    other,
     tempo: tempoDay(period),
-    next: nextChange(slots, minutes),
+    next: other ? null : nextChange(slots, minutes),
     bands,
   };
 }
@@ -468,16 +507,16 @@ class LittleMonkeyContractCard extends HTMLElement {
     }
     const colors = DIAL_COLORS[view.tempo || "hchp"];
     const center = DIAL.size / 2;
-    const offArcs = view.slots.map(([start, end]) =>
+    const offArcs = view.other ? "" : view.slots.map(([start, end]) =>
       `<path d="${dialArc(start, end)}" fill="none" stroke="${colors.off}" stroke-width="${DIAL.width}" />`).join("");
     const [needleX, needleY] = dialPoint(view.minutes, DIAL.radius - DIAL.width / 2 - 6);
     const labels = [[0, "0h"], [360, "6h"], [720, "12h"], [1080, "18h"]].map(([minutes, label]) => {
       const [x, y] = dialPoint(minutes, DIAL.radius + DIAL.width / 2 + 10);
       return `<text class="dial-label" x="${x.toFixed(1)}" y="${y.toFixed(1)}">${label}</text>`;
     }).join("");
-    const periodName = view.known ? (view.offPeak ? text.off_peak : text.peak) : "";
+    const periodName = view.other || (view.known ? (view.offPeak ? text.off_peak : text.peak) : "");
     const caption = view.tempo ? `${text.today} · ${text.tempo[view.tempo]}` : view.known ? text.now : "";
-    const periodColor = view.offPeak ? colors.off : colors.peak;
+    const periodColor = view.other ? "var(--primary-text-color)" : view.offPeak ? colors.off : colors.peak;
     let change = "";
     if (view.next) {
       change = `<div class="change">${escapeHtml(text.next
@@ -512,8 +551,10 @@ class LittleMonkeyContractCard extends HTMLElement {
       : "";
     const estimated = view.bands.some((band) => bandPrice(text, locale, band)?.startsWith("≈"))
       ? `<div class="note">${escapeHtml(text.estimated)}</div>` : "";
+    const note = enteredNote(text, locale, view.entered);
+    const entered = note ? `<div class="note entered">${escapeHtml(note)}</div>` : "";
     const rows = bands || subscription || resale
-      ? `<div class="rows">${bands}${subscription}${resale}${estimated}</div>` : "";
+      ? `<div class="rows">${bands}${subscription}${resale}${entered}${estimated}</div>` : "";
     return `
       <div class="offer">
         <div class="badge">${escapeHtml(supplierBadge(view.supplier))}</div>

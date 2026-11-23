@@ -1,5 +1,54 @@
 # Changelog
 
+## 2.0.0
+
+La version 2.0 de Little Monkey. Si vous venez de la 1.2.8, elle regroupe les nouveautés des bêtas [2.0.0b1](#200b1) et [2.0.0b2](#200b2), détaillées plus bas, et celles de cette version.
+
+**L'essentiel**
+- **Huit cartes** pour vos tableaux de bord, fournies par l'intégration elle-même, sans ressource Lovelace à ajouter : le cadran ecojoko, les mesures, le résumé et le détail des économies, l'analyse de la conso, les activations des appareils, le contrat et les équipements
+- **Tous les contrats d'électricité** renseignés dans ecojoko, et plus seulement Tarif Bleu et Tempo : chaque tranche tarifaire a son capteur et compte, à votre choix, en heures creuses, en heures pleines ou dans aucun des deux
+- **Nouvelles fonctions à la demande** : activité du compte, économies, contrat et prix du kWh, équipements pilotés (chauffe-eau) avec leur pilotage, analyse de la conso et mesures détaillées, avec leurs services pour les scripts et les automatisations
+- **Vos prix** quand ecojoko ne les connaît pas (une remise, par exemple), et une **référence des économies** au choix : celle d'ecojoko, ou la même période de l'année précédente, à prix égal ou aux prix payés
+- **Moins de requêtes** envoyées à ecojoko, au rythme auquel il met réellement ses données à jour
+
+**À savoir avant de mettre à jour**
+- Faites une sauvegarde de Home Assistant. Home Assistant 2024.7.0 au minimum est nécessaire
+- La configuration est convertie automatiquement, sans perte d'historique : les capteurs HC/HP et Tempo gardent leurs identifiants et leurs statistiques. Si ecojoko indique des tranches sans capteur, une réparation vous propose de les créer
+- Les nouvelles fonctions sont **décochées par défaut** : cochez celles que vous voulez dans les options de l'intégration (Paramètres › Appareils et services › Little Monkey › Configurer), dernier écran
+- Fréquence de rafraîchissement : 30 secondes par défaut. Un intervalle inférieur à 30 secondes est porté à 30 à la mise à jour depuis la 1.2.8 ; vous pouvez ensuite le régler entre 5 et 60 secondes
+- Testeurs des bêtas : le capteur « Économies sur 7 Jours » de la 2.0.0b1 s'appelle « Écart sur 7 Jours » depuis la 2.0.0b2
+
+### Changements importants
+- Moins de requêtes envoyées à ecojoko, sans perte de fraîcheur : environ 35 % de requêtes de fond en moins sur une installation par défaut avec un chauffe-eau piloté (de 475 à 310 par heure environ). Les nouveaux rythmes suivent ceux auxquels ecojoko met réellement ses données à jour, mesurés pendant une heure sur deux installations :
+  - énergie du jour : toutes les minutes, au lieu de toutes les 30 secondes ;
+  - température et humidité : toutes les deux minutes, au lieu de toutes les 30 secondes ;
+  - activité du compte : toutes les demi-heures, au lieu de toutes les dix minutes ;
+  - équipement piloté : son état reste lu toutes les deux minutes ; sa courbe de puissance, son énergie et son coût le sont toutes les six minutes, ses changements d'état toutes les dix minutes, et les deux juste après une commande ou la fin d'un forçage.
+
+  Ces lectures ne dépendent plus de la fréquence de rafraîchissement choisie, qui ne règle que le temps réel
+- Les cartes interrogent beaucoup moins ecojoko : les réponses des services de lecture sont gardées et partagées entre les cartes, les navigateurs, les aperçus du sélecteur de cartes et les automatisations. Une période qui peut encore changer est gardée de 4 minutes (mesures, économies) à une heure (analyse), les activations 30 minutes, une période plus ancienne une journée ; des demandes identiques simultanées ne font qu'une requête. Recharger un tableau de bord ou l'ouvrir dans un deuxième onglet ne relit plus ecojoko
+- Fréquence de rafraîchissement : 5 secondes au minimum, au lieu de 3. ecojoko ne change la puissance en temps réel que toutes les 5 à 10 secondes au mieux. À la mise à jour, un intervalle inférieur à 5 secondes est porté à 5
+
+### Nouveautés
+- Saisie des prix de votre contrat, quand ecojoko ne les connaît pas (une remise pour les nouveaux clients, par exemple) : dans les options, cochez « Saisir les prix de mon contrat » et saisissez le prix TTC du kWh de chaque tranche, l'abonnement et la période de validité. Ils remplacent ceux d'ecojoko dans la carte Contrat et le capteur Contrat pendant cette période, avec la mention « Prix saisis dans les options de l'intégration »
+- Coûts aux prix saisis : pendant leur période, la carte Mesures et le service `get_measures` (jours, mois, années, chaque tranche), le coût sur 7 jours et le coût du jour des équipements pilotés sont recalculés aux prix de votre contrat. Seul le prix du kWh change : la part d'abonnement comptée par ecojoko reste, un abonnement saisi ajoute son écart jour par jour
+- Nouveau capteur « Prix du kWh en cours », avec l'option Contrat : le prix de la tranche en cours (saisi, sinon d'ecojoko, sinon estimé). Choisi comme prix dans le tableau Énergie de Home Assistant, il y rend les coûts justes
+- Économies et analyse aux prix saisis : le coût de la consommation est recalculé, celui de la référence au prix moyen du kWh payé sur la période (comme ecojoko, qui la valorise à un prix unique), et l'économie suit, pour les capteurs d'économies, la carte « Détail des économies » et le service `get_savings`. Les postes de l'analyse de la conso changent dans la même proportion que le coût de la période
+- Nouvelle option « Consommation de référence des économies » : celle de l'application ecojoko (par défaut), ou la même période de l'année précédente. Chaque jour est alors comparé au même jour de la semaine 52 semaines plus tôt, chaque mois au même mois. L'énergie de l'année précédente est comptée au choix à prix égal (aux prix d'aujourd'hui : l'économie mesure un changement d'habitudes) ou aux prix payés (le coût de l'époque : une offre moins chère compte comme une économie). La période en cours est comparée à la même partie de l'année précédente, jusqu'au même jour et à la même heure. Une période sans données l'année précédente garde la référence d'ecojoko
+- Diagnostics : nombre de requêtes envoyées à ecojoko par API, en séparant le sondage des services appelés par les cartes, et fréquence à laquelle leurs réponses changent vraiment. Ces chiffres serviront à espacer les requêtes sans perdre de fraîcheur
+- Les cartes apparaissent aussi quand on ajoute une carte à partir d'une entité (Home Assistant 2026.6 ou plus récent) : dans l'onglet **Par entité**, choisir une entité de Little Monkey propose les cartes de son appareil, dans la section **Communauté**. Il n'est plus nécessaire de chercher « Petit Singe » dans l'onglet **Par carte**. Avec deux appareils, chaque carte prend les capteurs de l'appareil de l'entité choisie
+
+### Corrections
+- Référence de l'année précédente et relevés manquants : un mois sans aucun relevé (assistant parti en réparation) était comparé à tout le même mois de l'an dernier, compté comme économie (+52 € pour un février sans relevé, environ 60 € sur 12 mois). Seuls les jours relevés les deux années sont maintenant comparés ; la carte Économies en détail indique les jours laissés hors de la comparaison
+- Mois sans aucun relevé (assistant parti en réparation, par exemple) : ecojoko répond sans données, et la carte Mesures et le service `get_measures` affichaient une erreur. Le mois s'affiche maintenant vide
+- Abonnement saisi : son écart avec celui d'ecojoko s'appliquait aussi aux jours à venir (décembre à −0,21 € pour 0 kWh, le mois en cours compté en entier). Il s'arrête maintenant à aujourd'hui
+- Référence de l'année précédente « à prix égal » après un changement de contrat : les tranches de l'ancien contrat (Tempo avant une offre HP/HC, par exemple) n'avaient pas de prix d'aujourd'hui et comptaient pour 0 € (−91 € d'économies sur 12 mois pour 660 kWh économisés). Elles prennent maintenant le prix d'aujourd'hui de leur catégorie, HC ou HP
+- Période tarifaire en cours d'un contrat HP/HC simple : elle était déduite du compteur HC ou HP qui augmente ; avec une batterie ou des panneaux solaires, le réseau fournit si peu qu'aucun compteur ne bougeait pendant des heures, et la période d'avant un redémarrage restait affichée (Heures creuses à 18 h 44). Elle est maintenant donnée par les heures creuses du contrat, comme dans la carte Contrat. Tempo et les offres dont la tranche dépend du jour gardent les compteurs
+- Offre week-end (EDF Vert Électrique Week-End…) : la période tarifaire restait celle du vendredi tout le week-end, et la carte Contrat appliquait au week-end les heures creuses de la semaine ([#244](https://github.com/jmcruvellier/little_monkey/issues/244)). La période suit maintenant la catégorie de la tranche en cours ; une tranche comptée ni en HC ni en HP n'a pas de période, et le cadran et la carte Contrat affichent son nom, sans heures creuses ni prochain changement
+- Carte Économies en détail : le lundi matin (ou le 1er du mois, le 1er janvier), ecojoko répond encore avec la période précédente tant qu'il n'a pas les données du jour ; la carte l'affichait sous le nom de la période en cours (les jours du 16 au 22 novembre sous « 23–29 nov. »). Elle l'affiche maintenant sous son propre nom
+- Économies de la période répondue par ecojoko le lundi matin (ou le 1er du mois) : leurs coûts aux prix saisis et leur référence de l'année précédente étaient calculés avec l'énergie de la nouvelle période ; c'est maintenant celle de la période répondue
+- Coûts aux prix saisis : le prix d'ecojoko retiré était estimé sur les derniers jours gardés en mémoire, journée en cours comprise ; il variait au fil de la journée et après un redémarrage (jusqu'à 9 € d'écart sur les économies de 12 mois). Il est maintenant estimé mois par mois, d'après les jours complets de chaque mois, et la journée en cours est écartée du prix affiché dans la carte Contrat
+
 ## 2.0.0b2
 
 > [!WARNING]

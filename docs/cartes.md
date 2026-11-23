@@ -83,7 +83,7 @@ Votre contrat d'électricité en un coup d'œil.
 
 - Le fournisseur, l'offre, sa date de début et la puissance souscrite.
 - Un cadran des 24 heures avec les heures creuses, une aiguille sur l'heure actuelle, la période en cours et le prochain changement (« Heures pleines à 07:30, dans 1 h 45 ») ; aux couleurs du jour avec Tempo. L'heure est celle de la France, comme les heures creuses d'ecojoko, où que soit le navigateur. Pour un contrat sans heures creuses, le cadran n'indique pas de période.
-- Les tranches tarifaires avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras, l'abonnement mensuel et, si vous revendez votre surplus solaire, son prix de rachat, celui de vos paramètres de production solaire dans ecojoko. Un prix estimé est précédé de « ≈ » ([voir pourquoi](integration.md#contrat)) ; toucher une tranche ouvre sa consommation du jour.
+- Les tranches tarifaires avec leur badge HC ou HP et le prix d'un kWh, la tranche en cours en gras, l'abonnement mensuel et, si vous revendez votre surplus solaire, son prix de rachat, celui de vos paramètres de production solaire dans ecojoko. Un prix estimé est précédé de « ≈ » ([voir pourquoi](integration.md#contrat)), des prix saisis dans les options sont signalés comme tels ([voir comment](installation.md#les-prix-de-votre-contrat)) ; toucher une tranche ouvre sa consommation du jour.
 
 ```yaml
 type: custom:little-monkey-contract-card
@@ -127,7 +127,7 @@ unit: eur
 Les économies d'une semaine (jour par jour), d'un mois (semaine par semaine) ou d'une année (mois par mois), en barres vertes pour une économie et gris-bleu pour une surconsommation.
 
 - Les boutons Semaine, Mois et Année changent de période ; le total de la période s'affiche à côté, l'unité choisie en premier.
-- Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît.
+- Les flèches, ou un glissement du doigt sur les barres, passent à la période précédente ou suivante ; les périodes passées sont lues chez ecojoko. La carte s'arrête à la première période qu'ecojoko connaît : la flèche précédente disparaît. Le lundi matin (ou le 1er du mois, le 1er janvier), tant qu'ecojoko n'a pas les données du jour, il répond avec la période précédente, comme son application : la carte l'affiche alors comme période en cours, sous son propre nom.
 - Toucher une barre affiche son détail (« Lundi 16 novembre : -0,35 € · -2,57 kWh »).
 
 ```yaml

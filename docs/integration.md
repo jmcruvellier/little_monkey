@@ -34,7 +34,7 @@ Toujours créés, ou selon les cases de la 1.2.8.
 | Consommation Réseau | kWh | toujours | Énergie consommée depuis minuit ; ne diminue jamais au cours d'une journée |
 | Consommation d'une tranche tarifaire | kWh | une par tranche du contrat | Énergie de la tranche depuis minuit (Heures Creuses, HC Bleu, HP Semaine…), nommée à la configuration |
 | Consommation HC Réseau, HP Réseau | kWh | case des totaux HC et HP | Somme des tranches de chaque catégorie |
-| Période Tarifaire en Cours | — | totaux HC/HP ou contrat Tempo | Heures creuses ou pleines, et couleur du jour en Tempo ; la tranche en cours en attribut (`tariff_band`). Déduite du compteur qui augmente : connue avec quelques minutes de retard au changement de période |
+| Période Tarifaire en Cours | — | totaux HC/HP ou contrat Tempo | Heures creuses ou pleines, et couleur du jour en Tempo ; la tranche en cours en attribut (`tariff_band`). Pour un contrat HP/HC simple (une tranche HC et une tranche HP), donnée par les heures creuses du contrat, à l'heure de Paris : juste dès le démarrage, même quand la maison consomme peu sur le réseau (batterie, panneaux solaires). Pour Tempo et les offres dont la tranche dépend du jour (week-end, jours spéciaux), déduite du compteur qui augmente : connue avec quelques minutes de retard au changement de période, davantage si la consommation du réseau est faible. Elle suit la catégorie de la tranche en cours : une tranche comptée ni en HC ni en HP (Heures Weekend d'une offre week-end) ne donne pas de période, l'état est inconnu et le cadran affiche le nom de la tranche. Pour compter le week-end en heures creuses, choisissez la catégorie HC pour cette tranche dans les options |
 | Surplus de Production | kWh | case Production | Énergie injectée depuis minuit |
 | Température Intérieure, Extérieure | °C | case Température et humidité | Mesures de la sonde ecojoko ; l'extérieure vient de la météo de votre commune |
 | Humidité Intérieure, Extérieure | % | case Température et humidité | Idem |
@@ -49,7 +49,7 @@ Toujours créés, ou selon les cases de la 1.2.8.
 | Économies Cumulées | € | Depuis le début, négatives en cas de surconsommation |
 | Puissance Max du Mois, de l'Année, Depuis le Début | W | |
 
-Lus toutes les dix minutes, à part des autres capteurs : ecojoko calcule ces valeurs lentement. Une panne de cette lecture ne touche jamais le temps réel, et les dernières valeurs sont gardées une heure.
+Lus toutes les demi-heures, à part des autres capteurs : ecojoko calcule ces valeurs lentement et ne les change que quelques fois par heure et à minuit. Une panne de cette lecture ne touche jamais le temps réel, et les dernières valeurs sont gardées une heure.
 
 ### Économies
 
@@ -62,13 +62,30 @@ Lus toutes les dix minutes, à part des autres capteurs : ecojoko calcule ces va
 
 Lus toutes les demi-heures, comme l'activité.
 
+
+#### La référence des économies
+
+Les économies comparent votre consommation à une consommation de référence. Par défaut, c'est celle de l'application ecojoko : un mois de référence choisi dans son profil (ou un mois personnalisé), complété l'hiver d'une part qui dépend de la température. Dans le dernier écran des options, « Consommation de référence des économies » propose aussi **la même période de l'année précédente**, de deux façons :
+
+- **à prix égal** : l'énergie de l'année précédente est comptée aux prix d'aujourd'hui (saisis ou d'ecojoko), par tranche. L'économie mesure un changement d'habitudes, pas une hausse ou une baisse des tarifs. Après un changement de contrat (Tempo l'an dernier, HP/HC aujourd'hui), une tranche de l'ancien contrat prend le prix d'aujourd'hui de sa catégorie : HP Bleu le prix HP, HC Rouge le prix HC ;
+- **aux prix payés** : l'énergie de l'année précédente garde le coût calculé alors par ecojoko, par tranche. L'économie compare ce que l'énergie a coûté : à consommation égale, une offre moins chère est une économie et une hausse des tarifs une surconsommation. La part du coût qui n'est pas de l'énergie (l'abonnement) reste celle d'aujourd'hui.
+
+Dans les deux cas :
+
+
+- chaque jour est comparé au même jour de la semaine 52 semaines plus tôt, chaque semaine à la même semaine, chaque mois au même mois, les 12 derniers mois aux 12 mois d'avant, et l'écart sur 7 jours (aiguille du cadran) aux mêmes 7 jours de l'année précédente. La période en cours s'arrête l'année précédente au même jour et à la même heure : le 22 novembre à 8 h, le mois de novembre est comparé au 1er novembre de l'an dernier jusqu'au 22 à 8 h ;
+- il faut plus d'un an d'historique chez ecojoko : une période sans données l'année précédente garde la référence d'ecojoko. Le service `get_savings` le dit dans `reference_source` (`last_year`, `ecojoko` ou `mixed`) ;
+- seuls les jours relevés les deux années sont comparés : un jour sans aucun relevé (assistant débranché ou parti en réparation) ne compte ni dans la consommation ni dans la référence, et un jour relevé cette année mais pas l'an dernier compte sans économie. Un mois sans aucun relevé n'a pas d'économie. Le service `get_savings` donne le nombre de jours laissés hors de la comparaison (`unmeasured_days`), la carte Économies en détail l'affiche, et le résumé sur 12 mois le donne en attribut ;
+- l'année précédente garde sa propre météo : un hiver plus froid que le précédent paraît une surconsommation.
+
 ### Contrat
 
 | Capteur | Description |
 |---|---|
-| Contrat (diagnostic) | Nom de l'offre ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches configurées, chacune avec le prix d'un kWh (`price`) et son origine (`price_exact`), et le prix de rachat d'un kWh du surplus solaire (`resale_price`) quand le surplus est revendu |
+| Contrat (diagnostic) | Nom de l'offre ; en attribut, le fournisseur, le type d'offre, la puissance souscrite (kVA), l'abonnement mensuel, la date de début, les plages d'heures creuses et les tranches configurées, chacune avec le prix d'un kWh (`price`), s'il est exact (`price_exact`) et son origine (`price_source` : `entered` saisi dans les options, `ecojoko` ou `estimated`), la période des prix saisis (`entered_prices`) quand ils s'appliquent, et le prix de rachat d'un kWh du surplus solaire (`resale_price`) quand le surplus est revendu |
+| Prix du kWh en cours | Le prix d'un kWh de la tranche en cours (€/kWh) : celui saisi dans les options, sinon celui d'ecojoko, sinon estimé ; inconnu tant que la tranche en cours ne l'est pas. Dans le tableau Énergie (Paramètres › Tableaux de bord › Énergie), choisissez-le comme prix de chaque consommation réseau (« Utiliser une entité avec le prix actuel ») : les coûts suivent alors les prix de votre contrat |
 
-Le prix d'un kWh est celui d'ecojoko quand il le connaît : avec un chauffe-eau piloté, et pas pour toutes les offres. Sinon il est estimé d'après les coûts quotidiens que calcule ecojoko sur deux semaines, part de l'abonnement écartée, au dixième de centime près.
+Le prix d'un kWh est celui que vous avez saisi dans les options pendant sa période de validité ([voir comment](installation.md#les-prix-de-votre-contrat)), sinon celui d'ecojoko quand il le connaît : avec un chauffe-eau piloté, et pas pour toutes les offres. Sinon il est estimé d'après les coûts quotidiens que calcule ecojoko sur les deux dernières semaines, jours complets seulement (pas la journée en cours), part de l'abonnement écartée, au dixième de centime près.
 
 ### Équipements pilotés
 
@@ -89,7 +106,7 @@ Les équipements non pilotés (capteur d'électricité, sonde…) n'ont pas d'ap
 
 <img src="images/ha/appareil-ecojoko-diagnostic.png" alt="Diagnostics de l'appareil Ecojoko" width="420">
 
-L'état et les mesures d'un équipement piloté sont lus toutes les deux minutes, juste après une commande, et dix secondes après la fin prévue d'un forçage ou d'une absence. L'intégration ne connaît pas les types d'équipements à l'avance : elle lit les commandes qu'ecojoko reconnaît à chacun, si bien qu'un équipement d'un type inconnu est pris en charge dès qu'il accepte les commandes de pilotage. Un équipement ajouté dans ecojoko apparaît après un rechargement de l'intégration ; l'appareil d'un équipement retiré est supprimé au démarrage suivant.
+L'état d'un équipement piloté est lu toutes les deux minutes, juste après une commande, et dix secondes après la fin prévue d'un forçage ou d'une absence. Ses mesures du jour sont lues moins souvent : sa courbe de puissance, son énergie et son coût toutes les six minutes, ses changements d'état toutes les dix minutes, et les deux juste après une commande ou la fin d'un forçage. L'intégration ne connaît pas les types d'équipements à l'avance : elle lit les commandes qu'ecojoko reconnaît à chacun, si bien qu'un équipement d'un type inconnu est pris en charge dès qu'il accepte les commandes de pilotage. Un équipement ajouté dans ecojoko apparaît après un rechargement de l'intégration ; l'appareil d'un équipement retiré est supprimé au démarrage suivant.
 
 ### Analyse de la conso et Mesures
 
@@ -148,6 +165,8 @@ Les services renvoient une réponse : appelez-les depuis un script ou une automa
 | `little_monkey.get_equipments` | Équipements pilotés | Équipements de l'installation, leur état, leurs diagnostics, leurs entités et les mesures du jour des équipements pilotés ; immédiat, sans interroger ecojoko |
 | `little_monkey.set_equipment_mode` | Équipements pilotés | Pilote un équipement ([voir plus haut](#le-pilotage-des-équipements)) |
 
+Les réponses des services de lecture sont gardées un moment et partagées entre les cartes, les navigateurs et les automatisations : une même demande ne relit pas ecojoko, et des demandes identiques simultanées n'en font qu'une. Une période qui peut encore changer (la période en cours, ou une période terminée la veille, qu'ecojoko complète après minuit) est gardée 4 minutes pour les mesures et les économies, 30 minutes pour les activations, une heure pour l'analyse et l'historique d'un poste ; une période plus ancienne, une journée. Un échec n'est pas gardé. Les diagnostics en donnent le nombre (`client › service_cache`).
+
 Sans son option, un service de lecture répond `enabled: false` sans rien lire chez ecojoko. Pour le mois, `get_measures` donne le mois calendaire qui contient la date. Pour une date antérieure aux premières mesures, ecojoko répond avec sa première période : `start` indique la période réellement renvoyée, et `previous` est vide quand il n'y a rien avant. La semaine en cours est demandée à un autre jour de la même semaine : à la date du jour, que l'intégration interroge en continu, ecojoko répond sans la période ni ses totaux. S'il arrive malgré tout qu'ecojoko réponde sans les dates de la période : `start`, `previous` et `next` sont alors absents, et les totaux de la semaine, du mois ou de l'année sont la somme de ses barres.
 
 ```yaml
@@ -167,8 +186,9 @@ Sans son option, un service de lecture répond `enabled: false` sans rien lire c
 > [!IMPORTANT]
 > Little Monkey est une intégration **non officielle**. Elle dépend des API d'ecojoko<sup>©️</sup>, qui ne sont pas documentées et peuvent changer ou être indisponibles.
 
-- **Temps réel** : lu à la fréquence choisie (3 à 60 secondes). ecojoko ne sert des données en direct que pendant dix minutes après la lecture de la liste de ses passerelles ; l'intégration la relit toutes les cinq minutes.
-- **Énergie du jour** : les compteurs ne diminuent jamais au cours d'une journée, même si ecojoko renvoie un instant une valeur plus basse ; ils repartent de zéro à minuit. Quand ecojoko reclasse après coup de l'énergie d'une tranche dans une autre (des heures creuses vers les heures pleines, par exemple), elle n'est comptée qu'une fois : la somme des totaux HC et HP, comme celle des tranches, ne dépasse jamais la consommation réseau du jour.
+- **Temps réel** : lu à la fréquence choisie (5 à 60 secondes). ecojoko ne sert des données en direct que pendant dix minutes après la lecture de la liste de ses passerelles ; l'intégration la relit toutes les cinq minutes.
+- **Énergie du jour, température et humidité** : lues à part du temps réel, quelle que soit la fréquence choisie : l'énergie du jour toutes les minutes, la température et l'humidité toutes les deux minutes, au rythme où ecojoko les met à jour.
+- **Compteurs d'énergie** : les compteurs ne diminuent jamais au cours d'une journée, même si ecojoko renvoie un instant une valeur plus basse ; ils repartent de zéro à minuit. Quand ecojoko reclasse après coup de l'énergie d'une tranche dans une autre (des heures creuses vers les heures pleines, par exemple), elle n'est comptée qu'une fois : la somme des totaux HC et HP, comme celle des tranches, ne dépasse jamais la consommation réseau du jour.
 - **Coupures** : une coupure de moins de deux minutes conserve les dernières valeurs ; au-delà, les capteurs passent à « indisponible ». Les données lues à part (activité, économies, équipements) gardent leurs dernières valeurs une heure.
 - **Liste des équipements** : ecojoko ne la met à jour que toutes les cinq minutes ; l'état d'un équipement piloté est lu directement, plus souvent.
-- **Diagnostics** : téléchargeables depuis la page de l'intégration, sans vos identifiants ni le nom de l'installation.
+- **Diagnostics** : téléchargeables depuis la page de l'intégration, sans vos identifiants ni le nom de l'installation. La partie `client › requests` compte, pour chaque API d'ecojoko depuis le dernier démarrage, les requêtes du sondage (`poll`) et des services appelés par les cartes ou les automatisations (`service`), leur nombre moyen par heure, les secondes entre les dernières requêtes (`seconds_between_requests`, juste dès la deuxième requête, contrairement à la moyenne), et combien de réponses ont changé ou non depuis la requête précédente à la même adresse, avec les secondes entre les derniers changements. Pour `powerstat`, la partie `values` fait le même décompte sur les seules valeurs qu'utilisent les capteurs : énergie, surplus et énergie de chaque tranche, arrondis comme dans les capteurs.

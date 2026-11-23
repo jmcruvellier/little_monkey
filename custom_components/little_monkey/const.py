@@ -6,12 +6,15 @@ LOGGER: Logger = getLogger(__package__)
 DOMAIN = "little_monkey"
 MANUFACTURER = "Jean-Marc Cruvellier"
 MODEL = "Ecojoko"
-VERSION = "2.0.0b2"
+VERSION = "2.0.0"
 ATTRIBUTION = "Data provided by https://service.ecojoko.com/"
 POLL_INTERVAL = "poll_interval"
 # ecojoko refreshes the realtime of the integration every 30 s: a shorter
 # interval reads the same value again and loads its servers
 DEFAULT_POLL_INTERVAL = 30
+# Shortest interval allowed in the options: ecojoko changes the realtime
+# value every 5 to 10 s at best, a third of the readings at 5 s are the same
+MIN_POLL_INTERVAL = 5
 
 PLATFORMS = ['sensor', 'select', 'binary_sensor']
 CONF_USE_HCHP_FEATURE = "use_hchp_feature"
@@ -49,6 +52,21 @@ CONF_TARIFF_BANDS = "tariff_bands"
 # Ids of the bands removed by the user while ecojoko still gives them: they
 # are neither proposed again nor reported as missing (previous contract...)
 CONF_REMOVED_BANDS = "removed_bands"
+# Prices of the contract entered by the user, when ecojoko does not know them
+# (a discount for new customers, for instance): whether they are entered,
+# and {"prices": {band id as text: euros per kWh}, "subscription": euros per
+# month or None, "start": ISO date or None, "end": ISO date or None}
+CONF_USE_CONTRACT_PRICES = "use_contract_prices"
+CONF_CONTRACT_PRICES = "contract_prices"
+CONF_SUBSCRIPTION_PRICE = "subscription_price"
+CONF_PRICES_START = "prices_start"
+CONF_PRICES_END = "prices_end"
+# Reference consumption of the savings: the one chosen in the ecojoko
+# application, or the same period of the year before
+CONF_REFERENCE = "reference"
+REFERENCE_ECOJOKO = "ecojoko"
+REFERENCE_LAST_YEAR = "last_year"
+REFERENCE_LAST_YEAR_PAID = "last_year_paid"
 
 # Values of the current tariff period sensor, by tariff option
 HCHP_PERIODS = ["hc", "hp"]
@@ -81,7 +99,17 @@ def tariff_periods(data):
 
 # APIs
 CONF_API_TIMEOUT = 3
-CONF_API_STAT_REFRESH = 30
+# Seconds between two readings of each statistic, apart from the poll
+# interval. Measured over an hour on two installations (11/2026): ecojoko
+# updates the energies of the day about every minute, the temperature and
+# the humidity about every two minutes
+CONF_API_STAT_REFRESH = {"powerstat": 60, "tempstat": 120, "humstat": 120}
+# A statistic is read at the first poll that comes this close to its delay,
+# at most half the poll interval: the polls do not fall exactly on it
+CONF_API_STAT_MARGIN = 5
+# With a short poll interval, the statistics due together are spread over
+# this many seconds, one per poll; with a longer one, they are read together
+CONF_API_STAT_SPREAD = 30
 # Timeout of the statistics APIs, read in the background: ecojoko often
 # takes more than CONF_API_TIMEOUT to answer them with a short poll
 # interval. Shorter than CONF_API_STAT_REFRESH, so that a statistic is not
@@ -102,17 +130,23 @@ CONF_API_CONTRACT_REFRESH = 6 * 3600
 CONF_API_CONTRACT_RETRY = 600
 
 # Activity of the account (savings over 7 days...): ecojoko computes it
-# slowly, its web application waits 30 seconds for it and asks for it at most
-# every ten minutes. Its last values are kept during an hour of failures
+# slowly, and its web application waits 30 seconds for it. It changes a few
+# times an hour and at midnight: it is read every half hour. Its last values
+# are kept during an hour of failures
 CONF_API_ACTIVITY_TIMEOUT = 30
-CONF_API_ACTIVITY_REFRESH = 600
+CONF_API_ACTIVITY_REFRESH = 1800
 CONF_API_ACTIVITY_GRACE = 3600
 # Savings of the account (12 months, current week, month and year): read
 # like the activity, with its timeout and its grace, every half hour
 CONF_API_SAVINGS_REFRESH = 1800
-# Piloted equipments (water heater...): their state and the measures of the
-# day are read every two minutes, with the timeout and grace of the activity
+# Piloted equipments (water heater...): their state is read every two
+# minutes, with the timeout and grace of the activity. Their power curve of
+# the day is read every third time, their changes of state of the day every
+# fifth time: they never changed in an hour (11/2026). Both are read again
+# after a command and at the end of a forced mode or of an absence
 CONF_API_EQUIPMENT_REFRESH = 120
+CONF_API_EQUIPMENT_POWER_REFRESH = 360
+CONF_API_EQUIPMENT_SWITCHES_REFRESH = 600
 
 # URLs
 ECOJOKO_LOGIN_URL = "https://service.ecojoko.com/login"

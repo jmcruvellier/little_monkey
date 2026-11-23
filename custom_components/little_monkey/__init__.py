@@ -21,6 +21,7 @@ from .api import LittleMonkeyApiClient
 from .card import async_register_card
 from .const import (
     DEFAULT_POLL_INTERVAL,
+    MIN_POLL_INTERVAL,
     DOMAIN,
     MANUFACTURER,
     MODEL,
@@ -32,6 +33,9 @@ from .const import (
     CONF_USE_TEMPO_FEATURE,
     CONF_USE_TEMPHUM_FEATURE,
     CONF_USE_PROD_FEATURE,
+    CONF_CONTRACT_PRICES,
+    CONF_REFERENCE,
+    REFERENCE_ECOJOKO,
     CONF_REMOVED_BANDS,
     CONF_TARIFF_BANDS,
     CONF_USE_ACTIVITY_FEATURE,
@@ -54,7 +58,7 @@ from .utils import account_unique_id
 
 # Version of the config entries, see EcojokoFlowHandler.VERSION
 ENTRY_VERSION = 3
-ENTRY_MINOR_VERSION = 2
+ENTRY_MINOR_VERSION = 3
 
 # Configured from the user interface only
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
@@ -82,6 +86,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             use_hchp=entry.data.get(CONF_USE_HCHP_FEATURE, False),
             bands=entry.data.get(CONF_TARIFF_BANDS),
             removed_bands=entry.data.get(CONF_REMOVED_BANDS),
+            contract_prices=entry.data.get(CONF_CONTRACT_PRICES),
+            reference=entry.data.get(CONF_REFERENCE, REFERENCE_ECOJOKO),
             use_temphum=entry.data.get(CONF_USE_TEMPHUM_FEATURE, False),
             use_prod=entry.data.get(CONF_USE_PROD_FEATURE, False),
             # A session of its own, with its own cookies: the ecojoko session
@@ -247,16 +253,23 @@ async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             data.get(CONF_USE_HCHP_FEATURE) is True, use_tempo)
         hass.config_entries.async_update_entry(entry, data=data, version=3)
         LOGGER.info("Config entry %s migrated to version 3", entry.title)
-    if entry.version == ENTRY_VERSION and entry.minor_version < ENTRY_MINOR_VERSION:
+    if entry.version == ENTRY_VERSION and entry.minor_version < 2:
         # ecojoko refreshes the realtime of the integration every 30 s: the
         # shorter intervals, 5 s by default until 2.0.0b1, are raised to it.
         # Longer ones chosen by the user are kept
         data = dict(entry.data)
         if data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL) < DEFAULT_POLL_INTERVAL:
             data[POLL_INTERVAL] = DEFAULT_POLL_INTERVAL
-        hass.config_entries.async_update_entry(
-            entry, data=data, minor_version=ENTRY_MINOR_VERSION)
+        hass.config_entries.async_update_entry(entry, data=data, minor_version=2)
         LOGGER.info("Config entry %s migrated to version 3.2", entry.title)
+    if entry.version == ENTRY_VERSION and entry.minor_version < 3:
+        # The options no longer allow less than MIN_POLL_INTERVAL: a shorter
+        # interval chosen since 2.0.0b2 is raised to it
+        data = dict(entry.data)
+        if data.get(POLL_INTERVAL, DEFAULT_POLL_INTERVAL) < MIN_POLL_INTERVAL:
+            data[POLL_INTERVAL] = MIN_POLL_INTERVAL
+        hass.config_entries.async_update_entry(entry, data=data, minor_version=3)
+        LOGGER.info("Config entry %s migrated to version 3.3", entry.title)
     return True
 
 

@@ -1,6 +1,8 @@
 """Services of little_monkey."""
 from __future__ import annotations
 
+import calendar
+import datetime as dt
 from functools import partial
 
 import voluptuous as vol
@@ -24,6 +26,7 @@ from .api import (
     EQUIPMENT_DURATIONS,
     MEASURE_PERIODS,
     MEASURES,
+    REQUEST_SOURCE,
     SAVINGS_PERIODS,
     LittleMonkeyApiClientError,
     TZ,
@@ -116,23 +119,70 @@ def _loaded_entry(hass: HomeAssistant, entry_id: str | None):
     )
 
 
-async def _async_read(hass: HomeAssistant, call: ServiceCall, read, option=None):
+# Seconds an answer of a service is kept, shared by the cards, the browsers
+# and the automations: for a period that may still change (the current one,
+# or one that ended yesterday, which ecojoko completes after midnight), by
+# service, and for an older period. Measured over an hour (11/2026): the
+# activations and the analysis did not change. The measures of the current
+# period are kept less than the five minutes between two readings of the
+# card, which always gets fresh ones
+CACHE_RECENT = {
+    "measures": 240, "savings": 240, "history": 3600, "analysis": 3600,
+    "activations": 1800,
+}
+CACHE_PAST = 24 * 3600
+
+
+def period_end(period: str, day: dt.date) -> dt.date:
+    """Return the last day of the day, week, month or year holding a day."""
+    if period == "week":
+        return day + dt.timedelta(days=6 - day.weekday())
+    if period == "month":
+        return day.replace(day=calendar.monthrange(day.year, day.month)[1])
+    if period == "year":
+        return day.replace(month=12, day=31)
+    return day
+
+
+def cache_seconds(kind: str, period: str, day: dt.date | None) -> int:
+    """Return how long the answer of a service for a period is kept.
+
+    Without a day, the latest period: it may still change.
+    """
+    yesterday = get_current_date(TZ) - dt.timedelta(days=1)
+    if day is not None and period_end(period, day) < yesterday:
+        return CACHE_PAST
+    return CACHE_RECENT[kind]
+
+
+async def _async_read(
+    hass: HomeAssistant, call: ServiceCall, read, option=None, cache=None
+):
     """Read data from ecojoko for a service, with the client of the entry.
 
     Without the option of the service, nothing is read: the answer is
-    {"enabled": false}, and the card asks to turn the option on.
+    {"enabled": false}, and the card asks to turn the option on. With
+    `cache` (key, seconds), the answer is shared during that time.
     """
     entry = _loaded_entry(hass, call.data.get(ATTR_CONFIG_ENTRY_ID))
     if option is not None and not option_enabled(entry, option):
         return {"enabled": False}
+    # Counted apart from the polls in the diagnostics
+    token = REQUEST_SOURCE.set("service")
+    client = entry.runtime_data.client
     try:
-        return await read(entry.runtime_data.client)
+        if cache is None:
+            return await read(client)
+        key, seconds = cache
+        return await client.async_cached(key, seconds, partial(read, client))
     except LittleMonkeyApiClientError as exception:
         raise HomeAssistantError(
             translation_domain=DOMAIN,
             translation_key="data_not_read",
             translation_placeholders={"error": str(exception)},
         ) from exception
+    finally:
+        REQUEST_SOURCE.reset(token)
 
 
 async def _async_get_savings(hass: HomeAssistant, call: ServiceCall) -> ServiceResponse:
@@ -146,7 +196,8 @@ async def _async_get_savings(hass: HomeAssistant, call: ServiceCall) -> ServiceR
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
     savings = await _async_read(
         hass, call, lambda client: client.async_get_savings_period(period, day),
-        CONF_USE_SAVINGS_FEATURE)
+        CONF_USE_SAVINGS_FEATURE,
+        (("savings", period, day), cache_seconds("savings", period, day)))
     return {"period": period, "date": day.isoformat(), **savings}
 
 
@@ -163,7 +214,8 @@ async def _async_get_consumption_analysis(
     day = call.data.get(ATTR_DATE)
     analysis = await _async_read(
         hass, call, lambda client: client.async_get_analysis(period, day),
-        CONF_USE_ANALYSIS_FEATURE)
+        CONF_USE_ANALYSIS_FEATURE,
+        (("analysis", period, day), cache_seconds("analysis", period, day)))
     return {"period": period, **analysis}
 
 
@@ -175,7 +227,8 @@ async def _async_get_category_history(
     day = call.data.get(ATTR_DATE) or get_current_date(TZ)
     return await _async_read(
         hass, call, lambda client: client.async_get_category_history(category, day),
-        CONF_USE_ANALYSIS_FEATURE)
+        CONF_USE_ANALYSIS_FEATURE,
+        (("history", category, day), cache_seconds("history", "week", day)))
 
 
 async def _async_get_measures(hass: HomeAssistant, call: ServiceCall) -> ServiceResponse:
@@ -197,7 +250,8 @@ async def _async_get_measures(hass: HomeAssistant, call: ServiceCall) -> Service
         return {"enabled": option_enabled(entry, CONF_USE_MEASURES_FEATURE)}
     measures = await _async_read(
         hass, call, lambda client: client.async_get_measures(measure, period, day),
-        CONF_USE_MEASURES_FEATURE)
+        CONF_USE_MEASURES_FEATURE,
+        (("measures", measure, period, day), cache_seconds("measures", period, day)))
     return {"measure": measure, "period": period, "date": day.isoformat(), **measures}
 
 
@@ -211,7 +265,8 @@ async def _async_get_activations(
     page = call.data[ATTR_PAGE]
     activations = await _async_read(
         hass, call, lambda client: client.async_get_activations(page),
-        CONF_USE_ANALYSIS_FEATURE)
+        CONF_USE_ANALYSIS_FEATURE,
+        (("activations", page), CACHE_RECENT["activations"]))
     return {"page": page, **activations}
 
 

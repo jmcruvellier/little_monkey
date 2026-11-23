@@ -39,6 +39,7 @@ from custom_components.little_monkey import (
     coordinator as lm_coordinator,
     repairs,
     select as lm_select,
+    services as lm_services,
 )
 from custom_components.little_monkey.entity import device_entry_ids, registry_device
 from custom_components.little_monkey.diagnostics import (
@@ -81,6 +82,7 @@ DATA = {
     "use_temphum_feature": True,
     "use_prod_feature": False,
     **GROUPS,
+    "reference": "ecojoko",
     "poll_interval": 5,
     "tariff_bands": HCHP_BANDS,
 }
@@ -159,7 +161,7 @@ CREATE_ENTRY = data_entry_flow.FlowResultType.CREATE_ENTRY
 def add_entry(hass, **kwargs):
     """Add a config entry of the current version to Home Assistant."""
     entry = MockConfigEntry(
-        **{"domain": DOMAIN, "title": "user", "version": 3, "minor_version": 2, "data": DATA,
+        **{"domain": DOMAIN, "title": "user", "version": 3, "minor_version": 3, "data": DATA,
            **kwargs}
     )
     entry.add_to_hass(hass)
@@ -246,7 +248,7 @@ async def test_migration_from_1_2_7(hass, fake_api):
 
     assert entry.state is ConfigEntryState.LOADED
     assert entry.version == 3
-    assert entry.minor_version == 2
+    assert entry.minor_version == 3
     assert entry.data["poll_interval"] == 30
     assert "lang" not in entry.data
     assert "use_tempo_feature" not in entry.data
@@ -305,9 +307,28 @@ async def test_migration_raises_the_poll_interval(hass, fake_api, configured, mi
     assert await setup_entry(hass, entry)
 
     assert entry.state is ConfigEntryState.LOADED
-    assert (entry.version, entry.minor_version) == (3, 2)
+    assert (entry.version, entry.minor_version) == (3, 3)
     assert entry.data.get("poll_interval") == migrated
     assert entry.data["tariff_bands"] == HCHP_BANDS
+
+
+@pytest.mark.parametrize(
+    ("configured", "migrated"), [(3, 5), (4, 5), (5, 5), (10, 10), (None, None), (30, 30)]
+)
+async def test_migration_raises_the_poll_interval_to_the_minimum(
+    hass, fake_api, configured, migrated
+):
+    """Intervals under 5 s chosen since 2.0.0b2 are raised to the new minimum."""
+    data = {key: value for key, value in DATA.items() if key != "poll_interval"}
+    if configured is not None:
+        data["poll_interval"] = configured
+    entry = add_entry(hass, minor_version=2, data=data)
+
+    assert await setup_entry(hass, entry)
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert (entry.version, entry.minor_version) == (3, 3)
+    assert entry.data.get("poll_interval") == migrated
 
 
 async def test_device_left_by_a_renaming_can_be_removed(hass, fake_api):
@@ -351,7 +372,8 @@ async def test_new_install_entities(hass, fake_api):
 
     entity_registry = er.async_get(hass)
     entities = er.async_entries_for_config_entry(entity_registry, entry.entry_id)
-    keys = [*ENABLED, "current_tariff_period", "contract", *ACTIVITY_KEYS, *SAVINGS_KEYS]
+    keys = [*ENABLED, "current_tariff_period", "contract", "current_price",
+            *ACTIVITY_KEYS, *SAVINGS_KEYS]
     expected = [entry.entry_id, *[f"{entry.entry_id}_{key}" for key in keys]]
     assert sorted(e.unique_id for e in entities) == sorted(expected)
 
@@ -1008,6 +1030,7 @@ async def test_setup_of_a_weekend_contract(hass, fake_api):
     assert result["step_id"] == "bands"
     assert schema_defaults(result) == {
         "use_hchp_feature": True,
+        "use_contract_prices": False,
         "HP Semaine": "HP Semaine",
         "HP Semaine – HC/HP": "hp",
         "HC Semaine": "HC Semaine",
@@ -1281,7 +1304,11 @@ def period_entity(hass, entry):
 
 
 async def test_tariff_period_follows_the_counter_that_increases(hass, fake_api):
-    """With the HC/HP option, the period is the one whose counter increased."""
+    """With the HC/HP option, the period is the one whose counter increased.
+
+    Without the off-peak hours of the contract: they would tell it at once.
+    """
+    fake_api.values["_contract"] = {**fake_api.values["_contract"], "off_peak_timeslots": []}
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     entity_id = period_entity(hass, entry)
@@ -1301,6 +1328,31 @@ async def test_tariff_period_follows_the_counter_that_increases(hass, fake_api):
     fake_api.values["_kwh_hc_ns"] = 1.6
     await refresh(hass, entry)
     assert hass.states.get(entity_id).state == "hc"
+
+
+async def test_tariff_period_from_the_off_peak_hours(hass, fake_api, monkeypatch):
+    """A simple HC/HP contract tells its period by its off-peak hours, at once.
+
+    With a battery, the counters may not gain a hundredth of kWh for hours:
+    the period restored at the start stayed (HC at 18:44).
+    """
+    paris = dt_util.get_time_zone("Europe/Paris")
+    now = {"time": dt.datetime(2026, 11, 23, 18, 44, tzinfo=paris)}
+    monkeypatch.setattr(lm_coordinator, "paris_now", lambda: now["time"])
+    entity_id = "sensor.ecojoko_current_tariff_period"
+    mock_restore_cache_with_extra_data(
+        hass, ((State(entity_id, "hc"), {"native_value": "hc"}),))
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    # Off-peak hours 01:30-07:00 and 14:00-16:30: 18:44 is in the peak hours
+    state = hass.states.get(entity_id)
+    assert state.state == "hp"
+    assert state.attributes["tariff_band"] == "Heures Pleines"
+    now["time"] = dt.datetime(2026, 11, 23, 14, 30, tzinfo=paris)
+    await refresh(hass, entry)
+    state = hass.states.get(entity_id)
+    assert state.state == "hc"
+    assert state.attributes["tariff_band"] == "Heures Creuses"
 
 
 async def test_tariff_period_with_tempo(hass, fake_api):
@@ -1329,6 +1381,36 @@ async def test_tariff_period_with_tempo(hass, fake_api):
     assert hass.states.get(entity_id).state == "hp_red"
 
 
+async def test_tariff_period_of_a_band_in_neither_total(hass, fake_api):
+    """A week-end band in neither total gives no HC/HP period, but its name (#244).
+
+    Its counter alone increases: the period followed the HC/HP totals and
+    stayed the one of the Friday.
+    """
+    bands = [
+        {"id": 8, "label": "HP Semaine", "key": "band_8", "name": None, "category": "hp"},
+        {"id": 9, "label": "HC Semaine", "key": "band_9", "name": None, "category": "hc"},
+        {"id": 13, "label": "Heures Weekend", "key": "band_13", "name": None,
+         "category": None},
+    ]
+    fake_api.values["_band_values"] = {"band_8": 0, "band_9": 0, "band_13": 0}
+    entry = add_entry(hass, data={**DATA, "tariff_bands": bands})
+    assert await setup_entry(hass, entry)
+    entity_id = period_entity(hass, entry)
+
+    fake_api.values["_band_values"] = {"band_8": 1.0, "band_9": 0, "band_13": 0}
+    fake_api.values["_kwh_hp_ns"] = 1.0
+    await refresh(hass, entry)
+    assert hass.states.get(entity_id).state == "hp"
+
+    # The week-end: only its band increases
+    fake_api.values["_band_values"] = {"band_8": 1.0, "band_9": 0, "band_13": 0.5}
+    await refresh(hass, entry)
+    state = hass.states.get(entity_id)
+    assert state.state == "unknown"
+    assert state.attributes["tariff_band"] == "Heures Weekend"
+
+
 async def test_no_tariff_period_without_option(hass, fake_api):
     """Without the HC/HP nor the Tempo option, the sensor is not created."""
     entry = add_entry(hass, data={**DATA, "use_hchp_feature": False})
@@ -1338,6 +1420,7 @@ async def test_no_tariff_period_without_option(hass, fake_api):
 
 async def test_tariff_period_is_restored_after_a_restart(hass, fake_api):
     """The last period is shown until the counters tell the current one."""
+    fake_api.values["_contract"] = {**fake_api.values["_contract"], "off_peak_timeslots": []}
     entity_id = "sensor.ecojoko_current_tariff_period"
     mock_restore_cache_with_extra_data(
         hass, ((State(entity_id, "hc"), {"native_value": "hc"}),))
@@ -1557,7 +1640,8 @@ async def test_analysis_services(hass, fake_api):
 
     fake_api.savings_error = lm_api.LittleMonkeyApiClientCommunicationError("slow")
     with pytest.raises(HomeAssistantError):
-        await call_service(hass, "get_consumption_analysis", period="week")
+        # A period not read yet: the week is kept from above
+        await call_service(hass, "get_consumption_analysis", period="month")
     with pytest.raises(vol.Invalid):
         await call_service(hass, "get_activations", page=-1)
     # ecojoko does not analyse years: it would give the current week
@@ -1640,6 +1724,7 @@ async def test_tariff_band_of_a_special_day(hass, fake_api):
 
 async def test_tariff_band_unknown_at_first(hass, fake_api):
     """The band is unknown until a counter increases."""
+    fake_api.values["_contract"] = {**fake_api.values["_contract"], "off_peak_timeslots": []}
     entry = add_entry(hass)
     assert await setup_entry(hass, entry)
     state = hass.states.get(period_entity(hass, entry))
@@ -1901,6 +1986,47 @@ async def test_devices_of_equipments_no_longer_piloted_are_removed(hass, fake_ap
     assert registry_device(devices, (DOMAIN, entry.entry_id), entry.entry_id)
 
 
+async def test_measures_of_the_day_of_an_equipment_are_read_less_often(
+    hass, fake_api, monkeypatch
+):
+    """The power curve every third reading, the changes of state every fifth."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(
+        lm_coordinator, "time", types.SimpleNamespace(monotonic=lambda: clock["now"]))
+    fake_api.equipments = [copy.deepcopy(WATER_HEATER), TEMP_HUM_EQUIPMENT]
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    coordinator = entry.runtime_data.equipment
+    # The first reading takes the whole day
+    assert fake_api.day_reads == [("power", "switches")]
+
+    async def read_at(seconds):
+        clock["now"] = 1000.0 + seconds
+        await coordinator.async_refresh()
+        await hass.async_block_till_done()
+
+    reads = fake_api.equipment_reads
+    await read_at(120)
+    await read_at(240)
+    # The state is read every time, the measures of the day kept
+    assert fake_api.equipment_reads == reads + 2
+    assert fake_api.day_reads == [("power", "switches")]
+    assert coordinator.data["630220"]["day"]["energy"] == 0.97
+    assert coordinator.data["630220"]["day"]["switches"]
+    await read_at(360)
+    assert fake_api.day_reads[-1] == ("power",)
+    await read_at(480)
+    await read_at(600)
+    assert fake_api.day_reads[-1] == ("switches",)
+    assert len(fake_api.day_reads) == 3
+
+    # After a command, the whole day at once
+    device_id = heater_device(hass, entry).id
+    await hass.services.async_call(
+        DOMAIN, "set_equipment_mode", {"device_id": device_id, "mode": "auto"}, blocking=True)
+    assert fake_api.day_reads[-1] == ("power", "switches")
+
+
 async def test_equipment_is_read_again_at_the_end_of_a_forced_mode(hass, fake_api):
     """The end of a forced mode is seen at once, not at the next reading."""
     heater = copy.deepcopy(WATER_HEATER)
@@ -1938,6 +2064,115 @@ async def test_contract_sensor_gives_the_price_of_a_kwh(hass, fake_api):
     assert "id" not in bands["hc_grid_consumption"]
 
 
+async def test_options_enter_the_prices_of_the_contract(hass, fake_api):
+    """The prices entered replace ecojoko's in the contract, during their validity."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    defaults = schema_defaults(result)
+    assert defaults["use_contract_prices"] is False
+
+    async def configure(data):
+        return await hass.config_entries.options.async_configure(result["flow_id"], data)
+
+    result = await configure({**defaults, "use_contract_prices": True})
+    assert result["step_id"] == "prices"
+    assert set(schema_defaults(result)) == {
+        "Heures Pleines – €/kWh", "Heures Creuses – €/kWh",
+        "subscription_price", "prices_start", "prices_end"}
+    result = await configure({})
+    assert result["errors"] == {"base": "prices_required"}
+    prices = {"Heures Pleines – €/kWh": 0.180336, "Heures Creuses – €/kWh": 0.134736,
+              "subscription_price": 31.14, "prices_start": "2026-08-25"}
+    result = await configure({**prices, "prices_end": "2026-08-01"})
+    assert result["errors"] == {"prices_end": "prices_dates"}
+    result = await configure({**prices, "prices_end": "2099-06-30"})
+    assert result["step_id"] == "settings"
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert entry.data["contract_prices"] == {
+        "prices": {"2": 0.180336, "3": 0.134736}, "subscription": 31.14,
+        "start": "2026-08-25", "end": "2099-06-30"}
+
+    attributes = hass.states.get("sensor.ecojoko_contract").attributes
+    bands = {band["key"]: band for band in attributes["bands"]}
+    assert bands["hp_grid_consumption"]["price"] == 0.180336
+    assert bands["hp_grid_consumption"]["price_source"] == "entered"
+    assert attributes["entered_prices"] == {"start": "2026-08-25", "end": "2099-06-30"}
+
+    # Unchecked, ecojoko's prices apply again
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    assert schema_defaults(result)["use_contract_prices"] is True
+    result = await configure({**schema_defaults(result), "use_contract_prices": False})
+    assert result["step_id"] == "settings"
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert "contract_prices" not in entry.data
+    assert hass.states.get("sensor.ecojoko_contract").attributes["entered_prices"] is None
+
+
+async def test_price_of_a_kwh_now(hass, fake_api):
+    """The price of the current band, for the costs of the Energy dashboard."""
+    entry = add_entry(hass, data={**DATA, "contract_prices": {
+        "prices": {"2": 0.180336, "3": 0.134736}, "subscription": None, "start": None, "end": None}})
+    assert await setup_entry(hass, entry)
+    state = hass.states.get("sensor.ecojoko_current_price_per_kwh")
+    assert state is not None
+    assert state.attributes["unit_of_measurement"] == "EUR/kWh"
+    coordinator = entry.runtime_data
+    coordinator._current_band_key = "hc_grid_consumption"
+    assert coordinator._current_price(coordinator.data["band_prices"]) == 0.134736
+    coordinator._current_band_key = None
+    assert coordinator._current_price(coordinator.data["band_prices"]) is None
+
+
+async def test_answers_of_the_services_are_shared(hass, fake_api, monkeypatch):
+    """The same data asked again is read once, for the time it may not change."""
+    clock = {"now": 1000.0}
+    monkeypatch.setattr(lm_api, "time", types.SimpleNamespace(monotonic=lambda: clock["now"]))
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    calls = len(fake_api.analysis_calls)
+
+    for _ in range(2):
+        await call_service(hass, "get_activations")
+        await call_service(hass, "get_measures", measure="electricity", period="day")
+        await call_service(
+            hass, "get_measures", measure="electricity", period="month", date="2025-03-04")
+    assert len(fake_api.analysis_calls) == calls + 3
+
+    # The day is read again after four minutes, the activations after half an hour
+    clock["now"] += 240
+    await call_service(hass, "get_measures", measure="electricity", period="day")
+    await call_service(hass, "get_activations")
+    assert len(fake_api.analysis_calls) == calls + 4
+    clock["now"] += 1800
+    await call_service(hass, "get_activations")
+    await call_service(
+        hass, "get_measures", measure="electricity", period="month", date="2025-03-04")
+    # An old month is kept a day
+    assert len(fake_api.analysis_calls) == calls + 5
+    diagnostics = await async_get_config_entry_diagnostics(hass, entry)
+    assert diagnostics["client"]["service_cache"]["misses"] == 5
+
+
+def test_how_long_an_answer_is_kept():
+    """A period that may still change is kept a few minutes, an old one a day."""
+    today = dt_util.now().astimezone(dt_util.get_time_zone("Europe/Paris")).date()
+    seconds = lm_services.cache_seconds
+    assert seconds("measures", "day", today) == 240
+    assert seconds("measures", "day", today - dt.timedelta(days=1)) == 240
+    assert seconds("measures", "day", today - dt.timedelta(days=2)) == 24 * 3600
+    assert seconds("measures", "year", today) == 240
+    assert seconds("analysis", "week", None) == 3600
+    assert seconds("savings", "month", dt.date(2025, 3, 4)) == 24 * 3600
+    assert lm_services.period_end("week", dt.date(2026, 11, 18)) == dt.date(2026, 11, 22)
+    assert lm_services.period_end("month", dt.date(2024, 2, 10)) == dt.date(2024, 2, 29)
+    assert lm_services.period_end("year", dt.date(2026, 3, 4)) == dt.date(2026, 12, 31)
+
+
 async def test_measures_service(hass, fake_api):
     """The service gives the measures of a period, today by default."""
     entry = add_entry(hass)
@@ -1972,7 +2207,7 @@ async def test_groups_of_sensors_are_off_by_default(hass, fake_api):
     unique_ids = {
         entity.unique_id
         for entity in er.async_entries_for_config_entry(er.async_get(hass), entry.entry_id)}
-    for key in [*ACTIVITY_KEYS, *SAVINGS_KEYS, "contract"]:
+    for key in [*ACTIVITY_KEYS, *SAVINGS_KEYS, "contract", "current_price"]:
         assert f"{entry.entry_id}_{key}" not in unique_ids, key
     assert not [unique_id for unique_id in unique_ids if "_630220_" in unique_id or "_3_" in unique_id]
     assert hass.states.get("select.chauffe_eau_control") is None

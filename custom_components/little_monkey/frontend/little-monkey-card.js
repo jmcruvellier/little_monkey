@@ -1078,7 +1078,10 @@ class LittleMonkeyCard extends HTMLElement {
     }
     const power = numericState(hass, config.entity);
     const color = discColor(mode, tariff, power);
-    el.tariff.textContent = tariffLabel(this._language, mode, tariff);
+    // A current band in neither HC nor HP (Heures Weekend): its name
+    const band = mode === "hchp" && !tariff.period
+      ? hass.states[tariffEntity]?.attributes?.tariff_band : null;
+    el.tariff.textContent = tariffLabel(this._language, mode, tariff) || band || "";
     const powerTitle = power !== null && power < 0 ? text.injection_title : text.title;
     el.powerTitle.forEach((line, index) => {
       line.textContent = powerTitle[index];
