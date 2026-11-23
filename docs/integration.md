@@ -67,7 +67,7 @@ Lus toutes les demi-heures, comme l'activité.
 
 Les économies comparent votre consommation à une consommation de référence. Par défaut, c'est celle de l'application ecojoko : un mois de référence choisi dans son profil (ou un mois personnalisé), complété l'hiver d'une part qui dépend de la température. Dans le dernier écran des options, « Consommation de référence des économies » propose aussi **la même période de l'année précédente**, de deux façons :
 
-- **à prix égal** : l'énergie de l'année précédente est comptée aux prix d'aujourd'hui (saisis ou d'ecojoko), par tranche. L'économie mesure un changement d'habitudes, pas une hausse ou une baisse des tarifs ;
+- **à prix égal** : l'énergie de l'année précédente est comptée aux prix d'aujourd'hui (saisis ou d'ecojoko), par tranche. L'économie mesure un changement d'habitudes, pas une hausse ou une baisse des tarifs. Après un changement de contrat (Tempo l'an dernier, HP/HC aujourd'hui), une tranche de l'ancien contrat prend le prix d'aujourd'hui de sa catégorie : HP Bleu le prix HP, HC Rouge le prix HC ;
 - **aux prix payés** : l'énergie de l'année précédente garde le coût calculé alors par ecojoko, par tranche. L'économie compare ce que l'énergie a coûté : à consommation égale, une offre moins chère est une économie et une hausse des tarifs une surconsommation. La part du coût qui n'est pas de l'énergie (l'abonnement) reste celle d'aujourd'hui.
 
 Dans les deux cas :

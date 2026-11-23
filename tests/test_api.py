@@ -3058,3 +3058,25 @@ def test_off_peak_hours_of_the_contract(api):
     assert off_peak_at([], at(2026, 11, 23, 23, 0)) is None
     assert off_peak_at(None, at(2026, 11, 23, 23, 0)) is None
     assert off_peak_at([{"start": "x", "stop": "06:00"}, "y"], at(2026, 11, 23, 3, 0)) is None
+
+
+def test_reference_of_last_year_with_another_contract(api):
+    """The bands of last year's contract take today's price of their category.
+
+    Tempo last year, HC/HP now: HP Bleu at the HP price, HC Rouge at the HC
+    price, instead of nothing.
+    """
+    client = last_year_client(api)
+    client._configured_bands = [{"id": 2, "category": "hp"}, {"id": 3, "category": "hc"}]
+    kwh, cost = client._last_year_values(
+        3.0, {2: 5, 3: 5}, {18: 6, 22: 4, 19: 6, 23: 4}, dt.date(2026, 11, 2))
+    # 10 kWh HP at 0.2 and 10 kWh HC at 0.15 last year; 5 and 5 now
+    assert (kwh, cost) == (20, pytest.approx(3.0 + 3.5 - 1.75))
+    # A band of no known category: the average price of today's bands
+    _kwh, cost = client._last_year_values(3.0, {2: 5, 3: 5}, {99: 10}, dt.date(2026, 11, 2))
+    assert cost == pytest.approx(3.0 + 1.75 - 1.75)
+    tariff = tariff_module(api)
+    assert tariff.band_category(20) == "hp"
+    assert tariff.band_category(7) == "hc"
+    assert tariff.band_category(99, "HC Nuit") == "hc"
+    assert tariff.band_category(99) is None

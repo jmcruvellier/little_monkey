@@ -173,6 +173,22 @@ OFFER_BANDS = {
 }
 
 
+def band_category(band_id, label=None):
+    """Return the HC/HP category of a band, from its id or its label, or None.
+
+    For a band of another contract than the configured one (Tempo before
+    an HC/HP offer): the known bands and the bands of the known offers
+    tell it, else its label.
+    """
+    known = KNOWN_BANDS.get(band_id)
+    if known:
+        return known[1]
+    for bands in OFFER_BANDS.values():
+        if band_id in bands:
+            return category_of(bands[band_id])
+    return category_of(label) if label else None
+
+
 def band_key(band_id):
     """Return the key of the sensor of a band."""
     known = KNOWN_BANDS.get(band_id)

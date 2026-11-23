@@ -45,6 +45,7 @@ from .tariff import (
     TOTAL_BANDS,
     bands_of_offer,
     day_costs,
+    band_category,
     energies_of_points,
     entered_prices,
     price_gap,
@@ -1318,10 +1319,10 @@ class LittleMonkeyApiClient:
             if not reference_costs:
                 return None
             return kwh, cost + sum(reference_costs.values()) - sum(consumed_costs.values())
-        prices = self._reference_prices(day)
+        price_of = self._equal_price(self._reference_prices(day))
 
         def value(energies):
-            return sum(energy * prices.get(band_id, 0.0) for band_id, energy in energies.items())
+            return sum(energy * price_of(band_id) for band_id, energy in energies.items())
 
         return kwh, cost + value(reference) - value(consumed)
 
@@ -1364,6 +1365,32 @@ class LittleMonkeyApiClient:
                         band: value * shares.get(band, gone_by)
                         for band, value in days[until].items()}
         return values
+
+    def _equal_price(self, prices):
+        """Return the price of a kWh of a band at today's prices, even an old band.
+
+        A band of another contract than today's (Tempo last year, HC/HP
+        now) takes today's price of its category (HP Bleu the HP price);
+        without a known category, the average price of today's bands.
+        """
+        by_category = {}
+        for band in self._configured_bands:
+            price = prices.get(band.get("id"))
+            if band.get("category") in ("hc", "hp") and price is not None:
+                by_category.setdefault(band["category"], []).append(price)
+        by_category = {category: sum(values) / len(values)
+                       for category, values in by_category.items()}
+        today = [prices[band.get("id")] for band in self._configured_bands
+                 if band.get("id") in prices] or list(prices.values())
+        average = sum(today) / len(today) if today else 0.0
+
+        def price_of(band_id):
+            if band_id in prices:
+                return prices[band_id]
+            category = band_category(band_id, self._bands.get(band_id))
+            return by_category.get(category, average)
+
+        return price_of
 
     async def _async_last_year_savings(self, savings, period, day, energies=None) -> dict:
         """Return the savings of a period against the same period of last year.
