@@ -87,6 +87,18 @@ export const DIAL_COLORS = {
   white: { off: "#9e9e9e", peak: "#e0e0e0" },
   red: { off: "#8b0000", peak: "#ff3b3b" },
 };
+// Ring of a dial without any off-peak hours from ecojoko (EDF Zen Estival)
+export const DIAL_NEUTRAL = "var(--divider-color, #e0e0e0)";
+
+/**
+ * Return the color of the ring of the dial, under its off-peak arcs.
+ *
+ * Without off-peak hours, a ring of the peak color would tell peak hours all
+ * day (#266): it stays neutral, and the center tells the current period.
+ */
+export function dialRingColor(view, colors) {
+  return view.slots.length || view.other ? colors.peak : DIAL_NEUTRAL;
+}
 // Dial of the 24 hours, in the units of the SVG
 const DIAL = { size: 160, radius: 60, width: 16 };
 const UNKNOWN_STATES = new Set(["unavailable", "unknown", "none", ""]);
@@ -562,7 +574,7 @@ class LittleMonkeyContractCard extends HTMLElement {
       </div>
       <div class="now">
         <svg viewBox="-14 -14 188 188" role="img" aria-label="${escapeHtml(periodName || view.offer)}">
-          <circle cx="${center}" cy="${center}" r="${DIAL.radius}" fill="none" stroke="${colors.peak}" stroke-width="${DIAL.width}" />
+          <circle cx="${center}" cy="${center}" r="${DIAL.radius}" fill="none" stroke="${dialRingColor(view, colors)}" stroke-width="${DIAL.width}" />
           ${offArcs}${labels}
           <line class="needle" x1="${center}" y1="${center}" x2="${needleX.toFixed(2)}" y2="${needleY.toFixed(2)}" />
           <circle class="pivot" cx="${center}" cy="${center}" r="4" />

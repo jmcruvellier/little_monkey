@@ -1,5 +1,11 @@
 # Changelog
 
+## Non publié
+
+### Corrections
+- Contrat sans plages d'heures creuses chez ecojoko (EDF Zen Estival…) : le cadran de la carte Contrat était entièrement de la couleur des heures pleines, comme si toute la journée l'était. Il reste désormais neutre, et la période en cours, déduite des compteurs, s'affiche toujours au centre ([#266](https://github.com/jmcruvellier/little_monkey/issues/266))
+- Une tranche dont le nom commence par « Super HC » (« Super HC hiver » d'EDF Zen Estival) est rangée en heures creuses lors de sa création, au lieu de n'être comptée ni en HC ni en HP. Les tranches déjà configurées gardent la catégorie choisie dans les options ([#266](https://github.com/jmcruvellier/little_monkey/issues/266))
+
 ## 2.0.0
 
 La version 2.0 de Little Monkey. Si vous venez de la 1.2.8, elle regroupe les nouveautés des bêtas [2.0.0b1](#200b1) et [2.0.0b2](#200b2), détaillées plus bas, et celles de cette version.

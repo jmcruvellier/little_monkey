@@ -1104,6 +1104,8 @@ def test_unclassified_band_is_logged_once(api, monkeypatch, caplog):
     (" hc semaine", "hc"),
     ("Heures Pleines", "hp"),
     ("HP Jour Spécial", "hp"),
+    ("Super HC hiver", "hc"),
+    ("Super", None),
     ("Heures Weekend", None),
     ("HCHP", None),
     ("", None),
@@ -1522,6 +1524,48 @@ def test_configured_category_wins_over_the_label(api):
     run(client.async_get_data())
     assert client.band_values == {"band_13": 26.19, "band_9": 0}
     assert (client.kwh_hc_ns, client.kwh_hp_ns) == (26.19, 0)
+
+
+def test_new_bands_default_category(api):
+    """A new Super HC band is off peak (#266); the other defaults do not change."""
+    tariff = tariff_module(api)
+    assert tariff.new_band(32, "Super HC hiver")["category"] == "hc"
+    assert tariff.new_band(9, "HC Semaine")["category"] == "hc"
+    assert tariff.new_band(8, "HP Semaine")["category"] == "hp"
+    assert tariff.new_band(13, "Heures Weekend")["category"] is None
+    # The known bands keep their category and the key of their sensor
+    assert tariff.new_band(3, "Heures Creuses")["category"] == "hc"
+    assert tariff.new_band(22, "HP Rouge")["key"] == "red_hp_grid_consumption"
+
+
+# Zen Estival in winter (#266): HC Hiver, HP Hiver, Super HC hiver
+ZEN_ESTIVAL = [
+    {"id": 28, "label": "HC Hiver", "kwh": 1.78},
+    {"id": 29, "label": "HP Hiver", "kwh": 1.56},
+    {"id": 32, "label": "Super HC hiver", "kwh": 0.94},
+]
+
+
+@pytest.mark.parametrize(("super_hc", "totals"), [
+    # Category chosen in the options: it always wins over the label
+    ("none", (1.78, 1.56)),
+    ("hc", (2.72, 1.56)),
+    ("hp", (1.78, 2.5)),
+    # Not configured yet: classified by its label
+    (None, (2.72, 1.56)),
+])
+def test_super_hc_band_in_the_totals(api, super_hc, totals):
+    """A Super HC band counts where the user put it, in HC before that."""
+    tariff = tariff_module(api)
+    bands = [tariff.new_band(28, "HC Hiver"), tariff.new_band(29, "HP Hiver")]
+    if super_hc is not None:
+        bands.append({**tariff.new_band(32, "Super HC hiver"), "category": super_hc})
+    session = Session(powerstat=Response(payload=powerstat(subconsumption=ZEN_ESTIVAL)))
+    client = api.LittleMonkeyApiClient(
+        username="user", password="secret", poll_interval=5, use_hchp=True,
+        use_temphum=False, use_prod=False, session=session, bands=bands)
+    run(client.async_get_data())
+    assert (client.kwh_hc_ns, client.kwh_hp_ns) == totals
 
 
 def test_legacy_bands_keep_the_sensor_keys(api):

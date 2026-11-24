@@ -192,6 +192,24 @@ test("a contract without off-peak hours nor a known period shows no period", () 
   assert.equal(card.contractView(period, "sensor.eco_contract").known, true);
 });
 
+test("without off-peak hours, the ring of the dial is neutral, not peak hours all day (#266)", () => {
+  const colors = card.DIAL_COLORS.hchp;
+  const hass = fakeHass("hc");
+  hass.states["sensor.eco_contract"].attributes.off_peak_timeslots = [];
+  const view = card.contractView(hass, "sensor.eco_contract", new Date("2026-11-24T12:00:00+01:00"));
+  assert.equal(card.dialRingColor(view, colors), card.DIAL_NEUTRAL);
+  // The current period is still told by the center
+  assert.equal(view.known, true);
+  assert.equal(view.offPeak, true);
+  // With off-peak hours, the ring is of the peak color under their arcs
+  const slots = card.contractView(fakeHass("hc"), "sensor.eco_contract", new Date("2026-11-24T12:00:00+01:00"));
+  assert.equal(card.dialRingColor(slots, colors), colors.peak);
+  // Non-regression: a band in neither HC nor HP (#244) and a Tempo day keep their ring
+  assert.equal(card.dialRingColor({ slots: [], other: "Heures Weekend" }, colors), colors.peak);
+  const tempo = card.contractView(fakeHass("hp_red"), "sensor.eco_contract", new Date("2026-11-24T12:00:00+01:00"));
+  assert.equal(card.dialRingColor(tempo, card.DIAL_COLORS[tempo.tempo]), card.DIAL_COLORS.red.peak);
+});
+
 test("an entity of a device suggests the card on that device", () => {
   const sensor = (device, key) => ({
     entity_id: `sensor.${device}_${key}`, platform: "little_monkey", translation_key: key, device_id: device,
