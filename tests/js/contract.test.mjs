@@ -204,6 +204,10 @@ test("without off-peak hours, the ring of the dial is neutral, not peak hours al
   // With off-peak hours, the ring is of the peak color under their arcs
   const slots = card.contractView(fakeHass("hc"), "sensor.eco_contract", new Date("2026-11-24T12:00:00+01:00"));
   assert.equal(card.dialRingColor(slots, colors), colors.peak);
+  // Non-regression: a band in neither HC nor HP (#244) and a Tempo day keep their ring
+  assert.equal(card.dialRingColor({ slots: [], other: "Heures Weekend" }, colors), colors.peak);
+  const tempo = card.contractView(fakeHass("hp_red"), "sensor.eco_contract", new Date("2026-11-24T12:00:00+01:00"));
+  assert.equal(card.dialRingColor(tempo, card.DIAL_COLORS[tempo.tempo]), card.DIAL_COLORS.red.peak);
 });
 
 test("an entity of a device suggests the card on that device", () => {
