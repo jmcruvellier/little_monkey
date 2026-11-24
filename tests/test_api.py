@@ -1104,6 +1104,8 @@ def test_unclassified_band_is_logged_once(api, monkeypatch, caplog):
     (" hc semaine", "hc"),
     ("Heures Pleines", "hp"),
     ("HP Jour Spécial", "hp"),
+    ("Super HC hiver", "hc"),
+    ("Super", None),
     ("Heures Weekend", None),
     ("HCHP", None),
     ("", None),

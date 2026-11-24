@@ -112,12 +112,15 @@ def category_of(label):
     """Return the category deduced from the label of a band, or None.
 
     "Heures Creuses", "HC Bleu", "HC Semaine", "HC Jour Spécial"... are off
-    peak, "Heures Pleines", "HP Rouge", "HP Weekend"... are peak. A band such
-    as "Heures Weekend" belongs to neither.
+    peak, "Heures Pleines", "HP Rouge", "HP Weekend"... are peak. "Super HC
+    hiver" (EDF Zen Estival) is off peak too. A band such as "Heures
+    Weekend" belongs to neither.
     """
     if not isinstance(label, str):
         return None
     words = label.strip().upper().split()
+    if words[:1] == ["SUPER"]:
+        words = words[1:]
     if not words:
         return None
     if words[0] == "HC" or words[:2] == ["HEURES", "CREUSES"]:
