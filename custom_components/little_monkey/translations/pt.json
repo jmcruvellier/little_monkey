@@ -15,11 +15,17 @@
                 "description": "Contrato detetado: {contract}.\n\nPara cada período do seu contrato, escolha o nome do sensor e o total em que conta (vazio, ponta ou nenhum).",
                 "data": {
                     "use_hchp_feature": "Sensores totais HC e HP",
-                    "removed_bands": "Faixas a remover"
+                    "removed_bands": "Faixas a remover",
+                    "use_band_colors": "Escolher as cores das faixas"
                 },
                 "data_description": {
-                    "removed_bands": "As faixas marcadas são removidas com o seu sensor, por exemplo as de um contrato anterior que a ecojoko ainda indica. Continuam listadas aqui, marcadas, enquanto aparecerem nas suas estatísticas das últimas semanas; desmarque uma para a repor."
+                    "removed_bands": "As faixas marcadas são removidas com o seu sensor, por exemplo as de um contrato anterior que a ecojoko ainda indica. Continuam listadas aqui, marcadas, enquanto aparecerem nas suas estatísticas das últimas semanas; desmarque uma para a repor.",
+                    "use_band_colors": "Os cartões mostram cada faixa na sua cor. Por defeito: as cores dos dias Tempo, o par HC/HP, ou a dada pela ecojoko. Marque para as escolher num ecrã seguinte; desmarque para voltar às cores por defeito."
                 }
+            },
+            "colors": {
+                "title": "Cores das faixas",
+                "description": "Contrato detetado: {contract}.\n\nEscolha a cor de cada faixa. Os cartões usam-na onde quer que mostrem a faixa: etiquetas, mostrador do contrato, gráficos das medições. Uma cor deixada como proposta continua a ser a por defeito, e segue-a se mudar."
             },
             "settings": {
                 "title": "Outros sensores",
@@ -69,11 +75,17 @@
                 "description": "Contrato detetado: {contract}.\n\nPara cada período do seu contrato, escolha o nome do sensor e o total em que conta (vazio, ponta ou nenhum).",
                 "data": {
                     "use_hchp_feature": "Sensores totais HC e HP",
-                    "removed_bands": "Faixas a remover"
+                    "removed_bands": "Faixas a remover",
+                    "use_band_colors": "Escolher as cores das faixas"
                 },
                 "data_description": {
-                    "removed_bands": "As faixas marcadas são removidas com o seu sensor, por exemplo as de um contrato anterior que a ecojoko ainda indica. Continuam listadas aqui, marcadas, enquanto aparecerem nas suas estatísticas das últimas semanas; desmarque uma para a repor."
+                    "removed_bands": "As faixas marcadas são removidas com o seu sensor, por exemplo as de um contrato anterior que a ecojoko ainda indica. Continuam listadas aqui, marcadas, enquanto aparecerem nas suas estatísticas das últimas semanas; desmarque uma para a repor.",
+                    "use_band_colors": "Os cartões mostram cada faixa na sua cor. Por defeito: as cores dos dias Tempo, o par HC/HP, ou a dada pela ecojoko. Marque para as escolher num ecrã seguinte; desmarque para voltar às cores por defeito."
                 }
+            },
+            "colors": {
+                "title": "Cores das faixas",
+                "description": "Contrato detetado: {contract}.\n\nEscolha a cor de cada faixa. Os cartões usam-na onde quer que mostrem a faixa: etiquetas, mostrador do contrato, gráficos das medições. Uma cor deixada como proposta continua a ser a por defeito, e segue-a se mudar."
             },
             "settings": {
                 "title": "Outros sensores",

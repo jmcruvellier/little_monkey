@@ -1,5 +1,10 @@
 # Changelog
 
+## Non publié
+
+### Nouveautés
+- Une couleur par tranche tarifaire, à choisir dans les options de l'intégration : cochez « Choisir les couleurs des tranches » sur l'écran des tranches tarifaires, un écran suivant propose la couleur de chaque tranche. Par défaut : les couleurs des jours Tempo et de la paire HC/HP de la carte Contrat, sinon celle que donne ecojoko, sinon une couleur selon la catégorie. Décocher la case rétablit les couleurs par défaut. Le capteur Contrat donne la couleur de chaque tranche (`color`, et `color_source` : `chosen` ou `default`), le capteur Période Tarifaire en Cours celle de la tranche en cours (`tariff_band_color`), et le service `get_measures` celle de chaque tranche des mesures. Les cartes les utiliseront dans une prochaine étape ([#273](https://github.com/jmcruvellier/little_monkey/discussions/273))
+
 ## 2.0.1
 
 Corrections de la 2.0.0, dont un plantage de Home Assistant au démarrage sur certaines machines virtuelles.

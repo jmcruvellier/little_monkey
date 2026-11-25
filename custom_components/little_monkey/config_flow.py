@@ -33,6 +33,7 @@ from .const import (
     CONF_PRICES_END,
     CONF_PRICES_START,
     CONF_SUBSCRIPTION_PRICE,
+    CONF_USE_BAND_COLORS,
     CONF_USE_CONTRACT_PRICES,
     CONF_REFERENCE,
     REFERENCE_ECOJOKO,
@@ -46,7 +47,10 @@ from .tariff import (
     NO_CATEGORY,
     OFF_PEAK,
     PEAK,
+    band_colors,
+    default_colors,
     has_sensor,
+    is_color,
     new_band,
 )
 from .utils import account_unique_id
@@ -78,6 +82,8 @@ REFERENCE_SELECTOR = selector.SelectSelector(selector.SelectSelectorConfig(
 CATEGORY_SUFFIX = " – HC/HP"
 # Suffix of the field of the price of a band, named after its label too
 PRICE_SUFFIX = " – €/kWh"
+# Suffix of the field of the color of a band
+COLOR_SUFFIX = " – RGB"
 PRICE_SELECTOR = selector.NumberSelector(selector.NumberSelectorConfig(
     min=0, max=5, step="any", mode=NumberSelectorMode.BOX, unit_of_measurement="€/kWh"))
 SUBSCRIPTION_SELECTOR = selector.NumberSelector(selector.NumberSelectorConfig(
@@ -242,6 +248,22 @@ def _band_fields(bands: list) -> list:
     return fields
 
 
+def _rgb(color: str) -> list:
+    """Return a color "#rrggbb" as [red, green, blue], for the color selector."""
+    return [int(color[index:index + 2], 16) for index in (1, 3, 5)]
+
+
+def _hex(rgb) -> str | None:
+    """Return a color [red, green, blue] of the color selector as "#rrggbb"."""
+    try:
+        red, green, blue = (int(value) for value in rgb)
+    except (TypeError, ValueError):
+        return None
+    if not all(0 <= value <= 255 for value in (red, green, blue)):
+        return None
+    return f"#{red:02x}{green:02x}{blue:02x}"
+
+
 async def _async_default_names(hass: HomeAssistant, bands: list) -> dict:
     """Return the name shown by default for the sensor of each band.
 
@@ -266,6 +288,7 @@ class _BandsSteps:
     _kept_removed: list = []
     _default_names: dict = {}
     _use_prices: bool = False
+    _use_colors: bool = False
 
     def _init_bands(
         self, configured: list, contract, found: dict, complete: bool, removed=()
@@ -304,6 +327,11 @@ class _BandsSteps:
             vol.Optional(
                 CONF_USE_CONTRACT_PRICES,
                 default=bool(self._data.get(CONF_CONTRACT_PRICES)),
+            ): cv.boolean,
+            # The colors of the bands are chosen on a screen of their own
+            vol.Optional(
+                CONF_USE_BAND_COLORS,
+                default=any(is_color(band.get("color")) for band in self._bands),
             ): cv.boolean,
         }
         for band, name_field, category_field in _band_fields(self._bands):
@@ -359,6 +387,9 @@ class _BandsSteps:
             chosen["name"] = name
             category = user_input.get(category_field)
             chosen["category"] = category if category in (OFF_PEAK, PEAK) else None
+            # The color chosen before, changed on the screen of the colors
+            if is_color(band.get("color")):
+                chosen["color"] = band["color"]
             bands.append(chosen)
         # A band removed before and no longer checked comes back with its
         # default settings
@@ -376,6 +407,11 @@ class _BandsSteps:
         if not self._use_prices:
             self._data.pop(CONF_CONTRACT_PRICES, None)
         self._data[CONF_TARIFF_BANDS], removed = self._read_bands(user_input)
+        # Without the colors chosen, the bands take their automatic ones again
+        self._use_colors = user_input.get(CONF_USE_BAND_COLORS) is True
+        if not self._use_colors:
+            for band in self._data[CONF_TARIFF_BANDS]:
+                band.pop("color", None)
         removed = sorted({*removed, *self._kept_removed})
         # Saved only when there are some: most entries never remove a band
         if removed:
@@ -383,6 +419,65 @@ class _BandsSteps:
         else:
             self._data.pop(CONF_REMOVED_BANDS, None)
 
+
+    async def _async_after_bands(self) -> ConfigFlowResult:
+        """Show the screen after the bands: the prices, the colors, the settings."""
+        if self._use_prices:
+            return await self.async_step_prices()
+        return await self._async_after_prices()
+
+    async def _async_after_prices(self) -> ConfigFlowResult:
+        """Show the screen after the prices: the colors, or the settings."""
+        if self._use_colors:
+            return await self.async_step_colors()
+        return await self.async_step_settings()
+
+    def _ecojoko_colors(self) -> dict:
+        """Return the colors ecojoko gave the bands, known once the entry is loaded."""
+        return {}
+
+    def _color_fields(self) -> list:
+        """Return the bands kept and the field of the color of each."""
+        return [
+            (band, category_field[:-len(CATEGORY_SUFFIX)] + COLOR_SUFFIX)
+            for band, _name, category_field in _band_fields(
+                self._data.get(CONF_TARIFF_BANDS) or [])
+        ]
+
+    def _colors_form(self, step_id: str):
+        """Show the color of each band: the one chosen before, or the automatic one."""
+        bands = self._data.get(CONF_TARIFF_BANDS) or []
+        colors = band_colors(bands, self._ecojoko_colors())
+        schema = {
+            vol.Required(field, default=_rgb(colors[band["id"]]["color"])):
+                selector.ColorRGBSelector()
+            for band, field in self._color_fields()
+        }
+        return self.async_show_form(
+            step_id=step_id,
+            data_schema=vol.Schema(schema),
+            description_placeholders={"contract": self._contract_text()},
+        )
+
+    def _read_colors(self, user_input: Mapping[str, Any]) -> None:
+        """Keep the colors chosen: a color equal to the automatic one stays automatic."""
+        defaults = default_colors(
+            self._data.get(CONF_TARIFF_BANDS) or [], self._ecojoko_colors())
+        for band, field in self._color_fields():
+            color = _hex(user_input.get(field))
+            if color is None or color == defaults[band["id"]]:
+                band.pop("color", None)
+            else:
+                band["color"] = color
+
+    async def async_step_colors(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Ask for the color of each band, used by the cards."""
+        if user_input is not None:
+            self._read_colors(user_input)
+            return await self.async_step_settings()
+        return self._colors_form("colors")
 
     def _price_fields(self) -> list:
         """Return the bands kept and the field of the price of each."""
@@ -445,7 +540,7 @@ class _BandsSteps:
         if user_input is not None:
             errors = self._read_prices(user_input)
             if not errors:
-                return await self.async_step_settings()
+                return await self._async_after_prices()
             return self._prices_form("prices", user_input, errors)
         return self._prices_form("prices")
 
@@ -504,9 +599,7 @@ class EcojokoFlowHandler(_BandsSteps, config_entries.ConfigFlow, domain=DOMAIN):
         """Show the tariff bands of the contract."""
         if user_input is not None:
             self._save_bands(user_input)
-            if self._use_prices:
-                return await self.async_step_prices()
-            return await self.async_step_settings()
+            return await self._async_after_bands()
         return await self._async_bands_form("bands", use_hchp=True)
 
     async def async_step_settings(
@@ -583,6 +676,12 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
         self._config_entry = config_entry
         self._data: dict[str, Any] = {}
 
+    def _ecojoko_colors(self) -> dict:
+        """Return the colors ecojoko gave the bands, read by the loaded entry."""
+        coordinator = getattr(self._config_entry, "runtime_data", None)
+        client = getattr(coordinator, "client", None)
+        return getattr(client, "ecojoko_colors", None) or {}
+
     async def async_step_init(
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
@@ -625,9 +724,7 @@ class EcojokoOptionsFlowHandler(_BandsSteps, config_entries.OptionsFlow):
         """Show the tariff bands of the contract."""
         if user_input is not None:
             self._save_bands(user_input)
-            if self._use_prices:
-                return await self.async_step_prices()
-            return await self.async_step_settings()
+            return await self._async_after_bands()
         return await self._async_bands_form(
             "bands",
             use_hchp=self._config_entry.data.get(CONF_USE_HCHP_FEATURE) is True,

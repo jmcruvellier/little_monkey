@@ -223,9 +223,12 @@ class EcojokoPeriodSensor(EcojokoSensor):
 
     @property
     def extra_state_attributes(self):
-        """Return the current tariff band (Semaine, Week-end...), if known."""
-        band = (self.coordinator.data or {}).get("current_tariff_band")
-        return None if band is None else {"tariff_band": band}
+        """Return the current tariff band (Semaine, Week-end...) and its color, if known."""
+        data = self.coordinator.data or {}
+        band = data.get("current_tariff_band")
+        if band is None:
+            return None
+        return {"tariff_band": band, "tariff_band_color": data.get("current_tariff_band_color")}
 
 
 class EcojokoContractSensor(EcojokoSensor):
@@ -279,14 +282,25 @@ class EcojokoContractSensor(EcojokoSensor):
             "resale_price": (self.coordinator.data or {}).get("resale_price"),
             # Dates of the prices entered in the options, when they apply today
             "entered_prices": self._entered_dates(),
-            # With the price of a kWh: given by ecojoko (exact) or estimated
+            # With the price of a kWh: given by ecojoko (exact) or estimated,
+            # and the color of the band in the cards
             "bands": [
                 {
                     **{key: value for key, value in band.items() if key != "id"},
                     **self._band_price(band["id"]),
+                    **self._band_color(band["id"]),
                 }
                 for band in self._bands
             ],
+        }
+
+    def _band_color(self, band_id) -> dict:
+        """Return the color of a band and whether it was chosen in the options."""
+        color = ((self.coordinator.data or {}).get("band_colors") or {}).get(band_id) or {}
+        return {
+            "color": color.get("color"),
+            # "chosen" in the options, or "default"
+            "color_source": color.get("source"),
         }
 
     def _band_price(self, band_id) -> dict:

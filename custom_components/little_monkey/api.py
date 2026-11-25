@@ -40,7 +40,9 @@ from .tariff import (
     PEAK,
     PRICE_DAYS,
     active_contract,
+    band_colors,
     bands_of,
+    is_color,
     TOTAL_BANDS,
     bands_of_offer,
     day_costs,
@@ -918,6 +920,8 @@ class LittleMonkeyApiClient:
         self._configured_bands = list(bands or [])
         # Bands removed by the user: never reported as missing
         self._removed_bands = set(removed_bands or [])
+        # Colors ecojoko gives the bands {id: "#rrggbb"}, in its statistics
+        self._ecojoko_colors = {}
         # Prices of the contract entered by the user, None without them
         self._contract_prices = contract_prices
         # Reference consumption of the savings: "ecojoko", "last_year" (at
@@ -1178,6 +1182,41 @@ class LittleMonkeyApiClient:
         if gap is None and not extra:
             return None
         return (gap or 0.0) + extra
+
+    @property
+    def ecojoko_colors(self) -> dict:
+        """Return the colors ecojoko gave the bands {id: "#rrggbb"}."""
+        return dict(self._ecojoko_colors)
+
+    @property
+    def band_colors(self) -> dict:
+        """Return the color of each configured band (see tariff.band_colors)."""
+        return band_colors(self._configured_bands, self._ecojoko_colors)
+
+    def _keep_ecojoko_colors(self, items) -> None:
+        """Keep the colors of the bands of a statistics response."""
+        for item in items or []:
+            if not isinstance(item, dict):
+                continue
+            band_id = item.get("id")
+            if isinstance(band_id, int) and not isinstance(band_id, bool)                     and is_color(item.get("color")):
+                self._ecojoko_colors[band_id] = item["color"].lower()
+
+    def color_measures(self, measures) -> dict:
+        """Return the measures with the color of each configured band.
+
+        A band unknown to the entry keeps the color ecojoko gives it. The
+        measures are not changed in place: they may be kept in a cache.
+        """
+        bands = measures.get("bands")
+        if not bands:
+            return measures
+        self._keep_ecojoko_colors(bands)
+        colors = self.band_colors
+        return {**measures, "bands": [
+            {**band, "color": colors[band.get("id")]["color"]}
+            if band.get("id") in colors else band
+            for band in bands]}
 
     def correct_measures(self, measures, period, day) -> dict:
         """Return the measures of electricity at the prices entered by the user.
@@ -2037,7 +2076,7 @@ class LittleMonkeyApiClient:
         await self._async_load_month_prices(
             [day] if period == "day"
             else [_date_of(bar.get("date")) for bar in measures.get("bars") or []])
-        return self.correct_measures(measures, period, day)
+        return self.color_measures(self.correct_measures(measures, period, day))
 
     async def async_get_activations(self, page=0) -> dict:
         """Return the activations of the appliances over 48 hours.
@@ -2625,6 +2664,7 @@ class LittleMonkeyApiClient:
         stat = payload['stat']
         data = stat['data']
         self._add_day_costs(stat, day)
+        self._keep_ecojoko_colors(stat.get("pricing_details"))
         kwh = data[week_day]['kwh']
         self._bands.update(bands_of(stat, data[week_day]))
         if day != self._stat_date:

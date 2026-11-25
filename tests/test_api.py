@@ -2357,6 +2357,80 @@ def test_entered_prices_apply_during_their_validity(api):
     assert entered_prices(None, dt.date(2026, 9, 1)) is None
 
 
+# --- Colors of the bands
+
+def test_default_colors_of_the_bands(api):
+    """Tempo and HC/HP first, then ecojoko's color, the category, a neutral color."""
+    tariff = tariff_module(api)
+    bands = [tariff.new_band(band_id, label) for band_id, label in [
+        (2, "Heures Pleines"), (3, "Heures Creuses"), (18, "HP Bleu"), (23, "HC Rouge"),
+        (8, "HP Semaine"), (9, "HC Semaine"), (32, "Super HC hiver"),
+        (13, "Heures Weekend"), (40, "Jour Spécial"), (41, "Autre")]]
+    colors = tariff.default_colors(bands, {
+        2: "#0087B1", 18: "#123456", 9: "#ABCDEF", 41: "#00FF00", 40: "not a color"})
+    # ecojoko's colors do not replace the palette of the HC/HP pair and Tempo
+    assert colors[2] == "#85b7eb" and colors[3] == "#185fa5"
+    assert colors[18] == "#2f6fe0" and colors[23] == "#8b0000"
+    # ecojoko's color, before the one of the category
+    assert colors[9] == "#abcdef" and colors[41] == "#00ff00"
+    assert colors[8] == "#85b7eb" and colors[32] == "#185fa5"
+    # In neither HC nor HP, without ecojoko's color: a neutral color, by id
+    assert colors[13] == tariff.NEUTRAL_COLORS[0]
+    assert colors[40] == tariff.NEUTRAL_COLORS[1]
+
+
+def test_neutral_colors_do_not_depend_on_the_order_of_the_bands(api):
+    """A band keeps its neutral color whatever the order of the configured bands."""
+    tariff = tariff_module(api)
+    bands = [tariff.new_band(13, "Heures Weekend"), tariff.new_band(40, "Jour Spécial")]
+    assert tariff.default_colors(bands) == tariff.default_colors(bands[::-1])
+
+
+def test_chosen_color_of_a_band(api):
+    """A color chosen in the options replaces the automatic one."""
+    tariff = tariff_module(api)
+    bands = [{**tariff.new_band(18, "HP Bleu"), "color": "#ABCDEF"},
+             {**tariff.new_band(19, "HC Bleu"), "color": "blue"}]
+    assert tariff.band_colors(bands) == {
+        18: {"color": "#abcdef", "source": "chosen"},
+        # Not a color "#rrggbb": the automatic one
+        19: {"color": "#00008b", "source": "default"}}
+
+
+def test_client_keeps_the_colors_ecojoko_gives_the_bands(api):
+    """The colors of the statistics are kept, for the bands without a color of their own."""
+    tariff = tariff_module(api)
+    payload = powerstat(subconsumption=[{"id": 13, "label": "Heures Weekend", "kwh": 1}])
+    payload["stat"]["pricing_details"] = [
+        {"id": 13, "label": "Heures Weekend", "color": "#5FDCAB"},
+        {"id": True, "label": "not an id", "color": "#000000"},
+        {"id": 14, "label": "no color"}]
+    session = Session(powerstat=Response(payload=payload))
+    client = make_client(api, session)
+    client._configured_bands = [tariff.new_band(13, "Heures Weekend")]
+    run(client.async_get_data())
+    assert client.ecojoko_colors == {13: "#5fdcab"}
+    assert client.band_colors == {13: {"color": "#5fdcab", "source": "default"}}
+
+
+def test_measures_take_the_color_of_each_band(api):
+    """The measures give each configured band its color; another keeps ecojoko's."""
+    tariff = tariff_module(api)
+    session = Session()
+    client = make_client(api, session)
+    client._configured_bands = [
+        tariff.new_band(2, "Heures Pleines"),
+        {**tariff.new_band(3, "Heures Creuses"), "color": "#112233"}]
+    run(client.async_get_data())
+    payload = copy.deepcopy(POWER_DAY)
+    payload["stat"]["pricing_details"].append({"color": "#AABBCC", "id": 13, "label": "Heures Weekend"})
+    session.routes["powerstat"] = Response(payload=payload)
+    day = run(client.async_get_measures("electricity", "day", dt.date(2026, 11, 18)))
+    assert [band["color"] for band in day["bands"]] == ["#85b7eb", "#112233", "#AABBCC"]
+    # The answer read is not changed: it may be kept in a cache
+    assert payload["stat"]["pricing_details"][0]["color"] == "#0087B1"
+
+
 # --- Measures (page « Mesures »)
 
 POWER_DAY = {"stat": {

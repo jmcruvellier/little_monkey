@@ -52,6 +52,9 @@ CONF_TARIFF_BANDS = "tariff_bands"
 # Ids of the bands removed by the user while ecojoko still gives them: they
 # are neither proposed again nor reported as missing (previous contract...)
 CONF_REMOVED_BANDS = "removed_bands"
+# Colors of the bands chosen by the user: whether they are chosen. Each
+# chosen color is kept in its band, "color": "#rrggbb" (see tariff.py)
+CONF_USE_BAND_COLORS = "use_band_colors"
 # Prices of the contract entered by the user, when ecojoko does not know them
 # (a discount for new customers, for instance): whether they are entered,
 # and {"prices": {band id as text: euros per kWh}, "subscription": euros per

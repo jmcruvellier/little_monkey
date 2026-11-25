@@ -16,11 +16,13 @@
                 "data": {
                     "use_hchp_feature": "Capteurs totaux HC et HP",
                     "removed_bands": "Tranches à supprimer",
-                    "use_contract_prices": "Saisir les prix de mon contrat"
+                    "use_contract_prices": "Saisir les prix de mon contrat",
+                    "use_band_colors": "Choisir les couleurs des tranches"
                 },
                 "data_description": {
                     "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre.",
-                    "use_contract_prices": "À cocher si les prix du kWh qu'affiche ecojoko ne sont pas ceux de votre contrat, par exemple pendant une remise pour les nouveaux clients. Vous les saisissez sur l'écran suivant ; décochez pour revenir aux prix d'ecojoko."
+                    "use_contract_prices": "À cocher si les prix du kWh qu'affiche ecojoko ne sont pas ceux de votre contrat, par exemple pendant une remise pour les nouveaux clients. Vous les saisissez sur l'écran suivant ; décochez pour revenir aux prix d'ecojoko.",
+                    "use_band_colors": "Les cartes affichent chaque tranche dans sa couleur. Par défaut : les couleurs des jours Tempo, la paire HC/HP, ou celle que donne ecojoko. À cocher pour les choisir sur un écran suivant ; décochez pour revenir aux couleurs par défaut."
                 }
             },
             "settings": {
@@ -60,6 +62,10 @@
                     "prices_start": "Laissez vide si les prix s'appliquent depuis le début de votre contrat.",
                     "prices_end": "La fin de la remise, par exemple. Laissez vide si ces prix n'ont pas de fin connue."
                 }
+            },
+            "colors": {
+                "title": "Couleurs des tranches",
+                "description": "Contrat détecté : {contract}.\n\nChoisissez la couleur de chaque tranche. Les cartes l'utilisent partout où elles affichent la tranche : pastilles, cadran du contrat, graphiques des mesures. Une couleur laissée telle que proposée reste celle par défaut, et la suit si elle change."
             }
         },
         "error": {
@@ -91,11 +97,13 @@
                 "data": {
                     "use_hchp_feature": "Capteurs totaux HC et HP",
                     "removed_bands": "Tranches à supprimer",
-                    "use_contract_prices": "Saisir les prix de mon contrat"
+                    "use_contract_prices": "Saisir les prix de mon contrat",
+                    "use_band_colors": "Choisir les couleurs des tranches"
                 },
                 "data_description": {
                     "removed_bands": "Les tranches cochées sont retirées avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore. Elles restent proposées ici, cochées, tant qu'elles figurent dans ses statistiques des dernières semaines ; décochez-en une pour la remettre.",
-                    "use_contract_prices": "À cocher si les prix du kWh qu'affiche ecojoko ne sont pas ceux de votre contrat, par exemple pendant une remise pour les nouveaux clients. Vous les saisissez sur l'écran suivant ; décochez pour revenir aux prix d'ecojoko."
+                    "use_contract_prices": "À cocher si les prix du kWh qu'affiche ecojoko ne sont pas ceux de votre contrat, par exemple pendant une remise pour les nouveaux clients. Vous les saisissez sur l'écran suivant ; décochez pour revenir aux prix d'ecojoko.",
+                    "use_band_colors": "Les cartes affichent chaque tranche dans sa couleur. Par défaut : les couleurs des jours Tempo, la paire HC/HP, ou celle que donne ecojoko. À cocher pour les choisir sur un écran suivant ; décochez pour revenir aux couleurs par défaut."
                 }
             },
             "settings": {
@@ -129,6 +137,10 @@
                     "prices_start": "Laissez vide si les prix s'appliquent depuis le début de votre contrat.",
                     "prices_end": "La fin de la remise, par exemple. Laissez vide si ces prix n'ont pas de fin connue."
                 }
+            },
+            "colors": {
+                "title": "Couleurs des tranches",
+                "description": "Contrat détecté : {contract}.\n\nChoisissez la couleur de chaque tranche. Les cartes l'utilisent partout où elles affichent la tranche : pastilles, cadran du contrat, graphiques des mesures. Une couleur laissée telle que proposée reste celle par défaut, et la suit si elle change."
             }
         },
         "error": {
