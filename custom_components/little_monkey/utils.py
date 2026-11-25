@@ -185,17 +185,6 @@ def get_current_date(timezone):
     """Return local date."""
     return dt.datetime.now(timezone).date()
 
-def get_value_from_json_array(json_array, item_key, item_value, value_key):
-    """Return value from JSON array."""
-    for item in json_array:
-        if item[item_key] == item_value:
-            return item[value_key]
-    return None
-
-def convert_to_float(value):
-    """Convert to float."""
-    return float(value) if value is not None else 0
-
 def finite_number(value):
     """Return a value as a rounded number, or None when it is not a number."""
     try:
