@@ -99,6 +99,50 @@ export const DIAL_NEUTRAL = "var(--divider-color, #e0e0e0)";
 export function dialRingColor(view, colors) {
   return view.slots.length || view.other ? colors.peak : DIAL_NEUTRAL;
 }
+
+/** Tell whether a value is a color "#rrggbb", as the integration gives them. */
+export function isColor(value) {
+  return /^#[0-9a-f]{6}$/i.test(String(value ?? ""));
+}
+
+// Bands of a Tempo day, by the key of their sensor: blue_hc_grid_consumption
+const TEMPO_KEY = /^(blue|white|red)_/;
+
+/**
+ * Return the colors of the dial today: those of the HC and HP bands of the
+ * day, chosen in the options of the integration or automatic.
+ *
+ * For Tempo, the bands of the color of the day; for another contract, its
+ * bands of each category, the current one first. A band in neither HC nor
+ * HP (Heures Weekend, #244) is the whole day: the ring takes its color.
+ * Without a color from the integration, the colors of DIAL_COLORS.
+ */
+export function dayColors(view) {
+  const fallback = DIAL_COLORS[view.tempo || "hchp"];
+  const ofDay = (category) => {
+    const bands = (view.bands || []).filter((band) => band.category === category && isColor(band.color)
+      && (view.tempo ? String(band.key ?? "").startsWith(`${view.tempo}_`) : !TEMPO_KEY.test(String(band.key ?? ""))));
+    return (bands.find((band) => band.current) || bands[0])?.color;
+  };
+  const colors = { off: ofDay("hc") || fallback.off, peak: ofDay("hp") || fallback.peak };
+  const other = view.other ? (view.bands || []).find((band) => band.name === view.other) : null;
+  if (isColor(other?.color)) {
+    colors.peak = other.color;
+  }
+  return colors;
+}
+
+/** Return the tag of a band: HC or HP in the color of the band, or its color alone. */
+export function bandTag(band) {
+  const color = isColor(band.color) ? band.color : null;
+  const style = color
+    ? ` style="background: color-mix(in srgb, ${color} 35%, transparent); border-color: ${color}"` : "";
+  if (band.category === "hc" || band.category === "hp") {
+    return `<span class="tag ${band.category}${color ? " colored" : ""}"${style}>${band.category.toUpperCase()}</span>`;
+  }
+  // In neither HC nor HP: its color alone, its name is on the row (D4)
+  return color ? `<span class="tag dot colored"${style}></span>` : "";
+}
 // Dial of the 24 hours, in the units of the SVG
 const DIAL = { size: 160, radius: 60, width: 16 };
 const UNKNOWN_STATES = new Set(["unavailable", "unknown", "none", ""]);
@@ -420,6 +464,8 @@ const STYLES = `
   .tag { border-radius: 6px; padding: 1px 6px; font-size: 0.8em; margin-right: 6px; font-weight: 500; }
   .tag.hc { background: color-mix(in srgb, #185fa5 35%, transparent); }
   .tag.hp { background: color-mix(in srgb, #85b7eb 35%, transparent); }
+  .tag.colored { border: 1px solid transparent; }
+  .tag.dot { display: inline-block; width: 10px; height: 10px; padding: 0; border-radius: 50%; vertical-align: middle; }
   .row .label { color: var(--primary-text-color); }
   .row .value { color: var(--primary-text-color); white-space: nowrap; }
   .row.subscription .label, .row.subscription .value { color: var(--secondary-text-color); }
@@ -517,7 +563,7 @@ class LittleMonkeyContractCard extends HTMLElement {
     if (view.power) {
       details.push(`${view.power} kVA`);
     }
-    const colors = DIAL_COLORS[view.tempo || "hchp"];
+    const colors = dayColors(view);
     const center = DIAL.size / 2;
     const offArcs = view.other ? "" : view.slots.map(([start, end]) =>
       `<path d="${dialArc(start, end)}" fill="none" stroke="${colors.off}" stroke-width="${DIAL.width}" />`).join("");
@@ -542,8 +588,7 @@ class LittleMonkeyContractCard extends HTMLElement {
       : "";
     const energy = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
     const bands = view.bands.map((band) => {
-      const tag = band.category === "hc" || band.category === "hp"
-        ? `<span class="tag ${band.category}">${band.category.toUpperCase()}</span>` : "";
+      const tag = bandTag(band);
       // The price of a kWh of the contract, the energy of the day without it
       const value = bandPrice(text, locale, band)
         ?? (band.energy === null ? "—" : `${energy.format(band.energy)} kWh`);

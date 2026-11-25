@@ -256,3 +256,66 @@ test("a current band in neither HC nor HP is the period of the whole day (#244)"
   assert.equal(card.otherBand([{ name: "X", category: "none" }], "X"), "X");
   assert.equal(card.otherBand([], null), null);
 });
+
+// --- Colors of the bands, given by the integration (#273)
+
+const TEMPO_BANDS = [
+  { key: "blue_hp_grid_consumption", name: "HP Bleu", category: "hp", color: "#2f6fe0" },
+  { key: "blue_hc_grid_consumption", name: "HC Bleu", category: "hc", color: "#00008b" },
+  { key: "white_hp_grid_consumption", name: "HP Blanc", category: "hp", color: "#e0e0e0" },
+  { key: "white_hc_grid_consumption", name: "HC Blanc", category: "hc", color: "#9e9e9e" },
+  { key: "red_hp_grid_consumption", name: "HP Rouge", category: "hp", color: "#ff3b3b" },
+  { key: "red_hc_grid_consumption", name: "HC Rouge", category: "hc", color: "#8b0000" },
+];
+
+test("the dial takes the colors of the HC and HP bands of the day", () => {
+  const view = { slots: NIGHT, other: null, tempo: null, bands: [
+    { key: "hp_grid_consumption", name: "Heures Pleines", category: "hp", color: "#ffcc00" },
+    { key: "hc_grid_consumption", name: "Heures Creuses", category: "hc", color: "#112233" },
+  ] };
+  assert.deepEqual(card.dayColors(view), { off: "#112233", peak: "#ffcc00" });
+  // Tempo: the bands of the color of the day
+  assert.deepEqual(card.dayColors({ ...view, tempo: "red", bands: TEMPO_BANDS }), { off: "#8b0000", peak: "#ff3b3b" });
+  assert.deepEqual(card.dayColors({ ...view, tempo: "white", bands: TEMPO_BANDS }), { off: "#9e9e9e", peak: "#e0e0e0" });
+});
+
+test("with two bands of a category, the current one gives the color of the dial", () => {
+  const view = { slots: [], other: null, tempo: null, bands: [
+    { key: "band_28", name: "HC Hiver", category: "hc", color: "#185fa5" },
+    { key: "band_32", name: "Super HC hiver", category: "hc", color: "#7b2d8b", current: true },
+    { key: "band_29", name: "HP Hiver", category: "hp", color: "#85b7eb" },
+  ] };
+  assert.equal(card.dayColors(view).off, "#7b2d8b");
+});
+
+test("a band in neither HC nor HP colors the whole ring (#244)", () => {
+  const view = { slots: NIGHT, other: "Heures Weekend", tempo: null, bands: [
+    { key: "band_13", name: "Heures Weekend", category: null, color: "#5fdcab", current: true },
+    { key: "band_8", name: "HP Semaine", category: "hp", color: "#85b7eb" },
+  ] };
+  const colors = card.dayColors(view);
+  assert.equal(colors.peak, "#5fdcab");
+  assert.equal(card.dialRingColor(view, colors), "#5fdcab");
+});
+
+test("without colors from the integration, the dial keeps its colors", () => {
+  const view = { slots: NIGHT, other: null, tempo: "blue", bands: [
+    { key: "blue_hc_grid_consumption", name: "HC Bleu", category: "hc" }] };
+  assert.deepEqual(card.dayColors(view), { off: card.DIAL_COLORS.blue.off, peak: card.DIAL_COLORS.blue.peak });
+  assert.deepEqual(card.dayColors({ slots: [], other: null, tempo: null }), card.DIAL_COLORS.hchp);
+});
+
+test("the tag of a band has its color, a band in neither HC nor HP its color alone", () => {
+  const hc = card.bandTag({ category: "hc", color: "#00008b" });
+  assert.match(hc, /class="tag hc colored"/);
+  assert.match(hc, /color-mix\(in srgb, #00008b 35%, transparent\)/);
+  assert.match(hc, />HC</);
+  const other = card.bandTag({ category: null, color: "#5fdcab" });
+  assert.match(other, /class="tag dot colored"/);
+  assert.doesNotMatch(other, />H[CP]</);
+  // Without a color: the tags as before, and nothing in neither HC nor HP
+  assert.equal(card.bandTag({ category: "hp" }), '<span class="tag hp">HP</span>');
+  assert.equal(card.bandTag({ category: null }), "");
+  // A value that is not a color is not written in the page
+  assert.equal(card.bandTag({ category: null, color: "red;background:url(x)" }), "");
+});

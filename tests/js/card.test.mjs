@@ -403,3 +403,25 @@ test("an entity of a device suggests the card on that device", () => {
   assert.equal(card.entitySuggestion(hass, "sensor.unknown", card.stubConfig), null);
   assert.equal(card.entitySuggestion(hass, "sensor.shed_contract", card.stubConfig), null);
 });
+
+test("the disc takes the color of the current band given by the integration (#273)", () => {
+  assert.equal(card.discColor("hchp", { period: "hc", color: null, bandColor: "#112233" }), "#112233");
+  assert.equal(card.discColor("tempo", { period: "hp", color: "red", bandColor: "#ff3b3b" }), "#ff3b3b");
+  // A band in neither HC nor HP has a color too
+  assert.equal(card.discColor("hchp", { period: null, color: null, bandColor: "#5fdcab" }), "#5fdcab");
+  // Not without the option, nor while power is injected
+  assert.equal(card.discColor(null, { period: "hc", color: null, bandColor: "#112233" }), "#0b6aae");
+  assert.equal(card.discColor("hchp", { period: "hc", bandColor: "#112233" }, -300), "#11AF00");
+  // Not a color: the colors as before
+  assert.equal(card.discColor("hchp", { period: "hc", color: null, bandColor: "bleu" }), "#00008B");
+});
+
+test("dark text on a light disc, white text on a dark one", () => {
+  for (const color of ["#FFFFFF", "#D3D3D3", "#e0e0e0", "#85b7eb"]) {
+    assert.equal(card.isLightColor(color), true, color);
+  }
+  for (const color of ["#00008B", "#0000FF", "#8B0000", "#185fa5", "#0b6aae", "#2f6fe0"]) {
+    assert.equal(card.isLightColor(color), false, color);
+  }
+  assert.equal(card.isLightColor(null), false);
+});

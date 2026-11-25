@@ -163,9 +163,9 @@ export function electricityTotal(measures, unit, locale, text, resale = false) {
   parts.push(`<span class="other">${value(other, values[other])}</span>`);
   return parts.join(separator);
 }
-// Heures Pleines (2) and Heures Creuses (3) of ecojoko: the off-peak hours
-// dark and the peak hours light, as on the other cards. ecojoko gives them
-// the other way round
+// Heures Pleines (2) and Heures Creuses (3) without a color from the
+// integration: the off-peak hours dark and the peak hours light, as on the
+// other cards. ecojoko gives them the other way round
 const PEAK_COLORS = { 2: "#6BBED8", 3: "#0087B1" };
 // Chart, in the units of the SVG
 // The left margin holds the graduations with their unit ("600 kWh")
@@ -450,12 +450,18 @@ function axis(scale, box) {
   return { y, ticks };
 }
 
-/** Return the color of each tariff band, by id. */
+/**
+ * Return the color of each tariff band, by id.
+ *
+ * The integration gives each band its color, chosen in its options or
+ * automatic. Without one, Heures Pleines and Heures Creuses keep their
+ * colors, and another band the one of a band without color.
+ */
 export function bandColors(bands) {
   const colors = {};
   for (const band of bands || []) {
-    colors[band.id] = PEAK_COLORS[band.id]
-      ?? (/^#[0-9a-f]{3,8}$/i.test(band.color || "") ? band.color : MEASURE_COLORS.band);
+    colors[band.id] = /^#[0-9a-f]{3,8}$/i.test(band.color || "")
+      ? band.color : PEAK_COLORS[band.id] ?? MEASURE_COLORS.band;
   }
   return colors;
 }

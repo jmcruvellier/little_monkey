@@ -146,7 +146,22 @@ const TEMPO_COLORS = {
   white: { hc: "#D3D3D3", hp: "#FFFFFF" },
   red: { hc: "#8B0000", hp: "#FF0000" },
 };
-const LIGHT_COLORS = new Set(["#D3D3D3", "#FFFFFF"]);
+/**
+ * Tell whether dark text reads better than white on a color "#rrggbb": its
+ * relative luminance, as WCAG defines it, above the point where the
+ * contrast with black beats the contrast with white.
+ */
+export function isLightColor(color) {
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(String(color ?? ""));
+  if (!match) {
+    return false;
+  }
+  const [red, green, blue] = match.slice(1).map((hex) => {
+    const value = parseInt(hex, 16) / 255;
+    return value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue > 0.179;
+}
 
 // Faces of the central disc, in their order, and the color of the disc on
 // each of them; the first one takes the color of the tariff period
@@ -331,11 +346,16 @@ export function tariffLabel(lang, mode, tariff) {
  * A negative power (injection of a solar surplus) gives green, whatever the
  * tariff. Without option, or when the current period is not known, the disc
  * keeps the blue of the ecojoko dial. A known Tempo color without period
- * gives its HP color.
+ * gives its HP color. The color of the current band, given by the period
+ * sensor of the integration (chosen in its options or automatic), comes
+ * first.
  */
 export function discColor(mode, tariff, power = null) {
   if (power !== null && power < 0) {
     return INJECTION_COLOR;
+  }
+  if (mode && /^#[0-9a-f]{6}$/i.test(tariff.bandColor || "")) {
+    return tariff.bandColor;
   }
   if (mode === "tempo" && tariff.color) {
     return TEMPO_COLORS[tariff.color][tariff.period || "hp"];
@@ -1067,7 +1087,7 @@ class LittleMonkeyCard extends HTMLElement {
 
     // Color of the central disc
     const mode = tariffMode(sensors, hass);
-    const tariff = { period: null, color: null };
+    const tariff = { period: null, color: null, bandColor: null };
     // Without entity chosen, the period sensor of the integration
     const tariffEntity = config.tariff_entity || sensors.current_tariff_period;
     for (const entityId of [tariffEntity, config.tempo_color_entity]) {
@@ -1075,6 +1095,11 @@ class LittleMonkeyCard extends HTMLElement {
       tariff.period = tariff.period || parsed.period;
       // The Tempo color entity has the last word on the color
       tariff.color = parsed.color || tariff.color;
+    }
+    // The color of the current band, given by the period sensor of the
+    // integration; not with a Tempo color entity of its own, which decides
+    if (!config.tempo_color_entity) {
+      tariff.bandColor = hass.states[tariffEntity]?.attributes?.tariff_band_color ?? null;
     }
     const power = numericState(hass, config.entity);
     const color = discColor(mode, tariff, power);
@@ -1100,7 +1125,7 @@ class LittleMonkeyCard extends HTMLElement {
       this._face = "power";
     }
     const face = this._face;
-    const light = face === "power" && LIGHT_COLORS.has(color);
+    const light = face === "power" && isLightColor(color);
     el.disc.setAttribute("fill", face === "power" ? color : FACE_COLORS[face]);
     el.content.setAttribute("fill", light ? "#212121" : "#ffffff");
     el.trend.setAttribute("stroke", light ? "#212121" : "#ffffff");
@@ -1110,7 +1135,7 @@ class LittleMonkeyCard extends HTMLElement {
     this._drawDots(light);
     // The needle has the color of the first face, outlined when it is light
     el.needleBody.setAttribute("stroke", color);
-    el.needleOutline.classList.toggle("hidden", !LIGHT_COLORS.has(color));
+    el.needleOutline.classList.toggle("hidden", !isLightColor(color));
 
     // Power and apparent power
     const apparentEntity = config.apparent_power_entity || sensors.realtime_apparent_power;
