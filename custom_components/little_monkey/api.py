@@ -2271,9 +2271,11 @@ class LittleMonkeyApiClient:
 
     def _count_change(self, counters, key, value) -> None:
         """Count whether a value changed since the last one with the same key."""
-        digest = hashlib.blake2b(
-            json.dumps(value, sort_keys=True, default=str).encode(),
-            digest_size=16).digest()
+        # Not BLAKE2: its vectorised code in Python 3.14 kills Home
+        # Assistant with SIGILL on some virtual CPUs. 16 bytes are enough.
+        digest = hashlib.sha256(
+            json.dumps(value, sort_keys=True, default=str).encode()
+        ).digest()[:16]
         previous = self._answer_digests.pop(key, None)
         if len(self._answer_digests) >= REQUEST_URLS_KEPT:
             # The oldest URL first: a day of a card is not asked again

@@ -592,6 +592,28 @@ def test_diagnostics_keep_the_last_answers_of_a_bounded_number_of_urls(api):
     assert stats["unchanged"] == 1
 
 
+def test_answers_are_not_hashed_with_blake2(api, monkeypatch):
+    """BLAKE2 crashes Home Assistant on some virtual CPUs (SIGILL)."""
+    import hashlib
+    from pathlib import Path
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("blake2 must not be used")
+
+    monkeypatch.setattr(hashlib, "blake2b", forbidden)
+    monkeypatch.setattr(hashlib, "blake2s", forbidden)
+    client = make_client(api, Session())
+    stats = client._count_request("powerstat (d4)")
+    for value in ({"kwh": 1}, {"kwh": 1}, {"kwh": 2}):
+        client._count_answer(stats, "https://ecojoko/day", value)
+    assert (stats["unchanged"], stats["changed"]) == (1, 1)
+    assert all(len(d) == 16 for d in client._answer_digests.values())
+    # Nowhere else in the integration either
+    sources = Path(api.__file__).parent
+    for source in sources.rglob("*.py"):
+        assert "blake2" not in source.read_text(encoding="utf-8"), source
+
+
 # --- Login errors
 
 
