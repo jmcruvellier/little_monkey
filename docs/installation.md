@@ -53,6 +53,7 @@ L'écran affiche le contrat détecté et ses tranches (Heures Pleines et Creuses
 |---|---|
 | Capteurs totaux HC et HP | Crée « Consommation HC Réseau » et « Consommation HP Réseau », qui additionnent les tranches de chaque catégorie |
 | Saisir les prix de mon contrat | Ouvre un écran pour saisir vos propres prix (voir ci-dessous) |
+| Choisir les couleurs des tranches | Ouvre un écran pour choisir la couleur de chaque tranche dans les cartes (voir ci-dessous) |
 | Pour chaque tranche | Le nom de son capteur (prérempli) et le total dans lequel elle compte : Heures Creuses, Heures Pleines ou aucun |
 | Tranches à supprimer | Les tranches à retirer avec leur capteur, par exemple celles d'un ancien contrat qu'ecojoko donne encore |
 
@@ -73,6 +74,20 @@ ecojoko ne connaît pas toujours les prix de votre contrat : une remise pour les
 La carte Contrat affiche alors ces prix, avec la mention « Prix saisis dans les options de l'intégration ». Les coûts sont recalculés à ces prix pendant leur période : ceux de la carte Mesures et du service `get_measures` (jours, mois, années, et chaque tranche), le coût sur 7 jours de l'activité, et le coût du jour d'un équipement piloté. Seul le prix du kWh change, la part d'abonnement comptée par ecojoko reste : le prix d'ecojoko retiré est celui de chaque mois, estimé d'après les jours complets de ce mois (avec le mois d'avant pendant ses premiers jours), si bien qu'un changement de ses prix s'applique au bon mois ; un abonnement saisi ajoute son écart jour par jour. Un mois n'est recalculé que si les prix s'appliquent à tout le mois.
 
 Les économies suivent : le coût de votre consommation est recalculé de la même façon, et le coût de la consommation de référence au prix moyen du kWh que vous avez payé sur la même période (ecojoko valorise lui aussi sa référence à un prix unique, sans tranches) ; l'économie en euros est leur différence. Cela vaut pour les capteurs d'économies (12 mois, semaine, mois, année), la carte « Détail des économies » et le service `get_savings`. L'analyse de la conso, qu'ecojoko ne détaille pas par tranche, change dans la même proportion que le coût de la période. Décochez la case pour revenir aux prix d'ecojoko.
+
+#### Les couleurs des tranches
+
+Les cartes affichent chaque tranche dans sa couleur : les pastilles et le cadran de la carte Contrat, les courbes et les barres de la carte Mesures, le disque du cadran. Par défaut :
+
+- Heures Pleines et Heures Creuses : bleu clair et bleu foncé ;
+- Tempo : bleu, blanc (gris clair et gris) et rouge, clair pour les heures pleines et foncé pour les heures creuses ;
+- une autre tranche : la couleur que lui donne ecojoko, sinon celle de sa catégorie (HC ou HP), sinon une couleur distincte pour chaque tranche comptée ni en HC ni en HP.
+
+Pour choisir les vôtres, cochez « Choisir les couleurs des tranches » : un écran de plus, après celui des prix s'il est demandé, propose un sélecteur de couleur par tranche, prérempli avec sa couleur actuelle.
+
+<img src="images/ha/config-2c-couleurs.png" alt="Écran des couleurs des tranches" width="380">
+
+Une couleur laissée telle que proposée reste celle par défaut. Décochez la case pour revenir aux couleurs par défaut de toutes les tranches. Le texte posé sur une couleur (le disque du cadran) est foncé ou blanc selon sa clarté.
 
 ### 3. Les autres capteurs et fonctions
 
