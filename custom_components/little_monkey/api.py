@@ -7,7 +7,6 @@ from collections import OrderedDict, deque
 from contextvars import ContextVar
 import copy
 import datetime as dt
-import hashlib
 import json
 import math
 import socket
@@ -58,40 +57,13 @@ from .tariff import (
 # What sends the requests to ecojoko, for the diagnostics: the polls by
 # default, "service" for a service read by a card or an automation
 REQUEST_SOURCE: ContextVar[str] = ContextVar("little_monkey_request_source", default="poll")
-# Requests of an API and changes of its answer kept for the diagnostics, and
-# URLs whose last answer is kept to tell whether it changed
-REQUEST_CHANGES_KEPT = 20
-REQUEST_URLS_KEPT = 200
+# Times of the last requests of an API kept for the diagnostics
+REQUEST_TIMES_KEPT = 20
 # Answers of the services kept for the cards, browsers and automations
 SERVICE_CACHE_SIZE = 200
 
 TZ = get_paris_timezone()
 
-
-def powerstat_values(payload):
-    """Return the values of a powerstat answer the sensors use, to compare them.
-
-    By day: the energy, the surplus and the energy of each tariff band,
-    rounded as the sensors round them. The rest of the answer (prices,
-    costs, period...) is left out.
-    """
-    def kwh(value):
-        try:
-            return round_value(float(value))
-        except (TypeError, ValueError):
-            return None
-
-    return [
-        (kwh(item.get("kwh")), kwh(item.get("kwh_prod")), sorted(
-            (str(band.get("id")), kwh(band.get("kwh")))
-            for band in item.get("subconsumption") or [] if isinstance(band, dict)))
-        for item in payload["stat"]["data"] if isinstance(item, dict)
-    ]
-
-
-# Values compared in the diagnostics instead of the whole answer, by the
-# start of the name of the API: the values its sensors use
-ANSWER_VALUES = {"powerstat": powerstat_values}
 
 # Response headers left out of the diagnostics: they hold the session
 HIDDEN_HEADERS = {"set-cookie", "set-cookie2"}
@@ -1034,12 +1006,10 @@ class LittleMonkeyApiClient:
         # Status and headers of the last response of each API, for the
         # diagnostics: they tell whether a proxy answered from its cache
         self._last_responses = {}
-        # Requests of each API since the start, and whether their answer
-        # changed, for the diagnostics: how often ecojoko is called, and how
-        # often its data really change
+        # Requests of each API since the start, for the diagnostics: how
+        # often ecojoko is called
         self._requests_start = None
         self._request_stats = {}
-        self._answer_digests = {}
         # Answers of the services by key: (monotonic time, answer), the
         # oldest first; readings in progress, shared by the same requests;
         # answers served from the cache or read, for the diagnostics
@@ -2230,85 +2200,25 @@ class LittleMonkeyApiClient:
             self._service_cache.popitem(last=False)
         return answer
 
-    def _count_request(self, name) -> dict:
+    def _count_request(self, name) -> None:
         """Count a request of an API, by what sends it: a poll or a service."""
         now = time.monotonic()
         if self._requests_start is None:
             self._requests_start = now
-        if name not in self._request_stats:
-            read = next((read for start, read in ANSWER_VALUES.items()
-                         if name.startswith(start)), None)
-            self._request_stats[name] = {
-                "poll": 0, "service": 0, "times": deque(maxlen=REQUEST_CHANGES_KEPT),
-                **self._new_changes(), "read_values": read,
-                "values": None if read is None else self._new_changes()}
-        stats = self._request_stats[name]
+        stats = self._request_stats.setdefault(name, {
+            "poll": 0, "service": 0, "times": deque(maxlen=REQUEST_TIMES_KEPT)})
         stats[REQUEST_SOURCE.get()] += 1
         stats["times"].append(now)
-        return stats
-
-    @staticmethod
-    def _new_changes() -> dict:
-        """Return the counters of the changes of an answer."""
-        return {"changed": 0, "unchanged": 0,
-                "changes": deque(maxlen=REQUEST_CHANGES_KEPT)}
-
-    def _count_answer(self, stats, url, payload) -> None:
-        """Tell whether the answer of a URL changed since its last request.
-
-        The first answer of a URL is not counted: there is nothing to
-        compare it with. Only a digest of the answer is kept. For an API of
-        ANSWER_VALUES, the values its sensors use are compared as well.
-        """
-        self._count_change(stats, url, payload)
-        if stats["read_values"] is None:
-            return
-        try:
-            values = stats["read_values"](payload)
-        except PARSE_ERRORS:
-            values = None
-        self._count_change(stats["values"], (url, "values"), values)
-
-    def _count_change(self, counters, key, value) -> None:
-        """Count whether a value changed since the last one with the same key."""
-        # Not BLAKE2: its vectorised code in Python 3.14 kills Home
-        # Assistant with SIGILL on some virtual CPUs. 16 bytes are enough.
-        digest = hashlib.sha256(
-            json.dumps(value, sort_keys=True, default=str).encode()
-        ).digest()[:16]
-        previous = self._answer_digests.pop(key, None)
-        if len(self._answer_digests) >= REQUEST_URLS_KEPT:
-            # The oldest URL first: a day of a card is not asked again
-            del self._answer_digests[next(iter(self._answer_digests))]
-        self._answer_digests[key] = digest
-        if previous is None:
-            return
-        if previous == digest:
-            counters["unchanged"] += 1
-        else:
-            counters["changed"] += 1
-            counters["changes"].append(time.monotonic())
 
     def _requests_diagnostics(self, now) -> dict:
         """Return the requests of each API since the start, for the diagnostics.
 
         By API: the requests of the polls and of the services, per hour on
-        average, the seconds between the last requests, how many answers changed or not since the request before
-        to the same URL, and the seconds between the last changes; the same
-        for the values the sensors use, for the APIs of ANSWER_VALUES.
+        average, and the seconds between the last requests.
         """
         def intervals(times):
             times = list(times)
             return [round(after - before) for before, after in zip(times, times[1:])]
-
-        def changes(counters):
-            times = counters["changes"]
-            return {
-                "changed": counters["changed"],
-                "unchanged": counters["unchanged"],
-                "seconds_between_changes": intervals(times),
-                "seconds_since_change": round(now - times[-1]) if times else None,
-            }
 
         hours = (now - self._requests_start) / 3600 if self._requests_start else 0
         apis = {}
@@ -2320,11 +2230,7 @@ class LittleMonkeyApiClient:
                 "per_hour": round(total / hours, 1) if hours >= 1 / 60 else None,
                 # Right from the second request, unlike the average per hour
                 "seconds_between_requests": intervals(stats["times"]),
-                **changes(stats),
             }
-            if stats["values"] is not None:
-                # The values the sensors use, apart from the rest of the answer
-                apis[name]["values"] = changes(stats["values"])
         return {
             "seconds_counted": None if self._requests_start is None
             else round(now - self._requests_start),
@@ -2341,7 +2247,7 @@ class LittleMonkeyApiClient:
         always released. With error_payload, an answer HTTP 400 in JSON is
         returned: ecojoko explains in it why it has no data.
         """
-        stats = self._count_request(name)
+        self._count_request(name)
         try:
             async with asyncio.timeout(timeout or CONF_API_TIMEOUT):
                 async with self._session.request(
@@ -2380,7 +2286,6 @@ class LittleMonkeyApiClient:
                     payload = None
                     if "application/json" in content_type:
                         payload = await response.json()
-                        self._count_answer(stats, url, payload)
                     return payload, response.cookies
         except asyncio.TimeoutError as exception:
             raise LittleMonkeyApiClientCommunicationError(
