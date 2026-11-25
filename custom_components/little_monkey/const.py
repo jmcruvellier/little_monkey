@@ -6,7 +6,7 @@ LOGGER: Logger = getLogger(__package__)
 DOMAIN = "little_monkey"
 MANUFACTURER = "Jean-Marc Cruvellier"
 MODEL = "Ecojoko"
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 ATTRIBUTION = "Data provided by https://service.ecojoko.com/"
 POLL_INTERVAL = "poll_interval"
 # ecojoko refreshes the realtime of the integration every 30 s: a shorter
