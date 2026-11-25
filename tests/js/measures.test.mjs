@@ -10,9 +10,10 @@ const card = await import(
   "../../custom_components/little_monkey/frontend/little-monkey-measures-card.js"
 );
 
+// The colors of the bands given by the integration (chosen or automatic)
 const BANDS = [
-  { id: 2, label: "Heures Pleines", color: "#0087B1" },
-  { id: 3, label: "Heures Creuses", color: "#6BBED8" },
+  { id: 2, label: "Heures Pleines", color: "#85b7eb" },
+  { id: 3, label: "Heures Creuses", color: "#185fa5" },
 ];
 const WEEK = {
   start: "2026-11-16T00:00:00+01:00", energy: 50, cost: 8, production: 1.5, bands: BANDS,
@@ -25,11 +26,11 @@ const WEEK = {
   ],
 };
 
-test("the bars are stacked by band, in the order of ecojoko, with its colors", () => {
+test("the bars are stacked by band, in the order of ecojoko, in the colors of the bands", () => {
   const chart = card.stackedBars(WEEK, "kwh");
   const first = chart.rects[0];
   assert.deepEqual(first.blocks.map((block) => [block.id, block.value, block.color]), [
-    [2, 20, "#6BBED8"], [3, 10, "#0087B1"],
+    [2, 20, "#85b7eb"], [3, 10, "#185fa5"],
   ]);
   // The blocks touch each other, the first one on the axis
   assert.ok(Math.abs(first.blocks[0].y + first.blocks[0].height - chart.zero) < 1e-9);
@@ -61,12 +62,25 @@ test("the power of a day is coloured by band, over the base load", () => {
     { time: "2026-11-18T13:00:00+01:00", power: -500, base: 6, band: 2 },
   ] };
   const areas = card.dayAreas(day);
-  assert.deepEqual(areas.bands.map((band) => [band.band, band.color]), [[3, "#0087B1"], [2, "#6BBED8"]]);
+  assert.deepEqual(areas.bands.map((band) => [band.band, band.color]), [[3, "#185fa5"], [2, "#85b7eb"]]);
   assert.ok(areas.base.startsWith("M"));
   // Injected power under the axis
   assert.ok(areas.injected.startsWith("M"));
   assert.ok(areas.scale.min < 0);
   assert.equal(card.dayAreas({ points: [] }).points.length, 0);
+});
+
+test("each band takes the color given by the integration, chosen in its options (#273)", () => {
+  assert.deepEqual(card.bandColors([
+    { id: 3, label: "Heures Creuses", color: "#ff0010" },
+    { id: 13, label: "Heures Weekend", color: "#5fdcab" },
+  ]), { 3: "#ff0010", 13: "#5fdcab" });
+  // Without a color: Heures Pleines and Heures Creuses keep theirs, the
+  // off-peak hours dark, and another band the color of a band without one
+  assert.deepEqual(card.bandColors([
+    { id: 2, label: "Heures Pleines" }, { id: 3, label: "Heures Creuses", color: "bleu" },
+    { id: 13, label: "Heures Weekend" },
+  ]), { 2: "#6BBED8", 3: "#0087B1", 13: card.MEASURE_COLORS.band });
 });
 
 test("the totals of the bands over a period", () => {

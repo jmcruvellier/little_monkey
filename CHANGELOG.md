@@ -3,7 +3,12 @@
 ## Non publié
 
 ### Nouveautés
-- Une couleur par tranche tarifaire, à choisir dans les options de l'intégration : cochez « Choisir les couleurs des tranches » sur l'écran des tranches tarifaires, un écran suivant propose la couleur de chaque tranche. Par défaut : les couleurs des jours Tempo et de la paire HC/HP de la carte Contrat, sinon celle que donne ecojoko, sinon une couleur selon la catégorie. Décocher la case rétablit les couleurs par défaut. Le capteur Contrat donne la couleur de chaque tranche (`color`, et `color_source` : `chosen` ou `default`), le capteur Période Tarifaire en Cours celle de la tranche en cours (`tariff_band_color`), et le service `get_measures` celle de chaque tranche des mesures. Les cartes les utiliseront dans une prochaine étape ([#273](https://github.com/jmcruvellier/little_monkey/discussions/273))
+- Une couleur par tranche tarifaire, à choisir dans les options de l'intégration : cochez « Choisir les couleurs des tranches » sur l'écran des tranches tarifaires, un écran suivant propose la couleur de chaque tranche. Par défaut : les couleurs des jours Tempo et de la paire HC/HP de la carte Contrat, sinon celle que donne ecojoko, sinon une couleur selon la catégorie. Décocher la case rétablit les couleurs par défaut. Le capteur Contrat donne la couleur de chaque tranche (`color`, et `color_source` : `chosen` ou `default`), le capteur Période Tarifaire en Cours celle de la tranche en cours (`tariff_band_color`), et le service `get_measures` celle de chaque tranche des mesures ([#273](https://github.com/jmcruvellier/little_monkey/discussions/273))
+- Les cartes affichent chaque tranche dans sa couleur ([#273](https://github.com/jmcruvellier/little_monkey/discussions/273)) :
+  - **Contrat** : les pastilles HC/HP prennent la couleur de leur tranche (les six tranches Tempo ont chacune la leur), une tranche ni HC ni HP a une pastille de sa couleur ; le cadran prend les couleurs des tranches HC et HP du jour, et toute la couleur d'une tranche ni HC ni HP en cours (Heures Weekend)
+  - **Mesures** : les barres et les courbes prennent la couleur de chaque tranche
+  - **Cadran** : le disque prend la couleur de la tranche en cours, sauf avec une entité de couleur Tempo choisie dans la carte ; le texte du disque est foncé ou blanc selon la clarté de la couleur
+- Les couleurs par défaut sont désormais les mêmes dans toutes les cartes, celles de la carte Contrat : le disque du cadran et les barres HP/HC de la carte Mesures changent légèrement de teinte (par exemple le bleu Tempo HP `#0000FF` devient `#2f6fe0`)
 
 ## 2.0.1
 

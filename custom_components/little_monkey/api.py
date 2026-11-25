@@ -39,6 +39,7 @@ from .tariff import (
     OFF_PEAK,
     PEAK,
     PRICE_DAYS,
+    BAND_COLORS,
     active_contract,
     band_colors,
     bands_of,
@@ -1205,18 +1206,24 @@ class LittleMonkeyApiClient:
     def color_measures(self, measures) -> dict:
         """Return the measures with the color of each configured band.
 
-        A band unknown to the entry keeps the color ecojoko gives it. The
-        measures are not changed in place: they may be kept in a cache.
+        A band unknown to the entry keeps the color ecojoko gives it, but
+        for the HC/HP pair and the Tempo days, which keep their palette:
+        ecojoko gives Heures Pleines and Heures Creuses the other way round.
+        The measures are not changed in place: they may be kept in a cache.
         """
         bands = measures.get("bands")
         if not bands:
             return measures
         self._keep_ecojoko_colors(bands)
         colors = self.band_colors
-        return {**measures, "bands": [
-            {**band, "color": colors[band.get("id")]["color"]}
-            if band.get("id") in colors else band
-            for band in bands]}
+
+        def color_of(band):
+            band_id = band.get("id")
+            if band_id in colors:
+                return colors[band_id]["color"]
+            return BAND_COLORS.get(band_id, band.get("color"))
+
+        return {**measures, "bands": [{**band, "color": color_of(band)} for band in bands]}
 
     def correct_measures(self, measures, period, day) -> dict:
         """Return the measures of electricity at the prices entered by the user.

@@ -2471,7 +2471,9 @@ def test_power_of_a_day(api):
     assert day["previous"] == "2026-11-17T00:00:00+01:00"
     assert day["energy"] == 15.37 and day["cost"] == 3.06 and day["production"] == 0.63
     assert day["resale"] == 0.03
-    assert day["bands"][0] == {"id": 2, "label": "Heures Pleines", "color": "#0087B1"}
+    # Not configured, Heures Pleines keeps its palette: ecojoko gives
+    # Heures Pleines and Heures Creuses the other way round
+    assert day["bands"][0] == {"id": 2, "label": "Heures Pleines", "color": "#85b7eb"}
     assert day["points"] == [
         {"time": "2026-11-18T00:00:00+01:00", "power": 299, "base": 6, "band": 3}]
 
