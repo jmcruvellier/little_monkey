@@ -218,6 +218,13 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
         self._current_band_key = key
         return self._band_names.get(key)
 
+    def _current_color(self, band_colors) -> str | None:
+        """Return the color of the current band, None if it is not known."""
+        if self._current_band_key is None:
+            return None
+        band_id = self._band_ids.get(self._current_band_key)
+        return (band_colors.get(band_id) or {}).get("color")
+
     def _current_price(self, band_prices) -> float | None:
         """Return the price of a kWh of the current tariff band, None if not known.
 
@@ -260,6 +267,10 @@ class LittleMonkeyDataUpdateCoordinator(DataUpdateCoordinator):
                 equipment["id"]: equipment for equipment in self.client.equipments},
             # Price of a kWh of each band, by band id, and of the current one
             "band_prices": (band_prices := self.client.band_prices),
+            # Color of each band, by band id: chosen in the options or automatic
+            "band_colors": (band_colors := self.client.band_colors),
+            # After the current band, which it needs
+            "current_tariff_band_color": self._current_color(band_colors),
             # Prices of the contract entered by the user for today, or None
             "entered_prices": self.client.entered_prices,
             # After the current band, which it needs

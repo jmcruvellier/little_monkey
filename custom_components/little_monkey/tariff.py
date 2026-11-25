@@ -16,6 +16,7 @@ responses:
 from __future__ import annotations
 
 import datetime as dt
+import re
 from zoneinfo import ZoneInfo
 
 # Fields of a contract kept for the diagnostics: neither prices nor the
@@ -251,6 +252,67 @@ def is_band_key(key):
     return any(
         known_key == key and band_id not in TOTAL_BANDS
         for band_id, (known_key, _category) in KNOWN_BANDS.items())
+
+
+# Colors of the bands, used by the cards wherever a band has a color. The
+# HC/HP pair and the Tempo days: the off-peak hours dark, the peak hours
+# light, as on the dial of the contract card
+BAND_COLORS = {
+    2: "#85b7eb", 3: "#185fa5",
+    18: "#2f6fe0", 19: "#00008b",
+    20: "#e0e0e0", 21: "#9e9e9e",
+    22: "#ff3b3b", 23: "#8b0000",
+}
+CATEGORY_COLORS = {OFF_PEAK: "#185fa5", PEAK: "#85b7eb"}
+# Bands in neither HC nor HP, without a color from ecojoko: in the order of
+# their ids, so that a band keeps its color from a start to the next
+NEUTRAL_COLORS = ("#7ed2df", "#f2a65a", "#9c7ec9", "#5fb88f", "#e57f9b", "#c9b458")
+COLOR_CHOSEN = "chosen"
+COLOR_DEFAULT = "default"
+
+
+def is_color(value) -> bool:
+    """Tell whether a value is a color "#rrggbb"."""
+    return isinstance(value, str) and re.fullmatch(r"#[0-9a-fA-F]{6}", value) is not None
+
+
+def default_colors(bands, ecojoko_colors=None) -> dict:
+    """Return the automatic color of each band {id: "#rrggbb"}.
+
+    In this order: the Tempo days and the HC/HP pair (BAND_COLORS); the
+    color ecojoko gives the band; the color of its category; a neutral
+    color for a band in neither HC nor HP.
+    """
+    ecojoko_colors = ecojoko_colors or {}
+    colors, neutral = {}, 0
+    for band in sorted(bands, key=lambda band: band["id"]):
+        band_id = band["id"]
+        color = BAND_COLORS.get(band_id)
+        if color is None and is_color(ecojoko_colors.get(band_id)):
+            color = ecojoko_colors[band_id].lower()
+        if color is None:
+            color = CATEGORY_COLORS.get(band.get("category"))
+        if color is None:
+            color = NEUTRAL_COLORS[neutral % len(NEUTRAL_COLORS)]
+            neutral += 1
+        colors[band_id] = color
+    return colors
+
+
+def band_colors(bands, ecojoko_colors=None) -> dict:
+    """Return the color of each band and where it comes from.
+
+    {id: {"color": "#rrggbb", "source": "chosen" or "default"}}: the color
+    chosen in the options, else the automatic one.
+    """
+    defaults = default_colors(bands, ecojoko_colors)
+    result = {}
+    for band in bands:
+        chosen = band.get("color")
+        result[band["id"]] = (
+            {"color": chosen.lower(), "source": COLOR_CHOSEN} if is_color(chosen)
+            else {"color": defaults[band["id"]], "source": COLOR_DEFAULT})
+    return result
 
 
 def day_values(subconsumption, bands):

@@ -16,11 +16,13 @@
                 "data": {
                     "use_hchp_feature": "HC and HP total sensors",
                     "removed_bands": "Bands to remove",
-                    "use_contract_prices": "Enter the prices of my contract"
+                    "use_contract_prices": "Enter the prices of my contract",
+                    "use_band_colors": "Choose the colors of the bands"
                 },
                 "data_description": {
                     "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back.",
-                    "use_contract_prices": "Check it if the prices per kWh shown by ecojoko are not those of your contract, for instance during a discount for new customers. You enter them on the next screen; uncheck it to go back to ecojoko's prices."
+                    "use_contract_prices": "Check it if the prices per kWh shown by ecojoko are not those of your contract, for instance during a discount for new customers. You enter them on the next screen; uncheck it to go back to ecojoko's prices.",
+                    "use_band_colors": "The cards show each band in its color. By default: the colors of the Tempo days, the HC/HP pair, or the one given by ecojoko. Check it to choose them on a next screen; uncheck it to go back to the default colors."
                 }
             },
             "settings": {
@@ -60,6 +62,10 @@
                     "prices_start": "Leave it empty if the prices apply since the start of your contract.",
                     "prices_end": "The end of the discount, for instance. Leave it empty if these prices have no known end."
                 }
+            },
+            "colors": {
+                "title": "Colors of the bands",
+                "description": "Detected contract: {contract}.\n\nChoose the color of each band. The cards use it wherever they show the band: tags, dial of the contract, charts of the measures. A color left as proposed stays the default one, and follows it if it changes."
             }
         },
         "error": {
@@ -91,11 +97,13 @@
                 "data": {
                     "use_hchp_feature": "HC and HP total sensors",
                     "removed_bands": "Bands to remove",
-                    "use_contract_prices": "Enter the prices of my contract"
+                    "use_contract_prices": "Enter the prices of my contract",
+                    "use_band_colors": "Choose the colors of the bands"
                 },
                 "data_description": {
                     "removed_bands": "The checked bands are removed with their sensor, for instance those of a previous contract that ecojoko still gives. They stay listed here, checked, as long as they appear in its statistics of the last weeks; uncheck one to add it back.",
-                    "use_contract_prices": "Check it if the prices per kWh shown by ecojoko are not those of your contract, for instance during a discount for new customers. You enter them on the next screen; uncheck it to go back to ecojoko's prices."
+                    "use_contract_prices": "Check it if the prices per kWh shown by ecojoko are not those of your contract, for instance during a discount for new customers. You enter them on the next screen; uncheck it to go back to ecojoko's prices.",
+                    "use_band_colors": "The cards show each band in its color. By default: the colors of the Tempo days, the HC/HP pair, or the one given by ecojoko. Check it to choose them on a next screen; uncheck it to go back to the default colors."
                 }
             },
             "settings": {
@@ -129,6 +137,10 @@
                     "prices_start": "Leave it empty if the prices apply since the start of your contract.",
                     "prices_end": "The end of the discount, for instance. Leave it empty if these prices have no known end."
                 }
+            },
+            "colors": {
+                "title": "Colors of the bands",
+                "description": "Detected contract: {contract}.\n\nChoose the color of each band. The cards use it wherever they show the band: tags, dial of the contract, charts of the measures. A color left as proposed stays the default one, and follows it if it changes."
             }
         },
         "error": {

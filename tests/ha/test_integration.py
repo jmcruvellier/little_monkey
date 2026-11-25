@@ -1031,6 +1031,7 @@ async def test_setup_of_a_weekend_contract(hass, fake_api):
     assert schema_defaults(result) == {
         "use_hchp_feature": True,
         "use_contract_prices": False,
+        "use_band_colors": False,
         "HP Semaine": "HP Semaine",
         "HP Semaine – HC/HP": "hp",
         "HC Semaine": "HC Semaine",
@@ -1348,6 +1349,8 @@ async def test_tariff_period_from_the_off_peak_hours(hass, fake_api, monkeypatch
     state = hass.states.get(entity_id)
     assert state.state == "hp"
     assert state.attributes["tariff_band"] == "Heures Pleines"
+    # With the color of the band, for the cards
+    assert state.attributes["tariff_band_color"] == "#85b7eb"
     now["time"] = dt.datetime(2026, 11, 23, 14, 30, tzinfo=paris)
     await refresh(hass, entry)
     state = hass.states.get(entity_id)
@@ -2111,6 +2114,85 @@ async def test_options_enter_the_prices_of_the_contract(hass, fake_api):
     await hass.async_block_till_done()
     assert "contract_prices" not in entry.data
     assert hass.states.get("sensor.ecojoko_contract").attributes["entered_prices"] is None
+
+
+async def test_options_choose_the_colors_of_the_bands(hass, fake_api):
+    """The colors chosen are kept in the bands and given to the cards."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    attributes = hass.states.get("sensor.ecojoko_contract").attributes
+    bands = {band["key"]: band for band in attributes["bands"]}
+    # By default, the HC/HP pair
+    assert bands["hp_grid_consumption"]["color"] == "#85b7eb"
+    assert bands["hc_grid_consumption"]["color"] == "#185fa5"
+    assert bands["hc_grid_consumption"]["color_source"] == "default"
+
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    defaults = schema_defaults(result)
+    assert defaults["use_band_colors"] is False
+
+    async def configure(data):
+        return await hass.config_entries.options.async_configure(result["flow_id"], data)
+
+    result = await configure({**defaults, "use_band_colors": True})
+    assert result["step_id"] == "colors"
+    # The automatic colors, as the color selector gives them
+    assert schema_defaults(result) == {
+        "Heures Pleines – RGB": [133, 183, 235], "Heures Creuses – RGB": [24, 95, 165]}
+    # A color left as proposed stays automatic
+    result = await configure({
+        "Heures Pleines – RGB": [133, 183, 235], "Heures Creuses – RGB": [255, 0, 16]})
+    assert result["step_id"] == "settings"
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    saved = {band["id"]: band for band in entry.data["tariff_bands"]}
+    assert saved[3]["color"] == "#ff0010"
+    assert "color" not in saved[2]
+    bands = {
+        band["key"]: band
+        for band in hass.states.get("sensor.ecojoko_contract").attributes["bands"]}
+    assert bands["hc_grid_consumption"]["color"] == "#ff0010"
+    assert bands["hc_grid_consumption"]["color_source"] == "chosen"
+    assert bands["hp_grid_consumption"]["color_source"] == "default"
+
+    # The colors chosen are proposed again, the screen checked
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    assert schema_defaults(result)["use_band_colors"] is True
+    result = await configure(schema_defaults(result))
+    assert result["step_id"] == "colors"
+    assert schema_defaults(result)["Heures Creuses – RGB"] == [255, 0, 16]
+    result = await configure(schema_defaults(result))
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert {band["id"]: band for band in entry.data["tariff_bands"]}[3]["color"] == "#ff0010"
+
+    # Unchecked, the bands take their automatic colors again
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+    result = await configure({**schema_defaults(result), "use_band_colors": False})
+    assert result["step_id"] == "settings"
+    result = await configure(dict(SETTINGS))
+    await hass.async_block_till_done()
+    assert all("color" not in band for band in entry.data["tariff_bands"])
+
+
+async def test_options_prices_then_colors(hass, fake_api):
+    """With the prices and the colors, the colors come after the prices."""
+    entry = add_entry(hass)
+    assert await setup_entry(hass, entry)
+    result = await options_bands_screen(
+        hass, entry, fake_api, {2: "Heures Pleines", 3: "Heures Creuses"})
+
+    async def configure(data):
+        return await hass.config_entries.options.async_configure(result["flow_id"], data)
+
+    result = await configure({
+        **schema_defaults(result), "use_contract_prices": True, "use_band_colors": True})
+    assert result["step_id"] == "prices"
+    result = await configure({"Heures Pleines – €/kWh": 0.2})
+    assert result["step_id"] == "colors"
 
 
 async def test_price_of_a_kwh_now(hass, fake_api):
