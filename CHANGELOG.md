@@ -3,7 +3,7 @@
 ## Non publié
 
 ### Corrections
-- Home Assistant ne démarrait plus (signal 4, SIGILL) sur certaines machines virtuelles dont le processeur virtuel est minimal (Synology Virtual Machine Manager…), avec Python 3.14 : l'empreinte des réponses d'ecojoko, calculée pour les diagnostics, utilisait BLAKE2, dont le code vectorisé de Python y exécute une instruction inconnue. Elle utilise désormais SHA-256
+- Home Assistant ne démarrait plus (signal 4, SIGILL) sur certaines machines virtuelles dont le processeur virtuel est minimal (Synology Virtual Machine Manager…), avec Python 3.14 : l'empreinte des réponses d'ecojoko, calculée pour les diagnostics, utilisait BLAKE2, dont le code vectorisé de Python y exécute une instruction inconnue. Ce calcul, qui ne servait qu'à mesurer pendant le développement le rythme de mise à jour d'ecojoko, est supprimé : les diagnostics (`client › requests`) ne disent plus combien de réponses ont changé, et gardent le nombre de requêtes de chaque API
 - Contrat sans plages d'heures creuses chez ecojoko (EDF Zen Estival…) : le cadran de la carte Contrat était entièrement de la couleur des heures pleines, comme si toute la journée l'était. Il reste désormais neutre, et la période en cours, déduite des compteurs, s'affiche toujours au centre ([#266](https://github.com/jmcruvellier/little_monkey/issues/266))
 - Une tranche dont le nom commence par « Super HC » (« Super HC hiver » d'EDF Zen Estival) est rangée en heures creuses lors de sa création, au lieu de n'être comptée ni en HC ni en HP. Les tranches déjà configurées gardent la catégorie choisie dans les options ([#266](https://github.com/jmcruvellier/little_monkey/issues/266))
 

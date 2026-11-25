@@ -512,8 +512,8 @@ def test_diagnostics_show_the_response_headers(api):
         assert secret not in text
 
 
-def test_diagnostics_count_the_requests_and_their_changes(api):
-    """The requests of each API are counted, with the answers that changed."""
+def test_diagnostics_count_the_requests(api):
+    """The requests of each API are counted, by what sends them."""
     readings = iter([512, 512, 640])
     session = Session(realtime_conso=lambda: Response(
         payload={"real_time": {"value": next(readings)}}))
@@ -534,84 +534,19 @@ def test_diagnostics_count_the_requests_and_their_changes(api):
     requests = client.diagnostics()["requests"]
     assert requests["seconds_counted"] >= 0
     realtime = requests["apis"]["realtime_conso"]
-    # The first answer has nothing to be compared with
     assert (realtime["poll"], realtime["service"]) == (3, 0)
     # The seconds between the 3 requests, from the second one on
     assert len(realtime["seconds_between_requests"]) == 2
     assert all(seconds >= 0 for seconds in realtime["seconds_between_requests"])
     assert requests["apis"]["Cookies"]["seconds_between_requests"] == []
-    assert (realtime["unchanged"], realtime["changed"]) == (1, 1)
-    assert realtime["seconds_since_change"] >= 0
-    assert realtime["seconds_between_changes"] == []
+    # The answers are not compared any more
+    assert "changed" not in realtime
     analysis = requests["apis"]["analysis"]
     assert (analysis["poll"], analysis["service"]) == (1, 1)
-    assert (analysis["unchanged"], analysis["changed"]) == (1, 0)
     # Neither the URLs, which hold the device ids, nor the answers
     text = repr(requests)
     for secret in ("gw-1", "http", "512", "640"):
         assert secret not in text
-
-
-def test_diagnostics_compare_the_values_of_powerstat_its_sensors_use(api):
-    """A powerstat answer changed elsewhere than in its energies is told apart."""
-    client = make_client(api, Session())
-    stats = client._count_request("powerstat (w)")
-    url = "https://ecojoko/powerstat/w"
-
-    def answer(kwh, price, hc=1.234):
-        return {"stat": {"period": {"price": price}, "data": [
-            {"kwh": kwh, "kwh_prod": 0, "time": "2026-11-20",
-             "subconsumption": [{"id": 3, "kwh": hc, "price": price}]}]}}
-
-    for kwh, price, hc in [(4.2, 0.1, 1.234), (4.2, 0.2, 1.234), (4.2, 0.3, 1.231), (4.3, 0.3, 1.231)]:
-        client._count_request("powerstat (w)")
-        client._count_answer(stats, url, answer(kwh, price, hc))
-    powerstat = client.diagnostics()["requests"]["apis"]["powerstat (w)"]
-    # The whole answer changed each time, its energies only once: a change
-    # of the band under the rounding of the sensors (1.234 -> 1.231) is not one
-    assert (powerstat["changed"], powerstat["unchanged"]) == (3, 0)
-    assert (powerstat["values"]["changed"], powerstat["values"]["unchanged"]) == (1, 2)
-    assert powerstat["values"]["seconds_since_change"] >= 0
-    # An answer that cannot be read is compared as such
-    client._count_answer(stats, url, {"unexpected": True})
-    assert client.diagnostics()["requests"]["apis"]["powerstat (w)"]["values"]["changed"] == 2
-    # The other APIs have no values of their own
-    assert "values" not in client.diagnostics()["requests"]["apis"].get("realtime_conso", {})
-
-
-def test_diagnostics_keep_the_last_answers_of_a_bounded_number_of_urls(api):
-    """Reading many days does not keep their answers without end."""
-    client = make_client(api, Session())
-    stats = client._count_request("powerstat (d4)")
-    for day in range(api.REQUEST_URLS_KEPT + 50):
-        client._count_answer(stats, f"https://ecojoko/day/{day}", {"day": day})
-    assert len(client._answer_digests) == api.REQUEST_URLS_KEPT
-    # The most recent URL is still compared with its last answer
-    last = f"https://ecojoko/day/{api.REQUEST_URLS_KEPT + 49}"
-    client._count_answer(stats, last, {"day": api.REQUEST_URLS_KEPT + 49})
-    assert stats["unchanged"] == 1
-
-
-def test_answers_are_not_hashed_with_blake2(api, monkeypatch):
-    """BLAKE2 crashes Home Assistant on some virtual CPUs (SIGILL)."""
-    import hashlib
-    from pathlib import Path
-
-    def forbidden(*args, **kwargs):
-        raise AssertionError("blake2 must not be used")
-
-    monkeypatch.setattr(hashlib, "blake2b", forbidden)
-    monkeypatch.setattr(hashlib, "blake2s", forbidden)
-    client = make_client(api, Session())
-    stats = client._count_request("powerstat (d4)")
-    for value in ({"kwh": 1}, {"kwh": 1}, {"kwh": 2}):
-        client._count_answer(stats, "https://ecojoko/day", value)
-    assert (stats["unchanged"], stats["changed"]) == (1, 1)
-    assert all(len(d) == 16 for d in client._answer_digests.values())
-    # Nowhere else in the integration either
-    sources = Path(api.__file__).parent
-    for source in sources.rglob("*.py"):
-        assert "blake2" not in source.read_text(encoding="utf-8"), source
 
 
 # --- Login errors
