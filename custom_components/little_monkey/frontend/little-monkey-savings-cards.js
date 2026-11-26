@@ -1184,7 +1184,7 @@ class LittleMonkeySavingsDetailCard extends HTMLElement {
     for (const button of root.querySelectorAll(".period")) {
       button.classList.toggle("active", button.dataset.period === this._period);
     }
-    root.querySelector(".name").textContent = periodLabel(locale, this._period, shown.start);
+    root.querySelector(".nav .name").textContent = periodLabel(locale, this._period, shown.start);
     root.querySelector(".next").disabled = shown.start >= this._current();
     root.querySelector(".previous").disabled = this._isEarliest();
 
