@@ -1060,7 +1060,7 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
       return;
     }
     if (this._history) {
-      root.querySelector(".name").textContent = String(this._history.year);
+      root.querySelector(".nav .name").textContent = String(this._history.year);
       root.querySelector(".previous").disabled = false;
       root.querySelector(".next").disabled = this._history.year >= new Date().getFullYear();
       root.querySelector(".body").innerHTML = this._historyBody(analysis, locale, text);
@@ -1072,7 +1072,7 @@ class LittleMonkeyAnalysisCard extends HTMLElement {
       return;
     }
     const start = this._start || analysis.start || this._latest[this._period];
-    root.querySelector(".name").textContent = start ? periodLabel(locale, this._period, start) : "";
+    root.querySelector(".nav .name").textContent = start ? periodLabel(locale, this._period, start) : "";
     root.querySelector(".previous").disabled = !start;
     root.querySelector(".next").disabled = !this._start;
     root.querySelector(".body").innerHTML = this._body(analysis, locale, text);

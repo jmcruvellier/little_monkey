@@ -1194,7 +1194,7 @@ class LittleMonkeyMeasuresCard extends HTMLElement {
     }
     root.querySelector(".message-option").textContent = "";
     const period = datesPeriod(this._measure, this._period);
-    root.querySelector(".name").textContent = periodLabel(
+    root.querySelector(".nav .name").textContent = periodLabel(
       locale, period, this._measure === "electricity" && measures?.start
         ? measures.start : localIso(periodRange(period, this._date()).start));
     // ecojoko has nothing before its first period

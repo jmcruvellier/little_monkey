@@ -10,6 +10,9 @@
   - **Cadran** : le disque prend la couleur de la tranche en cours, sauf avec une entité de couleur Tempo choisie dans la carte ; le texte du disque est foncé ou blanc selon la clarté de la couleur
 - Les couleurs par défaut sont désormais les mêmes dans toutes les cartes, celles de la carte Contrat : le disque du cadran et les barres HP/HC de la carte Mesures changent légèrement de teinte (par exemple le bleu Tempo HP `#0000FF` devient `#2f6fe0`)
 
+### Corrections
+- Carte Analyse de la conso : après un retour à une période déjà affichée (flèche droite après la flèche gauche), le nom sous le graphique restait celui de la période précédente, alors que les données étaient les bonnes. Le nom suit désormais la période affichée, pour le mois, la semaine, l'année et l'historique d'une catégorie
+
 ## 2.0.1
 
 Corrections de la 2.0.0, dont un plantage de Home Assistant au démarrage sur certaines machines virtuelles.
