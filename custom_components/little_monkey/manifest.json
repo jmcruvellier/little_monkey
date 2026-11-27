@@ -9,9 +9,9 @@
     "@jmcruvellier"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/jmcruvellier/little_monkey/blob/v2.0.1/README.md",
+  "documentation": "https://github.com/jmcruvellier/little_monkey/blob/v2.0.2/README.md",
   "integration_type": "device",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/jmcruvellier/little_monkey/issues",
-  "version": "2.0.1"
+  "version": "2.0.2"
 }
