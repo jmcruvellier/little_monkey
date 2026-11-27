@@ -4,11 +4,11 @@
 
 ![Little Monkey](https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/logo_small.png)
 
-<p align="center">
+<div align="center"><center>
   <a href="https://github.com/sponsors/jmcruvellier"><img src="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/support-github-sponsors.svg" alt="Soutenir Little Monkey sur GitHub Sponsors" height="40"></a>
   &nbsp;
   <a href="https://ko-fi.com/jmcruvellier"><img src="https://raw.githubusercontent.com/jmcruvellier/little_monkey/main/docs/images/support-ko-fi.svg" alt="Soutenir Little Monkey sur Ko-fi" height="40"></a>
-</p>
+</center></div>
 
 # Little Monkey / Petit Singe
 
