@@ -1,6 +1,10 @@
 # Changelog
 
-## Non publié
+## 2.0.2
+
+Une couleur par tranche tarifaire, réglable dans les options et reprise par toutes les cartes, et une correction de la carte Analyse de la conso. Après la mise à jour, rechargez la page sans son cache (Ctrl+F5) pour voir les cartes en couleurs.
+
+> **Vous êtes encore en version 1.x (1.2.8 ou plus ancienne) ?** Cette mise à jour vous apporte toute la **version 2.0**, une version majeure : huit cartes pour vos tableaux de bord, tous les contrats d'électricité, de nouvelles fonctions et moins de requêtes envoyées à ecojoko. Avant de mettre à jour, lisez [les nouveautés de la 2.0.0 et ce qu'il faut savoir avant de mettre à jour](https://github.com/jmcruvellier/little_monkey/blob/main/CHANGELOG.md#200). En bref : faites une sauvegarde de Home Assistant ; la configuration est convertie sans perte d'historique ; les nouvelles fonctions sont décochées par défaut, à cocher dans les options de l'intégration ; rechargez la page sans son cache (Ctrl+F5) pour voir les cartes.
 
 ### Nouveautés
 - Une couleur par tranche tarifaire, à choisir dans les options de l'intégration : cochez « Choisir les couleurs des tranches » sur l'écran des tranches tarifaires, un écran suivant propose la couleur de chaque tranche. Par défaut : les couleurs des jours Tempo et de la paire HC/HP de la carte Contrat, sinon celle que donne ecojoko, sinon une couleur selon la catégorie. Décocher la case rétablit les couleurs par défaut. Le capteur Contrat donne la couleur de chaque tranche (`color`, et `color_source` : `chosen` ou `default`), le capteur Période Tarifaire en Cours celle de la tranche en cours (`tariff_band_color`), et le service `get_measures` celle de chaque tranche des mesures ([#273](https://github.com/jmcruvellier/little_monkey/discussions/273))
